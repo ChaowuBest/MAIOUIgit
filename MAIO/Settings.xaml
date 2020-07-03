@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="MAIO.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MAIO"
+             mc:Ignorable="d" Height="768" Width="961">
+    <Grid Background="#FF243B55">
+        <Button Content="X" HorizontalAlignment="Left" Height="17" Margin="935,0,0,0" VerticalAlignment="Top" Width="26" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
+        <StackPanel Margin="82,45,480,35">
+            <Label Content="Check Balance" Height="47" Width="126" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" HorizontalContentAlignment="Left" Margin="0,0,112,0" VerticalContentAlignment="Bottom"/>
+            <RichTextBox Height="543" Name="Balancebox"  Width="346" Margin="0,13,0,0" Background="#FF9CB0C6" FontFamily="Arial">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text=""/>
+                    </Paragraph>
+                </FlowDocument>
+                <!--设置行间距-->
+            </RichTextBox>
+            <Button Cursor="Hand" x:Name="Check" Opacity="1" Margin="0,24,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" Content="Check" FontFamily="Arial" FontSize="16" Width="105" Height="48" Click="Check_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+        <Button Cursor="Hand" x:Name="Deactive" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" Content="Deactive" FontFamily="Arial" FontSize="16" Margin="534,77,319,646" Width="108" Height="45" Click="Deactive_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="Transparent" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" Content="Save" FontFamily="Arial" FontSize="16" Margin="778,74,78,646" Width="105" Click="save_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="Transparent" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <TextBox HorizontalAlignment="Left" Name="discordwebhook" BorderThickness="0" Height="25" Margin="534,218,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="352" Background="#FF9CB0C6"/>
+        <Label Content="Discord Webhook" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="176" Margin="534,179,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Version:" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="534,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="0.67" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="592,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <TextBox HorizontalAlignment="Left" Name="delay2" Height="33" Margin="691,328,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontFamily="Arial" FontSize="16" Background="#FF9CB0C6"/>
+        <Label Content="Monitor Delay" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="108" Margin="538,328,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Expiry" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="705,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Renew" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="759,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" Content="Start Gen" FontFamily="Arial" FontSize="16" Margin="691,441,162,282" Width="108">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="Transparent" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Label Content="Cookie Num" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="117" Margin="534,441,0,0" FontFamily="Arial" FontSize="16" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center"/>
+        <TextBox HorizontalAlignment="Left" x:Name="Cjevent" Height="33" Margin="691,540,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontFamily="Arial" FontSize="16" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778"/>
+        <TextBox HorizontalAlignment="Left" x:Name="Cid" Height="33" Margin="538,540,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontFamily="Arial" FontSize="16" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596"/>
+        <Label Content="Cid" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="84" Margin="538,504,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Cjevent" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="88" Margin="691,504,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Use Monitor" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="108" Margin="538,384,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <CheckBox Content="" Name="Usemonitor" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="47" Margin="732,389,0,0"/>
+    </Grid>
+</UserControl>

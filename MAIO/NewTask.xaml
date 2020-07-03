@@ -1,0 +1,79 @@
+﻿<Window x:Class="MAIO.NewTask"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MAIO"
+        mc:Ignorable="d"
+        Title="NewTask" Height="305" Width="512" Background="#FF243B55"  WindowStartupLocation="CenterScreen"  WindowStyle="None"  AllowsTransparency="True" MouseLeftButtonDown="Window_MouseLeftButtonDown" >
+    <Grid  Name="mygrid" Background="#FF415C5C" Loaded="mygrid_Loaded"  >
+        <Button Content="X" HorizontalAlignment="Left" Height="20" Margin="485,0,0,0" VerticalAlignment="Top" Width="27" Background="#FF415C5C" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" RenderTransformOrigin="0.026,-0.235"/>
+        <DockPanel LastChildFill="False" Margin="0,10,0,10">
+            <ComboBox Width="145" Name="site" Height="21" Margin="65,-113,0,0" FontFamily="Arial" FontSize="14" Loaded="site_Loaded">
+                <ComboBoxItem Content="NikeAU" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="NikeCA" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="NikeUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="NikeUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="Footasylum" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            </ComboBox>
+            <ComboBox Width="145" Name="giftcard" Height="21" Margin="-145,0,0,0" FontFamily="Arial" FontSize="14">
+            </ComboBox>
+            <ComboBox Width="145" Height="21" Name="profiles" Margin="-145,113,0,0" FontFamily="Arial" FontSize="14" Loaded="profiles_Loaded_1"/>
+            <RichTextBox Width="126" Name="sku" Height="23" Margin="111,-111,0,0" FontFamily="Arial" FontSize="14">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text=""/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+            <Button Content="Save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="Arial" Width="126" Height="37" Margin="-634,218,0,0" BorderBrush="#FF526C80">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Label Content="Site" Width="58" Height="24" Margin="-718,-158,0,0" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <Label Content="GiftCard" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="68" Height="24" Margin="-708,-45,0,0"/>
+            <Label Content="Profiles" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-708,68,0,0"/>
+            <Label Content="Sku" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,-158,0,0"/>
+            <Label Content="Size" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,-45,0,0"/>
+            <RichTextBox x:Name="size" FontFamily="Arial" FontSize="14" Width="126" Height="23" Margin="-128,2,0,0">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text=""/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+            <RichTextBox x:Name="discount" FontFamily="Arial" FontSize="14" Width="129" Height="23" Margin="-145,115,-20,0">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text=""/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+            <Label Content="Code" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,68,0,0"/>
+            <ComboBox x:Name="Quantity" FontFamily="Arial" FontSize="14" Loaded="profiles_Loaded_1" Width="129" Height="23" Margin="-126,216,0,0">
+                <ComboBoxItem Content="1" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="2" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="3" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="4" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="5" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="6" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="7" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="8" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="9" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="10" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            </ComboBox>
+
+            <Label Content="Quantity" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="79" Height="24" Margin="-192,165,0,0"/>
+        </DockPanel>
+    </Grid>
+</Window>

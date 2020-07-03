@@ -1,0 +1,165 @@
+﻿<Window x:Class="MAIO.Mainwindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MAIO"
+        mc:Ignorable="d"
+        Title="Mainwindow" Height="754" Width="1025" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="{x:Null}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ScrollViewDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <XmlDataProvider x:Key="AllItem" />
+            <Style x:Key="dgCell" TargetType="{x:Type TextBlock}">
+                <Setter Property="TextAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" HorizontalAlignment="Left" Width="1092">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="65*"/>
+            <ColumnDefinition Width="960*"/>
+            <ColumnDefinition Width="67*"/>
+        </Grid.ColumnDefinitions>
+        <Path Data="M155.33333,-3.24" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="1" Margin="62,0,0,756" Stretch="Fill" Stroke="Black" VerticalAlignment="Bottom" Width="1" Grid.Column="1"/>
+        <Path Data="M62.666667,2.76 L62.666667,746.02" HorizontalAlignment="Left" Height="756" Margin="63,-1,0,0" Stretch="Fill" Stroke="Black" VerticalAlignment="Top" Width="1" Fill="#FF578370"/>
+        <Rectangle HorizontalAlignment="Left" Height="769" VerticalAlignment="Top" Width="1026" Fill="#FF243B55" Grid.ColumnSpan="3" Margin="0,-8,0,0"/>
+        <Button Content="X" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="934,0,0,0" VerticalAlignment="Top" Width="27" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
+        <Grid  Margin="0,-8,66,0" Grid.ColumnSpan="3">
+            <Grid x:Name="GridPrincipal" VerticalAlignment="Center" Height="762" Margin="0,0,1,0"/>
+        </Grid>
+        <StackPanel>
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FF172F39" Offset="0.278"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,130,0,0" Click="MenuClick">
+                <Button.Background>
+                    <ImageBrush ImageSource="/dashboard.png"/>
+                </Button.Background>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content=""  Height="41" Width="43" BorderThickness="0" Margin="0,50,0,0" FontSize="16" Click="ProxyClick">
+                <Button.Background>
+                    <ImageBrush ImageSource="/proxy.png"/>
+                </Button.Background>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,60,0,0" Click="AccountClick">
+                <Button.Background>
+                    <ImageBrush ImageSource="/account.png"/>
+                </Button.Background>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,70,0,0" Click="ProfileClick">
+                <Button.Background>
+                    <ImageBrush ImageSource="/user.png"/>
+                </Button.Background>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,80,0,0" Click="SettingClick">
+                <Button.Background>
+                    <ImageBrush ImageSource="/settings2.png"/>
+                </Button.Background>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Grid.Column="1" Height="769" Margin="0,0,0,-15"/>
+        <Grid Grid.Column="1" Name="maingrid" Margin="0,0,66,0" Grid.ColumnSpan="2"/>
+    </Grid>
+</Window>
+    

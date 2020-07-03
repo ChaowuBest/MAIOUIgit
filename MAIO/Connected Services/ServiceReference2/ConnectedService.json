@@ -1,0 +1,34 @@
+﻿{
+  "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
+  "Version": "15.0.40203.910",
+  "GettingStartedDocument": {
+    "Uri": "https://go.microsoft.com/fwlink/?linkid=858517"
+  },
+  "ExtendedData": {
+    "inputs": [
+      "http://49.51.68.105/WebService1.asmx"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, ServiceReference2"
+    ],
+    "references": [
+      "Newtonsoft.Json, {Newtonsoft.Json, 12.0.3}",
+      "System.CodeDom, {System.CodeDom, 4.7.0}",
+      "System.Collections, {System.Collections, 4.3.0}",
+      "System.Management, {System.Management, 4.7.0}",
+      "System.Runtime, {System.Runtime, 4.3.0}",
+      "System.ServiceModel, {System.ServiceModel.Primitives, 4.4.4}",
+      "System.ServiceModel.Duplex, {System.ServiceModel.Duplex, 4.4.4}",
+      "System.ServiceModel.Http, {System.ServiceModel.Http, 4.4.4}",
+      "System.ServiceModel.NetTcp, {System.ServiceModel.NetTcp, 4.4.4}",
+      "System.ServiceModel.Primitives, {System.ServiceModel.Primitives, 4.4.4}",
+      "System.ServiceModel.Security, {System.ServiceModel.Security, 4.4.4}"
+    ],
+    "targetFramework": "netcoreapp3.1",
+    "typeReuseMode": "All"
+  }
+}

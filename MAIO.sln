@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30014.187
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAIO", "MAIO\MAIO.csproj", "{95A02EA7-86DC-46FF-B069-21ABDC65AB75}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95A02EA7-86DC-46FF-B069-21ABDC65AB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95A02EA7-86DC-46FF-B069-21ABDC65AB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95A02EA7-86DC-46FF-B069-21ABDC65AB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95A02EA7-86DC-46FF-B069-21ABDC65AB75}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6D919CA1-5FE4-4AA8-9B0B-A7572AD7CCEE}
+	EndGlobalSection
+EndGlobal
