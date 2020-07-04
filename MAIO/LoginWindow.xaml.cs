@@ -21,11 +21,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.67
+    /// version 0.68
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.67";//everychange
+        public static string version = "0.68";//everychange
        
         public LoginWindow()
         {
@@ -151,7 +151,7 @@ namespace MAIO
         public bool keyauth(string md5key, string cpuid, string version)
         {
             var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress(@"http://100.26.188.137:8090/WebService1.asmx");
+            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
             var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
             var callClient = factory.CreateChannel();
             var check = callClient.KeyAUTHAsync(md5key, cpuid, version);
@@ -160,7 +160,7 @@ namespace MAIO
         public bool KeyRest(string md5key)
         {
             var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress(@"http://100.26.188.137:8090/WebService1.asmx");
+            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
             var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
             var callClient = factory.CreateChannel();
             var resetkey = callClient.KeyresetAsync(md5key);
@@ -169,7 +169,7 @@ namespace MAIO
         public bool keycheck(string cpuid)
         {
             var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress(@"http://100.26.188.137:8090/WebService1.asmx");
+            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
             var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
             var callClient = factory.CreateChannel();
             var resetkey = callClient.keycheckAsync(cpuid);

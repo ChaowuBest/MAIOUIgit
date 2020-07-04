@@ -224,7 +224,7 @@ namespace MAIO
             }
             if (checkoutsession == "")
             {
-                goto C;
+                //goto C;
             }
             return st;
         }
@@ -260,10 +260,11 @@ namespace MAIO
             byte[] postcountry = Encoding.UTF8.GetBytes(postinfo);
             request.Proxy = wp;
             request.Accept = "*/*";
-            request.Method = "POST";
+            request.Method = "PUT";
             request.Headers.Add("accept-encoding", "gzip, deflate, br");
             request.Headers.Add("accept-language", "en-US, en; q=0.9");
             request.Headers.Add("Sec-Fetch-Dest", "empty");
+            request.Referer = "";
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "cross-site");
             request.ContentLength = postcountry.Length;
@@ -293,6 +294,17 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "country error";
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                string SourceCode = readStream.ReadToEnd();
                 goto B;
             }
         }

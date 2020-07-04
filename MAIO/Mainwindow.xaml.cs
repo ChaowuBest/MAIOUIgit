@@ -64,7 +64,6 @@ namespace MAIO
       //  WebProxy proxy = new WebProxy();
         public void Initialproxy()
         {
-
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -82,7 +81,6 @@ namespace MAIO
             FileInfo fi = new FileInfo(path3);
             if (fi.Length == 0)
             {
-                //proxy = default;
             }
             else
             {
@@ -90,11 +88,8 @@ namespace MAIO
                 for (int i = 0; i < listproxy.Count; i++)
                 {
                     proxypool.Add(listproxy[i]);
-
                 }
-
             }
-
         }
         public void Initialprofile()
         {
@@ -286,6 +281,7 @@ namespace MAIO
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Writecoookie.write();
             Application.Current.Shutdown();
         }
         private void New_Task(object sender, RoutedEventArgs e)

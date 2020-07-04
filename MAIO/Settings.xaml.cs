@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Fleck;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
@@ -45,29 +48,30 @@ namespace MAIO
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Writecoookie.write();
+            Application.Current.Shutdown();   
         }
 
         private void Deactive_Click(object sender, RoutedEventArgs e)
         {
             string md5checkdoublekey = MD5Helper.EncryptString(Config.Key);
-            Settings ss = new Settings();
-            bool resetstatus = ss.KeyRest(md5checkdoublekey);
+            bool resetstatus = KeyRest(md5checkdoublekey);
             if (resetstatus == true)
             {
-                Thread.Sleep(5000);
+                Writecoookie.write();
                 Application.Current.Shutdown();
             }
             else
             {
-                Thread.Sleep(5000);
+                Writecoookie.write();
                 Application.Current.Shutdown();
             }
+
         }
         public bool KeyRest(string md5key)
         {
             var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress(@"http://100.26.188.137:8090/WebService1.asmx");
+            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
             var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
             var callClient = factory.CreateChannel();
             var resetkey = callClient.KeyresetAsync(md5key);
@@ -132,6 +136,98 @@ namespace MAIO
                 p.Inlines.Add(run);
                 Balancebox.Document.Blocks.Add(p);
             }
+        }
+
+        private void gencookie(object sender, RoutedEventArgs e)
+        {
+            string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
+            try
+            {
+                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "--load-extension=\"" + ChromePath + "\"");
+                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "--load-extension=\"" + ChromePath + "\"");
+                ws();
+            }
+            catch
+            {
+                MessageBox.Show("You must have chrome");
+            }
+        }
+        public void ws()
+        {
+            FleckLog.Level = LogLevel.Debug;
+            var allSockets = new List<IWebSocketConnection>();
+            var server = new WebSocketServer("ws://127.0.0.1:64526");
+            server.Start(socket =>
+            {
+                socket.OnOpen = () => //当建立Socket链接时执行此方法
+                {
+                    var data = socket.ConnectionInfo; //通过data可以获得这个链接传递过来的Cookie信息，用来区分各个链接和用户之间的关系（如果需要后台主动推送信息到某个客户的时候，可以使用Cookie）
+                  //  Console.WriteLine("Open!");
+                    allSockets.Add(socket);
+                };
+                socket.OnClose = () =>// 当关闭Socket链接十执行此方法
+                {
+                  //  Console.WriteLine("Close!");
+                    allSockets.Remove(socket);
+                };
+                socket.OnMessage = message =>// 接收客户端发送过来的信息
+                {
+                    if (message.Contains("abck"))
+                    {
+                        string bmsz = "";
+                        string geoc = "";
+                        JObject jo = JObject.Parse(message);
+                        var chao = jo.ToString();
+                        if (jo["value"].ToString().Contains("-1~-1~-1") && jo["value"].ToString().Contains("==") == false)
+                        {
+                            JArray ja = JArray.Parse(jo["value1"].ToString());
+                            foreach (var i in ja)
+                            {
+                                JObject jo2 = JObject.Parse(i.ToString());
+                                if (jo2["name"].ToString() == "bm_sz")
+                                {
+                                    bmsz = jo2["value"].ToString();
+                                }
+                                if (jo2["name"].ToString() == "geoloc")
+                                {
+                                    geoc = jo2["value"].ToString();
+                                }
+                                if (bmsz != "" && geoc != "")
+                                {
+                                    break;
+                                }
+                            }
+                            string cookie = "_abck=" + jo["value"].ToString() + ";bm_sz=" + bmsz + ";geoloc=" + geoc;
+                            Mainwindow.lines.Add(cookie);
+                            FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.txt", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                            StreamWriter sw2 = new StreamWriter(fs1);
+                            sw2.WriteLine(cookie);
+                            sw2.Close();
+                            fs1.Close();
+                        }
+                    }
+                    socket.Send(message);
+                    if (message.Contains("{\"type\":\"proxy\"}"))
+                    {
+                        Random ra = new Random();
+                        int index=ra.Next(0,Mainwindow.proxypool.Count);
+                        string proxy = "";
+                        try
+                        {
+                             proxy = "Proxy: " + Mainwindow.proxypool[index] + "";
+                        }
+                        catch
+                        {
+                            proxy = "Proxy: ";
+                        }
+                        allSockets.ToList().ForEach(s => s.Send(proxy));
+                    }
+                    else
+                    {
+                    }
+
+                };
+            });
         }
     }
 }

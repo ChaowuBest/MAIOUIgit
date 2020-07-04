@@ -67,6 +67,7 @@ namespace MAIO
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Writecoookie.write();
             Application.Current.Shutdown();
         }
         private void createtask_Click(object sender, RoutedEventArgs e)

@@ -14,9 +14,14 @@ namespace MAIO
         Random ran = new Random();
         string xb3traceid = Guid.NewGuid().ToString();
         string xnikevisitorid = Guid.NewGuid().ToString();
-        public string GetHtmlsource(string url,Main.taskset tk)
+        public string GetHtmlsource(string url,Main.taskset tk, CancellationToken ct)
         {
-         A: string SourceCode = "";
+         A: if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string SourceCode = "";
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             string proxyg = Mainwindow.proxypool[random].ToString();
             string[] proxy = proxyg.Split(":");
@@ -105,13 +110,13 @@ namespace MAIO
                 if (Mainwindow.lines.Count == 0)
                 {
                     tk.Status = "No Cookie";
-                     Mainwindow.iscookielistnull = true;
+                    Mainwindow.iscookielistnull = true;
                     Thread.Sleep(3600000);
                 }
                 int cookie = ra.Next(0, Mainwindow.lines.Count);
                 try
                 {
-                   request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                    request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                     Mainwindow.lines.RemoveAt(cookie);
                 }
                 catch (Exception)

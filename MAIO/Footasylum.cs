@@ -160,9 +160,8 @@ namespace MAIO
         public void AutoCheckout(string profile, CancellationToken ct, string basketid)
         {
             JObject jo = JObject.Parse(profile);
-
-            string countryurl = "https://r9udv3ar7g.execute-api.eu-west-2.amazonaws.com/prod/basket?checkout_client=secure";
-            string postinfo = "{\"fascia_id\":1,\"channel_id\":2,\"currency_code\":\"USD\",\"customer\":{\"customer_id\":\"" + coucustomer_id + "\",\"sessionID\":null,\"hash\":\"xcx\"},\"basket_id\":" + basketid + ",\"shipping_country\":\"" +jo["Country"].ToString() +"\"}";
+            string countryurl = "https://paymentgateway.checkout.footasylum.net/basket/shipping?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
+            string postinfo = "{\"postcode\":\"08904\",\"country\":\"US\",\"basket\":{\"id\":110056757,\"basketItems\":[{\"id\":\"0930291\",\"qty\":1}]}}";
             fasyapi.Postcountry(countryurl,tk,ct,postinfo);
 
         }

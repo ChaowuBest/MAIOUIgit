@@ -25,7 +25,6 @@ namespace MAIO
         string skuid = "";
         string productID = "";
         string cardguid = "";
-      //  string priceid = "";
         string msrp = "";
         int index = 0;
         public string username = "";
@@ -166,7 +165,7 @@ namespace MAIO
                url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(US)&filter=language(en)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
             }
             bool sizefind = false;
-            string sourcecode = USUKAPI.GetHtmlsource(url, tk);
+            string sourcecode = USUKAPI.GetHtmlsource(url, tk, ct);
             JObject jo = JObject.Parse(sourcecode);
             string obejects = jo["objects"].ToString();
             JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
@@ -868,10 +867,7 @@ new JProperty("shippingAddress",
                 ct.ThrowIfCancellationRequested();
             }
             string status = USUKAPI.finalorder(url, Authorization, profile, tk,pid,size,code,giftcard,username,password,randomsize,ct);
-            if (Config.webhook == "")
-            {
-                tk.Status = "Success";
-            }
+           
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -885,18 +881,23 @@ new JProperty("shippingAddress",
                 string reason = jo2["message"].ToString();
                 tk.Status = reason;
             }
+            JObject jo3 = JObject.Parse(status);
+            string orderid = jo3["response"]["orderId"].ToString();
+            string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:" + orderid + "\",\"inline\":false}]}]}";
+            string webhook2 = " https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9";
+            if (Config.webhook == "")
+            {
+                tk.Status = "Success";
+                Http(webhook2, pd2, tk);
+            }
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
-            }
+            }          
             if (status.Contains("error") == false)
             {
-                JObject jo = JObject.Parse(status);
-                string orderid = jo["response"]["orderId"].ToString();
-                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:" + orderid + "\",\"inline\":false}]}]}";
-                Http(Config.webhook, pd2,tk);
-                string webhook2 = " https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9";
+                Http(Config.webhook, pd2,tk);         
                 Http(webhook2, pd2, tk);
                 tk.Status = "Check Webhook";
             }
