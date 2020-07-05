@@ -23,19 +23,27 @@ namespace MAIO
             }
             string SourceCode = "";
             int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
             WebProxy wp = new WebProxy();
-            if (proxy.Length == 2)
+            try
             {
-                wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                 
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+               
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
             }
-            else if (proxy.Length == 4)
+            catch
             {
-                wp.Address= new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-            }           
+                wp = default;
+            }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
@@ -76,18 +84,25 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
             WebProxy wp = new WebProxy();
-            if (proxy.Length == 2)
+            try
             {
-                wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");        
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
 
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
             }
-            else if (proxy.Length == 4)
+            catch
             {
-                wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                wp = default;   
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "PUT";
@@ -124,6 +139,7 @@ namespace MAIO
                     goto reloadcookie;
                 }
             }
+            Main.updatelable();
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");
@@ -145,7 +161,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                tk.Status = resppayment.StatusCode.ToString();      
+              //  tk.Status = resppayment.StatusCode.ToString();      
                 Thread.Sleep(1500);
                 goto B;
             }          

@@ -21,19 +21,20 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.68
+    /// version 0.69
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.68";//everychange
-       
+        public static string version = "0.69";//everychange
+
         public LoginWindow()
         {
             InitializeComponent();
             checkkey();
         }
+       
         public void checkkey()
-        {        
+        {
             var ip = this.GetIPAddress();
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             if (File.Exists(path))
@@ -58,7 +59,6 @@ namespace MAIO
                     {
                         Application.Current.Shutdown();
                     }
-
                 }
             }
         }
@@ -87,12 +87,12 @@ namespace MAIO
                     {
                         FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                         fs1.Close();
-                        File.WriteAllText(path,"{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\"}");
-                        Config.Key=MD.Key = key;
-                        Config.webhook=MD.webhook = "";
-                        Config.cid=MD.cid = "";
-                        Config.cjevent=MD.cjevent = "";
-                        Config.delay ="";
+                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\"}");
+                        Config.Key = MD.Key = key;
+                        Config.webhook = MD.webhook = "";
+                        Config.cid = MD.cid = "";
+                        Config.cjevent = MD.cjevent = "";
+                        Config.delay = "";
                         Config.Usemonitor = "";
                         Close();
                         MD.Show();
@@ -103,21 +103,21 @@ namespace MAIO
                         JObject jo = JObject.Parse(config);
                         jo["key"] = key;
                         File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
-                        Config.Key= jo["key"].ToString();
-                        Config.webhook= jo["webhook"].ToString();
-                        Config.cid =  jo["cid"].ToString();
-                        Config.cjevent =jo["cjevent"].ToString();
+                        Config.Key = jo["key"].ToString();
+                        Config.webhook = jo["webhook"].ToString();
+                        Config.cid = jo["cid"].ToString();
+                        Config.cjevent = jo["cjevent"].ToString();
                         Config.delay = jo["delay"].ToString();
                         Config.Usemonitor = jo["Usemonitor"].ToString();
                         Close();
                         MD.Show();
-                    }              
+                    }
                 }
                 else
                 {
                     Keyinput.Text = "";
                 }
-            }         
+            }
         }
         string GetIPAddress()
         {
@@ -218,7 +218,7 @@ namespace MAIO
                     ICryptoTransform cTransform = rijndael.CreateEncryptor();
                     resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
                 }
-                catch(Exception)
+                catch (Exception)
                 { }
                 return Convert.ToBase64String(resultArray, 0, resultArray.Length);
             }
@@ -226,7 +226,7 @@ namespace MAIO
             {
                 Byte[] resultArray = null;
                 try
-               {
+                {
                     Byte[] keyArray = Encoding.UTF8.GetBytes(key);
                     Byte[] toEncryptArray = Convert.FromBase64String(str);
                     var rijndael = new RijndaelManaged();
@@ -237,7 +237,7 @@ namespace MAIO
                     ICryptoTransform cTransform = rijndael.CreateDecryptor();
                     resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     resultArray = System.Text.Encoding.Default.GetBytes("");
                 }

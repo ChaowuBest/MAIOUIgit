@@ -140,12 +140,13 @@ namespace MAIO
 
         private void gencookie(object sender, RoutedEventArgs e)
         {
-            string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
             try
             {
-                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "--load-extension=\"" + ChromePath + "\"");
-                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "--load-extension=\"" + ChromePath + "\"");
-                ws();
+                
+                Task task1 = new Task(() => ws());
+                task1.Start();
+                Task task2 = new Task(() => ws());
+                task2.Start();
             }
             catch
             {
@@ -154,6 +155,9 @@ namespace MAIO
         }
         public void ws()
         {
+            string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
+            Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
             FleckLog.Level = LogLevel.Debug;
             var allSockets = new List<IWebSocketConnection>();
             var server = new WebSocketServer("ws://127.0.0.1:64526");
@@ -199,6 +203,8 @@ namespace MAIO
                             }
                             string cookie = "_abck=" + jo["value"].ToString() + ";bm_sz=" + bmsz + ";geoloc=" + geoc;
                             Mainwindow.lines.Add(cookie);
+                            Mainwindow.iscookielistnull = false;
+                            Main.updatelable();         
                             FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.txt", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
                             StreamWriter sw2 = new StreamWriter(fs1);
                             sw2.WriteLine(cookie);

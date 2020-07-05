@@ -76,7 +76,6 @@ namespace MAIO
                 fs0.Close();
             }
         }
-
         private void del_Click(object sender, RoutedEventArgs e)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.txt";

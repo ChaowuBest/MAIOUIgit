@@ -29,7 +29,7 @@ namespace MAIO
     /// </summary>
     public partial class Main : UserControl
     {
-     public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
+        public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
         public Main()
         {
             InitializeComponent();
@@ -37,9 +37,35 @@ namespace MAIO
             {
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
                 JObject jo = JObject.Parse(kv.Value);
-                Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(),Quantity=jo["Quantity"].ToString() });
+                Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString() });
             }
             datagrid.ItemsSource = Mainwindow.task;
+            cookienum.Dispatcher.Invoke(new Action(
+                delegate
+            {
+                cookienum.Content = Mainwindow.lines.Count;
+            }));
+            updatelable();
+        }
+        public static int counter = 0;
+        public static void updatelable()
+        {
+           
+            if (counter == 0)
+            {
+                counter++;
+            }
+            else
+            {
+                Config.mn.cookienum.Dispatcher.Invoke(new Action(
+                     delegate
+                     {
+                         Config.mn.cookienum.Content = Mainwindow.lines.Count;
+                     }));
+              //  Config.mn.cookienum.r
+                //n++;
+            }
+
         }
         public class taskset : INotifyPropertyChanged
         {
@@ -64,6 +90,7 @@ namespace MAIO
             }
             public string Taskid { get; set; }
             public string Quantity { get; set; }
+
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -84,7 +111,7 @@ namespace MAIO
              "\"Size\":\"" + st[4].Replace("\r\n", "") + "\",\"Profile\":\"" + st[2] + "\",\"Proxies\":\"Default\"," +
             "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\"}]";
             Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
-            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE" , Quantity=st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "")});
+            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") });
             taskwrite(profile);
         }
         public void taskwrite(string task)
@@ -118,11 +145,10 @@ namespace MAIO
             }
             catch (Exception)
             {
-                //  MessageBox.Show(ex.Message);
             }
         }
         private void start_Click(object sender, RoutedEventArgs e)
-        {      
+        {
             string taskid = Guid.NewGuid().ToString();
             int row = datagrid.SelectedIndex;
             taskset tk;
@@ -168,13 +194,20 @@ namespace MAIO
                         int random = ran.Next(0, Mainwindow.listaccount.Count);
                         try
                         {
-                            string[] account = Mainwindow.listaccount[random].Split("-");
+                            string[] account = null;
+                            if (Mainwindow.listaccount[random].Contains("-"))
+                            {
+                                account = Mainwindow.listaccount[random].Split("-");
+                            }
+                            else if (Mainwindow.listaccount[random].Contains(":"))
+                            {
+                                account = Mainwindow.listaccount[random].Split(":");
+                            }
                             NikeUSUK NSK = new NikeUSUK();
                             NSK.giftcard = giftcard;
                             NSK.pid = tk.Sku;
                             NSK.size = tk.Size;
                             NSK.code = code;
-                           // tk.Profile.
                             NSK.profile = Mainwindow.allprofile[tk.Profile];
                             NSK.tk = tk;
                             NSK.username = account[0];
@@ -204,20 +237,20 @@ namespace MAIO
                             {
                                 fasy.randomsize = true;
                             }
-                                fasy.link = tk.Sku;
-                                fasy.profile = Mainwindow.allprofile[tk.Profile];
-                                fasy.size = tk.Size;
-                                fasy.tk = tk;
-                                var cts = new CancellationTokenSource();
-                                var ct = cts.Token;
-                                Task fasytask = new Task(() => { fasy.StartTask(ct,cts); }, ct);
-                                dic.Add(tk.Taskid, cts);
-                                fasytask.Start();
-                            
+                            fasy.link = tk.Sku;
+                            fasy.profile = Mainwindow.allprofile[tk.Profile];
+                            fasy.size = tk.Size;
+                            fasy.tk = tk;
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task fasytask = new Task(() => { fasy.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            fasytask.Start();
+
                         }
                         catch
                         {
-                            
+
                         }
                     }
                 }
@@ -263,7 +296,7 @@ namespace MAIO
         private void BtnDelete_Click_1(object sender, RoutedEventArgs e)
         {
             taskset del = (taskset)((Button)sender).DataContext;
-          //  var chao=dic[del.Taskid];
+            //  var chao=dic[del.Taskid];
             if (dic.Keys.Contains(del.Taskid))
             {
                 dic[del.Taskid].Cancel();
@@ -271,7 +304,7 @@ namespace MAIO
             }
             else
             {
-                
+
             }
             int n = datagrid.SelectedIndex;
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
@@ -285,7 +318,7 @@ namespace MAIO
                     updatetask(needdel);
                     break;
                 }
-            }          
+            }
             Mainwindow.task.Remove(del);
         }
         private void button1_Copy3_Click(object sender, RoutedEventArgs e)
@@ -308,13 +341,13 @@ namespace MAIO
             }
 
             dic.Clear();
-          //  dic2.Clear();
+            //  dic2.Clear();
         }
         private void datagrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var content = (taskset)datagrid.SelectedItem;
             try
-             {
+            {
                 NewTask nt = new NewTask();
                 Midtransfer.sitesel = content.Tasksite;
                 Midtransfer.pid = content.Sku;
@@ -336,7 +369,7 @@ namespace MAIO
             for (int n = 0; n < Mainwindow.task.Count; n++)
             {
                 string taskid = Guid.NewGuid().ToString();
-                taskset tk= Mainwindow.task.ElementAt(n);
+                taskset tk = Mainwindow.task.ElementAt(n);
                 if (dic.Keys.Contains(tk.Taskid))
                 {
                 }
@@ -361,7 +394,7 @@ namespace MAIO
                             }
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                            Task task1 = new Task(() => { NA.StartTask(ct,cts); }, ct);
+                            Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
                             dic.Add(tk.Taskid, cts);
                             task1.Start();
                         }
@@ -377,7 +410,15 @@ namespace MAIO
                             int random = ran.Next(0, Mainwindow.listaccount.Count);
                             try
                             {
-                                string[] account = Mainwindow.listaccount[random].Split("-");
+                                string[] account=null;
+                                if (Mainwindow.listaccount[random].Contains("-"))
+                                {
+                                    account= Mainwindow.listaccount[random].Split("-");
+                                }
+                                else if (Mainwindow.listaccount[random].Contains(":"))
+                                {
+                                    account = Mainwindow.listaccount[random].Split(":");
+                                }
                                 NikeUSUK NSK = new NikeUSUK();
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
@@ -417,11 +458,11 @@ namespace MAIO
             {
                 foreach (var i in dic)
                 {
-                    i.Value.Cancel();                 
+                    i.Value.Cancel();
                 }
             }
             catch
-            {            
+            {
             }
             dic.Clear();
         }
@@ -437,7 +478,7 @@ namespace MAIO
                 dic[stop.Taskid].Cancel();
                 dic.Remove(stop.Taskid);
             }
-           
+
 
         }
         private void button1_Copy2_Click(object sender, RoutedEventArgs e)

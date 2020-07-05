@@ -198,7 +198,6 @@ namespace MAIO
                 JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                 JObject j = JObject.Parse(jar[0].ToString());
                 string skuids = j["skus"].ToString();
-               // priceid = j["merchPrice"]["snapshotId"].ToString();
                 msrp = j["merchPrice"]["msrp"].ToString();
                 JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
                 string availableSkus = j["availableSkus"].ToString();
@@ -312,53 +311,55 @@ namespace MAIO
                 Firstname fs = new Firstname();
                 profile["EmailAddress"] = regex.Replace(profile["EmailAddress"].ToString(), GenerateRandomString(4));
             }
-        A: if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.txt"))
+        A: if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
             {
                 try
                 {
-                    string line = "";
-                    StreamReader file = new StreamReader(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.txt");
-                    string[] token = null;
-                    bool find = false;
-                    List<string> lines = new List<string>(File.ReadAllLines(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.txt"));
-                    for (int i = 0; i < lines.Count; i++)
-                    {
-                        if (lines[i] == "")
-                        {
-                            lines.RemoveAt(i);
-                        }
-                        else
-                        {
-                            token = lines[i].Split("|");
-                            if (token[1] == username)
-                            {
-                                find = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
-                    }
-                    file.Close();
-                    if (find)
-                    {
-                        bool isrefresh2 = true;
-                        string refreshinfo = "{\"refresh_token\":\"" + token[0] + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
-                        string loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.ios&locale=en_US&backendEnvironment=identity&browser=Apple%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
-                        file.Close();
-                        Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
-                    }
-                    else
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json";
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Length == 0)
                     {
                         bool isrefresh = false;
                         string loginurl = "https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
                         string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                         Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
                     }
-                   
+                    else
+                    {
+                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamReader sr = new StreamReader(fs1);
+                        string read = sr.ReadToEnd();
+                        JArray ja = JArray.Parse(read);
+                        string token = "";
+                        foreach (var i in ja)
+                        {
+                            if (i.ToString().Contains(username))
+                            {
+                                token = JObject.Parse(i.ToString())["Token"].ToString();
+                                break;
+                            }
+                        }
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        if (token != "")
+                        {
+                            bool isrefresh2 = true;
+                            string refreshinfo = "{\"refresh_token\":\"" + token[0] + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
+                            string loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.ios&locale=en_US&backendEnvironment=identity&browser=Apple%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                            Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
+                        }
+                        else
+                        {
+                            bool isrefresh = false;
+                            string loginurl = "https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
+                            Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
+                        }
+
+                    }
                 }
                 catch (IOException)
                 {

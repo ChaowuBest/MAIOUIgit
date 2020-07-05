@@ -58,10 +58,12 @@ namespace MAIO
             Initialgiftcard();
             Initialtask();
             InitialCookie();
-            maingrid.Children.Add(new Main());
+            Main mn = new Main();
+            Config.mn = mn;
+            maingrid.Children.Add(mn);
+
         }
         string[] sArray = new string[4];
-      //  WebProxy proxy = new WebProxy();
         public void Initialproxy()
         {
             if (!Directory.Exists(path))
@@ -123,7 +125,6 @@ namespace MAIO
                     allprofile.Add(ja[i]["ProfileName"].ToString(), ja[i].ToString().Replace("\n", "").Replace("\t", ""));
                 }
             }
-
         }
         public void Initialaccount()
         {
@@ -252,6 +253,7 @@ namespace MAIO
                 {
                     iscookielistnull = true;
                 }
+                
             }
             catch
             {

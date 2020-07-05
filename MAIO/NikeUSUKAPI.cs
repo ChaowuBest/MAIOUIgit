@@ -4,9 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace MAIO
@@ -138,12 +140,7 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            //  string geoloc = "";
-                            //  string bm_sz = "";
-                            //  string abck = "";
-                            //    req.Headers.Add("Cookie",Mainwindow.lines[cookie]);
-                            //    req.Headers.Add("Cookie", "_abck="+abck+ ";bm_sz="+bm_sz+ ";geoloc="+ geoloc);
-                            // req.Headers.Add("Cookie", @"D77105DD1D69007F45A46BC71E7AA3B4~-1~YAAQCHTA0iNgOLhyAQAA7XUv6wQm/kJOKGFShyzI0uWavTvdVheHyuBIFsfL/X5IANnyqRhlKkvtoSNKjjWGTj+mt3f6mwFZweHQY3nMyHFycPZuFMr61O9OUscHtqKt4cXJMe+vlC86zHeNhXGCSWaBi+IIjBIA3PDuCZksuAc2HkY8lkjw0VIXLp+LaZMfF/ctCRfpEwL52DaRZkqtVTrOAqfTGBxI5BbyKxumallcvAG6Kuao6eXwzsCRf9jQt4IXrkcZAI4VfBBvnNTklO0vj0NW4FgiNHQ/1F4552QJDYWp8Wo9Hx7lQg5dQjn/nsbbeV8qeojW+np77g1PlSkTmTkSCnRuRkP4J8nUdsI=~-1~-1~-1");
+                            // req.Headers.Add("Cookie", @"AnalysisUserId=221.194.158.162.153781589120559642; s_ecid=MCMID%7C44822141248338726597572623382071276877; anonymousId=30DDFD27B849252DF78D1FF50DF3D5C6; _gcl_au=1.1.578438674.1589120562; _scid=aa5d7dab-0f30-4547-bb93-6f5d5db55af4; _fbp=fb.1.1589120564331.339030096; CONSUMERCHOICE_SESSION=t; RES_TRACKINGID=351348755954531; ResonanceSegment=1; guidS=9a8ecb42-8a4a-49bc-9132-b6db00b3f5cb; guidU=5bfd366a-ec0e-4876-bde5-6af83a218e59; _ga=GA1.2.288946757.1589120705; AMCV_F0935E09512D2C270A490D4D%40AdobeOrg=1994364360%7CMCMID%7C44822141248338726597572623382071276877%7CMCAID%7CNONE%7CMCOPTOUT-1589130625s%7CNONE%7CvVersion%7C3.4.0%7CMCIDTS%7C18393%7CMCAAMLH-1589728225%7C9%7CMCAAMB-1589728225%7Cj8Odv6LonN4r3an7LhD3WZrU1bUpAkFkkiY1ncBR96t2PTI%7CMCSYNCSOP%7C411-18400; bc_nike_singapore_triggermail=%7B%22distinct_id%22%3A%20%22171ff21c59541c-0fa19ef195e003-d373666-1704a0-171ff21c596760%22%2C%22cart_total%22%3A%200%7D; crl8.fpcuid=8ca8a405-115e-4f99-96f1-c06cb9783d03; bm_sz=DD19CB68E48304D86D567E801E1F5AD0~YAAQNIyUG5/5S/dyAQAASifnHAhOrHGpsiJSTOxSM4Ff+ILcnvC0PKkXxLfluKNFdaIjthPBZlktdfeBNm3fbr53NuvftpG+ctFAD9Kcas4EunwMBGBiWy7urFtxWc/+9HvQ4sQRp7QRF+rbbMTKSKBTAjhOSqcrRqeXQ6Eo/27gfpH0Z0TmT8PuJ4+E/A==; CONSUMERCHOICE=us/en_us; NIKE_COMMERCE_COUNTRY=US; NIKE_COMMERCE_LANG_LOCALE=en_US; cid=undefined%7Cundefined; geoloc=cc=CN,rc=HI,tp=vhigh,tz=GMT+8,la=20.05,lo=110.34; AKA_A2=A; optimizelyEndUserId=oeu1593923424826r0.5422267882994918; bm_mi=ED521A1D90A7DD45BC273E709DF64A39~O4xp061/dr/lesWQlJN9OxA4GKkIvK8IOU6yA6L+gw2Cmk1Rdp4q3cJgBBUg9Ok+48WVDDnHB+zMKXqEEzW9iP3fliqy8TXfkOPF/fWbKvU+auJSnJT8gf8x5RxCbiO2UWHtS6T3Q22Ej73HuaogwaObN8aGHxLr/XqXfkRxJfq3dT4gzWYQMefSnIMp8Dx09DY/0ndl12R7Pa87d+SburgQ3v3IeKRzhenNSJku/J0=; ak_bmsc=6A23BD6AE6E31C67F3CBFE4F9FF6BFFE1B948C34C31E00005141015F2494A66C~pl4HDSDOhTXin8uziTtuiYDfdiO4RiL1QsmUy016Jz9F4AZq/JPylzjz1LJyLITzcDj//RjH8cBYszLB2HlXWw3sk+vBF067mn0Bt/CnMHxm3JVf2yE39D/izAwAiw8kHGyoB9XkZp8ElC46owdBqW96hWXIPmfhTorx8rizHU3Ib3/hAOTl465IISzvQTcfwH0gZi8aRCpmO3m2/jfmq7fMans4fAz71w+L9XhzTXIeRMnmB88wYDAn132z0QKzoZ; RES_SESSIONID=501796147149294; bc_nike_triggermail=%7B%22distinct_id%22%3A%20%221731d3dddf3423-0705c9f3e7378d-4353760-1704a0-1731d3dddf429e%22%2C%22cart_total%22%3A%20160%7D; _uetsid=e3894a70-7765-4063-2300-ca70570c5dc2; _uetvid=437bd4e8-91e4-6aff-9f40-bac4d207cc4f; bm_sv=11EAE474E509FA88ABD7A17451097103~qMEHlKIHh1Vc6ExF4LqxbrnbPqtCkD5vJ4m83Xu2ZF7au2imqntiZCw1q/iSvP43QwbIANxDgDlCBSxd1zAvcnoQNQF6EJZyf5qQIRk+mWtlhgQ6tYjtheMwDwRZco15ueH9R/4h67DmRoFiT/sruu4JJOHNuRgSp6txpvTHdGs=; _abck=CBF441C137B01D80E242F3B7E0FAE93F~-1~YAAQFlCcJAoP0Q9zAQAA5rJSHQRUXYhBmasa1zlKmIW0KFniq3R89DArhNWEmOi3HF5rrWsmZXbK/dH+0Y8HYxEWkq/VWMfZnpr6IqoKPOlPk9DkBdQCg1FaGq1usR86d5k7dMFqeFhkGwm8dtBYob0AUk7EXCmjmpAcpeynleQf32vhI12lXI2nXlPvEjXe+oYadY9o4gO5lnqMBLlPhOcd7rkWOyskfh7PKc2CCFPXdi/CfWieo//G4GiKkGafGvdYDbEol/ePaz+ws2QT7MqfvVqWV0v1pARNuoGB0mc0R6wKCWiejQIN3EC7OIcE+GOPlmiXQOGwt2ol2QSd+shPWaRaorVqlqaKiTInkHs=~-1~-1~-1");
                             req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                         }
@@ -173,10 +170,10 @@ namespace MAIO
                         {
                             goto reloadcookie;
                         }
-
                     }
                 }
             }
+            Main.updatelable();
             req.Headers.Add("Sec-Fetch-Dest", "empty");
             req.Headers.Add("Sec-Fetch-Mode", "cors");
             req.Headers.Add("Sec-Fetch-Site", "same-site");
@@ -190,7 +187,6 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)req.GetResponse();
                 tk.Status = "Login Successful!";
-                // MessageBox.Show("login");
                 Stream tokenStream = response.GetResponseStream();
                 StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
                 token = readhtmlStream.ReadToEnd();
@@ -203,46 +199,64 @@ namespace MAIO
                 var chao = readhtmlStream.ReadToEnd();
                 tk.Status = "Login Failed";
                 goto retry;
-
             }
             JObject jo = JObject.Parse(token);
             string Authorization = "Bearer " + jo["access_token"].ToString();
-            refresh.Add(jo["refresh_token"].ToString() + "|" + account);
+            Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]",account));
+            task1.Start();  
             return Authorization;
         }
-        public static ArrayList refresh = new ArrayList();
-        public void writerefreshtoken()
+        public void writerefreshtoken(string token,string account)
         {
             try
             {
-                if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.txt"))
+                if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
                 {
-
-                    FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.txt", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamWriter sw = new StreamWriter(fs1);
-                    for (int i = 0; i < refresh.Count; i++)
-                    {
-                        sw.WriteLine(refresh[i]);
-                    }
+                    JArray ja = JArray.Parse(token);
+                    sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ",""));
                     sw.Close();
                     fs1.Close();
                 }
                 else
                 {
-                    FileStream fs = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.txt", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    StreamWriter sr = new StreamWriter(fs);
-                    for (int i = 0; i < refresh.Count; i++)
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json";
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Length == 0)
                     {
-                        sr.WriteLine(refresh[i]);
+                        FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter sw = new StreamWriter(fs1);
+                        JArray ja = JArray.Parse(token);
+                        sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                        sw.Close();
+                        fs1.Close();
                     }
-                    sr.Close();
-                    fs.Close();
+                    else
+                    {
+                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamReader sr = new StreamReader(fs1);
+                        string read = sr.ReadToEnd();
+                        JArray ja = JArray.Parse(read);
+                        foreach (var i in ja)
+                        {
+                            if (i.ToString().Contains(account))
+                            {
+                                ja.Remove(i);
+                            }
+                        }
+                        ja.Add(JObject.Parse(token.Replace("[", "").Replace("]", "")));
+                        fs1.SetLength(0);
+                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter sw = new StreamWriter(fs0);
+                        sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                        sw.Close();
+                        fs1.Close();
+                    }
                 }
             }
             catch (Exception)
-            {
-                // Console.ForegroundColor = ConsoleColor.Red;
-                // Console.WriteLine("[" + new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds() + "]" + "Failed to write refreshtoken");
+            {          
             }
         }
         public double Postcardinfo(string url, string cardinfo, string Authorization, string cardguid, Main.taskset tk, CancellationToken ct)
@@ -409,6 +423,7 @@ namespace MAIO
                     }
                 }
             }
+            Main.updatelable();
             reqpayment.ContentLength = contentpaymentinfo.Length;
             reqpayment.Referer = "https://www.nike.com/us/en/checkout";
             reqpayment.Headers.Add("Origin", "https://www.nike.com");
@@ -445,7 +460,7 @@ namespace MAIO
                 catch (NullReferenceException ex)
                 {
                 }
-                writerefreshtoken();
+                
             }
             catch (WebException ex)
             {
@@ -667,6 +682,7 @@ namespace MAIO
                     }
                 }
             }
+            Main.updatelable();
             reqprocess.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqprocess.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqprocess.Headers.Add("Origin", "https://www.nike.com");
@@ -868,6 +884,7 @@ namespace MAIO
 
                 }
             }
+            Main.updatelable();
             reqgetstatus.Headers.Add("accept-encoding", "gzip, deflate,br");
             reqgetstatus.Headers.Add("accept-language", "en-US, en; q=0.9");
             reqgetstatus.Headers.Add("appid", "com.nike.commerce.checkout.web");

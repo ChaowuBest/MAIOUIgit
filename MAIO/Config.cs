@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace MAIO
 {
-   static class Config
+    static class Config
     {
         public static string Key { get; set; }
         public static string webhook { get; set; }
@@ -13,5 +14,7 @@ namespace MAIO
         public static string delay { get; set; }
         public static string quantity { get; set; }
         public static string Usemonitor { get; set; }
+         public static Main mn = null;
     }
+   
 }
