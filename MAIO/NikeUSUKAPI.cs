@@ -133,11 +133,19 @@ namespace MAIO
                         Thread.Sleep(sleeptime);
                         if (Mainwindow.lines.Count == 0)
                         {
-                            tk.Status = "No Cookie";
                             Mainwindow.iscookielistnull = true;
-                            Thread.Sleep(3600000);
+                        C: tk.Status = "No Cookie";
+
+                            if (Mainwindow.iscookielistnull)
+                            {
+                                goto C;
+                            }
+                            else
+                            {
+                                goto D;
+                            }
                         }
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
+                    D:   int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
                             // req.Headers.Add("Cookie", @"AnalysisUserId=221.194.158.162.153781589120559642; s_ecid=MCMID%7C44822141248338726597572623382071276877; anonymousId=30DDFD27B849252DF78D1FF50DF3D5C6; _gcl_au=1.1.578438674.1589120562; _scid=aa5d7dab-0f30-4547-bb93-6f5d5db55af4; _fbp=fb.1.1589120564331.339030096; CONSUMERCHOICE_SESSION=t; RES_TRACKINGID=351348755954531; ResonanceSegment=1; guidS=9a8ecb42-8a4a-49bc-9132-b6db00b3f5cb; guidU=5bfd366a-ec0e-4876-bde5-6af83a218e59; _ga=GA1.2.288946757.1589120705; AMCV_F0935E09512D2C270A490D4D%40AdobeOrg=1994364360%7CMCMID%7C44822141248338726597572623382071276877%7CMCAID%7CNONE%7CMCOPTOUT-1589130625s%7CNONE%7CvVersion%7C3.4.0%7CMCIDTS%7C18393%7CMCAAMLH-1589728225%7C9%7CMCAAMB-1589728225%7Cj8Odv6LonN4r3an7LhD3WZrU1bUpAkFkkiY1ncBR96t2PTI%7CMCSYNCSOP%7C411-18400; bc_nike_singapore_triggermail=%7B%22distinct_id%22%3A%20%22171ff21c59541c-0fa19ef195e003-d373666-1704a0-171ff21c596760%22%2C%22cart_total%22%3A%200%7D; crl8.fpcuid=8ca8a405-115e-4f99-96f1-c06cb9783d03; bm_sz=DD19CB68E48304D86D567E801E1F5AD0~YAAQNIyUG5/5S/dyAQAASifnHAhOrHGpsiJSTOxSM4Ff+ILcnvC0PKkXxLfluKNFdaIjthPBZlktdfeBNm3fbr53NuvftpG+ctFAD9Kcas4EunwMBGBiWy7urFtxWc/+9HvQ4sQRp7QRF+rbbMTKSKBTAjhOSqcrRqeXQ6Eo/27gfpH0Z0TmT8PuJ4+E/A==; CONSUMERCHOICE=us/en_us; NIKE_COMMERCE_COUNTRY=US; NIKE_COMMERCE_LANG_LOCALE=en_US; cid=undefined%7Cundefined; geoloc=cc=CN,rc=HI,tp=vhigh,tz=GMT+8,la=20.05,lo=110.34; AKA_A2=A; optimizelyEndUserId=oeu1593923424826r0.5422267882994918; bm_mi=ED521A1D90A7DD45BC273E709DF64A39~O4xp061/dr/lesWQlJN9OxA4GKkIvK8IOU6yA6L+gw2Cmk1Rdp4q3cJgBBUg9Ok+48WVDDnHB+zMKXqEEzW9iP3fliqy8TXfkOPF/fWbKvU+auJSnJT8gf8x5RxCbiO2UWHtS6T3Q22Ej73HuaogwaObN8aGHxLr/XqXfkRxJfq3dT4gzWYQMefSnIMp8Dx09DY/0ndl12R7Pa87d+SburgQ3v3IeKRzhenNSJku/J0=; ak_bmsc=6A23BD6AE6E31C67F3CBFE4F9FF6BFFE1B948C34C31E00005141015F2494A66C~pl4HDSDOhTXin8uziTtuiYDfdiO4RiL1QsmUy016Jz9F4AZq/JPylzjz1LJyLITzcDj//RjH8cBYszLB2HlXWw3sk+vBF067mn0Bt/CnMHxm3JVf2yE39D/izAwAiw8kHGyoB9XkZp8ElC46owdBqW96hWXIPmfhTorx8rizHU3Ib3/hAOTl465IISzvQTcfwH0gZi8aRCpmO3m2/jfmq7fMans4fAz71w+L9XhzTXIeRMnmB88wYDAn132z0QKzoZ; RES_SESSIONID=501796147149294; bc_nike_triggermail=%7B%22distinct_id%22%3A%20%221731d3dddf3423-0705c9f3e7378d-4353760-1704a0-1731d3dddf429e%22%2C%22cart_total%22%3A%20160%7D; _uetsid=e3894a70-7765-4063-2300-ca70570c5dc2; _uetvid=437bd4e8-91e4-6aff-9f40-bac4d207cc4f; bm_sv=11EAE474E509FA88ABD7A17451097103~qMEHlKIHh1Vc6ExF4LqxbrnbPqtCkD5vJ4m83Xu2ZF7au2imqntiZCw1q/iSvP43QwbIANxDgDlCBSxd1zAvcnoQNQF6EJZyf5qQIRk+mWtlhgQ6tYjtheMwDwRZco15ueH9R/4h67DmRoFiT/sruu4JJOHNuRgSp6txpvTHdGs=; _abck=CBF441C137B01D80E242F3B7E0FAE93F~-1~YAAQFlCcJAoP0Q9zAQAA5rJSHQRUXYhBmasa1zlKmIW0KFniq3R89DArhNWEmOi3HF5rrWsmZXbK/dH+0Y8HYxEWkq/VWMfZnpr6IqoKPOlPk9DkBdQCg1FaGq1usR86d5k7dMFqeFhkGwm8dtBYob0AUk7EXCmjmpAcpeynleQf32vhI12lXI2nXlPvEjXe+oYadY9o4gO5lnqMBLlPhOcd7rkWOyskfh7PKc2CCFPXdi/CfWieo//G4GiKkGafGvdYDbEol/ePaz+ws2QT7MqfvVqWV0v1pARNuoGB0mc0R6wKCWiejQIN3EC7OIcE+GOPlmiXQOGwt2ol2QSd+shPWaRaorVqlqaKiTInkHs=~-1~-1~-1");
@@ -385,11 +393,19 @@ namespace MAIO
                     Thread.Sleep(sleeptime);
                     if (Mainwindow.lines.Count == 0)
                     {
-                        tk.Status = "No Cookie";
                         Mainwindow.iscookielistnull = true;
-                        Thread.Sleep(3600000);
+                       C: tk.Status = "No Cookie";
+
+                        if (Mainwindow.iscookielistnull)
+                        {
+                            goto C;
+                        }
+                        else
+                        {
+                            goto D;
+                        }
                     }
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
+                  D: int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {
                         reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
@@ -643,11 +659,19 @@ namespace MAIO
                     Thread.Sleep(sleeptime);
                     if (Mainwindow.lines.Count == 0)
                     {
-                        tk.Status = "No Cookie";
                         Mainwindow.iscookielistnull = true;
-                        Thread.Sleep(3600000);
+                    C: tk.Status = "No Cookie";
+
+                        if (Mainwindow.iscookielistnull)
+                        {
+                            goto C;
+                        }
+                        else
+                        {
+                            goto D;
+                        }
                     }
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
+                  D:  int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {
                         reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
@@ -867,11 +891,19 @@ namespace MAIO
                     Thread.Sleep(sleeptime);
                     if (Mainwindow.lines.Count == 0)
                     {
-                        tk.Status = "No Cookie";
                         Mainwindow.iscookielistnull = true;
-                        Thread.Sleep(3600000);
+                    C: tk.Status = "No Cookie";
+
+                        if (Mainwindow.iscookielistnull)
+                        {
+                            goto C;
+                        }
+                        else
+                        {
+                            goto E;
+                        }
                     }
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
+                  E: int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {
                         reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie]);

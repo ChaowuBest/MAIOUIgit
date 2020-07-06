@@ -62,8 +62,6 @@ namespace MAIO
                      {
                          Config.mn.cookienum.Content = Mainwindow.lines.Count;
                      }));
-              //  Config.mn.cookienum.r
-                //n++;
             }
 
         }
@@ -246,7 +244,6 @@ namespace MAIO
                             Task fasytask = new Task(() => { fasy.StartTask(ct, cts); }, ct);
                             dic.Add(tk.Taskid, cts);
                             fasytask.Start();
-
                         }
                         catch
                         {
@@ -346,6 +343,7 @@ namespace MAIO
         private void datagrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var content = (taskset)datagrid.SelectedItem;
+           
             try
             {
                 NewTask nt = new NewTask();
@@ -353,6 +351,13 @@ namespace MAIO
                 Midtransfer.pid = content.Sku;
                 Midtransfer.sizeid = content.Size;
                 Midtransfer.profilesel = content.Profile;
+                if (Mainwindow.tasklist[content.Taskid] != "")
+                {
+                    JObject jo = JObject.Parse(Mainwindow.tasklist[content.Taskid]);
+                    Midtransfer.giftcard= jo["giftcard"].ToString();
+                    Midtransfer.code = jo["Code"].ToString();
+                    Midtransfer.Quantity = jo["Quantity"].ToString();
+                }
                 Midtransfer.edit = true;
                 nt.getTextHandler = Ctask;
                 nt.ShowDialog();

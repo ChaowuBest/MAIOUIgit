@@ -60,17 +60,8 @@
                 </FlowDocument>
             </RichTextBox>
             <Label Content="Code" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,68,0,0"/>
-            <ComboBox x:Name="Quantity" FontFamily="Arial" FontSize="14" Loaded="profiles_Loaded_1" Width="129" Height="23" Margin="-126,216,0,0">
-                <ComboBoxItem Content="1" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="2" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="3" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="4" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="5" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="6" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="7" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="8" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="9" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="10" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <ComboBox x:Name="Quantity" FontFamily="Arial" FontSize="14" Loaded="Quantity_Loaded" Width="129" Height="23" Margin="-126,216,0,0">
+               
             </ComboBox>
 
             <Label Content="Quantity" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="79" Height="24" Margin="-192,165,0,0"/>

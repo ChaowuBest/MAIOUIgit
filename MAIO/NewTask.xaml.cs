@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup.Localizer;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -20,6 +23,7 @@ namespace MAIO
         public NewTask()
         {
             InitializeComponent();
+            Quantity.ItemsSource = Config.qual;
         }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -53,6 +57,35 @@ namespace MAIO
                 p2.Inlines.Add(run2);
                 sku.Document.Blocks.Add(p2);
 
+                discount.Document.Blocks.Clear();
+                Run run3 = new Run(Midtransfer.code);
+                Paragraph p3 = new Paragraph();
+                p3.Inlines.Add(run3);
+                discount.Document.Blocks.Add(p3);
+
+                int profile = 0;
+                foreach (var i in Mainwindow.allprofile)
+                {
+
+                    if (i.Key == Midtransfer.profilesel.ToString())
+                    {
+                        profiles.SelectedIndex = profile;
+                        profile = 0;
+                        break;
+                    }
+                    profile++;
+                }
+                int gift = 0;
+                foreach (var i in Mainwindow.giftcardlist)
+                {
+                    if (i.Key == Midtransfer.giftcard.ToString())
+                    {
+                        giftcard.SelectedIndex = gift;
+                        gift = 0;
+                        break;
+                    }
+                    gift++;
+                }
             }
             else
             {
@@ -72,7 +105,6 @@ namespace MAIO
 
             try
             {
-                //  Config.quantity = Quantity.SelectedItem.ToString();
                 if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
                 {
                     setup[0] = site.SelectedItem.ToString();
@@ -109,8 +141,54 @@ namespace MAIO
         {
             if (Midtransfer.edit)
             {
+                if (Midtransfer.sitesel.Contains("AU"))
+                {
+                    site.SelectedIndex = 0;
+                }
+                else if (Midtransfer.sitesel.Contains("CA"))
+                {
+                    site.SelectedIndex = 1;
+                }
+                else if (Midtransfer.sitesel.Contains("US"))
+                {
+                    site.SelectedIndex = 2;
+                }
+                else if (Midtransfer.sitesel.Contains("UK"))
+                {
+                    site.SelectedIndex = 3;
+                }
+                else if (Midtransfer.sitesel.Contains("Footasylum"))
+                {
+                    site.SelectedIndex = 4;
+                }
+            }
+        }
+        private void Quantity_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Midtransfer.edit)
+            {
+                if (int.Parse(Midtransfer.Quantity) == 10)
+                {
+                    Quantity.SelectedIndex = 9;
+                }
+                else
+                {
+                    for (int i = 0; i < Config.qual.Count; i++)
+                    {
+                        if (i.ToString() == Midtransfer.Quantity)
+                        {
+                            Quantity.SelectedIndex = i - 1;
+                        }
+                    }
+                }
+               
+            }
+            else
+            {
+                
 
             }
+
         }
     }
 }

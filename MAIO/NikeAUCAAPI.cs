@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using System.Windows.Shapes;
 
 namespace MAIO
 {
@@ -124,11 +125,20 @@ namespace MAIO
                 Thread.Sleep(sleeptime);
                 if (Mainwindow.lines.Count == 0)
                 {
-                    tk.Status = "No Cookie";
                     Mainwindow.iscookielistnull = true;
-                    Thread.Sleep(3600000);
+                  C: tk.Status = "No Cookie";
+               
+                    if (Mainwindow.iscookielistnull)
+                    {
+                        goto C;
+                    }
+                    else
+                    {
+                        goto D;
+                    }
+                   
                 }
-                int cookie = ra.Next(0, Mainwindow.lines.Count);
+              D: int cookie = ra.Next(0, Mainwindow.lines.Count);
                 try
                 {
                     request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
@@ -161,7 +171,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-              //  tk.Status = resppayment.StatusCode.ToString();      
+                tk.Status = resppayment.StatusCode.ToString();      
                 Thread.Sleep(1500);
                 goto B;
             }          
