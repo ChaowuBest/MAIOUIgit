@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="NewTask" Height="305" Width="512" Background="#FF243B55"  WindowStartupLocation="CenterScreen"  WindowStyle="None"  AllowsTransparency="True" MouseLeftButtonDown="Window_MouseLeftButtonDown" >
     <Grid  Name="mygrid" Background="#FF415C5C" Loaded="mygrid_Loaded"  >
-        <Button Content="X" HorizontalAlignment="Left" Height="20" Margin="485,0,0,0" VerticalAlignment="Top" Width="27" Background="#FF415C5C" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" RenderTransformOrigin="0.026,-0.235"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="468,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF415C5C" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" RenderTransformOrigin="0.026,-0.235" FontSize="20"/>
         <DockPanel LastChildFill="False" Margin="0,10,0,10">
             <ComboBox Width="145" Name="site" Height="21" Margin="65,-113,0,0" FontFamily="Arial" FontSize="14" Loaded="site_Loaded">
                 <ComboBoxItem Content="NikeAU" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>

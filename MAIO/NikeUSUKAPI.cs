@@ -209,7 +209,7 @@ namespace MAIO
                 goto retry;
             }
             JObject jo = JObject.Parse(token);
-            string Authorization = "Bearer " + jo["access_token"].ToString();
+            string Authorization = "Bearer " + jo["refresh_token"].ToString();
             Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]",account));
             task1.Start();  
             return Authorization;

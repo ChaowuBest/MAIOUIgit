@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:MAIO"
              mc:Ignorable="d" Height="768" Width="961">
     <Grid Background="#FF243B55">
-        <Button Content="X" HorizontalAlignment="Left" Height="17" Margin="935,0,0,0" VerticalAlignment="Top" Width="26" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="917,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <StackPanel Margin="82,45,480,35">
             <Label Content="Check Balance" Height="47" Width="126" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" HorizontalContentAlignment="Left" Margin="0,0,112,0" VerticalContentAlignment="Bottom"/>
             <RichTextBox Height="543" Name="Balancebox"  Width="346" Margin="0,13,0,0" Background="#FF9CB0C6" FontFamily="Arial">
@@ -63,7 +63,7 @@
         <TextBox HorizontalAlignment="Left" Name="discordwebhook" BorderThickness="0" Height="25" Margin="534,218,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="352" Background="#FF9CB0C6"/>
         <Label Content="Discord Webhook" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="176" Margin="534,179,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <Label Content="Version:" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="534,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Label Content="0.70" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="592,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="0.71" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="592,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <TextBox HorizontalAlignment="Left" Name="delay2" Height="33" Margin="691,328,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="108" FontFamily="Arial" FontSize="16" Background="#FF9CB0C6"/>
         <Label Content="Monitor Delay" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="108" Margin="538,328,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <Label Content="Expiry" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="705,604,0,0" FontFamily="Arial" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>

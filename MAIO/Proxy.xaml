@@ -14,7 +14,7 @@
             <Label Content="Speed" Margin="100,0,0,0" Height="32" Width="98" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16"/>
             <Label Content="Import Proxies" HorizontalContentAlignment="Center" Height="32" Width="309" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16" VerticalAlignment="Center" Margin="132,0,0,0"/>
         </StackPanel>
-        <Button Content="X" HorizontalAlignment="Left" Height="17" Margin="935,0,0,752" VerticalAlignment="Bottom" Width="26" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="917,0,0,739" VerticalAlignment="Bottom" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" Content="Save" FontFamily="Arial" FontSize="16" Margin="634,651,219,73" Width="108" Click="save_Click">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">

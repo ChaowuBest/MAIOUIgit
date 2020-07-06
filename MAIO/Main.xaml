@@ -90,7 +90,7 @@
                 </Button.Template>
             </Button>
         </StackPanel>
-        <Button Content="X" HorizontalAlignment="Left" Height="20" Margin="934,0,0,0" VerticalAlignment="Top" Width="27" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="917,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <StackPanel Background="#FF011F1F" Orientation="Horizontal" Margin="0,47,1,675">
             <Label Content="Site" Margin="79,0,0,0" Height="32" Width="73" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16" VerticalAlignment="Center"/>
             <Label Content="Sku" Background="#FF011F1F" Margin="65,0,0,0" Foreground="#FFF5EBEB" FontSize="16" FontFamily="Arial" RenderTransformOrigin="0.42,0.516" Height="32" Width="68"/>

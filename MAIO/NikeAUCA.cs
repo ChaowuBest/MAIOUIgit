@@ -256,7 +256,14 @@ namespace MAIO
             if (Config.webhook == "")
             {
                 tk.Status = paymenturl;
-                Http(webhook2, pd1);
+                try
+                {
+                    Http(webhook2, pd1);
+                }
+                catch
+                {
+                    
+                }
             }
             else
             {

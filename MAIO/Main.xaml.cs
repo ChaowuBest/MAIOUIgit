@@ -256,7 +256,6 @@ namespace MAIO
                     tk.Status = "Task Error";
                 }
             }
-
         }
         public void updatetask(string task)
         {
@@ -491,14 +490,29 @@ namespace MAIO
             try
             {
                 var content = (taskset)datagrid.SelectedItem;
-                NewTask nt = new NewTask();
-                Midtransfer.sitesel = content.Tasksite;
-                Midtransfer.pid = content.Sku;
-                Midtransfer.sizeid = content.Size;
-                Midtransfer.profilesel = content.Profile;
-                Midtransfer.edit = true;
-                nt.getTextHandler = Ctask;
-                nt.ShowDialog();
+                if (content == null)
+                {
+
+                }
+                else
+                {
+                    NewTask nt = new NewTask();
+                    if (Mainwindow.tasklist[content.Taskid] != "")
+                    {
+                        JObject jo = JObject.Parse(Mainwindow.tasklist[content.Taskid]);
+                        Midtransfer.giftcard = jo["giftcard"].ToString();
+                        Midtransfer.code = jo["Code"].ToString();
+                        Midtransfer.Quantity = jo["Quantity"].ToString();
+                    }
+                    Midtransfer.sitesel = content.Tasksite;
+                    Midtransfer.pid = content.Sku;
+                    Midtransfer.sizeid = content.Size;
+                    Midtransfer.profilesel = content.Profile;
+                    Midtransfer.edit = true;
+                    nt.getTextHandler = Ctask;
+                    nt.ShowDialog();
+                }
+                
             }
             catch
             {
