@@ -186,7 +186,7 @@ namespace MAIO
                         {
                             JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
                             giftcard = jo["giftcard"].ToString();
-                            code = jo["Code"].ToString();
+                            code = jo["Code"].ToString().Replace("\r\n","");
                         }
                         Random ran = new Random();
                         int random = ran.Next(0, Mainwindow.listaccount.Count);
@@ -408,7 +408,7 @@ namespace MAIO
                             {
                                 JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
                                 giftcard = jo["giftcard"].ToString();
-                                code = jo["Code"].ToString();
+                                code = jo["Code"].ToString().Replace("\r\n", "");
                             }
                             Random ran = new Random();
                             int random = ran.Next(0, Mainwindow.listaccount.Count);

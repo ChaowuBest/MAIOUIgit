@@ -347,7 +347,7 @@ namespace MAIO
                         if (token != "")
                         {
                             bool isrefresh2 = true;
-                            string refreshinfo = "{\"refresh_token\":\"" + token[0] + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
+                            string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
                             string loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.ios&locale=en_US&backendEnvironment=identity&browser=Apple%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                             Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
                         }
@@ -482,7 +482,7 @@ namespace MAIO
                    new JProperty("country", country),
                    new JProperty("email", jo["EmailAddress"].ToString()))))
                 )))));
-            if (code != "\r\n")
+            if (code != "")
             {
                 payLoad = new JObject(
                 new JProperty("request",
@@ -493,7 +493,7 @@ namespace MAIO
                 new JProperty("locale", locale),
                 new JProperty("channel", "SNKRS"),
                 new JProperty("promotionCodes",
-                new JArray(code.Replace("\r\n",""))),
+                new JArray(code)),
                 new JProperty("items",
                 new JArray(
                     new JObject(
@@ -541,7 +541,7 @@ namespace MAIO
         {
             string url = "https://api.nike.com/buy/checkout_previews/v2/jobs/" + GID;
             bool isdiscount = false;
-            if (code != "\r\n")
+            if (code != "")
             {
                 isdiscount = true;
             }
@@ -806,7 +806,7 @@ new JProperty("shippingAddress",
   new JProperty("country", country),
   new JProperty("email", jo["EmailAddress"].ToString()))))
 )))));
-            if (code != "\r\n")
+            if (code != "")
             {
                 payinfo = new JObject(
  new JProperty("request",
@@ -818,7 +818,7 @@ new JProperty("shippingAddress",
  new JProperty("paymentToken", id),
  new JProperty("channel", "SNKRS"),
  new JProperty("promotionCodes",
- new JArray(code.Replace("\r\n", ""))),
+ new JArray(code)),
  new JProperty("items",
  new JArray(
  new JObject(
