@@ -35,6 +35,7 @@ namespace MAIO
             Cid.Text = Config.cid;
             Cjevent.Text = Config.cjevent;
             discordwebhook.Text = Config.webhook;
+           
             delay2.Text = Config.delay;
             if (Config.Usemonitor.Contains("True"))
             {
