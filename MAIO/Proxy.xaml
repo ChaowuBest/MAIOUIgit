@@ -72,7 +72,15 @@
             </Button.Template>
         </Button>
         <RichTextBox Margin="616,118,13,138" Name="proxybox" Background="#FF292F34" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" FontSize="14">
-            <FlowDocument/>
+            <RichTextBox.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0"/>
+                </Style>
+            </RichTextBox.Resources>
+            <RichTextBox.Document>
+                <FlowDocument PageWidth="2048">
+                </FlowDocument>
+            </RichTextBox.Document>
         </RichTextBox>
     </Grid>
 </Page>
