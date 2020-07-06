@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -101,39 +102,48 @@ namespace MAIO
             string productid = new TextRange(sku.Document.ContentStart, sku.Document.ContentEnd).Text;
             string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text;
             string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text;
+            string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text;
             string[] setup = new string[7];
 
             try
             {
-                if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
-                {
-                    setup[0] = site.SelectedItem.ToString();
-                    setup[2] = profiles.SelectedItem.ToString();
-                }
-                else
-                {
+                if (taskNumber != null) {
+                    for (int i = 0; i < int.Parse(taskNumber); i++)
+                    {
+                        if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
+                        {
+                            setup[0] = site.SelectedItem.ToString();
+                            setup[2] = profiles.SelectedItem.ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Check your input");
+                        }
+                        if (giftcard.SelectedItem != null)
+                        {
+                            setup[1] = giftcard.SelectedItem.ToString();
+                        }
+                        setup[3] = productid;
+                        setup[4] = sizeid;
+                        setup[5] = code;
+                        setup[6] = Quantity.SelectedItem.ToString();
+                        if ((sizeid != "") && (productid != ""))
+                        {
+                            getTextHandler(setup);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Check your input");
+                        }
+                    }
+                } else {
                     MessageBox.Show("Check your input");
                 }
-                if (giftcard.SelectedItem != null)
-                {
-                    setup[1] = giftcard.SelectedItem.ToString();
-                }
-                setup[3] = productid;
-                setup[4] = sizeid;
-                setup[5] = code;
-                setup[6] = Quantity.SelectedItem.ToString();
-                if ((sizeid != "") && (productid != ""))
-                {
-                    getTextHandler(setup);
-                }
-                else
-                {
-                    MessageBox.Show("Check your input");
-                }
+                
             }
             catch (Exception)
             {
-                MessageBox.Show("Check your select");
+                MessageBox.Show("Check your input");
             }
         }
 
