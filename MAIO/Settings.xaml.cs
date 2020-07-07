@@ -45,6 +45,14 @@ namespace MAIO
             {
                 Usemonitor.IsChecked = false;
             }
+            if (Config.UseAdvancemode.Contains("True"))
+            {
+                useAdvancemode.IsChecked = true;
+            }
+            else
+            {
+                useAdvancemode.IsChecked = false;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -87,6 +95,7 @@ namespace MAIO
                 Config.cid = Cid.Text;
                 Config.cjevent = Cjevent.Text;
                 Config.Usemonitor=Usemonitor.IsChecked.ToString();
+                Config.UseAdvancemode = useAdvancemode.IsChecked.ToString();
                 Random ra = new Random();
                 if (delay2.Text == "")
                 {
@@ -96,7 +105,7 @@ namespace MAIO
                 {
                     Config.delay=delay2.Text;
                 } 
-                string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\"" + Usemonitor.IsChecked.ToString() + "\"}";
+                string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\"" + Usemonitor.IsChecked.ToString() + "\",\"Advancemode\":\"" + useAdvancemode.IsChecked.ToString() + "\"}";
                 File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
                 MessageBox.Show("Save success");
             }
@@ -105,7 +114,6 @@ namespace MAIO
                 MessageBox.Show("fail save");
             }
         }
-
         private void Check_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -138,12 +146,10 @@ namespace MAIO
                 Balancebox.Document.Blocks.Add(p);
             }
         }
-
         private void gencookie(object sender, RoutedEventArgs e)
         {
             try
-            {
-                
+            {            
                 Task task1 = new Task(() => ws());
                 task1.Start();
                 Task task2 = new Task(() => ws());

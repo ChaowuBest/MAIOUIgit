@@ -63,7 +63,6 @@ namespace MAIO
                          Config.mn.cookienum.Content = Mainwindow.lines.Count;
                      }));
             }
-
         }
         public class taskset : INotifyPropertyChanged
         {
@@ -511,8 +510,7 @@ namespace MAIO
                     Midtransfer.edit = true;
                     nt.getTextHandler = Ctask;
                     nt.ShowDialog();
-                }
-                
+                }  
             }
             catch
             {

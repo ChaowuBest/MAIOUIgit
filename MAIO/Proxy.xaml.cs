@@ -32,11 +32,11 @@ namespace MAIO
         public Proxy()
         {
             InitializeComponent();
-            if (Mainwindow.listproxy != null)
+            if (Mainwindow.proxypool != null)
             {
-                for (int i = 0; i < Mainwindow.listproxy.Count; i++)
+                for (int i = 0; i < Mainwindow.proxypool.Count; i++)
                 {
-                    proxybox.AppendText(Mainwindow.listproxy[i]);
+                    proxybox.AppendText(Mainwindow.proxypool[i].ToString());
                     proxybox.AppendText("\r\n");
                 }
             }

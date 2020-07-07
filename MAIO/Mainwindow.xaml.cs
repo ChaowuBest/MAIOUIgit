@@ -58,6 +58,7 @@ namespace MAIO
             Initialgiftcard();
             Initialtask();
             InitialCookie();
+            InitialAdvancemode();
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
@@ -258,6 +259,15 @@ namespace MAIO
             catch
             {
                 MessageBox.Show("Error read cookie");
+            }
+        }
+        public void InitialAdvancemode()
+        {
+            string path7 = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
+            if (!File.Exists(path7))
+            {
+                FileStream fs1 = new FileStream(path7, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                fs1.Close();
             }
         }
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

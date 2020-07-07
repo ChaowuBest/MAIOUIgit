@@ -21,11 +21,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.72
+    /// version 0.73
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.72";//everychange
+        public static string version = "0.73";//everychange
 
         public LoginWindow()
         {
@@ -52,6 +52,7 @@ namespace MAIO
                         Config.cjevent = MD.cjevent = jo["cjevent"].ToString();
                         Config.delay = jo["delay"].ToString();
                         Config.Usemonitor = jo["Usemonitor"].ToString();
+                        Config.UseAdvancemode = jo["Advancemode"].ToString();
                         this.Close();
                         MD.Show();
                     }
@@ -94,6 +95,7 @@ namespace MAIO
                         Config.cjevent = MD.cjevent = "";
                         Config.delay = "";
                         Config.Usemonitor = "";
+                        Config.UseAdvancemode = "";
                         Close();
                         MD.Show();
                     }
@@ -109,6 +111,7 @@ namespace MAIO
                         Config.cjevent = jo["cjevent"].ToString();
                         Config.delay = jo["delay"].ToString();
                         Config.Usemonitor = jo["Usemonitor"].ToString();
+                        Config.UseAdvancemode = jo["Advancemode"].ToString();
                         Close();
                         MD.Show();
                     }

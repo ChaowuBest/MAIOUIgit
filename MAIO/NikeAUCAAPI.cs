@@ -114,41 +114,53 @@ namespace MAIO
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
             request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            if (Mainwindow.iscookielistnull)
+            if (Config.UseAdvancemode == "True")
             {
-                request.Headers.Add("Cookie", "");
+                string path = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
+                FileStream fs2 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                StreamReader sr = new StreamReader(fs2);
+                string cookie = sr.ReadToEnd();
+                request.Headers.Add("Cookie", cookie);
+                sr.Close();
+                fs2.Close();
             }
             else
             {
-                Random ra = new Random();
-  reloadcookie: int sleeptime = ra.Next(0, 500);
-                Thread.Sleep(sleeptime);
-                if (Mainwindow.lines.Count == 0)
+                if (Mainwindow.iscookielistnull)
                 {
-                    Mainwindow.iscookielistnull = true;
-                  C: tk.Status = "No Cookie";
-               
-                    if (Mainwindow.iscookielistnull)
+                    request.Headers.Add("Cookie", "");
+                }
+                else
+                {
+                    Random ra = new Random();
+                reloadcookie: int sleeptime = ra.Next(0, 500);
+                    Thread.Sleep(sleeptime);
+                    if (Mainwindow.lines.Count == 0)
                     {
-                        goto C;
+                        Mainwindow.iscookielistnull = true;
+                    C: tk.Status = "No Cookie";
+
+                        if (Mainwindow.iscookielistnull)
+                        {
+                            goto C;
+                        }
+                        else
+                        {
+                            goto D;
+                        }
                     }
-                    else
+                D: int cookie = ra.Next(0, Mainwindow.lines.Count);
+                    try
                     {
-                        goto D;
+                        request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                        Mainwindow.lines.RemoveAt(cookie);
                     }
-                   
+                    catch (Exception)
+                    {
+                        goto reloadcookie;
+                    }
                 }
-              D: int cookie = ra.Next(0, Mainwindow.lines.Count);
-                try
-                {
-                    request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                    Mainwindow.lines.RemoveAt(cookie);
-                }
-                catch (Exception)
-                {
-                    goto reloadcookie;
-                }
-            }
+            }          
             Main.updatelable();
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");

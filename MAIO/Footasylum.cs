@@ -209,8 +209,6 @@ namespace MAIO
                 "\"shippingAddress\":{\"company\":\"\",\"address1\":\""+ jo["Address1"].ToString() + "\",\"address2\":\""+ jo["Address2"].ToString() + "\",\"city\":\""+ jo["City"].ToString() + "\",\"country\":\""+jo["Country"].ToString()+"\",\"postcode\":\""+jo["Zipcode"].ToString()+ "\",\"shortCountry\":\"" + jo["Country"].ToString() + "\",\"delivery_instructions\":\"\"},\"billingAddress\":{\"company\":\"\",\"address1\":\"" + jo["Address1"].ToString() + "\",\"address2\":\"" + jo["Address2"].ToString() + "\"," +
                 "\"city\":\"" + jo["City"].ToString() + "\",\"country\":\"" + jo["Country"].ToString() + "\",\"postcode\":\"" + jo["Zipcode"].ToString() + "\",\"shortCountry\":\"" + jo["Country"].ToString() + "\",\"delivery_instructions\":\"\"},\"authState\":\"CUSTOMER_INVALID\"}";
             fasyapi.Putcheckot(checkouturl3,tk,ct,shippingaddress);
-
-
         /* A:  if (captchatoken != "")
             {
                 string verifyurl = "https://paymentgateway.checkout.footasylum.net/basket/check?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
@@ -223,17 +221,40 @@ namespace MAIO
             }*/
             string stripeurl = "https://api.stripe.com/v1/sources";
             var expire=jo["MMYY"].ToString().Split("/");
-            string stripeinfo = "type=card&currency=USD&amount="+ amount + "&owner[name]="+ jo["FirstName"].ToString() + " "+ jo["LastName"].ToString() + "&owner[email]="+ UrlEncode(jo["EmailAddress"].ToString())  + "&owner[address][line1]="+ jo["Address1"].ToString() + "&owner[address][city]="+ jo["City"].ToString() + "&owner[address][postal_code]="+ jo["Zipcode"].ToString() + "&owner[address][country]="+ jo["Country"].ToString()+ "&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession+"%26disable_root_load%3Dtrue&card[number]="+jo["Cardnum"].ToString()+"&card[cvc]="+ jo["Cvv"].ToString() + "&card[exp_month]="+ expire[0]+ "&card[exp_year]="+ expire[1]+ "&guid="+Guid.NewGuid().ToString()+"&muid="+Guid.NewGuid().ToString()+"&sid="+Guid.NewGuid().ToString()+ "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D" + checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
+            string guid = Guid.NewGuid().ToString();
+            string muid = Guid.NewGuid().ToString();
+            string sid = Guid.NewGuid().ToString();
+            string stripeinfo = "type=card&currency=USD&amount="+ amount + "&owner[name]="+ jo["FirstName"].ToString() + " "+ jo["LastName"].ToString() + "&owner[email]="+ UrlEncode(jo["EmailAddress"].ToString())  + "&owner[address][line1]="+ jo["Address1"].ToString() + "&owner[address][city]="+ jo["City"].ToString() + "&owner[address][postal_code]="+ jo["Zipcode"].ToString() + "&owner[address][country]="+ jo["Country"].ToString()+ "&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession+"%26disable_root_load%3Dtrue&card[number]="+jo["Cardnum"].ToString()+"&card[cvc]="+ jo["Cvv"].ToString() + "&card[exp_month]="+ expire[0]+ "&card[exp_year]="+ expire[1]+ "&guid="+ guid + "&muid="+muid+"&sid="+sid+ "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D" + checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
             fasyapi.Postemail(stripeurl,tk,ct, stripeinfo.Replace(" ","+"));
-            string stripeinfo2 = "type=three_d_secure&currency=USD&amount=" + amount + "&owner[name]=" + jo["FirstName"].ToString() + " " + jo["LastName"].ToString() + "&owner[email]=" + UrlEncode(jo["EmailAddress"].ToString()) + "&owner[address][line1]=" + jo["Address1"].ToString() + "&owner[address][city]=" + jo["City"].ToString() + "&owner[address][postal_code]=" + jo["Zipcode"].ToString() + "&owner[address][country]=" + jo["Country"].ToString() + "&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession + "%26disable_root_load%3Dtrue&card[number]=" + jo["Cardnum"].ToString() + "&card[cvc]=" + jo["Cvv"].ToString() + "&card[exp_month]=" + expire[0] + "&card[exp_year]=" + expire[1] + "&guid=" + Guid.NewGuid().ToString() + "&muid=" + Guid.NewGuid().ToString() + "&sid=" + Guid.NewGuid().ToString() + "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D" + checkoutsession + "&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
+            string stripeinfo2 = "type=three_d_secure&amount="+ amount + "&currency=USD&metadata[cart_id]=" + parasparId+"&metadata[customer_id]="+coucustomer_id+"&metadata[description]=New+Checkout+payment+for+FA+products&three_d_secure[card]="+stripetoken.striptoken+"&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession+"%26disable_root_load%3Dtrue&guid="+guid+"&muid="+muid+"&sid="+sid+ "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D"+checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
             fasyapi.Postemail(stripeurl,tk,ct, stripeinfo2.Replace(" ","+"));
+
+            string finalurl = "https://paymentgateway.checkout.footasylum.net/basket/trans-code?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
+            string finalinfo = "{\"basketId\":"+parasparId+",\"stripeToken\":\""+stripetoken.striptoken+"\"}";
+            fasyapi.Putfinal(finalurl,tk,ct,finalinfo);
+
+            string processurl = "https://paymentgateway.checkout.footasylum.net/basket/trans-code?code=5557620&medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
+            var status = "";
+            for (int i = 0; i < 10; i++)
+            {
+                 status = fasyapi.Getstatus(processurl, tk, ct);
+                if (status.Contains("pending"))
+                {
+
+                }
+                else
+                {
+                    tk.Status = status;
+                    break;
+                }    
+            }
+            tk.Status = status;
         }
         public async void gettoken()
         {
-           var captcha = new _2CaptchaAPI._2Captcha("3537fd70086d02dfbcb603583f12fe9d");
-
+          /* var captcha = new _2CaptchaAPI._2Captcha("3537fd70086d02dfbcb603583f12fe9d");
             var captcharesp = await captcha.SolveReCaptchaV2("6LfENJwUAAAAANpLoBFfQG7BbAR4iQd-FvXSUzO8", "https://secure.footasylum.com/?checkoutSessionId=FA-1592972307-5ef2d41333544003415178-5557620&client_secret=src_client_secret_9n6c8QWt1DUSuEitejPZJ8uv&livemode=true&source=src_1H26FyDYAexxwGn23MwH9QwN");
-            captchatoken = captcharesp.Response;
+            captchatoken = captcharesp.Response;*/
         }
         #region 时间戳
         public static string GetTimeStamp()
