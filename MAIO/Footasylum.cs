@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Markup;
 
 namespace MAIO
@@ -170,8 +171,13 @@ namespace MAIO
         {
             JObject jo = JObject.Parse(profile);
             string url = "https://paymentgateway.checkout.footasylum.net/basket/paraspar?basket_id="+checkoutsession+"&medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
-            string parasparId= fasyapi.get(url,tk,ct);
-            string countryurl = "https://r9udv3ar7g.execute-api.eu-west-2.amazonaws.com/prod/basket?checkout_client=secure";
+            string[] info = new string[2];
+
+             info = fasyapi.get(url,tk,ct);
+            string parasparId = info[1];
+            string amount = info[0].Replace(".", "");
+
+           string countryurl = "https://r9udv3ar7g.execute-api.eu-west-2.amazonaws.com/prod/basket?checkout_client=secure";
             string countryinfo = "{\"fascia_id\":1,\"channel_id\":2,\"currency_code\":\"USD\",\"customer\":{\"customer_id\":\""+ coucustomer_id + "\",\"sessionID\":null,\"hash\":\"xcx\"},\"basket_id\":"+ parasparId + ",\"shipping_country\":\"US\"}";
             fasyapi.Postcountry(countryurl,tk,ct,countryinfo);
             string emailinfo = "";
@@ -205,7 +211,7 @@ namespace MAIO
             fasyapi.Putcheckot(checkouturl3,tk,ct,shippingaddress);
 
 
-         A:  if (captchatoken != "")
+        /* A:  if (captchatoken != "")
             {
                 string verifyurl = "https://paymentgateway.checkout.footasylum.net/basket/check?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
                 string verifyinfo = "{\"checkoutSessionId\":\""+checkoutsession+"\",\"websaleId\":5557620,\"recaptchaToken\":\""+captchatoken+"\",\"cartId\":"+parasparId+",\"customer\":{\"parasparId\":\""+coucustomer_id+"\"},\"source\":\"new-checkout\"}";
@@ -214,11 +220,13 @@ namespace MAIO
             else
             {
                 goto A;
-            }
-          /*  string stripeurl = "https://api.stripe.com/v1/sources";
+            }*/
+            string stripeurl = "https://api.stripe.com/v1/sources";
             var expire=jo["MMYY"].ToString().Split("/");
-            string stripeinfo = "type=card&currency=USD&amount=8950&owner[name]="+ jo["FirstName"].ToString() + " "+ jo["LastName"].ToString() + "&owner[email]="+ jo["EmailAddress"].ToString() + "&owner[address][line1]="+ jo["Address1"].ToString() + "&owner[address][city]="+ jo["City"].ToString() + "&owner[address][postal_code]="+ jo["Zipcode"].ToString() + "&owner[address][country]="+ jo["Country"].ToString()+"&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https://secure.footasylum.com/redirect-result?checkoutSessionId="+checkoutsession+"&disable_root_load=true&card[number]="+jo["Cardnum"].ToString()+"&card[cvc]="+ jo["Cvv"].ToString() + "&card[exp_month]="+ expire[0]+ "&card[exp_year]="+ expire[1]+ "&guid="+Guid.NewGuid().ToString()+"&muid="+Guid.NewGuid().ToString()+"&sid="+Guid.NewGuid().ToString()+"&payment_user_agent=stripe.js/e2b3eff8; stripe-js-v3/e2b3eff8&time_on_page=2845093&referrer=https://secure.footasylum.com/?checkoutSessionId="+checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
-            fasyapi.Postemail(stripeurl,tk,ct,stripeinfo);*/
+            string stripeinfo = "type=card&currency=USD&amount="+ amount + "&owner[name]="+ jo["FirstName"].ToString() + " "+ jo["LastName"].ToString() + "&owner[email]="+ UrlEncode(jo["EmailAddress"].ToString())  + "&owner[address][line1]="+ jo["Address1"].ToString() + "&owner[address][city]="+ jo["City"].ToString() + "&owner[address][postal_code]="+ jo["Zipcode"].ToString() + "&owner[address][country]="+ jo["Country"].ToString()+ "&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession+"%26disable_root_load%3Dtrue&card[number]="+jo["Cardnum"].ToString()+"&card[cvc]="+ jo["Cvv"].ToString() + "&card[exp_month]="+ expire[0]+ "&card[exp_year]="+ expire[1]+ "&guid="+Guid.NewGuid().ToString()+"&muid="+Guid.NewGuid().ToString()+"&sid="+Guid.NewGuid().ToString()+ "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D" + checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
+            fasyapi.Postemail(stripeurl,tk,ct, stripeinfo.Replace(" ","+"));
+            string stripeinfo2 = "type=three_d_secure&currency=USD&amount=" + amount + "&owner[name]=" + jo["FirstName"].ToString() + " " + jo["LastName"].ToString() + "&owner[email]=" + UrlEncode(jo["EmailAddress"].ToString()) + "&owner[address][line1]=" + jo["Address1"].ToString() + "&owner[address][city]=" + jo["City"].ToString() + "&owner[address][postal_code]=" + jo["Zipcode"].ToString() + "&owner[address][country]=" + jo["Country"].ToString() + "&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession + "%26disable_root_load%3Dtrue&card[number]=" + jo["Cardnum"].ToString() + "&card[cvc]=" + jo["Cvv"].ToString() + "&card[exp_month]=" + expire[0] + "&card[exp_year]=" + expire[1] + "&guid=" + Guid.NewGuid().ToString() + "&muid=" + Guid.NewGuid().ToString() + "&sid=" + Guid.NewGuid().ToString() + "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D" + checkoutsession + "&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
+            fasyapi.Postemail(stripeurl,tk,ct, stripeinfo2.Replace(" ","+"));
         }
         public async void gettoken()
         {
@@ -245,6 +253,22 @@ namespace MAIO
             long t = (time.Ticks - startTime.Ticks) / 10000;   //除10000调整为13位      
             return t;
         }
-        #endregion
+        #endregion
+        public string UrlEncode(string str)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (char c in str)
+            {
+                if (HttpUtility.UrlEncode(c.ToString()).Length > 1)
+                {
+                    builder.Append(HttpUtility.UrlEncode(c.ToString()).ToUpper());
+                }
+                else
+                {
+                    builder.Append(c);
+                }
+            }
+            return builder.ToString();
+        }
     }
 }

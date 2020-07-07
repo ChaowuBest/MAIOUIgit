@@ -216,6 +216,10 @@ namespace MAIO
                 response.Close();
                 readStream.Close();
             }
+            catch (NullReferenceException)
+            {
+                goto C;
+            }
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
@@ -228,7 +232,7 @@ namespace MAIO
             }
             return st;
         }
-        public string get(string url, Main.taskset tk, CancellationToken ct) 
+        public string[] get(string url, Main.taskset tk, CancellationToken ct) 
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -276,10 +280,13 @@ namespace MAIO
                 }
                 SourceCode=readStream.ReadToEnd();
                 JObject jo = JObject.Parse(SourceCode);
-              
+                 
                 response.Close();
                 readStream.Close();
-                return jo["parasparId"].ToString();
+                string[] info = new string[2];
+                info[0]= jo["subtotal"].ToString();
+                info[1]= jo["parasparId"].ToString();
+                return info;
             }
             catch (WebException ex)
             {
@@ -396,6 +403,10 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Dest", "empty");
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "cross-site");
+            if (url.Contains("stripe"))
+            {
+                request.Headers.Add("Authorization", "Bearer pk_live_y7GywYfDSuh3fr8oraR8g66U");
+            }
             request.ContentLength = postcountry.Length;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             Stream countrystream = request.GetRequestStream();
@@ -403,7 +414,7 @@ namespace MAIO
             countrystream.Close();
             try
             {
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+               HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -415,7 +426,12 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 string SourceCode = readStream.ReadToEnd();
+                if (url.Contains("stripe"))
+                {
+                    JObject jo = JObject.Parse(SourceCode);
+                    stripetoken.striptoken = jo["id"].ToString();
 
+                }       
                 response.Close();
                 readStream.Close();
             }
