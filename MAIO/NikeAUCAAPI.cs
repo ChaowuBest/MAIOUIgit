@@ -250,7 +250,7 @@ namespace MAIO
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
-                    JObject jo = JObject.Parse(sourcecode);
+                  /*  JObject jo = JObject.Parse(sourcecode);
                     string error = jo["error"].ToString();
                     JObject jo2 = JObject.Parse(error);
                     var reason = jo2["errors"][0].ToString();
@@ -267,7 +267,7 @@ namespace MAIO
                     NAU.pid = pid;
                     NAU.profile = profile;
                     NAU.randomsize = randomsize;
-                    NAU.StartTask(ct,cts);
+                    NAU.StartTask(ct,cts);*/
                 }
             }
             catch (WebException ex)
