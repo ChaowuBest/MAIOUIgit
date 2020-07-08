@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup.Localizer;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -30,6 +31,7 @@ namespace MAIO
     public partial class Main : UserControl
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
+        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public Main()
         {
             InitializeComponent();
@@ -45,12 +47,36 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-            updatelable();
+            Task task2 = new Task(() => clearcookie());
+            task2.Start();
+        }
+        public void clearcookie()
+        {
+        A: foreach (var i in Mainwindow.cookiewtime.ToArray())
+            {
+                long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+                var cookitime = ConvertStringToDateTime(i.Key.ToString());
+                var nowtime = ConvertStringToDateTime(timest.ToString());
+                var difference = nowtime - cookitime;
+                if (difference.Hours >= 1)
+                {
+                    Mainwindow.cookiewtime.Remove(long.Parse(i.Key.ToString()));
+                    Mainwindow.lines.Remove(i.Value);
+                    updatelable(i.Value, false);
+                }
+            }
+            goto A;
+        }
+        private DateTime ConvertStringToDateTime(string timeStamp)
+        {
+            DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
+            long lTime = long.Parse(timeStamp + "0000");
+            TimeSpan toNow = new TimeSpan(lTime);
+            return dtStart.Add(toNow);
         }
         public static int counter = 0;
-        public static void updatelable()
+        public static void updatelable(string cookie, bool addcookie)
         {
-           
             if (counter == 0)
             {
                 counter++;
@@ -58,10 +84,27 @@ namespace MAIO
             else
             {
                 Config.mn.cookienum.Dispatcher.Invoke(new Action(
-                     delegate
-                     {
-                         Config.mn.cookienum.Content = Mainwindow.lines.Count;
-                     }));
+                    delegate
+                    {
+                        Config.mn.cookienum.Content = Mainwindow.lines.Count;
+                    }));
+                if (addcookie == false)
+                {
+                    Task task1 = new Task(() => update(cookie));
+                    task1.Start();
+                }
+            }
+            void update(string cookie)
+            {
+                for (int i = 0; i < Mainwindow.cookiewtime.Count; i++)
+                {
+                    KeyValuePair<long, string> kv = Mainwindow.cookiewtime.ElementAt(i);
+                    if (kv.Value == cookie)
+                    {
+                        Mainwindow.cookiewtime.Remove(kv.Key);
+                        break;
+                    }
+                }
             }
         }
         public class taskset : INotifyPropertyChanged
@@ -185,7 +228,7 @@ namespace MAIO
                         {
                             JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
                             giftcard = jo["giftcard"].ToString();
-                            code = jo["Code"].ToString().Replace("\r\n","");
+                            code = jo["Code"].ToString().Replace("\r\n", "");
                         }
                         Random ran = new Random();
                         int random = ran.Next(0, Mainwindow.listaccount.Count);
@@ -341,7 +384,7 @@ namespace MAIO
         private void datagrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var content = (taskset)datagrid.SelectedItem;
-           
+
             try
             {
                 NewTask nt = new NewTask();
@@ -352,7 +395,7 @@ namespace MAIO
                 if (Mainwindow.tasklist[content.Taskid] != "")
                 {
                     JObject jo = JObject.Parse(Mainwindow.tasklist[content.Taskid]);
-                    Midtransfer.giftcard= jo["giftcard"].ToString();
+                    Midtransfer.giftcard = jo["giftcard"].ToString();
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
                 }
@@ -371,6 +414,7 @@ namespace MAIO
         {
             for (int n = 0; n < Mainwindow.task.Count; n++)
             {
+                Thread.Sleep(10);
                 string taskid = Guid.NewGuid().ToString();
                 taskset tk = Mainwindow.task.ElementAt(n);
                 if (dic.Keys.Contains(tk.Taskid))
@@ -413,10 +457,10 @@ namespace MAIO
                             int random = ran.Next(0, Mainwindow.listaccount.Count);
                             try
                             {
-                                string[] account=null;
+                                string[] account = null;
                                 if (Mainwindow.listaccount[random].Contains("-"))
                                 {
-                                    account= Mainwindow.listaccount[random].Split("-");
+                                    account = Mainwindow.listaccount[random].Split("-");
                                 }
                                 else if (Mainwindow.listaccount[random].Contains(":"))
                                 {
@@ -510,7 +554,7 @@ namespace MAIO
                     Midtransfer.edit = true;
                     nt.getTextHandler = Ctask;
                     nt.ShowDialog();
-                }  
+                }
             }
             catch
             {

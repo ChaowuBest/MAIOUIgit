@@ -41,7 +41,8 @@ namespace MAIO
         public static List<string> listproxy;
         public static List<string> listaccount = new List<string>();
         public static Dictionary<string, string> tasklist = new Dictionary<string, string>();
-        public static List<string> lines;
+        public static Dictionary<long, string> cookiewtime = new Dictionary<long, string>();
+        public static List<string> lines = new List<string>();
         public static bool iscookielistnull = false;
         string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "MAIO";
         string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
@@ -50,7 +51,7 @@ namespace MAIO
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
         public Mainwindow()
         {
-           
+
             InitializeComponent();
             Initialprofile();
             Initialproxy();
@@ -112,10 +113,7 @@ namespace MAIO
                 }
             }
             FileInfo fi = new FileInfo(path2);
-            if (fi.Length == 0)
-            {
-            }
-            else
+            if (fi.Length != 0)
             {
                 FileStream fs3 = new FileStream(path2, FileMode.Open, FileAccess.Read, FileShare.Read);
                 StreamReader sw = new StreamReader(fs3);
@@ -156,7 +154,7 @@ namespace MAIO
             if (!File.Exists(path5))
             {
                 FileStream fs1 = new FileStream(path5, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-               
+
                 fs1.Close();
             }
             try
@@ -169,13 +167,13 @@ namespace MAIO
                 {
                     FileStream fs2 = new FileStream(path5, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamReader sr = new StreamReader(fs2);
-                    var srread= sr.ReadToEnd();
+                    var srread = sr.ReadToEnd();
                     if (srread.Contains("["))
                     {
                         JArray ja = JArray.Parse(srread);
                         foreach (var i in ja)
                         {
-                           var jo= JObject.Parse(i.ToString());
+                            var jo = JObject.Parse(i.ToString());
                             foreach (var n in jo)
                             {
                                 giftcardlist.Add(n.Key, n.Value.ToString());
@@ -189,10 +187,10 @@ namespace MAIO
                         JObject jo = JObject.Parse(srread);
                         foreach (var i in jo)
                         {
-                           giftcardlist.Add(i.Key, i.Value.ToString());
+                            giftcardlist.Add(i.Key, i.Value.ToString());
                             var chao = i.Value.ToString();
                         }
-                    
+
                     }
                     sr.Close();
                     fs2.Close();
@@ -204,9 +202,9 @@ namespace MAIO
             }
 
         }
-        public void Initialtask() 
+        public void Initialtask()
         {
-            string path6= Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "task.json";
+            string path6 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "task.json";
             if (!File.Exists(path6))
             {
                 FileStream fs1 = new FileStream(path6, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -239,7 +237,7 @@ namespace MAIO
         }
         public void InitialCookie()
         {
-            string path7 = Environment.CurrentDirectory +"\\"+ "cookie.txt";
+            string path7 = Environment.CurrentDirectory + "\\" + "cookie.json";
             if (!File.Exists(path7))
             {
                 FileStream fs1 = new FileStream(path7, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -247,14 +245,26 @@ namespace MAIO
             }
             try
             {
-                lines = new List<string>(File.ReadAllLines(Environment.CurrentDirectory + "\\" + "cookie.txt"));
-                FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.txt");
-                var chao = fi.Length;
+                FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
                 if (fi.Length == 0)
                 {
                     iscookielistnull = true;
                 }
-                
+                else
+                {
+                    FileStream fs3 = new FileStream(path7, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    StreamReader sw = new StreamReader(fs3);
+                    string read = sw.ReadToEnd();
+                    JArray ja = JArray.Parse(read);
+                    for (int i = 0; i < ja.Count; i++)
+                    {
+                        JObject jo = JObject.Parse(ja[i].ToString());
+                        lines.Add(jo["cookie"].ToString());
+                        cookiewtime.Add(long.Parse(jo["time"].ToString()), jo["cookie"].ToString());
+                    }
+                    sw.Close();
+                    fs3.Close();
+                }
             }
             catch
             {
@@ -342,10 +352,10 @@ namespace MAIO
         }
         private void MenuClick(object sender, RoutedEventArgs e)
         {
-            
+
             maingrid.Visibility = Visibility.Visible;
-       //  this.frmMain.Navigate(new Uri("Main.xaml", UriKind.Relative));           
-            
+            //  this.frmMain.Navigate(new Uri("Main.xaml", UriKind.Relative));           
+
         }
     }
 }

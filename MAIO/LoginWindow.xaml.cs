@@ -21,18 +21,17 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.73
+    /// version 0.74
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.73";//everychange
+        public static string version = "0.74";//everychange
 
         public LoginWindow()
         {
             InitializeComponent();
             checkkey();
-        }
-       
+        }     
         public void checkkey()
         {
             var ip = this.GetIPAddress();
@@ -88,7 +87,7 @@ namespace MAIO
                     {
                         FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                         fs1.Close();
-                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\"}");
+                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\"}");
                         Config.Key = MD.Key = key;
                         Config.webhook = MD.webhook = "";
                         Config.cid = MD.cid = "";

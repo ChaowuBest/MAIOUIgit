@@ -1,4 +1,4 @@
-﻿using _2CaptchaAPI;
+﻿
 using Newtonsoft.Json.Linq;
 using System;
 using System.CodeDom;
@@ -113,8 +113,6 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            Task task1 = new Task(() => gettoken());
-            task1.Start();
             string url = "https://www.footasylum.com/page/xt_orderform_additem/?target=ajx_basket.asp&sku=" + skuid + "&_=" + GetTimeStamp() + "";
             fasyapi.Checkout(url, tk, ct);
         }
@@ -249,12 +247,6 @@ namespace MAIO
                 }    
             }
             tk.Status = status;
-        }
-        public async void gettoken()
-        {
-          /* var captcha = new _2CaptchaAPI._2Captcha("3537fd70086d02dfbcb603583f12fe9d");
-            var captcharesp = await captcha.SolveReCaptchaV2("6LfENJwUAAAAANpLoBFfQG7BbAR4iQd-FvXSUzO8", "https://secure.footasylum.com/?checkoutSessionId=FA-1592972307-5ef2d41333544003415178-5557620&client_secret=src_client_secret_9n6c8QWt1DUSuEitejPZJ8uv&livemode=true&source=src_1H26FyDYAexxwGn23MwH9QwN");
-            captchatoken = captcharesp.Response;*/
         }
         #region 时间戳
         public static string GetTimeStamp()

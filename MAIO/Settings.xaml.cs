@@ -209,14 +209,39 @@ namespace MAIO
                                 }
                             }
                             string cookie = "_abck=" + jo["value"].ToString() + ";bm_sz=" + bmsz + ";geoloc=" + geoc;
+                            long time2=  (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+                            string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\"}]";
                             Mainwindow.lines.Add(cookie);
+                            Mainwindow.cookiewtime.Add(time2,cookie);
                             Mainwindow.iscookielistnull = false;
-                            Main.updatelable();         
-                            FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.txt", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-                            StreamWriter sw2 = new StreamWriter(fs1);
-                            sw2.WriteLine(cookie);
-                            sw2.Close();
-                            fs1.Close();
+                            Main.updatelable(cookie,true);
+                            FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
+                            if (fi.Length == 0)
+                            {
+                                FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);            
+                                JArray ja2 = JArray.Parse(cookiewtime);
+                                StreamWriter sw = new StreamWriter(fs1);
+                                sw.Write(ja2.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                                sw.Close();
+                                fs1.Close();
+                            }
+                            else
+                            {
+                                using (FileStream fs2 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                {
+                                    StreamReader sr = new StreamReader(fs2);
+                                    string read = sr.ReadToEnd();
+                                    sr.Close();
+                                    JArray ja3 = JArray.Parse(read);
+                                    ja3.Add(JObject.Parse(cookiewtime.Replace("[", "").Replace("]", "")));
+                                    FileStream fs3 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                                    fs3.SetLength(0);
+                                    StreamWriter sw = new StreamWriter(fs3);
+                                    sw.Write(ja3.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                                    sw.Close();
+                                    fs3.Close();
+                                }                    
+                            }
                         }
                     }
                     socket.Send(message);
@@ -242,5 +267,6 @@ namespace MAIO
                 };
             });
         }
+        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 }

@@ -154,6 +154,7 @@ namespace MAIO
                     {
                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                         Mainwindow.lines.RemoveAt(cookie);
+                        Main.updatelable(Mainwindow.lines[cookie],false);
                     }
                     catch (Exception)
                     {
@@ -161,7 +162,7 @@ namespace MAIO
                     }
                 }
             }          
-            Main.updatelable();
+           
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");
