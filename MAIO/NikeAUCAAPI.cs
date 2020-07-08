@@ -196,19 +196,27 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
             WebProxy wp = new WebProxy();
-            if (proxy.Length == 2)
+            try
             {
-                wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+               
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
 
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
             }
-            else if (proxy.Length == 4)
+            catch
             {
-                wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
@@ -251,15 +259,15 @@ namespace MAIO
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
-                  /*  JObject jo = JObject.Parse(sourcecode);
+                    JObject jo = JObject.Parse(sourcecode);
                     string error = jo["error"].ToString();
                     JObject jo2 = JObject.Parse(error);
                     var reason = jo2["errors"][0].ToString();
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
                     tk.Status = errormessage;
-                    tk.Status = errormessage+"Retrying";
-                    int rae = ran.Next(1000, 3000);
+                   // tk.Status = errormessage+"Retrying";
+               /*     int rae = ran.Next(1000, 3000);
                     Thread.Sleep(rae);
                     xb3traceid = Guid.NewGuid().ToString();
                     xnikevisitorid = Guid.NewGuid().ToString();
