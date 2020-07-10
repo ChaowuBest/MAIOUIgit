@@ -177,7 +177,7 @@ namespace MAIO
 
            string countryurl = "https://r9udv3ar7g.execute-api.eu-west-2.amazonaws.com/prod/basket?checkout_client=secure";
             string countryinfo = "{\"fascia_id\":1,\"channel_id\":2,\"currency_code\":\"USD\",\"customer\":{\"customer_id\":\""+ coucustomer_id + "\",\"sessionID\":null,\"hash\":\"xcx\"},\"basket_id\":"+ parasparId + ",\"shipping_country\":\"US\"}";
-            fasyapi.Postcountry(countryurl,tk,ct,countryinfo);
+            fasyapi.Post(countryurl,tk,ct,countryinfo);
             string emailinfo = "";
             try
             {
@@ -189,11 +189,11 @@ namespace MAIO
                 Thread.Sleep(360000000);
             }
             string emailurl = "https://r9udv3ar7g.execute-api.eu-west-2.amazonaws.com/prod/customer/check?checkout_client=secure";
-            fasyapi.Postemail(emailurl,tk,ct, emailinfo);
+            fasyapi.Post(emailurl,tk,ct, emailinfo);
 
             string shippingurl = "https://fa93z8zyn6.execute-api.eu-west-2.amazonaws.com/prod/checkout/shipping?checkout_client=secure";
             string shippinginfo = "{\"postcode\":\""+jo["Zipcode"].ToString() +"\",\"country\":\""+jo["Country"].ToString()+"\",\"basket\":{\"id\":"+ parasparId + ",\"basketItems\":[{\"id\":\""+ skuid + "\",\"qty\":1}]}}";
-            fasyapi.PostShipping(shippingurl,tk,ct,shippinginfo);
+            fasyapi.Post(shippingurl,tk,ct,shippinginfo);
 
             string checkouturl = "https://paymentgateway.checkout.footasylum.net/basket/shipping?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
             string checkoutinfo = "{\"basketId\":"+parasparId+",\"subs\":[],\"type\":\"subscription\"}";
@@ -207,25 +207,16 @@ namespace MAIO
                 "\"shippingAddress\":{\"company\":\"\",\"address1\":\""+ jo["Address1"].ToString() + "\",\"address2\":\""+ jo["Address2"].ToString() + "\",\"city\":\""+ jo["City"].ToString() + "\",\"country\":\""+jo["Country"].ToString()+"\",\"postcode\":\""+jo["Zipcode"].ToString()+ "\",\"shortCountry\":\"" + jo["Country"].ToString() + "\",\"delivery_instructions\":\"\"},\"billingAddress\":{\"company\":\"\",\"address1\":\"" + jo["Address1"].ToString() + "\",\"address2\":\"" + jo["Address2"].ToString() + "\"," +
                 "\"city\":\"" + jo["City"].ToString() + "\",\"country\":\"" + jo["Country"].ToString() + "\",\"postcode\":\"" + jo["Zipcode"].ToString() + "\",\"shortCountry\":\"" + jo["Country"].ToString() + "\",\"delivery_instructions\":\"\"},\"authState\":\"CUSTOMER_INVALID\"}";
             fasyapi.Putcheckot(checkouturl3,tk,ct,shippingaddress);
-        /* A:  if (captchatoken != "")
-            {
-                string verifyurl = "https://paymentgateway.checkout.footasylum.net/basket/check?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
-                string verifyinfo = "{\"checkoutSessionId\":\""+checkoutsession+"\",\"websaleId\":5557620,\"recaptchaToken\":\""+captchatoken+"\",\"cartId\":"+parasparId+",\"customer\":{\"parasparId\":\""+coucustomer_id+"\"},\"source\":\"new-checkout\"}";
-                fasyapi.Postemail(verifyurl,tk,ct,verifyinfo);
-            }
-            else
-            {
-                goto A;
-            }*/
+
             string stripeurl = "https://api.stripe.com/v1/sources";
             var expire=jo["MMYY"].ToString().Split("/");
             string guid = Guid.NewGuid().ToString();
             string muid = Guid.NewGuid().ToString();
             string sid = Guid.NewGuid().ToString();
             string stripeinfo = "type=card&currency=USD&amount="+ amount + "&owner[name]="+ jo["FirstName"].ToString() + " "+ jo["LastName"].ToString() + "&owner[email]="+ UrlEncode(jo["EmailAddress"].ToString())  + "&owner[address][line1]="+ jo["Address1"].ToString() + "&owner[address][city]="+ jo["City"].ToString() + "&owner[address][postal_code]="+ jo["Zipcode"].ToString() + "&owner[address][country]="+ jo["Country"].ToString()+ "&metadata[description]=New Checkout payment for FA products&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession+"%26disable_root_load%3Dtrue&card[number]="+jo["Cardnum"].ToString()+"&card[cvc]="+ jo["Cvv"].ToString() + "&card[exp_month]="+ expire[0]+ "&card[exp_year]="+ expire[1]+ "&guid="+ guid + "&muid="+muid+"&sid="+sid+ "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D" + checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
-            fasyapi.Postemail(stripeurl,tk,ct, stripeinfo.Replace(" ","+"));
+            fasyapi.Post(stripeurl,tk,ct, stripeinfo.Replace(" ","+"));
             string stripeinfo2 = "type=three_d_secure&amount="+ amount + "&currency=USD&metadata[cart_id]=" + parasparId+"&metadata[customer_id]="+coucustomer_id+"&metadata[description]=New+Checkout+payment+for+FA+products&three_d_secure[card]="+stripetoken.striptoken+"&redirect[return_url]=https%3A%2F%2Fsecure.footasylum.com%2Fredirect-result%3FcheckoutSessionId%3D" + checkoutsession+"%26disable_root_load%3Dtrue&guid="+guid+"&muid="+muid+"&sid="+sid+ "&payment_user_agent=stripe.js%2Fe2b3eff8%3B+stripe-js-v3%2Fe2b3eff8&time_on_page=738208&referrer=https%3A%2F%2Fsecure.footasylum.com%2F%3FcheckoutSessionId%3D"+checkoutsession+"&key=pk_live_y7GywYfDSuh3fr8oraR8g66U";
-            fasyapi.Postemail(stripeurl,tk,ct, stripeinfo2.Replace(" ","+"));
+            fasyapi.Post(stripeurl,tk,ct, stripeinfo2.Replace(" ","+"));
 
             string finalurl = "https://paymentgateway.checkout.footasylum.net/basket/trans-code?medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
             string finalinfo = "{\"basketId\":"+parasparId+",\"stripeToken\":\""+stripetoken.striptoken+"\"}";

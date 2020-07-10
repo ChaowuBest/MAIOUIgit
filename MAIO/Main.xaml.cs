@@ -54,6 +54,7 @@ namespace MAIO
         {
         A: foreach (var i in Mainwindow.cookiewtime.ToArray())
             {
+                Thread.Sleep(1000);
                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                 var cookitime = ConvertStringToDateTime(i.Key.ToString());
                 var nowtime = ConvertStringToDateTime(timest.ToString());
@@ -90,19 +91,14 @@ namespace MAIO
                     }));
                 if (addcookie == false)
                 {
-                    Task task1 = new Task(() => update(cookie));
-                    task1.Start();
-                }
-            }
-            void update(string cookie)
-            {
-                for (int i = 0; i < Mainwindow.cookiewtime.Count; i++)
-                {
-                    KeyValuePair<long, string> kv = Mainwindow.cookiewtime.ElementAt(i);
-                    if (kv.Value == cookie)
+                    for (int i = 0; i < Mainwindow.cookiewtime.Count; i++)
                     {
-                        Mainwindow.cookiewtime.Remove(kv.Key);
-                        break;
+                        KeyValuePair<long, string> kv = Mainwindow.cookiewtime.ElementAt(i);
+                        if (kv.Value == cookie)
+                        {
+                            Mainwindow.cookiewtime.Remove(kv.Key);
+                            break;
+                        }
                     }
                 }
             }

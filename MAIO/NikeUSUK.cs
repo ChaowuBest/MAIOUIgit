@@ -231,22 +231,17 @@ namespace MAIO
                     {
                         if (Config.Usemonitor == "True")
                         {
-                            if (jas[n]["level"].ToString() == "OOS")
+                            if (Config.Usemonitor == "True")
                             {
-                                tk.Status = "Size OOS";
-                                if (Config.delay == "")
+                                string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productID + ")";
+                                if (USUKAPI.Monitoring(monitorurl, tk, ct, skuid))
                                 {
-                                    Thread.Sleep(1);
+                                    break;
                                 }
-                                else if (Config.delay == null)
-                                {
-                                    Thread.Sleep(1);
-                                }
-                                else
-                                {
-                                    Thread.Sleep(int.Parse(Config.delay));
-                                }
-                                goto retry;
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                         else
@@ -867,7 +862,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.finalorder(url, Authorization, profile, tk,pid,size,code,giftcard,username,password,randomsize,ct);
+            string status = USUKAPI.finalorder(url, Authorization, profile, tk,pid,size,code,giftcard,username,password,randomsize,ct,productID,skuid);
            
             if (ct.IsCancellationRequested)
             {
@@ -920,11 +915,12 @@ new JProperty("shippingAddress",
             try
             {
                 HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
-                StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8);
-                string result = streamReader.ReadToEnd();
+             //   StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8);
+             //   string result = streamReader.ReadToEnd();
             }
             catch (WebException ex)
             {
+                Thread.Sleep(2000);
                 tk.Status = ex.Message.ToString();
                 goto Retry;
             }

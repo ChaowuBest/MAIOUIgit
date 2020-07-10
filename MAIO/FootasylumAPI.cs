@@ -137,19 +137,32 @@ namespace MAIO
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
                 {
-               //     readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
                 }
                 else
                 {
-             //       readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-              //  string SourceCode = readStream.ReadToEnd();
+                string SourceCode = readStream.ReadToEnd();
+                if (SourceCode.Contains("<span id=\"itemcount\">0</span> item(s)"))
+                {
+                    tk.Status = "ATC failed";
+                    if (Config.delay == "")
+                    {
+                        Thread.Sleep(1);
+                    }
+                    else
+                    {
+                        Thread.Sleep(int.Parse(Config.delay));
+                    }
+                    goto B;
+                }
                 response.Close();
-              //  readStream.Close();
+                readStream.Close();
             }
             catch (WebException ex)
             {
-                HttpWebResponse response = (HttpWebResponse)ex.Response;
+              //  HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "ATC error";
                 goto B;
             }
@@ -295,7 +308,7 @@ namespace MAIO
             }
             
         }
-        public void Postcountry(string url, Main.taskset tk, CancellationToken ct,string postinfo)
+        public void Post(string url, Main.taskset tk, CancellationToken ct,string postinfo)
         {
         B: if (ct.IsCancellationRequested)
             {
@@ -362,173 +375,6 @@ namespace MAIO
                 else
                 {
                 }
-                goto B;
-            }
-        }
-        public void Postemail(string url, Main.taskset tk, CancellationToken ct, string postinfo)
-        {
-        B: if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
-            WebProxy wp = new WebProxy();
-            try
-            {
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            byte[] postcountry = Encoding.UTF8.GetBytes(postinfo);
-            request.Proxy = wp;
-            request.Accept = "*/*";
-            request.Method = "POST";
-            request.Headers.Add("accept-encoding", "gzip, deflate, br");
-            request.Headers.Add("accept-language", "en-US, en; q=0.9");
-            request.Headers.Add("Sec-Fetch-Dest", "empty");
-            request.Headers.Add("Sec-Fetch-Mode", "cors");
-            request.Headers.Add("Sec-Fetch-Site", "cross-site");
-            if (url.Contains("stripe"))
-            {
-                request.Headers.Add("Authorization", "Bearer pk_live_y7GywYfDSuh3fr8oraR8g66U");
-            }
-            request.ContentLength = postcountry.Length;
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            Stream countrystream = request.GetRequestStream();
-            countrystream.Write(postcountry, 0, postcountry.Length);
-            countrystream.Close();
-            try
-            {
-               HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-                if (response.ContentEncoding == "gzip")
-                {
-                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                }
-                string SourceCode = readStream.ReadToEnd();
-                if (url.Contains("stripe"))
-                {
-                    JObject jo = JObject.Parse(SourceCode);
-                    stripetoken.striptoken = jo["id"].ToString();
-
-                }       
-                response.Close();
-                readStream.Close();
-            }
-            catch (WebException ex)
-            {
-                HttpWebResponse response = (HttpWebResponse)ex.Response;
-              //  tk.Status = "country error";
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-                if (response.ContentEncoding == "gzip")
-                {
-                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                }
-                string SourceCode = readStream.ReadToEnd();
-                goto B;
-            }
-        }
-        public void PostShipping(string url, Main.taskset tk, CancellationToken ct, string postinfo)
-        {
-        B: if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
-            WebProxy wp = new WebProxy();
-            try
-            {
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            byte[] postcountry = Encoding.UTF8.GetBytes(postinfo);
-            request.Proxy = wp;
-            request.Accept = "*/*";
-            request.Method = "POST";
-            request.Headers.Add("accept-encoding", "gzip, deflate, br");
-            request.Headers.Add("accept-language", "en-US, en; q=0.9");
-            request.Headers.Add("Sec-Fetch-Dest", "empty");
-            request.Headers.Add("Sec-Fetch-Mode", "cors");
-            request.Headers.Add("Sec-Fetch-Site", "cross-site");
-            request.ContentLength = postcountry.Length;
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            Stream countrystream = request.GetRequestStream();
-            countrystream.Write(postcountry, 0, postcountry.Length);
-            countrystream.Close();
-            try
-            {
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-                if (response.ContentEncoding == "gzip")
-                {
-                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                }
-                string SourceCode = readStream.ReadToEnd();
-
-                response.Close();
-                readStream.Close();
-            }
-            catch (WebException ex)
-            {
-                HttpWebResponse response = (HttpWebResponse)ex.Response;
-               // tk.Status = "country error";
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-                if (response.ContentEncoding == "gzip")
-                {
-                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                }
-                string SourceCode = readStream.ReadToEnd();
                 goto B;
             }
         }
