@@ -232,9 +232,10 @@ namespace MAIO
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
-            string sourcecode = AUCAAPI.GetMethod(url, profile, skuid, pid, randomsize, tk, ct, cts,skuid,size);
+            string sourcecode = AUCAAPI.GetMethod(url, profile, skuid, pid, randomsize, tk, ct, cts,productid,size);
             JObject jo = JObject.Parse(sourcecode);
             string paymenturl = jo["response"]["redirectUrl"].ToString();
+
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";

@@ -126,41 +126,33 @@ namespace MAIO
             }
             else
             {
-                if (Mainwindow.iscookielistnull)
+            C: if (Mainwindow.iscookielistnull)
                 {
-                    request.Headers.Add("Cookie", "");
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    tk.Status = "No Cookie";
+                    goto C;
                 }
                 else
                 {
                     Random ra = new Random();
-
-     reloadcookie: if (ct.IsCancellationRequested)
+                reloadcookie: if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
                     int sleeptime = ra.Next(0, 500);
                     Thread.Sleep(sleeptime);
-                    if (Mainwindow.lines.Count == 0)
-                    {
-                        Mainwindow.iscookielistnull = true;
-                    C: tk.Status = "No Cookie";
-
-                        if (Mainwindow.iscookielistnull)
-                        {
-                            goto C;
-                        }
-                        else
-                        {
-                            goto D;
-                        }
-                    }
-                D: int cookie = ra.Next(0, Mainwindow.lines.Count);
+                    int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {
                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                         Mainwindow.lines.RemoveAt(cookie);
                         Main.updatelable(Mainwindow.lines[cookie], false);
+                        int i = 0;
                     }
                     catch (Exception)
                     {
@@ -263,31 +255,32 @@ namespace MAIO
                     goto C;
                 }
                 string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
+                if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("OUT_OF_STOCK")))
+                {
+                    if (Monitoring(monitorurl, tk, ct, skuid))
+                    {
+                        tk.Status = "WaitingRestock";
+                        xb3traceid = Guid.NewGuid().ToString();
+                        xnikevisitorid = Guid.NewGuid().ToString();
+                        NikeAUCA NAU = new NikeAUCA();
+                        NAU.size = size;
+                        NAU.pid = pid;
+                        NAU.profile = profile;
+                        NAU.randomsize = randomsize;
+                        NAU.tk = tk;
+                        NAU.Quantity = tk.Quantity;
+                        NAU.StartTask(ct, cts);
+                    }
+                }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
+                    tk.Status = "WaitingRestock";
                     JObject jo = JObject.Parse(sourcecode);
                     string error = jo["error"].ToString();
                     JObject jo2 = JObject.Parse(error);
                     var reason = jo2["errors"][0].ToString();
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
-                    
-                    if (Monitoring(monitorurl, tk, ct, skuid))
-                    {
-                        xb3traceid = Guid.NewGuid().ToString();
-                        xnikevisitorid = Guid.NewGuid().ToString();
-                         NikeAUCA NAU = new NikeAUCA();
-                         NAU.size = size;
-                         NAU.pid = pid;
-                         NAU.profile = profile;
-                         NAU.randomsize = randomsize;
-                         NAU.tk = tk;
-                         NAU.Quantity = tk.Quantity;
-                         NAU.StartTask(ct, cts);
-                    }
-                }
-                if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("OUT_OF_STOCK")))
-                {
                     if (Monitoring(monitorurl, tk, ct, skuid))
                     {
                         xb3traceid = Guid.NewGuid().ToString();
@@ -302,6 +295,8 @@ namespace MAIO
                         NAU.StartTask(ct, cts);
                     }
                 }
+
+             
             }
             catch (Exception ex)
             {

@@ -401,6 +401,7 @@ namespace MAIO
                 try
                 {
                     expir = jo["MMYY"].ToString().Split("/");
+                    expir[1] = "20"+expir[1];
                 }
                 catch
                 {
@@ -545,7 +546,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            msrp = USUKAPI.CheckoutPreviewStatus(url, Authorization, isdiscount,tk,ct);
+            msrp = USUKAPI.CheckoutPreviewStatus(url, Authorization, isdiscount,tk,ct,profile,pid,size,code,giftcard,username,password,randomsize,productID,skuid);
 
             if (ct.IsCancellationRequested)
             {
@@ -877,26 +878,30 @@ new JProperty("shippingAddress",
                 string reason = jo2["message"].ToString();
                 tk.Status = reason;
             }
-            JObject jo3 = JObject.Parse(status);
-            string orderid = jo3["response"]["orderId"].ToString();
-            string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:00\",\"inline\":false}]}]}";
-            string webhook2 = "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9";
-            if (Config.webhook == "")
+            else
             {
-                tk.Status = "Success";
-                Http(webhook2, pd2, tk);
+                JObject jo3 = JObject.Parse(status);
+                string orderid = jo3["response"]["orderId"].ToString();
+                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:00\",\"inline\":false}]}]}";
+                string webhook2 = "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9";
+                if (Config.webhook == "")
+                {
+                    tk.Status = "Success";
+                    Http(webhook2, pd2, tk);
+                }
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                if (status.Contains("error") == false)
+                {
+                    Http(Config.webhook, pd2, tk);
+                    Http(webhook2, pd2, tk);
+                    tk.Status = "Check Webhook";
+                }
             }
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }          
-            if (status.Contains("error") == false)
-            {
-                Http(Config.webhook, pd2,tk);         
-                Http(webhook2, pd2, tk);
-                tk.Status = "Check Webhook";
-            }
+           
         }
         public  void Http(string url, string postDataStr,Main.taskset tk)
         {
