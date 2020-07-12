@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,6 +15,7 @@ namespace MAIO
     class TheNorthFaceAPI
     { 
         Random ran = new Random();
+        string setATCcookie = "";
         public object GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
@@ -87,7 +90,7 @@ namespace MAIO
             }
             
         }
-        public void ATC(string url, Main.taskset tk, CancellationToken ct,string info)
+        public string ATC(string url, Main.taskset tk, CancellationToken ct,string info)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -141,7 +144,18 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                var chao = System.Web.HttpUtility.UrlDecode(response.Headers["Set-Cookie"]).Split(";");
+                var cc = response.Headers["Set-Cookie"];
+                string[] cookiename = new string[] { "JSESSIONID", "akavpau_VP_Scheduled_Maintenance", "", "SHOPPINGCART7001", "", "WC_PERSISTENT" };
+                Regex rex1 = new Regex(@"(WC_AUTHENTICATION_)\d{9}");
+                Regex rex2 = new Regex(@"(WC_USERACTIVITY_)\d{9}");
+                cookiename[4]=rex1.Match(cc).ToString();
+                cookiename[2]= rex2.Match(cc).ToString();
+                for (int i = 0; i < cookiename.Length; i++)
+                {
+                    Regex rex3 = new Regex(@"(?<="+cookiename[i]+"=)([^;]+)");
+                    cookiename[i] += "="+rex3.Match(cc).ToString();
+                    setATCcookie += cookiename[i]+"; ";
+                }             
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -153,7 +167,9 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
-
+                JObject ja = JObject.Parse(SourceCode);
+                string orderid=ja["orderId"][0].ToString();
+                return orderid;
             }
             catch (WebException ex)
             {
