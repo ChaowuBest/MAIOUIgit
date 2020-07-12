@@ -416,8 +416,9 @@ namespace MAIO
                         try
                         {
                             reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
-                            Mainwindow.lines.RemoveAt(cookie);
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
+                            
                         }
                         catch (Exception)
                         {
@@ -448,8 +449,9 @@ namespace MAIO
                         try
                         {
                             reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                            Mainwindow.lines.RemoveAt(cookie);
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
+                          
                         }
                         catch (Exception)
                         {
@@ -714,8 +716,9 @@ namespace MAIO
                         try
                         {
                             reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
-                            Mainwindow.lines.RemoveAt(cookie);
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
+                           
                         }
                         catch (Exception)
                         {
@@ -746,8 +749,9 @@ namespace MAIO
                         try
                         {
                             reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                            Mainwindow.lines.RemoveAt(cookie);
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
+                            
                         }
                         catch (Exception)
                         {
@@ -932,8 +936,9 @@ namespace MAIO
                         try
                         {
                             reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
-                            Mainwindow.lines.RemoveAt(cookie);
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
+                            
                         }
                         catch (Exception)
                         {
@@ -964,8 +969,9 @@ namespace MAIO
                         try
                         {
                             reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                            Mainwindow.lines.RemoveAt(cookie);
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
+                           
                         }
                         catch (Exception)
                         {

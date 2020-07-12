@@ -45,6 +45,7 @@ namespace MAIO
             {
                 wp = default;
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
@@ -105,6 +106,7 @@ namespace MAIO
             {
                 wp = default;
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "PUT";
             request.Proxy = wp;
@@ -150,8 +152,9 @@ namespace MAIO
                     try
                     {
                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                        Main.updatelable(Mainwindow.lines[cookie], false);//bug记得修复
                         Mainwindow.lines.RemoveAt(cookie);
-                        Main.updatelable(Mainwindow.lines[cookie], false);
+                       
                         int i = 0;
                     }
                     catch (Exception)

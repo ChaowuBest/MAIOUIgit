@@ -47,7 +47,7 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-            Task task2 = new Task(() => clearcookie());
+           Task task2 = new Task(() => clearcookie());
             task2.Start();
         }
         public void clearcookie()
@@ -287,6 +287,19 @@ namespace MAIO
                         {
 
                         }
+                    }
+                    else if (tk.Tasksite == "TheNorthFaceUS")
+                    {
+                        TheNorthFaceUS tnfus = new TheNorthFaceUS();
+                        tnfus.link = tk.Sku;
+                        tnfus.profile= Mainwindow.allprofile[tk.Profile];
+                        tnfus.size = tk.Size;
+                        tnfus.tk = tk;
+                        var cts = new CancellationTokenSource();
+                        var ct = cts.Token;
+                        Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
+                        dic.Add(tk.Taskid, cts);
+                        tnftask.Start();
                     }
                 }
                 catch (Exception ex)

@@ -232,7 +232,7 @@ namespace MAIO
                                     StreamReader sr = new StreamReader(fs2);
                                     string read = sr.ReadToEnd();
                                     sr.Close();
-                                    JArray ja3 = JArray.Parse(read);
+                                    JArray ja3 = JArray.Parse(read);//bug
                                     ja3.Add(JObject.Parse(cookiewtime.Replace("[", "").Replace("]", "")));
                                     FileStream fs3 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                                     fs3.SetLength(0);

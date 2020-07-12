@@ -171,6 +171,10 @@ namespace MAIO
                 {
                     site.SelectedIndex = 4;
                 }
+                else if (Midtransfer.sitesel.Contains("TheNorthFaceUS"))
+                {
+                    site.SelectedIndex = 5;
+                }
             }
         }
         private void Quantity_Loaded(object sender, RoutedEventArgs e)
