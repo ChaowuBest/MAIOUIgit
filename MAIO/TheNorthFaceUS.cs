@@ -22,7 +22,7 @@ namespace MAIO
         TheNorthFaceAPI tnfAPI = new TheNorthFaceAPI();
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-         A: JObject joprofile = JObject.Parse(profile);
+        A: JObject joprofile = JObject.Parse(profile);
             try
             {
                 GetSkuid(ct);
@@ -31,11 +31,20 @@ namespace MAIO
             {
                 return;
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException)
             {
                 goto A;
             }
-            ATC(ct);
+            try
+            {
+                ATC(ct);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            SubmitShipping(ct);
+
         }
         public void GetSkuid(CancellationToken ct)
         {
@@ -46,26 +55,26 @@ namespace MAIO
             }
             string url = tk.Sku;
             bool isstocknull = true;
-            JArray ja=(JArray)tnfAPI.GetHtmlsource(url,tk,ct);
+            JArray ja = (JArray)tnfAPI.GetHtmlsource(url, tk, ct);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
             categoryId = ja[0]["PDPProduct"]["categoryId"].ToString();
-            productid= ja[0]["PDPProduct"]["parentId"].ToString();
-            var  sizegroup = ja[0]["PDPProduct"]["eids"].ToString();
+            productid = ja[0]["PDPProduct"]["parentId"].ToString();
+            var sizegroup = ja[0]["PDPProduct"]["eids"].ToString();
             string eid = "";
             foreach (var i in sizegroup)
             {
                 if (i.ToString().Contains(size))
                 {
-                     eid=i.ToString();
+                    eid = i.ToString();
                     break;
                 }
             }
-          B: string monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7001&productId="+ productid + "&requestype=ajax&requesttype=ajax";
-            JObject jo=(JObject)tnfAPI.GetHtmlsource(monitorurl, tk,ct);
+        B: string monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7001&productId=" + productid + "&requestype=ajax&requesttype=ajax";
+            JObject jo = (JObject)tnfAPI.GetHtmlsource(monitorurl, tk, ct);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -76,7 +85,7 @@ namespace MAIO
                 if (i.ToString().Contains(eid))
                 {
                     Regex rex = new Regex(@"\d{6}");
-                    sizeid=rex.Match(i.ToString()).ToString();
+                    sizeid = rex.Match(i.ToString()).ToString();
                     break;
                 }
             }
@@ -84,8 +93,8 @@ namespace MAIO
             {
                 if (i.ToString().Contains(sizeid))
                 {
-                    var st=i.ToString().Replace(sizeid, "").Replace(",", "").Replace(" ", "").Replace("\"","").Replace(":","");
-                    int stock=int.Parse(st);
+                    var st = i.ToString().Replace(sizeid, "").Replace(",", "").Replace(" ", "").Replace("\"", "").Replace(":", "");
+                    int stock = int.Parse(st);
                     if (stock > 0)
                     {
                         isstocknull = false;
@@ -107,9 +116,23 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string url = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxOrderItemAdd";
-             string info = "categoryId="+categoryId+"&storeId=7001&langId=-1&catalogId=20001&catEntryId="+sizeid+"&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
-            orderid=tnfAPI.ATC(url,tk,ct,info);
-
+            string info = "categoryId=" + categoryId + "&storeId=7001&langId=-1&catalogId=20001&catEntryId=" + sizeid + "&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
+            orderid = tnfAPI.ATC(url, tk, ct, info);
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+        }
+        public void SubmitShipping(CancellationToken ct)
+        {
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string url = "https://www.thenorthface.com/shop/VFAjaxAVSAddressAdd";
+            string info = "";
         }
     }
 }
