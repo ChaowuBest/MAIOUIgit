@@ -34,6 +34,7 @@ namespace MAIO
             {
                 goto A;
             }
+            ATC(ct);
         }
         public void GetSkuid(CancellationToken ct)
         {
@@ -62,7 +63,7 @@ namespace MAIO
                     break;
                 }
             }
-            string monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7001&productId="+ productid + "&requestype=ajax&requesttype=ajax";
+          B: string monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7001&productId="+ productid + "&requestype=ajax&requesttype=ajax";
             JObject jo=(JObject)tnfAPI.GetHtmlsource(monitorurl, tk,ct);
             if (ct.IsCancellationRequested)
             {
@@ -91,10 +92,24 @@ namespace MAIO
                     break;
                 }
             }
-            if (isstocknull==false)
+            if (isstocknull)
             {
-                
+                tk.Status = "Monitoring";
+                goto B;
             }
+        }
+        public void ATC(CancellationToken ct)
+        {
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string url = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxOrderItemAdd";
+            // string info = "categoryId="+categoryId+"&storeId=7001&langId=-1&catalogId=20001&catEntryId="+sizeid+"&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
+            string info = "categoryId=226102&storeId=7001&langId=-1&catalogId=20001&catEntryId=885378&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
+            tnfAPI.ATC(url,tk,ct,info);
+
         }
     }
 }
