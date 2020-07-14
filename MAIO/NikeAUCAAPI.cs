@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
+using System.Windows;
 
 namespace MAIO
 {
@@ -106,7 +107,6 @@ namespace MAIO
             {
                 wp = default;
             }
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "PUT";
             request.Proxy = wp;
@@ -135,35 +135,37 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    tk.Status = "No Cookie";
+                    tk.Status = "No Cookie";                 
+                    Main.updatelable("123", true);
                     goto C;
                 }
                 else
                 {
                     Random ra = new Random();
-                reloadcookie: if (ct.IsCancellationRequested)
+                if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
                     int sleeptime = ra.Next(0, 500);
                     Thread.Sleep(sleeptime);
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
+                    int cookie = ra.Next(0, Mainwindow.lines.Count);                  
                     try
                     {
+                        Main.updatelable(Mainwindow.lines[cookie], false);
                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                        Main.updatelable(Mainwindow.lines[cookie], false);//bug记得修复
                         Mainwindow.lines.RemoveAt(cookie);
-                       
-                        int i = 0;
+                        if (Mainwindow.lines.Count == 0)
+                        {
+                            Mainwindow.iscookielistnull = true;
+                        }
                     }
                     catch (Exception)
                     {
-                        goto reloadcookie;
+                        goto C;
                     }
                 }
             }
-
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");

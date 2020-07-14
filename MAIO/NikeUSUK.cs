@@ -882,7 +882,7 @@ new JProperty("shippingAddress",
             {
                 JObject jo3 = JObject.Parse(status);
                 string orderid = jo3["response"]["orderId"].ToString();
-                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:00\",\"inline\":false}]}]}";
+                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:"+ orderid + "Email Address:"+username+"\",\"inline\":false}]}]}";
                 string webhook2 = "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9";
                 if (Config.webhook == "")
                 {

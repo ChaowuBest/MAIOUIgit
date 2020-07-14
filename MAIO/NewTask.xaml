@@ -19,17 +19,17 @@
                 <ComboBoxItem Content="NikeUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="Footasylum" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="TheNorthFaceUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <!--<ComboBoxItem Content="TheNorthFaceUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
             </ComboBox>
             <ComboBox Width="145" Name="giftcard" Height="21" Margin="-145,0,0,0" FontFamily="Arial" FontSize="14">
             </ComboBox>
             <ComboBox Width="145" Height="21" Name="profiles" Margin="-145,113,0,0" FontFamily="Arial" FontSize="14" Loaded="profiles_Loaded_1"/>
-            <RichTextBox Width="126" Name="sku" Height="23" Margin="111,-111,0,0" FontFamily="Arial" FontSize="14">
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text=""/>
-                    </Paragraph>
-                </FlowDocument>
+            <RichTextBox Width="126" Name="sku" Height="23" Margin="111,-111,0,0" FontFamily="Arial" FontSize="14" AutoWordSelection="False">
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </RichTextBox.Resources>
             </RichTextBox>
             <Button Content="Save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="Arial" Width="126" Height="37" Margin="-634,218,0,0" BorderBrush="#FF526C80">
                 <Button.Template>
@@ -51,18 +51,18 @@
             <Label Content="Sku" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,-158,0,0"/>
             <Label Content="Size" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,-45,0,0"/>
             <RichTextBox x:Name="size" FontFamily="Arial" FontSize="14" Width="126" Height="23" Margin="-128,2,0,0">
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text=""/>
-                    </Paragraph>
-                </FlowDocument>
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </RichTextBox.Resources>
             </RichTextBox>
             <RichTextBox x:Name="discount" FontFamily="Arial" FontSize="14" Width="129" Height="23" Margin="-145,115,-20,0">
-                <FlowDocument>
-                    <Paragraph>
-                        <Run Text=""/>
-                    </Paragraph>
-                </FlowDocument>
+                <RichTextBox.Resources>
+                    <Style TargetType="{x:Type Paragraph}">
+                        <Setter Property="Margin" Value="0"/>
+                    </Style>
+                </RichTextBox.Resources>
             </RichTextBox>
             <Label Content="Code" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,68,0,0"/>
             <ComboBox x:Name="Quantity" FontFamily="Arial" FontSize="14" Loaded="Quantity_Loaded" Width="129" Height="23" Margin="-126,216,0,0">

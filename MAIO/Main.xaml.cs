@@ -35,6 +35,7 @@ namespace MAIO
         public Main()
         {
             InitializeComponent();
+            updatelable("123",true);
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
@@ -47,7 +48,7 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-           Task task2 = new Task(() => clearcookie());
+            Task task2 = new Task(() => clearcookie());
             task2.Start();
         }
         public void clearcookie()
@@ -103,6 +104,7 @@ namespace MAIO
                 }
             }
         }
+      
         public class taskset : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -292,7 +294,7 @@ namespace MAIO
                     {
                         TheNorthFaceUS tnfus = new TheNorthFaceUS();
                         tnfus.link = tk.Sku;
-                        tnfus.profile= Mainwindow.allprofile[tk.Profile];
+                        tnfus.profile = Mainwindow.allprofile[tk.Profile];
                         tnfus.size = tk.Size;
                         tnfus.tk = tk;
                         var cts = new CancellationTokenSource();

@@ -18,6 +18,7 @@ namespace MAIO
         public string categoryId = "";
         public string productid = "";
         public string orderid = "";
+        public string addressid = "";
         public Main.taskset tk = null;
         TheNorthFaceAPI tnfAPI = new TheNorthFaceAPI();
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
@@ -43,7 +44,22 @@ namespace MAIO
             {
                 return;
             }
-            SubmitShipping(ct);
+            try
+            {
+                SubmitShipping(ct, joprofile);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            try
+            {
+                payment(ct);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
 
         }
         public void GetSkuid(CancellationToken ct)
@@ -124,7 +140,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
         }
-        public void SubmitShipping(CancellationToken ct)
+        public void SubmitShipping(CancellationToken ct,JObject jo)
         {
             if (ct.IsCancellationRequested)
             {
@@ -132,7 +148,56 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string url = "https://www.thenorthface.com/shop/VFAjaxAVSAddressAdd";
-            string info = "";
+            long time = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+            string info = "storeId=7001&country="+ jo["Country"].ToString() + "&country="+ jo["Country"].ToString() + "&toOrderId="+orderid+"&addressType=S&outAddressName=addressId&isVerificationRequired=yes&URL=%2F&qasVerificationPage=true&formatPhoneWhileTyping=true&countryCode=US&nickName="+time+"&personTitle=Mr.&firstName="+ jo["FirstName"].ToString() + "&lastName="+ jo["LastName"].ToString() + "&address1="+ jo["Address1"].ToString() + "&address2="+ jo["Address2"].ToString() + "&zipCode="+ jo["Zipcode"].ToString() + "&city="+ jo["City"].ToString() + "&state="+ jo["State"].ToString() + "&phone1="+jo["Tel"].ToString()+"&email1="+ System.Web.HttpUtility.UrlEncode(jo["EmailAddress"].ToString()) + "&qasOperation=verificationEngine&requesttype=ajax";
+            tnfAPI.shipping(url,tk,ct,info.Replace(" ","+"));
+            #region
+            /* JObject jo2 = JObject.Parse(sourcecod);
+             addressid=jo2["addressId"].ToString();
+             if (ct.IsCancellationRequested)
+             {
+                 tk.Status = "IDLE";
+                 ct.ThrowIfCancellationRequested();
+             }
+
+               string urlcheck1 = "https://www.thenorthface.com/shop/VFAjaxOrderItemUpdate";
+               string checkaddress1 = "storeId=7001&orderId="+orderid+"&calculateOrder=1&calculationUsage=-1%2C-2%2C-5%2C-7&keepAutoAddedItems=true&showOrder=1&skipDOMInventoryCheck=Y&addressId="+addressid+"&requesttype=ajax";       
+               string source=tnfAPI.shipping(urlcheck1,tk,ct,checkaddress1);
+               JObject jo3 = JObject.Parse(source);
+               string orderitemid= jo3["items"][0]["id"].ToString();
+               string shipid = jo3["items"][0]["shipModeId"].ToString();
+               string checkaddress2 = "storeId=7001&langId=-1&orderId=" + orderid + "&calculateOrder=1&calculationUsage=-1%2C-2%2C-5%2C-7&showOrder=0&keepAutoAddedItems=true&skipDOMInventoryCheck=Y&orderItemId_1="+ orderitemid + "&shipModeId="+ shipid + "&requesttype=ajax";
+               tnfAPI.shipping(urlcheck1,tk,ct,checkaddress2);*/
+            #endregion
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string info2 = "storeId=7001&orderId="+orderid+"&URL=VFBillingAndPaymentView&errorURL=VFShippingAddressView%3ForderId%"+orderid+"&containsPayPal=&isSavedAddress=true&shipToStore=&removeGiftServices=";          
+            string getpaymengurl = "https://www.thenorthface.com/shop/OrderPrepare";
+            tnfAPI.preorder(getpaymengurl,tk,ct,info2);
         }
+        public void payment(CancellationToken ct)
+        {
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string getorderviewurl = "https://www.thenorthface.com/shop/VFAjaxGetOrderView";
+            string orderinfo = "storeId=7001&orderId="+orderid+"&requesttype=ajax";
+          //  long time = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;    
+            tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo);
+
+            string AjaxOrderCalculate = "orderId="+orderid+"&storeId=7001&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
+            string ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
+            tnfAPI.orderdetail(ajaxorderurl,tk,ct,AjaxOrderCalculate);
+
+            string url = "https://www.thenorthface.com/shop/SendToPaypal?storeId=7001&orderId="+orderid+"&callSource=Payment&useraction=commit&cancelURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fVFBillingAndPaymentView%3forderId%3d"+orderid+"%26storeId%3d7001&returnURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fZCReturnFromPaypal%3fcallSource%3dPayment%26orderId%3d"+orderid+"%26shippingAddressName%3dPayPal%2bShipping%26billingAddressName%3dPayPal%2bBilling%26storeId%3d7001%26URL%3dOrderOKView ";    
+            
+            tnfAPI.Checkout(url,tk,ct);
+        }
+        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 }

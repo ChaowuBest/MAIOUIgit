@@ -31,7 +31,7 @@
            Grid.Column="2"
             Text=""
             Name="Keyinput"
-            TextWrapping="Wrap"
+            TextWrapping="NoWrap"
             VerticalAlignment="Top" 
             Height="30" 
             RenderTransformOrigin="0.304,-0.084" 

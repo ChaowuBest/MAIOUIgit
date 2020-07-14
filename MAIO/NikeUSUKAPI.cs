@@ -140,6 +140,7 @@ namespace MAIO
                                 ct.ThrowIfCancellationRequested();
                             }
                             tk.Status = "No Cookie";
+                            Main.updatelable("123", true);
                             goto C;
                         }
                         else
@@ -147,9 +148,13 @@ namespace MAIO
                             int cookie = ra.Next(0, Mainwindow.lines.Count);
                             try
                             {
-                                req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                                 Main.updatelable(Mainwindow.lines[cookie], false);
+                                req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                          
                                 Mainwindow.lines.RemoveAt(cookie);
+                                if (Mainwindow.lines.Count == 0)
+                                {
+                                    Mainwindow.iscookielistnull = true;
+                                }
                             }
                             catch (Exception)
                             {
@@ -407,6 +412,7 @@ namespace MAIO
                             ct.ThrowIfCancellationRequested();
                         }
                         Mainwindow.iscookielistnull = true;
+                        Main.updatelable("123", true);
                         tk.Status = "No Cookie";
                         goto C;
                     }
@@ -415,10 +421,14 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                          
                             Mainwindow.lines.RemoveAt(cookie);
-                            
+                            if (Mainwindow.lines.Count == 0)
+                            {
+                                Mainwindow.iscookielistnull = true;
+                            }
+
                         }
                         catch (Exception)
                         {
@@ -703,6 +713,7 @@ namespace MAIO
                         }
                         Mainwindow.iscookielistnull = true;
                         tk.Status = "No Cookie";
+                        Main.updatelable("123", true);
                         goto C;
                     }
                     else
@@ -715,10 +726,13 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                          
                             Mainwindow.lines.RemoveAt(cookie);
-                           
+                            if (Mainwindow.lines.Count == 0)
+                            {
+                                Mainwindow.iscookielistnull = true;
+                            }
                         }
                         catch (Exception)
                         {
@@ -928,6 +942,7 @@ namespace MAIO
                         }
                         tk.Status = "No Cookie";
                         Mainwindow.iscookielistnull = true;
+                        Main.updatelable("123", true);
                         goto C;
                     }
                     else
@@ -935,10 +950,13 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Main.updatelable(Mainwindow.lines[cookie], false);
+                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                         
                             Mainwindow.lines.RemoveAt(cookie);
-                            
+                            if (Mainwindow.lines.Count == 0)
+                            {
+                                Mainwindow.iscookielistnull = true;
+                            }
                         }
                         catch (Exception)
                         {

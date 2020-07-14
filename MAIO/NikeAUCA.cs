@@ -194,7 +194,6 @@ namespace MAIO
             }
 
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
-           // string url = "https://api.nike.com/buy/checkout_previews/v2/" + GID; ;
             JObject payLoad = new JObject(
                 new JProperty("country", tk.Tasksite.Replace("Nike", "")),
                 new JProperty("language", "en-GB"),
@@ -227,7 +226,9 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string payinfo = payLoad.ToString();
+           
             AUCAAPI.PutMethod(url, payinfo, tk, ct);
+
             return payinfo;
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
