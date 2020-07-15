@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
 
 namespace MAIO
 {
@@ -201,6 +202,7 @@ namespace MAIO
                 }
                 try
                 {
+                    
                     JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                     JObject j = JObject.Parse(jar[0].ToString());
                     string skuids = j["skus"].ToString();
@@ -215,6 +217,7 @@ namespace MAIO
                             skuidlist.Add(jsku[i]["id"].ToString());
                             productID = jsku[i]["productId"].ToString();
                             sizefind = true;
+                           
                         }
                         else
                         {
@@ -230,6 +233,7 @@ namespace MAIO
                     {
                         Random ra = new Random();
                         skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
+                       // MessageBox.Show("1234");
                     }
                     for (int n = 0; n < jas.Count; n++)
                     {
@@ -254,7 +258,6 @@ namespace MAIO
                             }
                         }
                     }
-
                 }
                 catch (NullReferenceException)
                 {

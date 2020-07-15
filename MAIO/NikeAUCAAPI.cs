@@ -135,7 +135,6 @@ namespace MAIO
                         ct.ThrowIfCancellationRequested();
                     }
                     tk.Status = "No Cookie";
-                    //Main.updatelable("123", true);
                     goto C;
                 }
                 else

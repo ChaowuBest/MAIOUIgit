@@ -178,18 +178,7 @@ namespace MAIO
             }
             catch (Exception ex)
             {
-              /*  HttpWebResponse response = (HttpWebResponse)ex.Response;
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-                if (response.ContentEncoding == "gzip")
-                {
-                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                }
-                SourceCode = readStream.ReadToEnd();*/
+            
                 goto A;
             }
         }
@@ -246,7 +235,17 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                var cc = response.Headers["Set-Cookie"];
+                 var cc = response.Headers["Set-Cookie"];
+                Regex rex3 = new Regex(@"(?<=WC_PERSISTENT)([^;]+)");
+                if (rex3.Match(cc).Success)
+                {
+                    cookiename[5] = "WC_PERSISTENT" + rex3.Match(cc).ToString();
+                    setATCcookie = "";
+                    for (int i = 0; i < cookiename.Length; i++)
+                    {
+                        setATCcookie += cookiename[i] + "; ";
+                    }
+                }
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -446,10 +445,8 @@ namespace MAIO
                     }
                 }
                 else
-                {
-                    
-                }
-              
+                {                  
+                }            
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
                 {
@@ -464,17 +461,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
-              /*  Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-                if (response.ContentEncoding == "gzip")
-                {
-                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                }
-                SourceCode = readStream.ReadToEnd();*/
+             
                 goto A;
             }
         }
@@ -511,13 +498,13 @@ namespace MAIO
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback(AlwaysGoodCertificate);
-            // request.Proxy = wp;
             request.Method = "GET";
-           // var chao=setATCcookie;
+           // request.AllowAutoRedirect = false;
             request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-            var vhao = setATCcookie + @"_abck=6B1F86726B56B280CE1E1B6B0F52E87F~0~YAAQt1sauAqYWS1zAQAASDPCRQRkXVaReL4shFhAGm31XmxlmD3vdbCdNdtwY3tI7OEvqbCCOoysmIiEyQPd/V6nKBB8GtCzbN42dZmWXpA01yhbcoF8yBKNTWFaHx/0V2d228vAFjisBfn0x0Mun8uuD5Vxg26TzPD4DcMI8Oe1P5jrmfBpk09/y59u/A/5Lf0sntUaJVhMDNqiQEnXPyqOscU4fNi/C5dqA6qIzrylfo6btxcGkKEjXP4pGdv1dNCIhoZCIVKC/+Uwk3FEMPSiJ9kKBZvCZt83Soe6e+j0iO1ZfpSGMCBzHL3Wf4e3GnIZ4z1Dwrzw5ARKWA==~-1~-1~-1; bm_sz=524251366C1A0862CDA936AB8C2469AE~YAAQfSZzaHrFdC5zAQAA7Hq8RQg3tdx66S40ALG3yb4MMWbVi4kbv1jP0GtlhCrX9NsgozpV67sh77NR+0reRUsX9Iax0worjBzKp2KRwID9eD4F+OVyHLPkwGMBUtOKcDQJ9P2dCSNhPWbfU/GTJfL1/lukeH8kLFcHesaIIkc0I/BQZCqmXpdrdB1OgSLL6r3Le384";
-            request.Headers.Add("Cookie", vhao);
+            var vhao = setATCcookie + @"WC_AUTHENTICATION_260446795=260446795%2CyHny1icOT2sS7CgM3hmUHTdQNd91QdHEAAcgBoGNORw%3D;_abck=C2FCFCDE684A30D3A5A5C7F0F53373F5~0~YAAQt1sauAwRYy1zAQAAcya+TASbhCLFPcVV8OE2pIbT181XIQ3R0fwRr4tWQ2CqoztsJn94MDBl20IyrNCBy0AcYccSuh4ijEi9qJjwUbrrxmZEkaKCcqG1Q8KIrnqC9TvwaieQcvv2JZQ1Tx69UnOx/Jjx+Kvr+Esag5pRRNL4QnzYHdyTArl8lYru3ZcSREEtbtoOEC87vbeYir3LCb7iv1POjlNOTcPsnT7Ru9HSqi8kHMbCVpXMX4LzttX3meYutB0/DuYPX9cPpinqihpKR7AG01sT/u2Ov+yomO8mAa71lNaigcG8Yb+ZjrAGth5TulLLCjElo7fwCw==~-1~-1~-1; bm_sz=0091CB54649C8F09B91B2196E00F4A87~YAAQt1sauJJnZy1zAQAATo1NUAgovNZ8onHeXO8sCpwPtpzhfj5+IyPILSd24D25+xwIXBXNtYef/6FMmdjy3eqHYI+NdQAHUahbq2eaxcDhkeaeE/MDcNv6au8JQnxv27hl9vEg5qkXu1LuxJk3C4knXewCU4xXUdomlSVYkkx58kt2kXg/rw2ehB9iHeZ4wWBw8+Q1";
+            var chao2=setATCcookie.Split(";");
+            request.Headers.Add("Cookie", setATCcookie);
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
             request.Host = "www.thenorthface.com";

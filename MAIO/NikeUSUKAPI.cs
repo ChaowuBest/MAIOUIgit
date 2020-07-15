@@ -80,6 +80,7 @@ namespace MAIO
         }
         public string Postlogin(string url, string logininfo, bool isrefresh, string account, Main.taskset tk, CancellationToken ct)
         {
+           // MessageBox.Show("123");
         retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             if (ct.IsCancellationRequested)
@@ -140,7 +141,8 @@ namespace MAIO
                                 ct.ThrowIfCancellationRequested();
                             }
                             tk.Status = "No Cookie";
-                          //  Main.updatelable("123", true);
+                           // MessageBox.Show("1234");
+                            //Main.updatelable("123", true);
                             goto C;
                         }
                         else
