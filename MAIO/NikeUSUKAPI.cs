@@ -140,7 +140,7 @@ namespace MAIO
                                 ct.ThrowIfCancellationRequested();
                             }
                             tk.Status = "No Cookie";
-                            Main.updatelable("123", true);
+                          //  Main.updatelable("123", true);
                             goto C;
                         }
                         else
@@ -149,7 +149,7 @@ namespace MAIO
                             try
                             {
                                 Main.updatelable(Mainwindow.lines[cookie], false);
-                                req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                          
+                                req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                                 Mainwindow.lines.RemoveAt(cookie);
                                 if (Mainwindow.lines.Count == 0)
                                 {
@@ -412,7 +412,7 @@ namespace MAIO
                             ct.ThrowIfCancellationRequested();
                         }
                         Mainwindow.iscookielistnull = true;
-                        Main.updatelable("123", true);
+                       // Main.updatelable("123", true);
                         tk.Status = "No Cookie";
                         goto C;
                     }
@@ -422,7 +422,7 @@ namespace MAIO
                         try
                         {
                             Main.updatelable(Mainwindow.lines[cookie], false);
-                            reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                          
+                            reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
                             {
@@ -461,7 +461,7 @@ namespace MAIO
                             reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
-                          
+
                         }
                         catch (Exception)
                         {
@@ -579,8 +579,21 @@ namespace MAIO
                     }
                     if (check.Contains("Non buyable product(s)"))
                     {
-                        tk.Status = "PRODUCT_NOT_BUYABLE";
-                        goto A;
+                        tk.Status = "WaitingRestock";
+                        string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
+                        Monitoring(monitorurl, tk, ct, skuid, randomsize);
+                        NikeUSUK UKUS = new NikeUSUK();
+                        xb3traceid = Guid.NewGuid().ToString();
+                        UKUS.pid = pid;
+                        UKUS.size = size;
+                        UKUS.profile = profile;
+                        UKUS.code = code;
+                        UKUS.giftcard = giftcard;
+                        UKUS.username = username;
+                        UKUS.password = password;
+                        UKUS.randomsize = randomsize;
+                        UKUS.StartTask(ct);
+
                     }
                     total = jo["response"]["totals"]["total"].ToString();
                     if (isdiscount)
@@ -607,24 +620,22 @@ namespace MAIO
                     }
                     if (check.Contains("Non buyable product(s)"))
                     {
-                        //  tk.Status = "PRODUCT_NOT_BUYABLE";
                         tk.Status = "WaitingRestock";
                         string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
-                        if (Monitoring(monitorurl, tk, ct, skuid))
-                        {
-                            NikeUSUK UKUS = new NikeUSUK();
-                            xb3traceid = Guid.NewGuid().ToString();
-                            UKUS.pid = pid;
-                            UKUS.size = size;
-                            UKUS.profile = profile;
-                            UKUS.code = code;
-                            UKUS.giftcard = giftcard;
-                            UKUS.username = username;
-                            UKUS.password = password;
-                            UKUS.randomsize = randomsize;
-                            UKUS.StartTask(ct);
-                        }
-                        // goto A;
+                        string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
+                        NikeUSUK UKUS = new NikeUSUK();
+                        UKUS.skuid = group[0];
+                        UKUS.productID = group[1];
+                        xb3traceid = Guid.NewGuid().ToString();
+                        UKUS.pid = pid;
+                        UKUS.size = size;
+                        UKUS.profile = profile;
+                        UKUS.code = code;
+                        UKUS.giftcard = giftcard;
+                        UKUS.username = username;
+                        UKUS.password = password;
+                        UKUS.randomsize = randomsize;
+                        UKUS.StartTask(ct);
                     }
                     JObject jo = JObject.Parse(check);
                     total = jo["response"]["totals"]["total"].ToString();
@@ -713,7 +724,7 @@ namespace MAIO
                         }
                         Mainwindow.iscookielistnull = true;
                         tk.Status = "No Cookie";
-                        Main.updatelable("123", true);
+                      //  Main.updatelable("123", true);
                         goto C;
                     }
                     else
@@ -727,7 +738,7 @@ namespace MAIO
                         try
                         {
                             Main.updatelable(Mainwindow.lines[cookie], false);
-                            reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                          
+                            reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
                             {
@@ -765,7 +776,7 @@ namespace MAIO
                             reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
-                            
+
                         }
                         catch (Exception)
                         {
@@ -942,7 +953,7 @@ namespace MAIO
                         }
                         tk.Status = "No Cookie";
                         Mainwindow.iscookielistnull = true;
-                        Main.updatelable("123", true);
+                      //  Main.updatelable("123", true);
                         goto C;
                     }
                     else
@@ -951,7 +962,7 @@ namespace MAIO
                         try
                         {
                             Main.updatelable(Mainwindow.lines[cookie], false);
-                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");                         
+                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
                             {
@@ -989,7 +1000,7 @@ namespace MAIO
                             reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
-                           
+
                         }
                         catch (Exception)
                         {
@@ -1106,20 +1117,21 @@ namespace MAIO
                 if ((status.Contains("COMPLETED") == true) && (status.Contains("OUT_OF_STOCK")))
                 {
                     string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
-                    if (Monitoring(monitorurl, tk, ct, skuid))
-                    {
-                        NikeUSUK UKUS = new NikeUSUK();
-                        xb3traceid = Guid.NewGuid().ToString();
-                        UKUS.pid = pid;
-                        UKUS.size = size;
-                        UKUS.profile = profile;
-                        UKUS.code = code;
-                        UKUS.giftcard = giftcard;
-                        UKUS.username = username;
-                        UKUS.password = password;
-                        UKUS.randomsize = randomsize;
-                        UKUS.StartTask(ct);
-                    }
+                    string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
+                    NikeUSUK UKUS = new NikeUSUK();
+                    UKUS.productID = group[1];
+                    UKUS.skuid = group[0];
+                    xb3traceid = Guid.NewGuid().ToString();
+                    UKUS.pid = pid;
+                    UKUS.size = size;
+                    UKUS.profile = profile;
+                    UKUS.code = code;
+                    UKUS.giftcard = giftcard;
+                    UKUS.username = username;
+                    UKUS.password = password;
+                    UKUS.randomsize = randomsize;
+                    UKUS.StartTask(ct);
+
 
                 }
                 if (status.Contains("IN_PROGRESS") == true)
@@ -1133,7 +1145,7 @@ namespace MAIO
             }
             return status;
         }
-        public bool Monitoring(string url, Main.taskset tk, CancellationToken ct, string skuid)
+        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string skuid, bool randomsize)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -1141,6 +1153,8 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string SourceCode = "";
+            //  string productid = "";
+            string[] group = new string[2];
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             try
@@ -1193,16 +1207,17 @@ namespace MAIO
                 JArray ja = JArray.Parse(jo["objects"].ToString());
                 foreach (var i in ja)
                 {
-                    if (i["skuId"].ToString() == skuid)
+                    group[1] = i["productId"].ToString();
+                    if (randomsize)
                     {
-                        if (i["available"].ToString() != "false")
+                        if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
                         {
                             if (i["level"].ToString() == "OOS")
                             {
-                                goto A;
                             }
                             else
                             {
+                                group[0] = i["skuId"].ToString();
                                 break;
                             }
                         }
@@ -1219,6 +1234,36 @@ namespace MAIO
                             goto A;
                         }
                     }
+                    else
+                    {
+                        if (i["skuId"].ToString() == skuid)
+                        {
+                            if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
+                            {
+                                if (i["level"].ToString() == "OOS")
+                                {
+                                    group[0] = skuid;
+                                    goto A;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (Config.delay == "")
+                                {
+                                    Thread.Sleep(1);
+                                }
+                                else
+                                {
+                                    Thread.Sleep(int.Parse(Config.delay));
+                                }
+                                goto A;
+                            }
+                        }
+                    }
                 }
                 response.Close();
                 readStream.Close();
@@ -1228,7 +1273,7 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 goto A;
             }
-            return true;
+            return group;
         }
     }
 }

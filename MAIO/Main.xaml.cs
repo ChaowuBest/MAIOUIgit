@@ -103,8 +103,7 @@ namespace MAIO
                     }
                 }
             }
-        }
-      
+        }    
         public class taskset : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;

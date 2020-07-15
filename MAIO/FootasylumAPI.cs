@@ -315,12 +315,13 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
+           
             WebProxy wp = new WebProxy();
             try
             {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -385,12 +386,13 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
+           
             WebProxy wp = new WebProxy();
             try
             {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -463,12 +465,13 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
+            
             WebProxy wp = new WebProxy();
             try
             {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -541,12 +544,13 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(":");
+           
             WebProxy wp = new WebProxy();
             try
             {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");

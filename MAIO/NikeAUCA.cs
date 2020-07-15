@@ -23,7 +23,7 @@ namespace MAIO
         public Main.taskset tk = null;
         public string productid = "";
         string GID = Guid.NewGuid().ToString();
-        string skuid = "";
+        public string skuid = "";
         string priceid = "";
         string msrp = "";
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
@@ -79,107 +79,113 @@ namespace MAIO
         }
         public void GetSKUID(string country, string pid, CancellationToken ct)
         {
-        Retry: string url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + pid + ")";
-            string sourcecode = AUCAAPI.GetHtmlsource(url, tk, ct);
-            tk.Status = "Get Size";
-            JObject jo = JObject.Parse(sourcecode);
-            string obejects = jo["objects"].ToString();
-            JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
-            if (size.Contains("+"))
+            if (skuid != "" && productid != "")
             {
-                string[] Multiplesize = size.Split("+");
-                Random ra = new Random();
-                size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
             }
-            var product = "";
-            if (ct.IsCancellationRequested)
+            else
             {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            try
-            {
-                product = ja[0]["productInfo"].ToString();
-                productid = ja[0]["publishedContent"]["properties"]["products"][0]["productId"].ToString();
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
+            Retry: string url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + pid + ")";
+                string sourcecode = AUCAAPI.GetHtmlsource(url, tk, ct);
+                tk.Status = "Get Size";
+                JObject jo = JObject.Parse(sourcecode);
+                string obejects = jo["objects"].ToString();
+                JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
+                if (size.Contains("+"))
+                {
+                    string[] Multiplesize = size.Split("+");
+                    Random ra = new Random();
+                    size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
+                }
+                var product = "";
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
-                tk.Status = "Monitoring";
-                if (Config.delay == "")
+                try
                 {
-                    Thread.Sleep(1);
+                    product = ja[0]["productInfo"].ToString();
+                    productid = ja[0]["publishedContent"]["properties"]["products"][0]["productId"].ToString();
+
                 }
-                else if (Config.delay == null)
+                catch (ArgumentOutOfRangeException)
                 {
-                    Thread.Sleep(1);
-                }
-                else
-                {
-                    Thread.Sleep(int.Parse(Config.delay));
-                }
-                goto Retry;
-            }
-            JArray jar = (JArray)JsonConvert.DeserializeObject(product);
-            JObject j = JObject.Parse(jar[0].ToString());
-            string skuids = j["skus"].ToString();
-            priceid = j["merchPrice"]["snapshotId"].ToString();
-            msrp = j["merchPrice"]["msrp"].ToString();
-            JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
-            string availableSkus = j["availableSkus"].ToString();
-            JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
-            bool sizefind = false;
-            for (int i = 0; i < jsku.Count; i++)
-            {
-                if (randomsize)
-                {
-                    skuidlist.Add(jsku[i]["id"].ToString());
-                    sizefind = true;
-                }
-                else
-                {
-                    if (size == jsku[i]["nikeSize"].ToString())
+                    if (ct.IsCancellationRequested)
                     {
-                        skuid = jsku[i]["id"].ToString();
-                        break;
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
                     }
-                }
-            }
-            if (sizefind)
-            {
-                Random ra = new Random();
-                skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
-            }
-            for (int n = 0; n < jas.Count; n++)
-            {
-                if (skuid == jas[n]["id"].ToString())
-                {
-                    if (Config.Usemonitor == "True")
+                    tk.Status = "Monitoring";
+                    if (Config.delay == "")
                     {
-                        string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds("+productid+")";
-                        if (AUCAAPI.Monitoring(monitorurl, tk, ct, skuid))
-                        {
-                            break;
-                        }                          
+                        Thread.Sleep(1);
+                    }
+                    else if (Config.delay == null)
+                    {
+                        Thread.Sleep(1);
                     }
                     else
                     {
-                        break;
+                        Thread.Sleep(int.Parse(Config.delay));
+                    }
+                    goto Retry;
+                }
+                JArray jar = (JArray)JsonConvert.DeserializeObject(product);
+                JObject j = JObject.Parse(jar[0].ToString());
+                string skuids = j["skus"].ToString();
+                priceid = j["merchPrice"]["snapshotId"].ToString();
+                msrp = j["merchPrice"]["msrp"].ToString();
+                JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
+                string availableSkus = j["availableSkus"].ToString();
+                JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
+                bool sizefind = false;
+                for (int i = 0; i < jsku.Count; i++)
+                {
+                    if (randomsize)
+                    {
+                        skuidlist.Add(jsku[i]["id"].ToString());
+                        sizefind = true;
+                    }
+                    else
+                    {
+                        if (size == jsku[i]["nikeSize"].ToString())
+                        {
+                            skuid = jsku[i]["id"].ToString();
+                            break;
+                        }
                     }
                 }
+                if (sizefind)
+                {
+                    Random ra = new Random();
+                    skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
+                }
+                for (int n = 0; n < jas.Count; n++)
+                {
+                    if (skuid == jas[n]["id"].ToString())
+                    {
+                        if (Config.Usemonitor == "True")
+                        {
+                            string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
+                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, skuid, randomsize);
+                            skuid = group[0];
+                            productid = group[1];
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (skuid == "")
+                {
+                    tk.Status = "Size Error";
+                    tk.Status = "Restarting";
+                    Thread.Sleep(int.Parse(Config.delay));
+                    goto Retry;
+                }
             }
-            if (skuid == "")
-            {
-                tk.Status = "Size Error";
-                tk.Status = "Restarting";
-                Thread.Sleep(int.Parse(Config.delay));
-                goto Retry;
-            }
+       
         }
         public string Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
         {

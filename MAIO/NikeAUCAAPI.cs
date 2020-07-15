@@ -80,7 +80,6 @@ namespace MAIO
         }
         public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct)
         {
-
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -135,21 +134,21 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    tk.Status = "No Cookie";                 
-                    Main.updatelable("123", true);
+                    tk.Status = "No Cookie";
+                    //Main.updatelable("123", true);
                     goto C;
                 }
                 else
                 {
                     Random ra = new Random();
-                if (ct.IsCancellationRequested)
+                    if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
                     int sleeptime = ra.Next(0, 500);
                     Thread.Sleep(sleeptime);
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);                  
+                    int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {
                         Main.updatelable(Mainwindow.lines[cookie], false);
@@ -262,20 +261,21 @@ namespace MAIO
                 string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("OUT_OF_STOCK")))
                 {
-                    if (Monitoring(monitorurl, tk, ct, skuid))
-                    {
-                        tk.Status = "WaitingRestock";
-                        xb3traceid = Guid.NewGuid().ToString();
-                        xnikevisitorid = Guid.NewGuid().ToString();
-                        NikeAUCA NAU = new NikeAUCA();
-                        NAU.size = size;
-                        NAU.pid = pid;
-                        NAU.profile = profile;
-                        NAU.randomsize = randomsize;
-                        NAU.tk = tk;
-                        NAU.Quantity = tk.Quantity;
-                        NAU.StartTask(ct, cts);
-                    }
+                    string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
+                    tk.Status = "WaitingRestock";
+                    xb3traceid = Guid.NewGuid().ToString();
+                    xnikevisitorid = Guid.NewGuid().ToString();
+                    NikeAUCA NAU = new NikeAUCA();
+                    NAU.skuid = group[0];
+                    NAU.productid = group[1];
+                    NAU.size = size;
+                    NAU.pid = pid;
+                    NAU.profile = profile;
+                    NAU.randomsize = randomsize;
+                    NAU.tk = tk;
+                    NAU.Quantity = tk.Quantity;
+                    NAU.StartTask(ct, cts);
+
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
@@ -286,22 +286,24 @@ namespace MAIO
                     var reason = jo2["errors"][0].ToString();
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
-                    if (Monitoring(monitorurl, tk, ct, skuid))
-                    {
-                        xb3traceid = Guid.NewGuid().ToString();
-                        xnikevisitorid = Guid.NewGuid().ToString();
-                        NikeAUCA NAU = new NikeAUCA();
-                        NAU.size = size;
-                        NAU.pid = pid;
-                        NAU.profile = profile;
-                        NAU.randomsize = randomsize;
-                        NAU.tk = tk;
-                        NAU.Quantity = tk.Quantity;
-                        NAU.StartTask(ct, cts);
-                    }
+                    string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
+
+                    xb3traceid = Guid.NewGuid().ToString();
+                    xnikevisitorid = Guid.NewGuid().ToString();
+                    NikeAUCA NAU = new NikeAUCA();
+                    NAU.skuid = group[0];
+                    NAU.productid = group[1];
+                    NAU.size = size;
+                    NAU.pid = pid;
+                    NAU.profile = profile;
+                    NAU.randomsize = randomsize;
+                    NAU.tk = tk;
+                    NAU.Quantity = tk.Quantity;
+                    NAU.StartTask(ct, cts);
+
                 }
 
-             
+
             }
             catch (Exception ex)
             {
@@ -310,7 +312,7 @@ namespace MAIO
             }
             return sourcecode;
         }
-        public bool Monitoring(string url, Main.taskset tk, CancellationToken ct, string skuid)
+        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string skuid, bool randomsize)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -318,6 +320,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string SourceCode = "";
+            string[] group = new string[2];
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             try
@@ -370,16 +373,17 @@ namespace MAIO
                 JArray ja = JArray.Parse(jo["objects"].ToString());
                 foreach (var i in ja)
                 {
-                    if (i["skuId"].ToString() == skuid)
+                    group[1] = i["productId"].ToString();
+                    if (randomsize)
                     {
-                        if (i["available"].ToString() != "false")
+                        if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
                         {
                             if (i["level"].ToString() == "OOS")
                             {
-                                goto A;
                             }
                             else
                             {
+                                group[0] = i["skuId"].ToString();
                                 break;
                             }
                         }
@@ -396,6 +400,37 @@ namespace MAIO
                             goto A;
                         }
                     }
+                    else
+                    {
+                        group[0] = skuid;
+                        if (i["skuId"].ToString() == skuid)
+                        {
+                            if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
+                            {
+                                if (i["level"].ToString() == "OOS")
+                                {
+                                    
+                                    goto A;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (Config.delay == "")
+                                {
+                                    Thread.Sleep(1);
+                                }
+                                else
+                                {
+                                    Thread.Sleep(int.Parse(Config.delay));
+                                }
+                                goto A;
+                            }
+                        }
+                    }
                 }
                 response.Close();
                 readStream.Close();
@@ -405,7 +440,11 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 goto A;
             }
-            return true;
+            if (group[0] == "")
+            {
+                goto A;
+            }
+            return group;
         }
     }
 }
