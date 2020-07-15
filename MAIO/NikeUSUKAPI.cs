@@ -516,6 +516,9 @@ namespace MAIO
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                 tk.Status = "SubmitShipping error";
+                Stream resppaymentStream = resppayment.GetResponseStream();
+                StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
+                paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
                 goto B;
             }
 
@@ -1238,13 +1241,14 @@ namespace MAIO
                     }
                     else
                     {
+                        group[0] = skuid;
                         if (i["skuId"].ToString() == skuid)
                         {
                             if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
                             {
                                 if (i["level"].ToString() == "OOS")
                                 {
-                                    group[0] = skuid;
+                                    
                                     goto A;
                                 }
                                 else

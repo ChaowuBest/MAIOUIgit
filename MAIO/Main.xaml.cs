@@ -40,6 +40,7 @@ namespace MAIO
             {
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
                 JObject jo = JObject.Parse(kv.Value);
+                var chao=jo.ToString();
                 Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString() });
             }
             datagrid.ItemsSource = Mainwindow.task;
