@@ -51,7 +51,7 @@ namespace MAIO
             {
                 return;
             }
-        B: //string payinfo = "";
+        B: 
             try
             {
                 Checkout(joprofile.ToString(), skuid,ct);
@@ -86,15 +86,15 @@ namespace MAIO
         }
         public string GetSKUID(CancellationToken ct)
         {
-            string url = link;
-            var pid =link.Split("-");
-            string pid2=pid[pid.Length-1].Replace("/","");
-            var group =fasyapi.GetHtmlsource(link,tk,ct);
+          A: string url = link;
+            var pid = link.Split("-");
+            string pid2 = pid[pid.Length - 1].Replace("/", "");
+            var group = fasyapi.GetHtmlsource(link, tk, ct);
             string sourcecode = group[0];
-             coucustomer_id = group[1];
+            coucustomer_id = group[1];
             Regex regex = new Regex(@"(?<=variants =)([^\n]+)");
             MatchCollection match = regex.Matches(sourcecode);
-            string variant=regex.Match(sourcecode).ToString().Replace("'",@"""");
+            string variant = regex.Match(sourcecode).ToString().Replace("'", @"""");
             JObject jo = JObject.Parse(variant);
             string skuid = "";
             foreach (var item in jo)
@@ -103,7 +103,12 @@ namespace MAIO
                 {
                     skuid = jo[item.Key]["sku"].ToString();
                 }
-            }                 
+            }
+            if (skuid == "" || skuid == null)
+            {
+                tk.Status = "Size Error";
+                goto A;
+            }
             return skuid;
         }
         public void Checkout(string profile, string skuid, CancellationToken ct)
@@ -233,7 +238,14 @@ namespace MAIO
                 }
                 else
                 {
-                    tk.Status = status;
+                    if (status.Contains("declined"))
+                    {
+                        tk.Status = "Declined";
+                    }
+                    else
+                    {
+                        tk.Status = status;
+                    }           
                     break;
                 }    
             }

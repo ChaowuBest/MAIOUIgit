@@ -22,7 +22,7 @@ namespace MAIO
             }
             string SourceCode = "";
             string[] group = new string[2];
-            int random = ran.Next(0, Mainwindow.proxypool.Count);       
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             try
             {
@@ -50,15 +50,15 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                var chao=System.Web.HttpUtility.UrlDecode(response.Headers["Set-Cookie"]).Split(";");
+                var chao = System.Web.HttpUtility.UrlDecode(response.Headers["Set-Cookie"]).Split(";");
                 for (int i = 0; i < chao.Length; i++)
                 {
                     if (chao[i].Contains("customer_id"))
                     {
-                        firstcookie=chao[i].Replace(" path=/, ", "");
+                        firstcookie = chao[i].Replace(" path=/, ", "");
                         Regex regex = new Regex(@"(customer_id=).{5,}[0-9A-Z]&");
                         var macth = regex.Matches(firstcookie);
-                         var matchgroup= macth[0].ToString().Split("&");
+                        var matchgroup = macth[0].ToString().Split("&");
                         group[1] = matchgroup[0].Replace("customer_id=", "");
                         break;
                     }
@@ -74,7 +74,7 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 group[0] = readStream.ReadToEnd();
-               
+
                 response.Close();
                 readStream.Close();
                 tk.Status = "Get Size";
@@ -96,7 +96,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             int random = ran.Next(0, Mainwindow.proxypool.Count);
-            
+
             WebProxy wp = new WebProxy();
             try
             {
@@ -125,14 +125,14 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
             request.Headers.Add("x-requested-with", "XMLHttpRequest");
-           // request.AllowAutoRedirect = true;
-            request.Headers.Add("Cookie",firstcookie);
+            // request.AllowAutoRedirect = true;
+            request.Headers.Add("Cookie", firstcookie);
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 tk.Status = "ATC success";
-                var hcao=response.Headers["Set-Cookie"];
+                var hcao = response.Headers["Set-Cookie"];
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -162,7 +162,7 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-              //  HttpWebResponse response = (HttpWebResponse)ex.Response;
+                //  HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "ATC error";
                 goto B;
             }
@@ -245,7 +245,7 @@ namespace MAIO
             }
             return st;
         }
-        public string[] get(string url, Main.taskset tk, CancellationToken ct) 
+        public string[] get(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -276,7 +276,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = wp; 
+            request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
@@ -291,14 +291,14 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-                SourceCode=readStream.ReadToEnd();
+                SourceCode = readStream.ReadToEnd();
                 JObject jo = JObject.Parse(SourceCode);
-                 
+
                 response.Close();
                 readStream.Close();
                 string[] info = new string[2];
-                info[0]= jo["subtotal"].ToString();
-                info[1]= jo["parasparId"].ToString();
+                info[0] = jo["subtotal"].ToString();
+                info[1] = jo["parasparId"].ToString();
                 return info;
             }
             catch (WebException ex)
@@ -306,16 +306,16 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 goto A;
             }
-            
+
         }
-        public void Post(string url, Main.taskset tk, CancellationToken ct,string postinfo)
+        public void Post(string url, Main.taskset tk, CancellationToken ct, string postinfo)
         {
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-           
+
             WebProxy wp = new WebProxy();
             try
             {
@@ -356,13 +356,24 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 tk.Status = "Submitshipping";
+                string token = "";
                 if (response.ContentEncoding == "gzip")
                 {
+                    Stream receiveStream = response.GetResponseStream();
+                    StreamReader readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                    token = readStream.ReadToEnd();
                 }
                 else
                 {
+                    Stream receiveStream = response.GetResponseStream();
+                    StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                    token = readStream.ReadToEnd();
                 }
-                
+                if (token.Contains("\"object\": \"source\""))
+                {
+                    JObject jo = JObject.Parse(token);
+                    stripetoken.striptoken = jo["id"].ToString();
+                }              
                 response.Close();
             }
             catch (WebException ex)
@@ -371,10 +382,15 @@ namespace MAIO
                 tk.Status = "country error";
                 if (response.ContentEncoding == "gzip")
                 {
-             
+                    Stream receiveStream = response.GetResponseStream();
+                    StreamReader readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                    var wu = readStream.ReadToEnd();
                 }
                 else
                 {
+                    Stream receiveStream = response.GetResponseStream();
+                    StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                    var wu = readStream.ReadToEnd();
                 }
                 goto B;
             }
@@ -386,7 +402,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-           
+
             WebProxy wp = new WebProxy();
             try
             {
@@ -426,7 +442,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-              //  tk.Status = "StartCheckout";
+                //  tk.Status = "StartCheckout";
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -465,7 +481,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            
+
             WebProxy wp = new WebProxy();
             try
             {
@@ -544,7 +560,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-           
+
             WebProxy wp = new WebProxy();
             try
             {
@@ -594,7 +610,7 @@ namespace MAIO
                 JObject jo = JObject.Parse(SourceCode);
                 response.Close();
                 readStream.Close();
-                return jo["basket"]["payment_status"].ToString();
+                return jo["basket"]["payment_error"].ToString();
             }
             catch (WebException ex)
             {
