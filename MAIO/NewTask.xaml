@@ -30,6 +30,10 @@
                         <Setter Property="Margin" Value="0"/>
                     </Style>
                 </RichTextBox.Resources>
+                <RichTextBox.Document>
+                    <FlowDocument PageWidth="2048">
+                    </FlowDocument>
+                </RichTextBox.Document>
             </RichTextBox>
             <Button Content="Save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="Arial" Width="126" Height="37" Margin="-634,218,0,0" BorderBrush="#FF526C80">
                 <Button.Template>
@@ -56,6 +60,10 @@
                         <Setter Property="Margin" Value="0"/>
                     </Style>
                 </RichTextBox.Resources>
+                <RichTextBox.Document>
+                    <FlowDocument PageWidth="2048">
+                    </FlowDocument>
+                </RichTextBox.Document>
             </RichTextBox>
             <RichTextBox x:Name="discount" FontFamily="Arial" FontSize="14" Width="129" Height="23" Margin="-145,115,-20,0">
                 <RichTextBox.Resources>
@@ -63,6 +71,10 @@
                         <Setter Property="Margin" Value="0"/>
                     </Style>
                 </RichTextBox.Resources>
+                <RichTextBox.Document>
+                    <FlowDocument PageWidth="2048">
+                    </FlowDocument>
+                </RichTextBox.Document>
             </RichTextBox>
             <Label Content="Code" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-206,68,0,0"/>
             <ComboBox x:Name="Quantity" FontFamily="Arial" FontSize="14" Loaded="Quantity_Loaded" Width="129" Height="23" Margin="-126,216,0,0">
