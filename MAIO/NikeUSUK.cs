@@ -245,7 +245,10 @@ namespace MAIO
                                 {
                                     string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productID + ")";
                                     string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, skuid, randomsize);
-                                    skuid = group[0];
+                                    if (group[0] != null)
+                                    {
+                                        skuid = group[0];
+                                    }
                                 }
                                 else
                                 {

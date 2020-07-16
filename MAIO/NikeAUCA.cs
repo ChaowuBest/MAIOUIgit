@@ -168,7 +168,11 @@ namespace MAIO
                         {
                             string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
                             string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, skuid, randomsize);
-                            skuid = group[0];
+                            if (group[0] != null)
+                            {
+                                skuid = group[0];
+                            }
+                          
                             productid = group[1];
                         }
                         else
