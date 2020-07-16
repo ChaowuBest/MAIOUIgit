@@ -274,7 +274,6 @@ namespace MAIO
                     NAU.tk = tk;
                     NAU.Quantity = tk.Quantity;
                     NAU.StartTask(ct, cts);
-
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
@@ -439,7 +438,7 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 goto A;
             }
-            if (group[0] == "")
+            if (group[0] == null)
             {
                 goto A;
             }

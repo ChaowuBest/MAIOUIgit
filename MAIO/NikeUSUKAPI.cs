@@ -1279,6 +1279,10 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 goto A;
             }
+            if (group[0] == null)
+            {
+                goto A;
+            }
             return group;
         }
     }
