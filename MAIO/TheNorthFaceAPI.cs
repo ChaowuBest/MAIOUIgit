@@ -52,7 +52,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = wp;
+            //  request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
@@ -150,7 +150,7 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 tk.Status = "ATC success";
                 var cc = response.Headers["Set-Cookie"];
-                cookiename = new string[] { "JSESSIONID", "akavpau_VP_Scheduled_Maintenance", "", "SHOPPINGCART7001", "", "WC_PERSISTENT", "WC_ACTIVEPOINTER",};
+                cookiename = new string[] { "JSESSIONID", "akavpau_VP_Scheduled_Maintenance", "", "SHOPPINGCART7001", "", "WC_PERSISTENT", "WC_ACTIVEPOINTER", };
                 Regex rex1 = new Regex(@"(WC_AUTHENTICATION_)\d{9}");
                 Regex rex2 = new Regex(@"(WC_USERACTIVITY_)\d{9}");
                 cookiename[4] = rex1.Match(cc).ToString();
@@ -178,7 +178,7 @@ namespace MAIO
             }
             catch (Exception ex)
             {
-            
+
                 goto A;
             }
         }
@@ -235,7 +235,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                 var cc = response.Headers["Set-Cookie"];
+                var cc = response.Headers["Set-Cookie"];
                 Regex rex3 = new Regex(@"(?<=WC_PERSISTENT)([^;]+)");
                 if (rex3.Match(cc).Success)
                 {
@@ -445,8 +445,8 @@ namespace MAIO
                     }
                 }
                 else
-                {                  
-                }            
+                {
+                }
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
                 {
@@ -461,11 +461,11 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
-             
+
                 goto A;
             }
         }
-        public void Checkout(string url, Main.taskset tk, CancellationToken ct)
+        public string Checkout2(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -494,31 +494,24 @@ namespace MAIO
             {
                 wp = default;
             }
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string paypalurl = "";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback(AlwaysGoodCertificate);
-            request.Method = "GET";
-           // request.AllowAutoRedirect = false;
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-            var vhao = setATCcookie + @"WC_AUTHENTICATION_260446795=260446795%2CyHny1icOT2sS7CgM3hmUHTdQNd91QdHEAAcgBoGNORw%3D;_abck=C2FCFCDE684A30D3A5A5C7F0F53373F5~0~YAAQt1sauAwRYy1zAQAAcya+TASbhCLFPcVV8OE2pIbT181XIQ3R0fwRr4tWQ2CqoztsJn94MDBl20IyrNCBy0AcYccSuh4ijEi9qJjwUbrrxmZEkaKCcqG1Q8KIrnqC9TvwaieQcvv2JZQ1Tx69UnOx/Jjx+Kvr+Esag5pRRNL4QnzYHdyTArl8lYru3ZcSREEtbtoOEC87vbeYir3LCb7iv1POjlNOTcPsnT7Ru9HSqi8kHMbCVpXMX4LzttX3meYutB0/DuYPX9cPpinqihpKR7AG01sT/u2Ov+yomO8mAa71lNaigcG8Yb+ZjrAGth5TulLLCjElo7fwCw==~-1~-1~-1; bm_sz=0091CB54649C8F09B91B2196E00F4A87~YAAQt1sauJJnZy1zAQAATo1NUAgovNZ8onHeXO8sCpwPtpzhfj5+IyPILSd24D25+xwIXBXNtYef/6FMmdjy3eqHYI+NdQAHUahbq2eaxcDhkeaeE/MDcNv6au8JQnxv27hl9vEg5qkXu1LuxJk3C4knXewCU4xXUdomlSVYkkx58kt2kXg/rw2ehB9iHeZ4wWBw8+Q1";
-            var chao2=setATCcookie.Split(";");
-            request.Headers.Add("Cookie", setATCcookie);
+            request.Accept = "*/*";
+            request.Headers.Add("Cookie", setATCcookie + @"_abck=C2FCFCDE684A30D3A5A5C7F0F53373F5~0~YAAQt1sauFj6cC1zAQAAvu9LVQT+MZlZxHEfwuzP/Vxj8eU5COjTO+CUTKWU0rshGcvIO8ulIeqJyin2Q1sMeXkg4T6eASWhS9LjTY7RPHVmqQs8Bqhrqj5PMVqUG+SpAkMKqlV1eAwrUeFjfKm9Bsry2u2DdxRQJIPZOPGcT9w1T+QZ/PQfkrwPavpOczoIJ+HWOOmVcjO4MvzPBl0FZNqm1R6XfkMUhOEb4sc9A68i61LbQZI55Hjjr3SLmav2ooyvFxWW2VlZT0PojCFkjE/IkyONiqIQh9UEFzY1Cs+icuqcVtYlu5dUFeIZSErbW0rI0/uWRal0F9aUIQ==~-1~-1~-1; bm_sz=D3E84ED77D3408AE5ED7F61C8105E52C~YAAQt1sauLrNcC1zAQAAv90xVQgGtiyn7HdEpR98qimst+z2W1CGHsBAPjFc8OCL42LlilodC4lHinlUVaSykAfoGXh6mMJ7ofpNxDBrJVDA/huAWP2JiJu3hGJX0pLV88wQyR3ybYoWRNHl4UQxunOlgEDff5y/d9ZccHrkFnbhkWsNk3B5yljXzyhf2eiQ5wYVixpC");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
             request.Host = "www.thenorthface.com";
             request.Headers.Add("Sec-Fetch-Dest", "document");
             request.Headers.Add("Sec-Fetch-Mode", "navigate");
             request.Headers.Add("Sec-Fetch-Site", "same-origin");
-            request.Headers.Add("Sec-Fetch-User", "?1");
-            request.Headers.Add("Upgrade-Insecure-Requests", "1");
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
+           request.Headers.Add("Sec-Fetch-User", "?1");
+            request.Headers.Add("Upgrade-Insecure-Requests", "1");  
+           request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                var cc = response.Headers["Set-Cookie"];
-                string newUrl = response.Headers["Location"];
+                paypalurl = response.ResponseUri.ToString();
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -537,6 +530,7 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
+                paypalurl=response.ResponseUri.ToString();
                 if (response.ContentEncoding == "gzip")
                 {
                     readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
@@ -545,9 +539,14 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-                SourceCode = readStream.ReadToEnd();
+            
+             //   goto A;
+            }
+            if (paypalurl == "")
+            {
                 goto A;
             }
+            return paypalurl;
         }
         private static bool AlwaysGoodCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors policyErrors)
         {

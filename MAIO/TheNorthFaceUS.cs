@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -187,16 +189,45 @@ namespace MAIO
             }
             string getorderviewurl = "https://www.thenorthface.com/shop/VFAjaxGetOrderView";
             string orderinfo = "storeId=7001&orderId="+orderid+"&requesttype=ajax";
-          //  long time = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;    
             tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo);
 
             string AjaxOrderCalculate = "orderId="+orderid+"&storeId=7001&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
             string ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
             tnfAPI.orderdetail(ajaxorderurl,tk,ct,AjaxOrderCalculate);
 
-            string url = "https://www.thenorthface.com/shop/SendToPaypal?storeId=7001&orderId="+orderid+"&callSource=Payment&useraction=commit&cancelURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fVFBillingAndPaymentView%3forderId%3d"+orderid+"%26storeId%3d7001&returnURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fZCReturnFromPaypal%3fcallSource%3dPayment%26orderId%3d"+orderid+"%26shippingAddressName%3dPayPal%2bShipping%26billingAddressName%3dPayPal%2bBilling%26storeId%3d7001%26URL%3dOrderOKView ";    
-            
-            tnfAPI.Checkout(url,tk,ct);
+            string url = "https://www.thenorthface.com/shop/SendToPaypal?storeId=7001&orderId="+orderid+"&callSource=Payment&useraction=commit&cancelURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fVFBillingAndPaymentView%3forderId%3d"+orderid+"%26storeId%3d7001&returnURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fZCReturnFromPaypal%3fcallSource%3dPayment%26orderId%3d"+orderid+"%26shippingAddressName%3dPayPal%2bShipping%26billingAddressName%3dPayPal%2bBilling%26storeId%3d7001%26URL%3dOrderOKView ";
+            string paypallink=tnfAPI.Checkout2(url,tk,ct);
+            string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + paypallink + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";         
+            Http("https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", pd2);
+            Http(Config.webhook, pd2);
+            tk.Status = "Success";
+
+        }
+        public void Http(string url, string postDataStr)
+        {
+        Retry: Random ra = new Random();
+            int sleeptime = ra.Next(0, 3000);
+            Thread.Sleep(sleeptime);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            byte[] bytes = Encoding.UTF8.GetBytes(postDataStr);
+            request.ContentLength = bytes.Length;
+            Stream webstream = request.GetRequestStream();
+            webstream.Write(bytes, 0, bytes.Length);
+            webstream.Close();
+            try
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                Thread.Sleep(500);
+                tk.Status = ex.Message.ToString();
+                goto Retry;
+            }
+
         }
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
