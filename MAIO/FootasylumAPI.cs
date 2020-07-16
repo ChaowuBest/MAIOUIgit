@@ -74,7 +74,7 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 group[0] = readStream.ReadToEnd();
-                
+               
                 response.Close();
                 readStream.Close();
                 tk.Status = "Get Size";

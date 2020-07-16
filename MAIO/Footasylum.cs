@@ -4,6 +4,7 @@ using System;
 using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -91,18 +92,18 @@ namespace MAIO
             var group =fasyapi.GetHtmlsource(link,tk,ct);
             string sourcecode = group[0];
              coucustomer_id = group[1];
-            Regex regex = new Regex(@"{[^}]+}");
+            Regex regex = new Regex(@"(?<=variants =)([^\n]+)");
             MatchCollection match = regex.Matches(sourcecode);
+            string variant=regex.Match(sourcecode).ToString().Replace("'",@"""");
+            JObject jo = JObject.Parse(variant);
             string skuid = "";
-            foreach (var i in match)
+            foreach (var item in jo)
             {
-                if (i.ToString().Contains(pid2)&&i.ToString().Contains("Size "+size+""))
+                if (jo[item.Key]["option2"].ToString() == tk.Size && jo[item.Key]["sku"].ToString().Contains(pid2))
                 {
-                    Regex regexsku = new Regex(@"\d{7}");
-                    MatchCollection matchsku = regexsku.Matches(i.ToString());
-                    skuid =matchsku[0].ToString();
+                    skuid = jo[item.Key]["sku"].ToString();
                 }
-            }
+            }                 
             return skuid;
         }
         public void Checkout(string profile, string skuid, CancellationToken ct)
