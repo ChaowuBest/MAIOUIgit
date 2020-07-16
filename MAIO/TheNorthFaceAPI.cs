@@ -505,9 +505,9 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Dest", "document");
             request.Headers.Add("Sec-Fetch-Mode", "navigate");
             request.Headers.Add("Sec-Fetch-Site", "same-origin");
-           request.Headers.Add("Sec-Fetch-User", "?1");
+            request.Headers.Add("Sec-Fetch-User", "?1");
             request.Headers.Add("Upgrade-Insecure-Requests", "1");  
-           request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -539,8 +539,6 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-            
-             //   goto A;
             }
             if (paypalurl == "")
             {

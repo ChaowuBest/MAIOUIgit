@@ -221,10 +221,9 @@ namespace MAIO
             {
                 HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 Thread.Sleep(500);
-                tk.Status = ex.Message.ToString();
                 goto Retry;
             }
 
