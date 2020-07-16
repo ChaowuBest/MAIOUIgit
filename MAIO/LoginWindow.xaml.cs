@@ -21,11 +21,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.83
+    /// version 0.84
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.83";//everychange
+        public static string version = "0.84";//everychange
 
         public LoginWindow()
         {
@@ -34,11 +34,11 @@ namespace MAIO
         }     
         public void checkkey()
         {
-            var ip = this.GetIPAddress();
+            var hwid = MD5Helper.EncryptString(FingerPrint.Value());
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             if (File.Exists(path))
             {
-                if (this.keycheck(ip))
+                if (this.keycheck(hwid))
                 {
                     try
                     {
@@ -71,7 +71,7 @@ namespace MAIO
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             Mainwindow MD = new Mainwindow();
             string key = Keyinput.Text;
-            var ip = GetIPAddress();
+            var hwid = MD5Helper.EncryptString(FingerPrint.Value());
             var checkkey = AESHelper.Decrypt(key);
             if (checkkey == "")
             {
@@ -80,7 +80,7 @@ namespace MAIO
             else
             {
                 var md5checkkey = MD5Helper.EncryptString(key);
-                bool keyvaild = keyauth(md5checkkey, ip, version);
+                bool keyvaild = keyauth(md5checkkey, hwid, version);
                 if (keyvaild)
                 {
                     if (!File.Exists(path))
@@ -121,35 +121,7 @@ namespace MAIO
                 }
             }
         }
-        string GetIPAddress()
-        {
-            try
-            {
-                string st = "";
-                ManagementClass mc = new ManagementClass("Win32_NetworkAdapterConfiguration");
-                ManagementObjectCollection moc = mc.GetInstances();
-                foreach (ManagementObject mo in moc)
-                {
-                    if ((bool)mo["IPEnabled"] == true)
-                    {
-                        Array ar;
-                        ar = (Array)(mo.Properties["IpAddress"].Value);
-
-                        st = ar.GetValue(0).ToString();
-                        break;
-                    }
-                }
-                moc = null;
-                mc = null;
-                return st;
-            }
-            catch
-            {
-                return "unknow";
-            }
-            finally
-            { }
-        }
+       
         public bool keyauth(string md5key, string cpuid, string version)
         {
             var binding = new BasicHttpBinding();
