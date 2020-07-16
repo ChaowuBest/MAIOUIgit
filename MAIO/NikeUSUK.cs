@@ -38,7 +38,7 @@ namespace MAIO
         private static char[] num = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
         public void StartTask(CancellationToken ct)
         {
-        A: int n = 0;
+        A: 
             try
             {
                 GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
@@ -67,7 +67,7 @@ namespace MAIO
             {
                 return;
             }
-        C: int i = 0;
+        C: 
             if (giftcard == "")
             {
                 try
@@ -83,7 +83,7 @@ namespace MAIO
                     return;
                 }
             }                     
-        D: int u = 0;
+        D:
             try
             {
                   Checkoutpreview(Authorization, skuid,joprofile,ct);
@@ -96,7 +96,7 @@ namespace MAIO
             {
                 return;
             }
-        E: int o = 0;
+        E: 
             try
             {
                 CheckoutpreviewStatus(Authorization, skuid,ct);

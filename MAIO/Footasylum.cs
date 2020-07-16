@@ -26,7 +26,6 @@ namespace MAIO
         string coucustomer_id = "";
         string checkoutsession = "";
         string paymenturl = "";
-        string captchatoken = "";
         FootasylumAPI fasyapi = new FootasylumAPI();
         string skuid = "";
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
@@ -51,7 +50,7 @@ namespace MAIO
             {
                 return;
             }
-        B: string payinfo = "";
+        B: //string payinfo = "";
             try
             {
                 Checkout(joprofile.ToString(), skuid,ct);
@@ -64,7 +63,7 @@ namespace MAIO
             {
                 return;
             }
-        C: int i = 0;
+        C: 
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
