@@ -23,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Fleck" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="PuppeteerSharp" Version="2.0.3" />
     <PackageReference Include="System.Collections" Version="4.3.0" />
     <PackageReference Include="System.Management" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
@@ -44,6 +45,10 @@
 
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="puppeteer\" />
   </ItemGroup>
 
 </Project>
