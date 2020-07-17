@@ -501,6 +501,19 @@ namespace MAIO
                                 tk.Status = "No Account";
                             }
                         }
+                        else if (tk.Tasksite == "TheNorthFaceUS")
+                        {
+                            TheNorthFaceUS tnfus = new TheNorthFaceUS();
+                            tnfus.link = tk.Sku;
+                            tnfus.profile = Mainwindow.allprofile[tk.Profile];
+                            tnfus.size = tk.Size;
+                            tnfus.tk = tk;
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            tnftask.Start();
+                        }
                     }
                     catch
                     {

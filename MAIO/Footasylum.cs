@@ -97,12 +97,30 @@ namespace MAIO
             string variant = regex.Match(sourcecode).ToString().Replace("'", @"""");
             JObject jo = JObject.Parse(variant);
             string skuid = "";
+            ArrayList skulist = new ArrayList();
             foreach (var item in jo)
             {
-                if (jo[item.Key]["option2"].ToString() == tk.Size && jo[item.Key]["sku"].ToString().Contains(pid2))
+                if (randomsize)
                 {
-                    skuid = jo[item.Key]["sku"].ToString();
+                    if (jo[item.Key]["sku"].ToString().Contains(pid2))
+                    {
+                        skulist.Add(jo[item.Key]["sku"].ToString());
+                    }               
                 }
+                else
+                {
+                    if (jo[item.Key]["option2"].ToString() == tk.Size && jo[item.Key]["sku"].ToString().Contains(pid2))
+                    {
+                        skuid = jo[item.Key]["sku"].ToString();
+                    }
+                }
+              
+            }
+            if (randomsize)
+            {
+                Random ran = new Random();
+                int i=ran.Next(0,skulist.Count);
+                skuid=skulist[i].ToString();
             }
             if (skuid == "" || skuid == null)
             {
@@ -176,7 +194,7 @@ namespace MAIO
             string url = "https://paymentgateway.checkout.footasylum.net/basket/paraspar?basket_id="+checkoutsession+"&medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
             string[] info = new string[2];
 
-             info = fasyapi.get(url,tk,ct);
+            info = fasyapi.get(url,tk,ct);
             string parasparId = info[1];
             string amount = info[0].Replace(".", "");
 
@@ -234,7 +252,6 @@ namespace MAIO
                  status = fasyapi.Getstatus(processurl, tk, ct);
                 if (status.Contains("pending"))
                 {
-
                 }
                 else
                 {
