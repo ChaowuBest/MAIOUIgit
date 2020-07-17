@@ -296,6 +296,10 @@ namespace MAIO
                         tnfus.link = tk.Sku;
                         tnfus.profile = Mainwindow.allprofile[tk.Profile];
                         tnfus.size = tk.Size;
+                        if (tk.Size == "RA" || tk.Size == "ra")
+                        {
+                            tnfus.randomsize = true;
+                        }
                         tnfus.tk = tk;
                         var cts = new CancellationTokenSource();
                         var ct = cts.Token;

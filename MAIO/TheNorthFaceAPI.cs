@@ -52,7 +52,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //  request.Proxy = wp;
+            request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
@@ -125,7 +125,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //  request.Proxy = wp;
+            request.Proxy = wp;
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
@@ -215,7 +215,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            // request.Proxy = wp;
+            request.Proxy = wp;
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
@@ -238,6 +238,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                tk.Status = "SubmittingShipping";
                 var cc = response.Headers["Set-Cookie"];
                 Regex rex3 = new Regex(@"(?<=WC_PERSISTENT)([^;]+)");
                 if (rex3.Match(cc).Success)
@@ -314,7 +315,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            // request.Proxy = wp;
+            request.Proxy = wp;
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
@@ -337,6 +338,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                tk.Status = "SubmittingBilling";
                 var cc = response.Headers["Set-Cookie"];
                 Regex rex3 = new Regex(@"(?<=WC_PERSISTENT)([^;]+)");
                 if (rex3.Match(cc).Success)
@@ -413,7 +415,7 @@ namespace MAIO
                 wp = default;
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            // request.Proxy = wp;
+            request.Proxy = wp;
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
@@ -503,6 +505,7 @@ namespace MAIO
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback(AlwaysGoodCertificate);
             request.Accept = "*/*";
+            request.Proxy = wp;
             request.Headers.Add("Cookie", setATCcookie); //+ @"_abck=C2FCFCDE684A30D3A5A5C7F0F53373F5~0~YAAQt1sauFj6cC1zAQAAvu9LVQT+MZlZxHEfwuzP/Vxj8eU5COjTO+CUTKWU0rshGcvIO8ulIeqJyin2Q1sMeXkg4T6eASWhS9LjTY7RPHVmqQs8Bqhrqj5PMVqUG+SpAkMKqlV1eAwrUeFjfKm9Bsry2u2DdxRQJIPZOPGcT9w1T+QZ/PQfkrwPavpOczoIJ+HWOOmVcjO4MvzPBl0FZNqm1R6XfkMUhOEb4sc9A68i61LbQZI55Hjjr3SLmav2ooyvFxWW2VlZT0PojCFkjE/IkyONiqIQh9UEFzY1Cs+icuqcVtYlu5dUFeIZSErbW0rI0/uWRal0F9aUIQ==~-1~-1~-1; bm_sz=D3E84ED77D3408AE5ED7F61C8105E52C~YAAQt1sauLrNcC1zAQAAv90xVQgGtiyn7HdEpR98qimst+z2W1CGHsBAPjFc8OCL42LlilodC4lHinlUVaSykAfoGXh6mMJ7ofpNxDBrJVDA/huAWP2JiJu3hGJX0pLV88wQyR3ybYoWRNHl4UQxunOlgEDff5y/d9ZccHrkFnbhkWsNk3B5yljXzyhf2eiQ5wYVixpC");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
@@ -516,6 +519,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                tk.Status = "SubmittingPayment";
                 paypalurl = response.ResponseUri.ToString();
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
