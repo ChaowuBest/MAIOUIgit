@@ -17,13 +17,14 @@ namespace MAIO
     public partial class Profile : UserControl
     {
         public Profile()
-        {
+        {            
             InitializeComponent();
             for (int i = 0; i < Mainwindow.allprofile.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
                 profilelist.Items.Add(kv.Key);
             }
+            countrylist.ItemsSource = Countrycode.countrycode;
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -51,7 +52,7 @@ namespace MAIO
                 string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
                "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
                "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
-               Text + "\",\"Country\":\"" + country.Text + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
+               Text + "\",\"Country\":\"" + countrylist.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
                "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
                 //  Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
                 Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
@@ -158,7 +159,7 @@ namespace MAIO
             zipcode.Text = jo["Zipcode"].ToString();
             city.Text = jo["City"].ToString();
             state.Text = jo["State"].ToString();
-            country.Text = jo["Country"].ToString();
+            countrylist.Text = jo["Country"].ToString();        
             cardnumber.Text = jo["Cardnum"].ToString();
             CVV.Text = jo["Cvv"].ToString();
             MMYY.Text = jo["MMYY"].ToString();

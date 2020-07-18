@@ -51,7 +51,6 @@ namespace MAIO
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
         public Mainwindow()
         {
-
             InitializeComponent();
             Initialprofile();
             Initialproxy();
@@ -63,7 +62,6 @@ namespace MAIO
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
-
         }
         string[] sArray = new string[4];
         public void Initialproxy()

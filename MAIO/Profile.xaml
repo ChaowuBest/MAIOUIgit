@@ -240,27 +240,6 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
-            <TextBox Height="25" Name="country" TextWrapping="Wrap" Width="200" Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionTextBrushKey}}" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center" Margin="-760,0,0,145">
-                <TextBox.Resources>
-                    <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
-                        <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Country"/>
-                        </VisualBrush.Visual>
-                    </VisualBrush>
-                </TextBox.Resources>
-                <TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Style.Triggers>
-                            <Trigger Property="Text" Value="{x:Null}">
-                                <Setter Property="Background" Value="{StaticResource HelpBrush}"/>
-                            </Trigger>
-                            <Trigger Property="Text" Value="">
-                                <Setter Property="Background" Value="{StaticResource HelpBrush}"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
             <TextBox Height="25" Name="state" TextWrapping="Wrap" Width="200" Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionTextBrushKey}}" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center" Margin="-200,0,0,145">
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
@@ -402,6 +381,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
+            <ComboBox Height="25" Name="countrylist" Width="200" Margin="-760,-146,0,0" FontFamily="Arial" FontSize="14" Text="Country"/>
         </StackPanel>
         <Label Content="Profiles" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="291" Margin="92,80,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="917,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
