@@ -293,9 +293,15 @@ namespace MAIO
                 }
                 SourceCode = readStream.ReadToEnd();
                 JObject jo = JObject.Parse(SourceCode);
-
+               
                 response.Close();
                 readStream.Close();
+                if (jo["errorsObject"][0]["status"].ToString() == 500.ToString())
+                {
+                  C: tk.Status = "Size OOS";
+                    Thread.Sleep(36000000);
+                    goto C;
+                }
                 string[] info = new string[2];
                 info[0] = jo["subtotal"].ToString();
                 info[1] = jo["parasparId"].ToString();

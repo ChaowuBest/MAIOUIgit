@@ -176,6 +176,14 @@ namespace MAIO
                 }
                 SourceCode = readStream.ReadToEnd();
                 JObject ja = JObject.Parse(SourceCode);
+                if (SourceCode.Contains("error"))
+                {
+                    if (SourceCode.Contains("errorCode"))
+                    {
+                        tk.Status = "ATCError Retrying";
+                        goto A;
+                    }
+                }             
                 string orderid = ja["orderId"][0].ToString();
                 return orderid;
             }
@@ -285,7 +293,7 @@ namespace MAIO
                 goto A;
             }
         }
-        public void preorder(string url, Main.taskset tk, CancellationToken ct, string info)
+        public void preorder(string url, Main.taskset tk, CancellationToken ct, string info,string eid,string sizeid,string productid, CancellationTokenSource cts)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -353,7 +361,6 @@ namespace MAIO
                 }
                 else
                 {
-
                 }
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
@@ -366,6 +373,30 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
+                if (SourceCode.Contains("The size/color/quantity you selected for this item is unavailable"))
+                {
+                    string monitorurl = "";
+                    if (tk.Tasksite == "TheNorthFaceUK")
+                    {
+                        monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7005&productId=" + productid + "&requestype=ajax&requesttype=ajax";
+                    }
+                    else
+                    {
+                        monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7001&productId=" + productid + "&requestype=ajax&requesttype=ajax";
+                    }
+                    if ((bool)Monitor(monitorurl, tk, ct, eid, sizeid) == false)
+                    {
+                        TheNorthFaceUSUK tnfusuk = new TheNorthFaceUSUK();
+                        tnfusuk.tasksite = tk.Tasksite;
+                        tnfusuk.link = tk.Sku;
+                        tnfusuk.profile = Mainwindow.allprofile[tk.Profile];
+                        tnfusuk.size = tk.Size;
+                        tnfusuk.randomsize = true;                     
+                        tnfusuk.tk = tk;
+                        tnfusuk.StartTask(ct,cts);
+
+                    }
+                }
 
             }
             catch (WebException ex)
@@ -385,7 +416,7 @@ namespace MAIO
                 goto A;
             }
         }
-        public void orderdetail(string url, Main.taskset tk, CancellationToken ct, string info)
+        public void orderdetail(string url, Main.taskset tk, CancellationToken ct, string info, TNFUKBillingid tbl)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -463,7 +494,14 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-                SourceCode = readStream.ReadToEnd();
+                if (tk.Tasksite == "TheNorthFaceUK")
+                {
+                    SourceCode = readStream.ReadToEnd();
+                    JObject jo = JObject.Parse(SourceCode);
+                    tbl.Billingid = jo["addresses"][0]["id"].ToString();
+                }
+               
+                
             }
             catch (WebException ex)
             {
@@ -510,9 +548,10 @@ namespace MAIO
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
             request.Host = "www.thenorthface.com";
+         //  request.AllowAutoRedirect = false;
             request.Headers.Add("Sec-Fetch-Dest", "document");
             request.Headers.Add("Sec-Fetch-Mode", "navigate");
-            request.Headers.Add("Sec-Fetch-Site", "same-origin");
+            request.Headers.Add("Sec-Fetch-Site", "cross-site");
             request.Headers.Add("Sec-Fetch-User", "?1");
             request.Headers.Add("Upgrade-Insecure-Requests", "1");  
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
@@ -531,7 +570,7 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-                SourceCode = readStream.ReadToEnd();
+               // SourceCode = readStream.ReadToEnd();
 
             }
             catch (WebException ex)
@@ -548,12 +587,210 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
+                SourceCode = readStream.ReadToEnd();
             }
             if (paypalurl == "")
             {
                 goto A;
             }
             return paypalurl;
+        }
+        public string precheckout(string url, Main.taskset tk, CancellationToken ct, string info)
+        {
+        A: if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string SourceCode = "";
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
+            WebProxy wp = new WebProxy();
+            try
+            {
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
+            }
+            catch
+            {
+                wp = default;
+            }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Proxy = wp;
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
+            request.Accept = "application/json, text/javascript, */*; q=0.01";
+            var vhao = setATCcookie + @"_abck=6B1F86726B56B280CE1E1B6B0F52E87F~0~YAAQt1sauAqYWS1zAQAASDPCRQRkXVaReL4shFhAGm31XmxlmD3vdbCdNdtwY3tI7OEvqbCCOoysmIiEyQPd/V6nKBB8GtCzbN42dZmWXpA01yhbcoF8yBKNTWFaHx/0V2d228vAFjisBfn0x0Mun8uuD5Vxg26TzPD4DcMI8Oe1P5jrmfBpk09/y59u/A/5Lf0sntUaJVhMDNqiQEnXPyqOscU4fNi/C5dqA6qIzrylfo6btxcGkKEjXP4pGdv1dNCIhoZCIVKC/+Uwk3FEMPSiJ9kKBZvCZt83Soe6e+j0iO1ZfpSGMCBzHL3Wf4e3GnIZ4z1Dwrzw5ARKWA==~-1~-1~-1; bm_sz=524251366C1A0862CDA936AB8C2469AE~YAAQfSZzaHrFdC5zAQAA7Hq8RQg3tdx66S40ALG3yb4MMWbVi4kbv1jP0GtlhCrX9NsgozpV67sh77NR+0reRUsX9Iax0worjBzKp2KRwID9eD4F+OVyHLPkwGMBUtOKcDQJ9P2dCSNhPWbfU/GTJfL1/lukeH8kLFcHesaIIkc0I/BQZCqmXpdrdB1OgSLL6r3Le384";
+            request.Headers.Add("Cookie", vhao);
+            request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
+            request.ContentLength = contentpaymentinfo.Length;
+            request.Host = "www.thenorthface.co.uk";
+            request.Headers.Add("Origin", "https://www.thenorthface.com");
+            request.Headers.Add("Sec-Fetch-Dest", "empty");
+            request.Headers.Add("Sec-Fetch-Mode", "cors");
+            request.Headers.Add("Sec-Fetch-Site", "same-origin");
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
+            request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+            Stream paymentstream = request.GetRequestStream();
+            paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
+            paymentstream.Close();
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                var cc = response.Headers["Set-Cookie"];
+                Regex rex3 = new Regex(@"(?<=WC_PERSISTENT)([^;]+)");
+                if (rex3.Match(cc).Success)
+                {
+                    cookiename[5] = "WC_PERSISTENT" + rex3.Match(cc).ToString();
+                    TnfCheckoutcookie.cookielist[5].Value = rex3.Match(cc).ToString();
+                    setATCcookie = "";
+                    for (int i = 0; i < cookiename.Length; i++)
+                    {
+                        setATCcookie += cookiename[i] + "; ";
+                    }
+                }
+                else
+                {
+                }
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                SourceCode = readStream.ReadToEnd();
+                if (SourceCode.Contains("error"))
+                {
+                    // goto A;
+                }
+                return SourceCode;
+
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                SourceCode = readStream.ReadToEnd();
+                goto A;
+            }
+        }
+        public object Monitor(string url, Main.taskset tk, CancellationToken ct,string eid,string sizeid)
+        {
+        A: if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+
+            }
+            string SourceCode = "";
+            bool isstocknull = true;
+            JObject jo = null;
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
+            WebProxy wp = new WebProxy();
+            try
+            {
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
+            }
+            catch
+            {
+                wp = default;
+            }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Proxy = wp;
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                tk.Status = "WaitingRestock";
+                var chao = System.Web.HttpUtility.UrlDecode(response.Headers["Set-Cookie"]);
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                SourceCode = readStream.ReadToEnd();
+                if (url.Contains("VFAjaxProductAvailabilityView"))
+                {
+                    jo = JObject.Parse(SourceCode);
+                    response.Close();
+                    readStream.Close();
+                    foreach (var i in jo["partNumbers"].ToArray())
+                    {
+                        if (i.ToString().Contains(eid))
+                        {
+                            Regex rex = new Regex(@"\d{6}");
+                            sizeid = rex.Match(i.ToString()).ToString();
+                            break;
+                        }
+                    }
+                    foreach (var i in jo["stock"].ToArray())
+                    {
+                        if (i.ToString().Contains(sizeid))
+                        {
+                            var st = i.ToString().Replace(sizeid, "").Replace(",", "").Replace(" ", "").Replace("\"", "").Replace(":", "");
+                            int stock = int.Parse(st);
+                            if (stock > 0)
+                            {
+                                isstocknull = false;
+                                break;
+                            }
+                            else
+                            {
+                                goto A;
+                            }
+                        }
+                    }
+                  
+                }
+                return isstocknull;
+
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                goto A;
+            }
+
         }
         private static bool AlwaysGoodCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors policyErrors)
         {

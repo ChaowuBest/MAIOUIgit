@@ -36,16 +36,16 @@ namespace MAIO
         {
             InitializeComponent();
             updatelable("123",true);
+            
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
-                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
+                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);         
                 JObject jo = JObject.Parse(kv.Value);
-                var chao=jo.ToString();
                 Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString() });
             }
             datagrid.ItemsSource = Mainwindow.task;
             cookienum.Dispatcher.Invoke(new Action(
-                delegate
+              delegate
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
@@ -56,7 +56,7 @@ namespace MAIO
         {
         A: foreach (var i in Mainwindow.cookiewtime.ToArray())
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                 var cookitime = ConvertStringToDateTime(i.Key.ToString());
                 var nowtime = ConvertStringToDateTime(timest.ToString());
@@ -114,6 +114,7 @@ namespace MAIO
             public string Profile { get; set; }
             public string Proxies { get; set; }
             private string status;
+           
             public string Status
             {
                 get { return status; }
@@ -292,10 +293,29 @@ namespace MAIO
                     }
                     else if (tk.Tasksite == "TheNorthFaceUS")
                     {
-                        TheNorthFaceUS tnfus = new TheNorthFaceUS();
+                        TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
                         tnfus.link = tk.Sku;
                         tnfus.profile = Mainwindow.allprofile[tk.Profile];
                         tnfus.size = tk.Size;
+                        if (tk.Size == "RA" || tk.Size == "ra")
+                        {
+                            tnfus.randomsize = true;
+                        }
+                        tnfus.tasksite = tk.Tasksite;
+                        tnfus.tk = tk;
+                        var cts = new CancellationTokenSource();
+                        var ct = cts.Token;
+                        Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
+                        dic.Add(tk.Taskid, cts);
+                        tnftask.Start();
+                    }
+                    else if (tk.Tasksite == "TheNorthFaceUK")
+                    {
+                        TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
+                        tnfus.link = tk.Sku;
+                        tnfus.profile = Mainwindow.allprofile[tk.Profile];
+                        tnfus.size = tk.Size;
+                        tnfus.tasksite = tk.Tasksite;
                         if (tk.Size == "RA" || tk.Size == "ra")
                         {
                             tnfus.randomsize = true;
@@ -349,7 +369,6 @@ namespace MAIO
         private void BtnDelete_Click_1(object sender, RoutedEventArgs e)
         {
             taskset del = (taskset)((Button)sender).DataContext;
-            //  var chao=dic[del.Taskid];
             if (dic.Keys.Contains(del.Taskid))
             {
                 dic[del.Taskid].Cancel();
@@ -507,10 +526,29 @@ namespace MAIO
                         }
                         else if (tk.Tasksite == "TheNorthFaceUS")
                         {
-                            TheNorthFaceUS tnfus = new TheNorthFaceUS();
+                            TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
                             tnfus.link = tk.Sku;
                             tnfus.profile = Mainwindow.allprofile[tk.Profile];
                             tnfus.size = tk.Size;
+                            tnfus.tk = tk;
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            tnftask.Start();
+                        }
+                        else if (tk.Tasksite == "TheNorthFaceUK")
+                        {
+
+                            TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
+                            tnfus.link = tk.Sku;
+                            tnfus.profile = Mainwindow.allprofile[tk.Profile];
+                            tnfus.size = tk.Size;
+                            tnfus.tasksite = tk.Tasksite;
+                            if (tk.Size == "RA" || tk.Size == "ra")
+                            {
+                                tnfus.randomsize = true;
+                            }
                             tnfus.tk = tk;
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;

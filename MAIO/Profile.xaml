@@ -61,10 +61,10 @@
                     <GridViewColumn/>
                     <GridViewColumn Header="Action" Width="100" >
                         <GridViewColumn.CellTemplate>
-                        <DataTemplate>
+                            <DataTemplate>
                                 <Button x:Name="BtnDelete" Background="{x:Null}"  BorderBrush="{x:Null}" Click="BtnDelete_Click" Content="X" Foreground="#FFD44444" >
                                 </Button>
-                        </DataTemplate>
+                            </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
@@ -72,11 +72,15 @@
         </ListView>
         <StackPanel Margin="390,114,23,80" Name="panel" Orientation="Horizontal">
             <Label Content="Billing Info" Height="35" Width="94" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" HorizontalAlignment="Stretch" Margin="20,0,0,530"/>
-            <TextBox Height="25" TextWrapping="Wrap" Name="firstname" Width="200" Margin="-83,0,0,465" Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionTextBrushKey}}" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center">
+            <TextBox Height="25" TextWrapping="Wrap" Name="firstname" Width="200" Margin="-83,0,0,465" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center" SelectionBrush="#FF0078D7">
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="First Name"/>
+                            <TextBlock FontStyle="Italic" Text="First Name" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}" >
+                                <TextBlock.Background>
+                                    <ImageBrush/>
+                                </TextBlock.Background>
+                            </TextBlock>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -97,7 +101,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Last Name"/>
+                            <TextBlock FontStyle="Italic" Text="Last Name" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -118,7 +122,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Email Address"/>
+                            <TextBlock FontStyle="Italic" Text="Email Address" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -139,7 +143,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Tel"/>
+                            <TextBlock FontStyle="Italic" Text="Tel" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -160,7 +164,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Address1"/>
+                            <TextBlock FontStyle="Italic" Text="Address1" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -181,7 +185,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Address2"/>
+                            <TextBlock FontStyle="Italic" Text="Address2" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -202,7 +206,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Zipcode"/>
+                            <TextBlock FontStyle="Italic" Text="Zipcode" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -223,7 +227,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="City"/>
+                            <TextBlock FontStyle="Italic" Text="City" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -244,7 +248,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="State"/>
+                            <TextBlock FontStyle="Italic" Text="State" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -266,7 +270,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Name On Card"/>
+                            <TextBlock FontStyle="Italic" Text="Name On Card" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -287,7 +291,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Card Number"/>
+                            <TextBlock FontStyle="Italic" Text="Card Number" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -308,7 +312,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="MM/YY"/>
+                            <TextBlock FontStyle="Italic" Text="MM/YY" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -329,7 +333,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Cvv"/>
+                            <TextBlock FontStyle="Italic" Text="Cvv" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
@@ -350,7 +354,7 @@
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
                         <VisualBrush.Visual>
-                            <TextBlock FontStyle="Italic" Text="Profile Name"/>
+                            <TextBlock FontStyle="Italic" Text="Profile Name" Foreground="{DynamicResource {x:Static SystemColors.InactiveBorderBrushKey}}"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
                 </TextBox.Resources>
