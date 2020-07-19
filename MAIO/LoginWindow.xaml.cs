@@ -69,18 +69,56 @@ namespace MAIO
         {
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             Mainwindow MD = new Mainwindow();
-            FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-            fs1.Close();
-            File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\"}");
-            Config.Key = MD.Key = "123";
-            Config.webhook = MD.webhook = "";
-            Config.cid = MD.cid = "";
-            Config.cjevent = MD.cjevent = "";
-            Config.delay = "";
-            Config.Usemonitor = "";
-            Config.UseAdvancemode = "";
-            Close();
-            MD.Show();
+            string key = Keyinput.Text;
+            var hwid = MD5Helper.EncryptString(FingerPrint.Value());
+            var checkkey = AESHelper.Decrypt(key);
+            if (checkkey == "")
+            {
+                Keyinput.Text = "";
+            }
+            else
+            {
+                var md5checkkey = MD5Helper.EncryptString(key);
+                bool keyvaild = keyauth(md5checkkey, hwid, version);
+                if (keyvaild)
+                {
+                    if (!File.Exists(path))
+                    {
+                        FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        fs1.Close();
+                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\"}");
+                        Config.Key = MD.Key = key;
+                        Config.webhook = MD.webhook = "";
+                        Config.cid = MD.cid = "";
+                        Config.cjevent = MD.cjevent = "";
+                        Config.delay = "";
+                        Config.Usemonitor = "";
+                        Config.UseAdvancemode = "";
+                        Close();
+                        MD.Show();
+                    }
+                    else
+                    {
+                        string config = File.ReadAllText(path);
+                        JObject jo = JObject.Parse(config);
+                        jo["key"] = key;
+                        File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
+                        Config.Key = jo["key"].ToString();
+                        Config.webhook = jo["webhook"].ToString();
+                        Config.cid = jo["cid"].ToString();
+                        Config.cjevent = jo["cjevent"].ToString();
+                        Config.delay = jo["delay"].ToString();
+                        Config.Usemonitor = jo["Usemonitor"].ToString();
+                        Config.UseAdvancemode = jo["Advancemode"].ToString();
+                        Close();
+                        MD.Show();
+                    }
+                }
+                else
+                {
+                    Keyinput.Text = "";
+                }
+            }
         }
        
         public bool keyauth(string md5key, string cpuid, string version)
