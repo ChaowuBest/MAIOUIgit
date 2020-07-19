@@ -148,19 +148,10 @@ namespace MAIO
         }
         private void gencookie(object sender, RoutedEventArgs e)
         {
-            try
-            {            
-                Task task1 = new Task(() => ws());
-                task1.Start();
-                Task task2 = new Task(() => ws());
-                task2.Start();
-            }
-            catch
-            {
-                MessageBox.Show("You must have chrome");
-            }
+            CookieGen cookieGen = new CookieGen();
+            cookieGen.ShowDialog();
         }
-        public void ws()
+        public void ws(string site)
         {
             string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
@@ -210,7 +201,7 @@ namespace MAIO
                             }
                             string cookie = "_abck=" + jo["value"].ToString() + ";bm_sz=" + bmsz + ";geoloc=" + geoc;
                             long time2=  (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                            string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\"}]";
+                            string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
                             Mainwindow.lines.Add(cookie);
                             Mainwindow.cookiewtime.Add(time2,cookie);
                             Mainwindow.iscookielistnull = false;
