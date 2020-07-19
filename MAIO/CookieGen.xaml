@@ -8,7 +8,7 @@
         Title="CookieGen" Height="450" Width="800">
     <Grid Background="#FF415C5C">
         <Button Content="start gen nike" HorizontalAlignment="Center" Margin="0,57,0,0" VerticalAlignment="Top" Width="264" Click="Button_Click"/>
-        <Button Content="start gen TNF" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.94,0.647" Width="264" Click="Button_Click_1"/>
+        <Button Content="start gen TNF" IsEnabled="False" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.94,0.647" Width="264" Click="Button_Click_1"/>
 
     </Grid>
 </Window>
