@@ -151,32 +151,6 @@ namespace MAIO
         {
             if (Midtransfer.edit)
             {
-                #region
-                /*   if (Midtransfer.sitesel.Contains("AU"))
-                   {
-                       site.SelectedIndex = 0;
-                   }
-                   else if (Midtransfer.sitesel.Contains("CA"))
-                   {
-                       site.SelectedIndex = 1;
-                   }
-                   else if (Midtransfer.sitesel.Contains("US"))
-                   {
-                       site.SelectedIndex = 2;
-                   }
-                   else if (Midtransfer.sitesel.Contains("UK"))
-                   {
-                       site.SelectedIndex = 3;
-                   }
-                   else if (Midtransfer.sitesel.Contains("Footasylum"))
-                   {
-                       site.SelectedIndex = 4;
-                   }
-                   else if (Midtransfer.sitesel.Contains("TheNorthFaceUS"))
-                   {
-                       site.SelectedIndex = 5;
-                   }*/
-                #endregion
                 site.Text = Midtransfer.sitesel;
             }
         }
@@ -184,22 +158,6 @@ namespace MAIO
         {
             if (Midtransfer.edit)
             {
-                #region
-                /* if (int.Parse(Midtransfer.Quantity) == 10)
-                 {
-                     Quantity.SelectedIndex = 9;
-                 }
-                 else
-                 {
-                     for (int i = 0; i < Config.qual.Count; i++)
-                     {
-                         if (i.ToString() == Midtransfer.Quantity)
-                         {
-                             Quantity.SelectedIndex = i - 1;
-                         }
-                     }
-                 }*/
-                #endregion
                 Quantity.Text = Midtransfer.Quantity;
                
             }

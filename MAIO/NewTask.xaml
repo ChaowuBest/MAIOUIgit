@@ -20,6 +20,7 @@
                 <ComboBoxItem Content="NikeUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="Footasylum" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="TheNorthFaceUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <!--<ComboBoxItem Content="ASOS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
             </ComboBox>
             <ComboBox Width="145" Name="giftcard" Height="21" Margin="-145,0,0,0" FontFamily="Arial" FontSize="14">
             </ComboBox>
