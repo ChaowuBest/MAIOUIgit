@@ -32,7 +32,6 @@ namespace MAIO
         public string  eid = "";
         public Main.taskset tk = null;
         TheNorthFaceAPI tnfAPI = new TheNorthFaceAPI();
-        TNFUKBillingid tbl = new TNFUKBillingid();
         tnfsize ts = new tnfsize();
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
@@ -255,14 +254,14 @@ namespace MAIO
             {
                 string url1 = "https://www.thenorthface.co.uk/shop/VFAjaxOrderItemUpdate";
                 string info1 = "orderId=" + orderid + "&storeId=7005&langId=-11&calculateOrder=1&calculationUsage=-1%2C-2%2C-5%2C-7&addressId=" + addressid + "&keepAutoAddedItems=true&showOrder=1&requesttype=ajax";
-                 string sourcecod =tnfAPI.orderdetail(url1,tk,ct,info1,tbl);
+                 string sourcecod =tnfAPI.orderdetail(url1,tk,ct,info1);
                 JObject josour = JObject.Parse(sourcecod);
                 string oderitemid=josour["itemIds_inStock"][0].ToString();
                 string shipskip = josour["selectedShipMode_inStock"]["id"].ToString();
 
                 string url2 = "https://www.thenorthface.co.uk/shop/VFAjaxOrderItemUpdate";
                 string info3 = "storeId=7005&langId=-11&orderId="+orderid+"&calculateOrder=1&calculationUsage=-1%2C-2%2C-5%2C-7&showOrder=0&keepAutoAddedItems=true&orderItemId_1="+ oderitemid + "&shipModeId="+ shipskip + "&state_e=&shippingState=&requesttype=ajax";
-                tnfAPI.orderdetail(url2,tk,ct,info3,tbl);
+                tnfAPI.orderdetail(url2,tk,ct,info3);
 
                 getpaymengurl = "https://www.thenorthface.co.uk/shop/OrderPrepare";
                  info2 = "storeId=7005&orderId="+ orderid + "&URL=VFWorldpayBillingDisplay&shippingPageCall=true&payMethodId=WPCARDS&ipAddress=127.0.0.1&userAgent=Mozilla%2F5.0+%28Windows+NT+10.0%3B+WOW64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D"+orderid+"%26storeId%3D7005&errorURL=VFShippingAddressView%3ForderId%3D"+orderid+"&ConfirmTermsAndConditions=on";
@@ -294,7 +293,7 @@ namespace MAIO
                 getorderviewurl = "https://www.thenorthface.com/shop/VFAjaxGetOrderView";
                 orderinfo = "storeId=7001&orderId=" + orderid + "&requesttype=ajax";
 
-                tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo, tbl);
+                tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo);
             }          
             if (ct.IsCancellationRequested)
             {
@@ -308,7 +307,7 @@ namespace MAIO
 
                 AjaxOrderCalculate = "orderId=" + orderid + "&storeId=7001&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
                 ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
-                tnfAPI.orderdetail(ajaxorderurl, tk, ct, AjaxOrderCalculate, tbl);
+                tnfAPI.orderdetail(ajaxorderurl, tk, ct, AjaxOrderCalculate);
             }
 
             if (ct.IsCancellationRequested)

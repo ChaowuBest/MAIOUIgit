@@ -518,7 +518,6 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-               // MessageBox.Show(resppayment.StatusCode.ToString());
                 tk.Status = "SubmitShipping error";
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);

@@ -469,7 +469,7 @@ namespace MAIO
                 goto A;
             }
         }
-        public string orderdetail(string url, Main.taskset tk, CancellationToken ct, string info, TNFUKBillingid tbl)
+        public string orderdetail(string url, Main.taskset tk, CancellationToken ct, string info)
         {
         A: if (ct.IsCancellationRequested)
             {

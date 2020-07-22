@@ -100,6 +100,7 @@ namespace MAIO
             try
             {
                 CheckoutpreviewStatus(Authorization, skuid,ct);
+           
             }
             catch (NullReferenceException)
             {
@@ -111,6 +112,7 @@ namespace MAIO
             }
             if (giftcard != "")
             {
+              
                 subimitgiftcard(Authorization,skuid,ct);
             }
             try
@@ -287,6 +289,11 @@ namespace MAIO
             {
                 Regex regex = new Regex(@"%char4%");
                 profile["Address1"] = regex.Replace(profile["Address1"].ToString(), GenerateRandomString(4));
+            }
+            if (profile["Address1"].ToString().Contains("%num4%"))
+            {
+                Regex regex = new Regex(@"%num4%");
+                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), GenerateRandomnum(4));
             }
             if (profile["Address2"].ToString().Contains("%char4%"))
             {
@@ -594,6 +601,7 @@ namespace MAIO
                 string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"USD\"}";
                 balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, cardguid, tk,ct);
                 double msrpdouble = Convert.ToDouble(msrp);
+              
                 if (balance > msrpdouble)
                 {
                     if (ct.IsCancellationRequested)
