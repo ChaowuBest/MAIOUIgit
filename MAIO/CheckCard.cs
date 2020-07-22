@@ -14,11 +14,12 @@ namespace MAIO
         public double Postcardinfo(string url, string cardinfo)
         {
         B: int random = ran.Next(0, Mainwindow.proxypool.Count);
-            string proxyg = Mainwindow.proxypool[random].ToString();
-            string[] proxy = proxyg.Split(",");
+           
             WebProxy wp = new WebProxy();
             try
             {
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(",");
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -69,8 +70,12 @@ namespace MAIO
                     balance = Convert.ToDouble(bal);
                 }
             }
-            catch (WebException)
+            catch (WebException ex)
             {
+                HttpWebResponse respcard = (HttpWebResponse)ex.Response;
+                Stream respcardStream = respcard.GetResponseStream();
+                StreamReader readhtmlStream = new StreamReader(respcardStream, Encoding.UTF8);
+                string SourceCode = readhtmlStream.ReadToEnd();
                 goto B;
             }
             return balance;
