@@ -48,6 +48,7 @@ namespace MAIO
                 wp = default;
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.Expect100Continue = false;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
@@ -107,6 +108,8 @@ namespace MAIO
             {
                 wp = default;
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.Expect100Continue = false;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "PUT";
             request.Proxy = wp;
@@ -152,7 +155,9 @@ namespace MAIO
                     try
                     {
                         Main.updatelable(Mainwindow.lines[cookie], false);
-                        request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                       // var chao2 = "_abck=0527A552335FD68BE4802DB5D2C08E98~-1~YAAQQiwauHjrF19zAQAACx9obAS1ze+uJmP3Ju4Z3oMPLIUwmwryj1iOqDMjq1Aoc80TWxp9xqKSCHkOlTTRMTa2Xiime2ONtmgJdAI7c5+X98nzkAHP0hFLHQh/XqibdlwiZA4u0pGESgW4VrkwtMh0pZz/3nPFKswHVFnjLTellId8MiJpLtT5kkQ1QH1XiHigT4uNcikHylCEdwGkQbmZ1Pyis+IU8jHCh7K3ymWjKMJU9dTLIPds+CDhfrVsEOnHTwyzUWifgK5aYHlnlat9WCKrgIZrcaig5TSXG+A0maJ4B4Auu1wSqWOMYZm1jpRGSOVhHrC6Pjgb/KtWcbTsiv40hgtXZEK68D8a45Y=~-1~||1-zqbKzAKNzJ-1500-10-1000-2||~-1; bm_sz=193030C8438F33AA9A2BF19EEB176568~YAAQQiwauGDrF19zAQAA3BZobAgbBq+Mc8ib7M9JfjpUV9JVPkKroLygUydXyisfYhvS+qWcERMcEa+kB9zysqU00oeocgYCQ//cz92tlaE/DoCI89YmKmhQw6I5k0UrT1oZpZbtw6/5IcwfSE8+zOKusx0NZmzXWa3VjrCdVP6mYjtfKyjLGenTKFvuHg==";
+                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+              
                         Mainwindow.lines.RemoveAt(cookie);
                         if (Mainwindow.lines.Count == 0)
                         {
@@ -286,7 +291,6 @@ namespace MAIO
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
                     string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
-
                     xb3traceid = Guid.NewGuid().ToString();
                     xnikevisitorid = Guid.NewGuid().ToString();
                     NikeAUCA NAU = new NikeAUCA();

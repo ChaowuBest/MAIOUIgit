@@ -22,7 +22,7 @@ namespace MAIO
                 for (int i=0;i<Mainwindow.cookiewtime.Count;i++)
                 {
                     KeyValuePair<long, string> kv = Mainwindow.cookiewtime.ElementAt(i);
-                    string cookiewtime = "[{\"cookie\":\"" + kv.Value + "\",\"time\":\"" + kv.Key.ToString() + "\"}]";
+                    string cookiewtime = "[{\"cookie\":\"" + kv.Value + "\",\"time\":\"" + kv.Key.ToString() + "\",\"site\":\"NIKE\"}]";
                     if (n == 0)
                     {
                         FileStream fs2 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);

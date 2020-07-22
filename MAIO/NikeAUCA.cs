@@ -235,6 +235,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+          //  string payinfo = "{\"country\":\"AU\",\"language\":\"en-GB\",\"channel\":\"NIKECOM\",\"cartId\":\"0f364d8b-bc1e-4bee-9bae-1da081a431df\",\"currency\":\"AUD\",\"paypalClicked\":false,\"items\":[{\"id\":\"fd1ec289-2a1c-4c37-aa17-9498374bb7c0\",\"skuId\":\"c62dde3f-121d-5e7f-b70b-7c0bbe406fc1\",\"level\":\"LOW\",\"quantity\":1,\"priceInfo\":{\"price\":230,\"subtotal\":230,\"discount\":0,\"valueAddedServices\":0,\"total\":230,\"priceSnapshotId\":\"a3930cdd-42eb-4bd9-9bdb-1cef4066851a\",\"msrp\":230,\"fullPrice\":230},\"itemData\":{\"url\":\"/au/t/zoom-fly-3-running-shoe-9SdJdh/AT8240-006\"}}]}";
             string payinfo = payLoad.ToString();
            
             AUCAAPI.PutMethod(url, payinfo, tk, ct);

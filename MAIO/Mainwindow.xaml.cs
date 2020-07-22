@@ -257,8 +257,12 @@ namespace MAIO
                     for (int i = 0; i < ja.Count; i++)
                     {
                         JObject jo = JObject.Parse(ja[i].ToString());
-                        lines.Add(jo["cookie"].ToString());
-                        cookiewtime.Add(long.Parse(jo["time"].ToString()), jo["cookie"].ToString());
+                        var chao=jo.ToString();
+                        if (jo["site"].ToString() == "NIKE")
+                        {
+                            lines.Add(jo["cookie"].ToString());
+                            cookiewtime.Add(long.Parse(jo["time"].ToString()), jo["cookie"].ToString());
+                        }                     
                     }
                     sw.Close();
                     fs3.Close();

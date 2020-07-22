@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MAIO.ASOS;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -49,8 +50,8 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-            Task task2 = new Task(() => clearcookie());
-            task2.Start();
+           // Task task2 = new Task(() => clearcookie());
+          //  task2.Start();
         }
         public void clearcookie()
         {
@@ -326,6 +327,40 @@ namespace MAIO
                         Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
                         dic.Add(tk.Taskid, cts);
                         tnftask.Start();
+                    }
+                    else if (tk.Tasksite == "TheNorthFaceUK")
+                    {
+                        TheNorthFaceUS tnfus = new TheNorthFaceUS();
+                        tnfus.link = tk.Sku;
+                        tnfus.profile = Mainwindow.allprofile[tk.Profile];
+                        tnfus.size = tk.Size;
+                        if (tk.Size == "RA" || tk.Size == "ra")
+                        {
+                            tnfus.randomsize = true;
+                        }
+                        tnfus.tk = tk;
+                        var cts = new CancellationTokenSource();
+                        var ct = cts.Token;
+                        Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
+                        dic.Add(tk.Taskid, cts);
+                        tnftask.Start();
+                    }
+                    else if (tk.Tasksite == "ASOS")
+                    {
+                        ASOS.ASOS asos = new ASOS.ASOS();
+                        asos.link = tk.Sku;
+                        asos.profile = Mainwindow.allprofile[tk.Profile];
+                        asos.size = tk.Size;
+                        if (tk.Size == "RA" || tk.Size == "ra")
+                        {
+                            asos.randomsize = true;
+                        }
+                        asos.tk = tk;
+                        var cts = new CancellationTokenSource();
+                        var ct = cts.Token;
+                        Task asostask = new Task(() => { asos.StartTask(ct, cts); }, ct);
+                        dic.Add(tk.Taskid, cts);
+                        asostask.Start();
                     }
                 }
                 catch (Exception ex)

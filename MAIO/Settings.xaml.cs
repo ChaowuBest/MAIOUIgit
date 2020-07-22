@@ -180,8 +180,10 @@ namespace MAIO
                         string geoc = "";
                         JObject jo = JObject.Parse(message);
                         var chao = jo.ToString();
-                        if (jo["value"].ToString().Contains("-1~-1~-1") && jo["value"].ToString().Contains("==") == false)
-                        {
+                       // if (jo["value"].ToString().Contains("-1~-1~-1") && jo["value"].ToString().Contains("==") == false)
+                       if (jo["value"].ToString().Contains("==") == false)
+                         {
+                            //
                             JArray ja = JArray.Parse(jo["value1"].ToString());
                             foreach (var i in ja)
                             {
@@ -199,12 +201,15 @@ namespace MAIO
                                     break;
                                 }
                             }
-                            string cookie = "_abck=" + jo["value"].ToString() + ";bm_sz=" + bmsz + ";geoloc=" + geoc;
+                            string cookie = "_abck=" + jo["value"].ToString() + "; bm_sz=" + bmsz + ";geoloc=" + geoc;
                             long time2=  (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                             string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
-                            Mainwindow.lines.Add(cookie);
-                            Mainwindow.cookiewtime.Add(time2,cookie);
-                            Mainwindow.iscookielistnull = false;
+                            if (site == "NIKE")
+                            {
+                                Mainwindow.lines.Add(cookie);
+                                Mainwindow.cookiewtime.Add(time2, cookie);
+                                Mainwindow.iscookielistnull = false;
+                            }          
                             Main.updatelable(cookie,true);
                             FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
                             if (fi.Length == 0)
