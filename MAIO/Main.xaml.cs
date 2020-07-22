@@ -50,8 +50,8 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-           // Task task2 = new Task(() => clearcookie());
-          //  task2.Start();
+           Task task2 = new Task(() => clearcookie());
+            task2.Start();
         }
         public void clearcookie()
         {
@@ -330,7 +330,7 @@ namespace MAIO
                     }
                     else if (tk.Tasksite == "TheNorthFaceUK")
                     {
-                        TheNorthFaceUS tnfus = new TheNorthFaceUS();
+                        TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
                         tnfus.link = tk.Sku;
                         tnfus.profile = Mainwindow.allprofile[tk.Profile];
                         tnfus.size = tk.Size;

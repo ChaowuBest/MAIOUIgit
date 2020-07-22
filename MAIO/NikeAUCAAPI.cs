@@ -9,6 +9,8 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
 using System.Windows;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MAIO
 {
@@ -111,6 +113,7 @@ namespace MAIO
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             ServicePointManager.Expect100Continue = false;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+          //  ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback(AlwaysGoodCertificate);
             request.Method = "PUT";
             request.Proxy = wp;
             request.ContentType = "application/json; charset=UTF-8";
@@ -191,7 +194,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                tk.Status = resppayment.StatusCode.ToString();
+                tk.Status = "Forbidden";
                 Thread.Sleep(1500);
                 goto B;
             }
@@ -448,6 +451,10 @@ namespace MAIO
                 goto A;
             }
             return group;
+        }
+        private static bool AlwaysGoodCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors policyErrors)
+        {
+            return true;
         }
     }
 }

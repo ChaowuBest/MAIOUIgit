@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection.Metadata;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -31,9 +32,15 @@ namespace MAIO
         public string  eid = "";
         public Main.taskset tk = null;
         TheNorthFaceAPI tnfAPI = new TheNorthFaceAPI();
+        TNFUKBillingid tbl = new TNFUKBillingid();
+        tnfsize ts = new tnfsize();
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
         A: JObject joprofile = JObject.Parse(profile);
+            if (tk.Tasksite.Contains("UK"))
+            {
+                tnfAPI.isGB = true;
+            }
             try
             {
                 GetSkuid(ct);
@@ -97,8 +104,7 @@ namespace MAIO
             }
             categoryId = ja[0]["PDPProduct"]["categoryId"].ToString();
             productid = ja[0]["PDPProduct"]["parentId"].ToString();
-            var sizegroup = ja[0]["PDPProduct"]["eids"].ToString();
-            
+            var sizegroup = ja[0]["PDPProduct"]["eids"].ToString();          
             JArray ja2 = JArray.Parse(sizegroup);
             ArrayList skuslist = new ArrayList();
             for (int i = 0; i < ja2.Count; i++)
@@ -116,11 +122,16 @@ namespace MAIO
                     }
                 }
             }
+            
             if (randomsize)
             {
-                Random ran = new Random();
-                int i=ran.Next(0,skuslist.Count);
-                eid = skuslist[i].ToString();
+                if (skuslist.Count != 0)
+                {
+                    Random ran = new Random();
+                    int i = ran.Next(0, skuslist.Count);
+                    eid = skuslist[i].ToString();
+                }
+               
             }
          B: string monitorurl = "";
             if (tk.Tasksite == "TheNorthFaceUK")
@@ -131,6 +142,7 @@ namespace MAIO
             {
                 monitorurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxProductAvailabilityView?langId=-1&storeId=7001&productId=" + productid + "&requestype=ajax&requesttype=ajax";
             }
+            tnfAPI.tnfsize = ts;
             tnfAPI.Monitor(monitorurl, tk, ct,eid,sizeid);
             if (ct.IsCancellationRequested)
             {
@@ -186,12 +198,13 @@ namespace MAIO
             if (tk.Tasksite == "TheNorthFaceUK")
             {
                  url = "https://www.thenorthface.co.uk/webapp/wcs/stores/servlet/VFAjaxOrderItemAdd";
-                 info = "categoryId=" + categoryId + "&storeId=7005&langId=-1&catalogId=13503&catEntryId=" + sizeid + "&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
+                 info = "categoryId=" + categoryId + "&storeId=7005&langId=-1&catalogId=13503&catEntryId=" + ts.sizeid + "&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
+            
             }
             else
             {
                  url = "https://www.thenorthface.com/webapp/wcs/stores/servlet/VFAjaxOrderItemAdd";
-                 info = "categoryId=" + categoryId + "&storeId=7001&langId=-1&catalogId=20001&catEntryId=" + sizeid + "&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
+                 info = "categoryId=" + categoryId + "&storeId=7001&langId=-1&catalogId=20001&catEntryId=" + ts.sizeid + "&quantity=1&orderId=.&URL=%2F&requesttype=ajax";
             }
            
             orderid = tnfAPI.ATC(url, tk, ct, info);
@@ -213,22 +226,24 @@ namespace MAIO
             long time = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
             if (tk.Tasksite == "TheNorthFaceUK")
             {
+
                  url = "https://www.thenorthface.co.uk/shop/VFAjaxAVSAddressAdd";
-                 info = "storeId=7005&country=" + jo["Country"].ToString() + "&country=" + jo["Country"].ToString() + "&toOrderId=" + orderid + "&addressType=S&outAddressName=addressId&isVerificationRequired=yes&URL=%2F&qasVerificationPage=true&formatPhoneWhileTyping=true&countryCode=US&nickName=" + time + "&personTitle=Mr.&firstName=" + jo["FirstName"].ToString() + "&lastName=" + jo["LastName"].ToString() + "&address1=" + jo["Address1"].ToString() + "&address2=" + jo["Address2"].ToString() + "&zipCode=" + jo["Zipcode"].ToString() + "&city=" + jo["City"].ToString() + "&state=" + jo["State"].ToString() + "&phone1=" + jo["Tel"].ToString() + "&email1=" + System.Web.HttpUtility.UrlEncode(jo["EmailAddress"].ToString()) + "&qasOperation=verificationEngine&requesttype=ajax";
+                info = "storeId=7005&country=GB&country=GB&toOrderId=" + orderid + "&addressType=S&outAddressName=addressId&isVerificationRequired=yes&URL=%2F&qasVerificationPage=true&formatPhoneWhileTyping=false&countryCode=GB&nickName=" + time + "&personTitle=Mr.&firstName="+ jo["FirstName"].ToString() + "&lastName="+ jo["LastName"].ToString() + "&countryStateDisplayURL=VFAjaxCountryStateDisplay&currentAddressType=shipping&address1="+ jo["Address1"].ToString() + "&address2="+ jo["Address2"].ToString() + "&city="+ jo["City"].ToString() + "&zipCode="+ jo["Zipcode"].ToString() + "&phone1="+ jo["Tel"].ToString() + "&email1="+ System.Web.HttpUtility.UrlEncode(jo["EmailAddress"].ToString()) + "&qasOperation=verificationEngine&requesttype=ajax";
+
             }
             else
             {
                  url = "https://www.thenorthface.com/shop/VFAjaxAVSAddressAdd";
                  info = "storeId=7001&country=" + jo["Country"].ToString() + "&country=" + jo["Country"].ToString() + "&toOrderId=" + orderid + "&addressType=S&outAddressName=addressId&isVerificationRequired=yes&URL=%2F&qasVerificationPage=true&formatPhoneWhileTyping=true&countryCode=US&nickName=" + time + "&personTitle=Mr.&firstName=" + jo["FirstName"].ToString() + "&lastName=" + jo["LastName"].ToString() + "&address1=" + jo["Address1"].ToString() + "&address2=" + jo["Address2"].ToString() + "&zipCode=" + jo["Zipcode"].ToString() + "&city=" + jo["City"].ToString() + "&state=" + jo["State"].ToString() + "&phone1=" + jo["Tel"].ToString() + "&email1=" + System.Web.HttpUtility.UrlEncode(jo["EmailAddress"].ToString()) + "&qasOperation=verificationEngine&requesttype=ajax";
-            }
-                          
+            }                      
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }       
-            tnfAPI.shipping(url,tk,ct,info.Replace(" ","+"));
-
+            string source=tnfAPI.shipping(url,tk,ct,info.Replace(" ","+"));
+            JObject jo2 = JObject.Parse(source);
+            addressid=jo2["addressId"].ToString();
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -238,8 +253,19 @@ namespace MAIO
             string getpaymengurl = "";
             if (tk.Tasksite == "TheNorthFaceUK")
             {
+                string url1 = "https://www.thenorthface.co.uk/shop/VFAjaxOrderItemUpdate";
+                string info1 = "orderId=" + orderid + "&storeId=7005&langId=-11&calculateOrder=1&calculationUsage=-1%2C-2%2C-5%2C-7&addressId=" + addressid + "&keepAutoAddedItems=true&showOrder=1&requesttype=ajax";
+                 string sourcecod =tnfAPI.orderdetail(url1,tk,ct,info1,tbl);
+                JObject josour = JObject.Parse(sourcecod);
+                string oderitemid=josour["itemIds_inStock"][0].ToString();
+                string shipskip = josour["selectedShipMode_inStock"]["id"].ToString();
+
+                string url2 = "https://www.thenorthface.co.uk/shop/VFAjaxOrderItemUpdate";
+                string info3 = "storeId=7005&langId=-11&orderId="+orderid+"&calculateOrder=1&calculationUsage=-1%2C-2%2C-5%2C-7&showOrder=0&keepAutoAddedItems=true&orderItemId_1="+ oderitemid + "&shipModeId="+ shipskip + "&state_e=&shippingState=&requesttype=ajax";
+                tnfAPI.orderdetail(url2,tk,ct,info3,tbl);
+
                 getpaymengurl = "https://www.thenorthface.co.uk/shop/OrderPrepare";
-                info2 = "storeId=7005&orderId=" + orderid + "&URL=VFBillingAndPaymentView&errorURL=VFShippingAddressView%3ForderId%" + orderid + "&containsPayPal=&isSavedAddress=true&shipToStore=&removeGiftServices=";
+                 info2 = "storeId=7005&orderId="+ orderid + "&URL=VFWorldpayBillingDisplay&shippingPageCall=true&payMethodId=WPCARDS&ipAddress=127.0.0.1&userAgent=Mozilla%2F5.0+%28Windows+NT+10.0%3B+WOW64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D"+orderid+"%26storeId%3D7005&errorURL=VFShippingAddressView%3ForderId%3D"+orderid+"&ConfirmTermsAndConditions=on";
             }
             else
             {
@@ -262,18 +288,14 @@ namespace MAIO
             }
             string getorderviewurl = "";
             string orderinfo = "";
-            if (tk.Tasksite == "TheNorthFaceUK")
-            {
-                getorderviewurl = "https://www.thenorthface.co.uk/shop/VFAjaxGetOrderView";
-                orderinfo = "storeId=7005&orderId=" + orderid + "&requesttype=ajax";
-            }
-            else
+           
+            if (tk.Tasksite == "TheNorthFaceUS")
             {
                 getorderviewurl = "https://www.thenorthface.com/shop/VFAjaxGetOrderView";
                 orderinfo = "storeId=7001&orderId=" + orderid + "&requesttype=ajax";
-            }
-            TNFUKBillingid tbl = new TNFUKBillingid();
-            tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo,tbl);
+
+                tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo, tbl);
+            }          
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -281,16 +303,12 @@ namespace MAIO
             }
             string AjaxOrderCalculate = "";
             string ajaxorderurl = "";
-            if (tk.Tasksite == "TheNorthFaceUK")
+            if (tk.Tasksite == "TheNorthFaceUS")
             {
-                 AjaxOrderCalculate = "orderId=" + orderid + "&storeId=7005&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
-                 ajaxorderurl = "https://www.thenorthface.co.uk/webapp/wcs/stores/servlet/AjaxOrderCalculate";
 
-            }
-            else
-            {
-                 AjaxOrderCalculate = "orderId=" + orderid + "&storeId=7001&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
-                 ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
+                AjaxOrderCalculate = "orderId=" + orderid + "&storeId=7001&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
+                ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
+                tnfAPI.orderdetail(ajaxorderurl, tk, ct, AjaxOrderCalculate, tbl);
             }
 
             if (ct.IsCancellationRequested)
@@ -298,33 +316,38 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }         
-            tnfAPI.orderdetail(ajaxorderurl,tk,ct,AjaxOrderCalculate,tbl);
+           
             string url = "";
             if (tk.Tasksite == "TheNorthFaceUK")
             {
                 string precheckouturl = "https://www.thenorthface.co.uk/shop/VFCAjaxWorldpayPunchoutCmd";
-                string precheckoutinfo = "billingAddress="+tbl.Billingid+"&payMethodId=PAYPAL&orderId="+orderid+ "&ipAddress=47.75.243.59&userAgent=Mozilla%2F5.0+(Windows+NT+10.0%3B+WOW64)+AppleWebKit%2F537.36+(KHTML%2C+like+Gecko)+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D" + orderid+"%26storeId%3D7005%26langId%3D-11&isFromPaymentPage=true&requesttype=ajax";
+                string precheckoutinfo = "billingAddress="+addressid+"&payMethodId=PAYPAL&orderId="+orderid+ "&ipAddress=127.0.0.1&userAgent=Mozilla%2F5.0+(Windows+NT+10.0%3B+WOW64)+AppleWebKit%2F537.36+(KHTML%2C+like+Gecko)+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D" + orderid+"%26storeId%3D7005%26langId%3D-11&isFromPaymentPage=true&requesttype=ajax";
                 string source=tnfAPI.precheckout(precheckouturl,tk,ct,precheckoutinfo);
                 JObject jo = JObject.Parse(source);
-                string wpredirecturl=jo["wpRedirectUrl"].ToString();
+                paypallink=jo["wpRedirectUrl"].ToString().Replace("amp;", "").Replace("&amp", "");
 
+                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + paypallink + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";
+
+                string pd3 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + tk.Sku + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";
+                Http("https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", pd3);
+                Http(Config.webhook, pd2);
+                tk.Status = "Success";
             }
             else
             {
                  url = "https://www.thenorthface.com/shop/SendToPaypal?storeId=7001&orderId=" + orderid + "&callSource=Payment&useraction=commit&cancelURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fVFBillingAndPaymentView%3forderId%3d" + orderid + "%26storeId%3d7001&returnURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fZCReturnFromPaypal%3fcallSource%3dPayment%26orderId%3d" + orderid + "%26shippingAddressName%3dPayPal%2bShipping%26billingAddressName%3dPayPal%2bBilling%26storeId%3d7001%26URL%3dOrderOKView";
-                  paypallink = tnfAPI.Checkout2(url, tk, ct);
-            }
-           
+                 paypallink = tnfAPI.Checkout2(url, tk, ct);
+                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + paypallink + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";
+                string pd3 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + tk.Sku + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";
+                Http("https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", pd3);
+                Http(Config.webhook, pd2);
+                tk.Status = "Success";
+            }          
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + paypallink + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";         
-            Http("https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", pd2);
-            Http(Config.webhook, pd2);
-            tk.Status = "Success";
-
         }
         public void Http(string url, string postDataStr)
         {
