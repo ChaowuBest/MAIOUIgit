@@ -103,8 +103,7 @@ namespace MAIO
             string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text;
             string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text;
             string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text;
-            string[] setup = new string[7];
-
+            string[] setup = new string[8];
             try
             {
                 if (taskNumber != null) {
@@ -127,6 +126,7 @@ namespace MAIO
                         setup[4] = sizeid;
                         setup[5] = code;
                         setup[6] = Quantity.SelectedItem.ToString();
+                        setup[7] = monitor.IsChecked.ToString();
                         if ((sizeid != "") && (productid != ""))
                         {
                             getTextHandler(setup);
@@ -159,7 +159,7 @@ namespace MAIO
             if (Midtransfer.edit)
             {
                 Quantity.Text = Midtransfer.Quantity;
-               
+                monitor.IsChecked = Midtransfer.monitor;
             }
             else
             {

@@ -116,6 +116,11 @@ namespace MAIO
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
+            Task task1 = new Task(()=>check());
+            task1.Start();
+        }
+        public void check()
+        {
             try
             {
                 string cardurl = "https://api.nike.com/payment/giftcard_balance/v1";
@@ -126,7 +131,8 @@ namespace MAIO
                 {
                     var sp = card[0].Split("-");
                     string cardinfo = "{\"accountNumber\":\"" + sp[0] + "\",\"pin\":\"" + sp[1] + "\",\"currency\":\"USD\"}";
-                    checkdcardlist.Add(cc.Postcardinfo(cardurl, cardinfo));              
+
+                    checkdcardlist.Add(cc.Postcardinfo(cardurl, cardinfo));
                 }
                 Balancebox.Document.Blocks.Clear();
                 for (int i = 0; i < checkdcardlist.Count; i++)
@@ -139,7 +145,7 @@ namespace MAIO
             }
             catch (Exception)
             {
-               
+
                 Run run = new Run("Error Input");
                 Paragraph p = new Paragraph();
                 p.Inlines.Add(run);
@@ -149,7 +155,7 @@ namespace MAIO
         private void gencookie(object sender, RoutedEventArgs e)
         {
             CookieGen cookieGen = new CookieGen();
-            cookieGen.ShowDialog();
+            cookieGen.Show();
         }
         public void ws(string site)
         {
@@ -164,7 +170,6 @@ namespace MAIO
                 socket.OnOpen = () => //当建立Socket链接时执行此方法
                 {
                     var data = socket.ConnectionInfo; //通过data可以获得这个链接传递过来的Cookie信息，用来区分各个链接和用户之间的关系（如果需要后台主动推送信息到某个客户的时候，可以使用Cookie）
-                  //  Console.WriteLine("Open!");
                     allSockets.Add(socket);
                 };
                 socket.OnClose = () =>// 当关闭Socket链接十执行此方法
@@ -178,12 +183,11 @@ namespace MAIO
                     {
                         string bmsz = "";
                         string geoc = "";
+                        string bm_sv = "";
                         JObject jo = JObject.Parse(message);
                         var chao = jo.ToString();
-                       // if (jo["value"].ToString().Contains("-1~-1~-1") && jo["value"].ToString().Contains("==") == false)
                        if (jo["value"].ToString().Contains("==") == false)
                          {
-                            //
                             JArray ja = JArray.Parse(jo["value1"].ToString());
                             foreach (var i in ja)
                             {
@@ -192,16 +196,20 @@ namespace MAIO
                                 {
                                     bmsz = jo2["value"].ToString();
                                 }
-                                if (jo2["name"].ToString() == "geoloc")
+                                if (jo2["name"].ToString() == "ak_bmsc")
                                 {
                                     geoc = jo2["value"].ToString();
+                                }
+                                if (jo2["name"].ToString() == "bm_sv")
+                                {
+                                    bm_sv = jo2["value"].ToString();
                                 }
                                 if (bmsz != "" && geoc != "")
                                 {
                                     break;
                                 }
                             }
-                            string cookie = "_abck=" + jo["value"].ToString() + "; bm_sz=" + bmsz + ";geoloc=" + geoc;
+                            string cookie = "bm_sz=" + bmsz + "; _abck=" + jo["value"].ToString();
                             long time2=  (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                             string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
                             if (site == "NIKE")
@@ -217,7 +225,7 @@ namespace MAIO
                                 FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);            
                                 JArray ja2 = JArray.Parse(cookiewtime);
                                 StreamWriter sw = new StreamWriter(fs1);
-                                sw.Write(ja2.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                                sw.Write(ja2.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
                                 sw.Close();
                                 fs1.Close();
                             }
@@ -233,7 +241,7 @@ namespace MAIO
                                     FileStream fs3 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                                     fs3.SetLength(0);
                                     StreamWriter sw = new StreamWriter(fs3);
-                                    sw.Write(ja3.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                                    sw.Write(ja3.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
                                     sw.Close();
                                     fs3.Close();
                                 }                    

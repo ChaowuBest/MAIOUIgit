@@ -1161,7 +1161,6 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string SourceCode = "";
-            //  string productid = "";
             string[] group = new string[2];
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();

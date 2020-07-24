@@ -36,13 +36,17 @@ namespace MAIO
         public Main()
         {
             InitializeComponent();
-            updatelable("123",true);
-            
+            updatelable("123",true);       
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);         
                 JObject jo = JObject.Parse(kv.Value);
-                Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString() });
+                string monitortask = "True";
+                if (kv.Value.Contains("False") ||(kv.Value.Contains("False")==false&&kv.Value.Contains("True")==false))
+                {
+                  monitortask = "False";
+                }
+                Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(),monitortask = monitortask });
             }
             datagrid.ItemsSource = Mainwindow.task;
             cookienum.Dispatcher.Invoke(new Action(
@@ -129,6 +133,7 @@ namespace MAIO
                 }
             }
             public string Taskid { get; set; }
+            public string monitortask { get; set; }
             public string Quantity { get; set; }
 
         }
@@ -149,9 +154,9 @@ namespace MAIO
             string taskid = Guid.NewGuid().ToString();
             string profile = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + st[3].Replace("\r\n", "") + "\"," +
              "\"Size\":\"" + st[4].Replace("\r\n", "") + "\",\"Profile\":\"" + st[2] + "\",\"Proxies\":\"Default\"," +
-            "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\"}]";
+            "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\"}]";
             Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
-            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") });
+            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""),monitortask=st[7]});
             taskwrite(profile);
         }
         public void taskwrite(string task)
@@ -193,6 +198,11 @@ namespace MAIO
             int row = datagrid.SelectedIndex;
             taskset tk;
             tk = Mainwindow.task.ElementAt(row);
+            bool monitortask = false;
+            if (tk.monitortask == "True")
+            {
+                monitortask = true;   
+            }
             if (dic.Keys.Contains(tk.Taskid))
             {
                 MessageBox.Show("Please stop task first");
@@ -212,6 +222,7 @@ namespace MAIO
                         NA.pid = tk.Sku;
                         NA.size = tk.Size;
                         NA.Quantity = tk.Quantity;
+                        NA.monitortask = monitortask;
                         if (tk.Size == "RA" || tk.Size == "ra")
                         {
                             NA.randomsize = true;
@@ -248,6 +259,7 @@ namespace MAIO
                             NSK.pid = tk.Sku;
                             NSK.size = tk.Size;
                             NSK.code = code;
+                            NSK.monitortask = monitortask;
                             NSK.profile = Mainwindow.allprofile[tk.Profile];
                             NSK.tk = tk;
                             NSK.username = account[0];
@@ -317,23 +329,6 @@ namespace MAIO
                         tnfus.profile = Mainwindow.allprofile[tk.Profile];
                         tnfus.size = tk.Size;
                         tnfus.tasksite = tk.Tasksite;
-                        if (tk.Size == "RA" || tk.Size == "ra")
-                        {
-                            tnfus.randomsize = true;
-                        }
-                        tnfus.tk = tk;
-                        var cts = new CancellationTokenSource();
-                        var ct = cts.Token;
-                        Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
-                        dic.Add(tk.Taskid, cts);
-                        tnftask.Start();
-                    }
-                    else if (tk.Tasksite == "TheNorthFaceUK")
-                    {
-                        TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
-                        tnfus.link = tk.Sku;
-                        tnfus.profile = Mainwindow.allprofile[tk.Profile];
-                        tnfus.size = tk.Size;
                         if (tk.Size == "RA" || tk.Size == "ra")
                         {
                             tnfus.randomsize = true;
@@ -467,6 +462,15 @@ namespace MAIO
                     Midtransfer.giftcard = jo["giftcard"].ToString();
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
+                    if (Mainwindow.tasklist[content.Taskid].Contains("False") || (Mainwindow.tasklist[content.Taskid].Contains("False") == false && Mainwindow.tasklist[content.Taskid].Contains("True") == false))
+                    {
+                        Midtransfer.monitor = false;
+                    }
+                    else
+                    {
+                        Midtransfer.monitor = true;
+                    }
+                    
                 }
                 Midtransfer.edit = true;
                 nt.getTextHandler = Ctask;
@@ -481,11 +485,17 @@ namespace MAIO
         }
         private void startall_Click(object sender, RoutedEventArgs e)
         {
+
             for (int n = 0; n < Mainwindow.task.Count; n++)
             {
                 Thread.Sleep(10);
-                string taskid = Guid.NewGuid().ToString();
+                string taskid = Guid.NewGuid().ToString();           
                 taskset tk = Mainwindow.task.ElementAt(n);
+                bool monitortask = false;
+                if (tk.monitortask == "True")
+                {
+                    monitortask = true;
+                }
                 if (dic.Keys.Contains(tk.Taskid))
                 {
                 }
@@ -499,6 +509,7 @@ namespace MAIO
                         if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU")
                         {
                             NikeAUCA NA = new NikeAUCA();
+                            NA.monitortask = monitortask;
                             NA.tk = tk;
                             NA.profile = Mainwindow.allprofile[tk.Profile];
                             NA.pid = tk.Sku;
@@ -536,6 +547,7 @@ namespace MAIO
                                     account = Mainwindow.listaccount[random].Split(":");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
+                                NSK.monitortask = monitortask;
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
                                 NSK.size = tk.Size;

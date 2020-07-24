@@ -14,5 +14,6 @@ namespace MAIO
         public static string giftcard { get; set; }
         public static string code { get; set; }
         public static string Quantity { get; set; }
+        public static bool monitor { get; set; }
     }
 }

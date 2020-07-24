@@ -50,7 +50,7 @@ namespace MAIO
                 wp = default;
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            ServicePointManager.Expect100Continue = false;
+       
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
@@ -111,15 +111,14 @@ namespace MAIO
                 wp = default;
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            ServicePointManager.Expect100Continue = false;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-          //  ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback(AlwaysGoodCertificate);
             request.Method = "PUT";
             request.Proxy = wp;
             request.ContentType = "application/json; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(payinfo);
             request.Accept = "application/json";
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            request.Headers.Add("cloud_stack", "buy_domain");
             request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
             request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             if (Config.UseAdvancemode == "True")
@@ -158,9 +157,7 @@ namespace MAIO
                     try
                     {
                         Main.updatelable(Mainwindow.lines[cookie], false);
-                       // var chao2 = "_abck=0527A552335FD68BE4802DB5D2C08E98~-1~YAAQQiwauHjrF19zAQAACx9obAS1ze+uJmP3Ju4Z3oMPLIUwmwryj1iOqDMjq1Aoc80TWxp9xqKSCHkOlTTRMTa2Xiime2ONtmgJdAI7c5+X98nzkAHP0hFLHQh/XqibdlwiZA4u0pGESgW4VrkwtMh0pZz/3nPFKswHVFnjLTellId8MiJpLtT5kkQ1QH1XiHigT4uNcikHylCEdwGkQbmZ1Pyis+IU8jHCh7K3ymWjKMJU9dTLIPds+CDhfrVsEOnHTwyzUWifgK5aYHlnlat9WCKrgIZrcaig5TSXG+A0maJ4B4Auu1wSqWOMYZm1jpRGSOVhHrC6Pjgb/KtWcbTsiv40hgtXZEK68D8a45Y=~-1~||1-zqbKzAKNzJ-1500-10-1000-2||~-1; bm_sz=193030C8438F33AA9A2BF19EEB176568~YAAQQiwauGDrF19zAQAA3BZobAgbBq+Mc8ib7M9JfjpUV9JVPkKroLygUydXyisfYhvS+qWcERMcEa+kB9zysqU00oeocgYCQ//cz92tlaE/DoCI89YmKmhQw6I5k0UrT1oZpZbtw6/5IcwfSE8+zOKusx0NZmzXWa3VjrCdVP6mYjtfKyjLGenTKFvuHg==";
-                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-              
+                        request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                         Mainwindow.lines.RemoveAt(cookie);
                         if (Mainwindow.lines.Count == 0)
                         {
@@ -179,8 +176,8 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            request.Headers.Add("x-b3-spanname", "CiCCart");
-            request.Headers.Add("x-b3-traceid", xb3traceid);
+            request.Headers.Add("X-B3-SpanName", "CiCCart");
+            request.Headers.Add("X-B3-TraceId", xb3traceid);
             request.Headers.Add("x-nike-visitid", "1");
             request.Headers.Add("x-nike-visitorid", xnikevisitorid);
             Stream paymentstream = request.GetRequestStream();
@@ -193,7 +190,7 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "Forbidden";
                 Thread.Sleep(1500);
                 goto B;

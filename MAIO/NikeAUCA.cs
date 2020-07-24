@@ -9,13 +9,17 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
+using static MAIO.Main;
 
 namespace MAIO
 {
     class NikeAUCA
     {
         public bool randomsize = false;
+        public bool monitortask = true;
         public string size = "";
         public string pid = "";
         public string profile = "";
@@ -28,10 +32,11 @@ namespace MAIO
         string msrp = "";
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
         ArrayList skuidlist = new ArrayList();
+        JObject joprofile = null;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
 
-        A: JObject joprofile = JObject.Parse(profile);
+        A: joprofile = JObject.Parse(profile);
             try
             {
                 GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
@@ -172,8 +177,52 @@ namespace MAIO
                             {
                                 skuid = group[0];
                             }
-                          
                             productid = group[1];
+                            if (monitortask)
+                            {
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    ThreadPool.QueueUserWorkItem(delegate
+                                    {
+                                        SynchronizationContext.SetSynchronizationContext(new
+                                            DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
+                                        SynchronizationContext.Current.Post(pl =>
+                                        {
+                                            taskset tk1 = new taskset();
+                                            tk1.Tasksite = tk.Tasksite;
+                                            tk1.Sku = tk.Sku;
+                                            tk1.Profile = tk.Profile;
+                                            tk1.Proxies = "Default";
+                                            tk1.Quantity = tk.Quantity;
+                                            tk1.Status = "IDLE";
+                                            tk1.Size = tk.Size;
+                                            tk1.Taskid = Guid.NewGuid().ToString();
+                                            Mainwindow.task.Add(tk1);
+                                            if (tk1.Tasksite == "NikeCA" || tk1.Tasksite == "NikeAU")
+                                            {
+                                                NikeAUCA NA = new NikeAUCA();
+                                                NA.monitortask = false;
+                                                NA.tk = tk1;
+                                                NA.profile = Mainwindow.allprofile[tk.Profile];
+                                                NA.pid = tk1.Sku;
+                                                NA.size = tk1.Size;
+                                                NA.Quantity = tk1.Quantity;
+                                                if (tk1.Size == "RA" || tk1.Size == "ra")
+                                                {
+                                                    NA.randomsize = true;
+                                                }
+                                                var cts = new CancellationTokenSource();
+                                                var ct = cts.Token;
+                                                Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
+                                                dic.Add(tk1.Taskid, cts);
+                                                task1.Start();
+                                            }
+                                        }, null);
+                                    });
+                                }
+                              
+                              
+                            }
                         }
                         else
                         {
@@ -203,14 +252,14 @@ namespace MAIO
                 currency = "CAD";
             }
 
-            string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
+           string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
             JObject payLoad = new JObject(
                 new JProperty("country", tk.Tasksite.Replace("Nike", "")),
                 new JProperty("language", "en-GB"),
                 new JProperty("channel", "NIKECOM"),
                 new JProperty("cartId", Guid.NewGuid().ToString()),
                 new JProperty("currency", currency),
-                new JProperty("paypalClicked", "false"),
+                new JProperty("paypalClicked", false),
                 new JProperty("items",
                 new JArray(
                     new JObject(
@@ -235,9 +284,8 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-          //  string payinfo = "{\"country\":\"AU\",\"language\":\"en-GB\",\"channel\":\"NIKECOM\",\"cartId\":\"0f364d8b-bc1e-4bee-9bae-1da081a431df\",\"currency\":\"AUD\",\"paypalClicked\":false,\"items\":[{\"id\":\"fd1ec289-2a1c-4c37-aa17-9498374bb7c0\",\"skuId\":\"c62dde3f-121d-5e7f-b70b-7c0bbe406fc1\",\"level\":\"LOW\",\"quantity\":1,\"priceInfo\":{\"price\":230,\"subtotal\":230,\"discount\":0,\"valueAddedServices\":0,\"total\":230,\"priceSnapshotId\":\"a3930cdd-42eb-4bd9-9bdb-1cef4066851a\",\"msrp\":230,\"fullPrice\":230},\"itemData\":{\"url\":\"/au/t/zoom-fly-3-running-shoe-9SdJdh/AT8240-006\"}}]}";
-            string payinfo = payLoad.ToString();
-           
+           // string payinfo = "{\"country\":\"AU\",\"language\":\"en-GB\",\"channel\":\"NIKECOM\",\"cartId\":\"020e856d-4ace-403e-873c-74af3ea9fcdb\",\"currency\":\"AUD\",\"paypalClicked\":false,\"items\":[{\"id\":\"02cbce48-1758-46ef-a70a-74a302c382a2\",\"skuId\":\"3f13fa0d-4e72-51b2-9ff6-af0df0982868\",\"level\":\"HIGH\",\"quantity\":1,\"priceInfo\":{\"price\":170,\"subtotal\":170,\"discount\":0,\"valueAddedServices\":0,\"total\":170,\"priceSnapshotId\":\"dfc5aa24-dc55-4360-b7b3-03f8ec322d39\",\"msrp\":170,\"fullPrice\":170},\"itemData\":{\"url\":\"/au/t/air-max-90-shoe-kn1phR/CT0693-001\"}}]}";
+            string payinfo = payLoad.ToString();          
             AUCAAPI.PutMethod(url, payinfo, tk, ct);
 
             return payinfo;
