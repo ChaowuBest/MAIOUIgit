@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using static MAIO.LoginWindow;
 
 namespace MAIO
@@ -35,7 +36,7 @@ namespace MAIO
             Cid.Text = Config.cid;
             Cjevent.Text = Config.cjevent;
             discordwebhook.Text = Config.webhook;
-           
+
             delay2.Text = Config.delay;
             if (Config.Usemonitor.Contains("True"))
             {
@@ -58,7 +59,7 @@ namespace MAIO
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Writecoookie.write();
-            Application.Current.Shutdown();   
+            Application.Current.Shutdown();
         }
 
         private void Deactive_Click(object sender, RoutedEventArgs e)
@@ -94,7 +95,7 @@ namespace MAIO
                 Config.webhook = discordwebhook.Text;
                 Config.cid = Cid.Text;
                 Config.cjevent = Cjevent.Text;
-                Config.Usemonitor=Usemonitor.IsChecked.ToString();
+                Config.Usemonitor = Usemonitor.IsChecked.ToString();
                 Config.UseAdvancemode = useAdvancemode.IsChecked.ToString();
                 Random ra = new Random();
                 if (delay2.Text == "")
@@ -103,8 +104,8 @@ namespace MAIO
                 }
                 else
                 {
-                    Config.delay=delay2.Text;
-                } 
+                    Config.delay = delay2.Text;
+                }
                 string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\"" + Usemonitor.IsChecked.ToString() + "\",\"Advancemode\":\"" + useAdvancemode.IsChecked.ToString() + "\"}";
                 File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
                 MessageBox.Show("Save success");
@@ -116,7 +117,7 @@ namespace MAIO
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
-            Task task1 = new Task(()=>check());
+            Task task1 = new Task(() => check());
             task1.Start();
         }
         public void check()
@@ -126,30 +127,42 @@ namespace MAIO
                 string cardurl = "https://api.nike.com/payment/giftcard_balance/v1";
                 ArrayList checkdcardlist = new ArrayList();
                 CheckCard cc = new CheckCard();
-                string[] card = new TextRange(Balancebox.Document.ContentStart, Balancebox.Document.ContentEnd).Text.Split("\r\n");
-                for (int i = 0; i < card.Length - 1; i++)
+                string[] card = null;
+                Balancebox.Dispatcher.Invoke(new Action(
+             delegate
+             {
+              card = Balancebox.Text.Split("\r\n");
+             }));           
+                for (int i = 0; i < card.Length; i++)
                 {
                     var sp = card[0].Split("-");
                     string cardinfo = "{\"accountNumber\":\"" + sp[0] + "\",\"pin\":\"" + sp[1] + "\",\"currency\":\"USD\"}";
-
                     checkdcardlist.Add(cc.Postcardinfo(cardurl, cardinfo));
                 }
-                Balancebox.Document.Blocks.Clear();
+                Balancebox.Dispatcher.Invoke(new Action(
+             delegate
+             {
+                 Balancebox.Clear();
+             }));
+               
                 for (int i = 0; i < checkdcardlist.Count; i++)
                 {
-                    Run run = new Run(checkdcardlist[i].ToString());
-                    Paragraph p = new Paragraph();
-                    p.Inlines.Add(run);
-                    Balancebox.Document.Blocks.Add(p);
+                    Balancebox.Dispatcher.Invoke(new Action(
+              delegate
+              {
+                  Balancebox.AppendText(checkdcardlist[i].ToString());
+                  Balancebox.AppendText("\r\n");
+              }));
                 }
+            
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                Run run = new Run("Error Input");
-                Paragraph p = new Paragraph();
-                p.Inlines.Add(run);
-                Balancebox.Document.Blocks.Add(p);
+                Balancebox.Dispatcher.Invoke(new Action(
+              delegate
+                {
+                    Balancebox.Text = "Error Input";
+                }));
             }
         }
         private void gencookie(object sender, RoutedEventArgs e)
@@ -174,7 +187,7 @@ namespace MAIO
                 };
                 socket.OnClose = () =>// 当关闭Socket链接十执行此方法
                 {
-                  //  Console.WriteLine("Close!");
+                    //  Console.WriteLine("Close!");
                     allSockets.Remove(socket);
                 };
                 socket.OnMessage = message =>// 接收客户端发送过来的信息
@@ -186,8 +199,8 @@ namespace MAIO
                         string bm_sv = "";
                         JObject jo = JObject.Parse(message);
                         var chao = jo.ToString();
-                       if (jo["value"].ToString().Contains("==") == false)
-                         {
+                        if (jo["value"].ToString().Contains("==") == false)
+                        {
                             JArray ja = JArray.Parse(jo["value1"].ToString());
                             foreach (var i in ja)
                             {
@@ -210,19 +223,19 @@ namespace MAIO
                                 }
                             }
                             string cookie = "bm_sz=" + bmsz + "; _abck=" + jo["value"].ToString();
-                            long time2=  (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+                            long time2 = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                             string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
                             if (site == "NIKE")
                             {
                                 Mainwindow.lines.Add(cookie);
                                 Mainwindow.cookiewtime.Add(time2, cookie);
                                 Mainwindow.iscookielistnull = false;
-                            }          
-                            Main.updatelable(cookie,true);
+                            }
+                            Main.updatelable(cookie, true);
                             FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
                             if (fi.Length == 0)
                             {
-                                FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);            
+                                FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
                                 JArray ja2 = JArray.Parse(cookiewtime);
                                 StreamWriter sw = new StreamWriter(fs1);
                                 sw.Write(ja2.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
@@ -244,7 +257,7 @@ namespace MAIO
                                     sw.Write(ja3.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
                                     sw.Close();
                                     fs3.Close();
-                                }                    
+                                }
                             }
                         }
                     }
@@ -252,11 +265,11 @@ namespace MAIO
                     if (message.Contains("{\"type\":\"proxy\"}"))
                     {
                         Random ra = new Random();
-                        int index=ra.Next(0,Mainwindow.proxypool.Count);
+                        int index = ra.Next(0, Mainwindow.proxypool.Count);
                         string proxy = "";
                         try
                         {
-                             proxy = "Proxy: " + Mainwindow.proxypool[index] + "";
+                            proxy = "Proxy: " + Mainwindow.proxypool[index] + "";
                         }
                         catch
                         {

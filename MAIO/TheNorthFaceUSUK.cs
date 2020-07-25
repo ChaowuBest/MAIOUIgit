@@ -120,8 +120,7 @@ namespace MAIO
                         break;
                     }
                 }
-            }
-            
+            }           
             if (randomsize)
             {
                 if (skuslist.Count != 0)

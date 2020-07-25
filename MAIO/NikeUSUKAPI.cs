@@ -490,9 +490,7 @@ namespace MAIO
             string paymentsuccesscode = "";
             try
             {
-                HttpWebResponse resppayment = (HttpWebResponse)reqpayment.GetResponse();
-                
-                
+                HttpWebResponse resppayment = (HttpWebResponse)reqpayment.GetResponse();               
                 tk.Status = "Submit Shipping";
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
@@ -518,7 +516,8 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                tk.Status = "SubmitShipping error";
+                tk.Status = ex.ToString();
+               // tk.Status = "SubmitShipping error";
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
                 paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
