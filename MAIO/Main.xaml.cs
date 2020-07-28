@@ -32,21 +32,24 @@ namespace MAIO
     public partial class Main : UserControl
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
-        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);    
         public Main()
         {
             InitializeComponent();
-            updatelable("123",true);       
+            updatelable("123",true);
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
-                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);         
+                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);       
                 JObject jo = JObject.Parse(kv.Value);
-                string monitortask = "True";
-                if (kv.Value.Contains("False") ||(kv.Value.Contains("False")==false&&kv.Value.Contains("True")==false))
+                if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor")==false)
                 {
-                  monitortask = "False";
+                    string monitortask = "True";
+                    if (kv.Value.Contains("monitortask\":\"False"))
+                    {
+                        monitortask = "False";
+                    }
+                    Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask });
                 }
-                Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(),monitortask = monitortask });
             }
             datagrid.ItemsSource = Mainwindow.task;
             cookienum.Dispatcher.Invoke(new Action(
@@ -149,14 +152,95 @@ namespace MAIO
             nt.getTextHandler = Ctask;
             nt.ShowDialog();
         }
+        public static MonitorProduct mp = new MonitorProduct();
+        public class Monitor : INotifyPropertyChanged
+        {
+            public event PropertyChangedEventHandler PropertyChanged;
+            public string Sku { get; set; }
+            public string Region { get; set; }
+            public string photo { get; set; }
+            public string Taskid { get; set; }
+            private string status;
+            private string stock;
+            private string price;
+            private string size;
+            public string Status
+            {
+                get { return status; }
+                set
+                {
+                    status = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                    }
+                }
+            }
+            public string Stock
+            {
+                get { return stock; }
+                set
+                {
+                    stock = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Stock"));
+                    }
+                }
+            }
+            public string Price
+            {
+                get { return price; }
+                set
+                {
+                    price = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Price"));
+                    }
+                }
+            }
+            public string Size
+            {
+                get { return size; }
+                set
+                {
+                    size = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Size"));
+                    }
+                }
+            }
+            public string Photo
+            {
+                get { return photo; }
+                set
+                {
+                    photo = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Photo"));
+                    }
+                }
+            }
+        }
         private void Ctask(string[] st)
         {
             string taskid = Guid.NewGuid().ToString();
             string profile = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + st[3].Replace("\r\n", "") + "\"," +
              "\"Size\":\"" + st[4].Replace("\r\n", "") + "\",\"Profile\":\"" + st[2] + "\",\"Proxies\":\"Default\"," +
-            "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\"}]";
-            Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
-            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""),monitortask=st[7]});
+            "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\",\"AdvanceMonitor\":\"" + st[8] + "\"}]";
+            if (st[8] == "True")
+            {
+                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Taskid = taskid });
+                Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
+            }
+            else
+            {
+                Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
+                Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7] });
+            }
             taskwrite(profile);
         }
         public void taskwrite(string task)
@@ -429,7 +513,6 @@ namespace MAIO
             FileStream fs1 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             fs1.SetLength(0);
             Mainwindow.tasklist.Clear();
-            // datagrid.Items.Clear();
             Mainwindow.task.Clear();
             try
             {
@@ -674,6 +757,10 @@ namespace MAIO
                 MessageBox.Show("Error Edit");
             }
 
+        }
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {       
+            mp.Show();
         }
     }
 }

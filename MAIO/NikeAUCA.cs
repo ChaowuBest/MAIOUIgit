@@ -284,7 +284,6 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-           // string payinfo = "{\"country\":\"AU\",\"language\":\"en-GB\",\"channel\":\"NIKECOM\",\"cartId\":\"020e856d-4ace-403e-873c-74af3ea9fcdb\",\"currency\":\"AUD\",\"paypalClicked\":false,\"items\":[{\"id\":\"02cbce48-1758-46ef-a70a-74a302c382a2\",\"skuId\":\"3f13fa0d-4e72-51b2-9ff6-af0df0982868\",\"level\":\"HIGH\",\"quantity\":1,\"priceInfo\":{\"price\":170,\"subtotal\":170,\"discount\":0,\"valueAddedServices\":0,\"total\":170,\"priceSnapshotId\":\"dfc5aa24-dc55-4360-b7b3-03f8ec322d39\",\"msrp\":170,\"fullPrice\":170},\"itemData\":{\"url\":\"/au/t/air-max-90-shoe-kn1phR/CT0693-001\"}}]}";
             string payinfo = payLoad.ToString();          
             AUCAAPI.PutMethod(url, payinfo, tk, ct);
 

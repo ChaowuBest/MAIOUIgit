@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -37,6 +38,8 @@ namespace MAIO
         public static Dictionary<string, string> allprofile = new Dictionary<string, string>();
         public static Dictionary<string, string> giftcardlist = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
+        public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();
+       
         public static ArrayList proxypool = new ArrayList();
         public static List<string> listproxy;
         public static List<string> listaccount = new List<string>();

@@ -162,5 +162,6 @@
         <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Height="767"/>
         <Label Content="Cookie:" HorizontalAlignment="Center" Height="25" VerticalAlignment="Center" Width="62" Margin="-882,-723,0,0" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <Label Content="" Name="cookienum"  HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="62" Margin="64,10.5,0,0" FontFamily="Arial" FontSize="14" Background="{x:Null}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Button Content="monitor" HorizontalAlignment="Left" Height="20" Margin="188,15,0,0" VerticalAlignment="Top" Width="70" Click="Button_Click_1"/>
     </Grid>
 </UserControl>

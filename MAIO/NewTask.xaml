@@ -85,6 +85,7 @@
             <Label Content="Quantity" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="79" Height="24" Margin="-1099,68,0,0"/>
             <Label Content="Tasknumber" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="99" Margin="-300,-45,0,0" Height="24"/>
             <CheckBox Content="Monitor Task" Name="monitor" Width="151" Margin="-530,109,0,0" Height="23" FontFamily="Arial" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <CheckBox Content="Advance Monitor" x:Name="advancemonitor" FontFamily="Arial" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="131" Height="16" Margin="-254,0,0,-102"/>
         </DockPanel>
         <RichTextBox x:Name="tasknumber" FontFamily="Arial" FontSize="14" Margin="158,113,79,102" Height="23" Width="126" Panel.ZIndex="4" Grid.Column="1">
             <FlowDocument>
