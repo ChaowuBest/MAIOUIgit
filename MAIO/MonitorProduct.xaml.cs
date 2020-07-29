@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -33,14 +34,44 @@ namespace MAIO
                 {
                     Mainwindow.Advancemonitortask.Add(new Main.Monitor{ Region = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Taskid = jo["Taskid"].ToString() });
                 }
-            }
-            
+            }          
             monitorproduct.ItemsSource = Mainwindow.Advancemonitortask;
         }
         private void Window_Closing_1(object sender, CancelEventArgs e)
         {
-            e.Cancel = true;  // cancels the window close    
-            this.Hide();      // Programmatically hides the window
+            e.Cancel = true;  
+            this.Hide();      
+        }
+        private void Grid_IsVisibleChanged_1(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+                for (int i = 0; i < Mainwindow.Advancemonitortask.Count; i++)
+                {
+                    if (Mainwindow.Advancemonitortask[i].Region == "NikeAU" || Mainwindow.Advancemonitortask[i].Region == "NikeCA")
+                    {
+                        NikeMonitorProduct NMP = new NikeMonitorProduct();
+                        NMP.mn = Mainwindow.Advancemonitortask[i];
+                        if (Mainwindow.Advancemonitortask[i].Size.Contains("ra") || Mainwindow.Advancemonitortask[i].Size.Contains("RA"))
+                        {
+                            NMP.randomsize = true;
+                        }
+                        Task task1 = new Task(() => NMP.start());
+                        task1.Start();
+                    }
+                    else if (Mainwindow.Advancemonitortask[i].Region == "NikeUS" || Mainwindow.Advancemonitortask[i].Region == "NikeUK")
+                    {
+                        NikeMonitorProduct NMP = new NikeMonitorProduct();
+                        NMP.mn = Mainwindow.Advancemonitortask[i];
+                        if (Mainwindow.Advancemonitortask[i].Size.Contains("ra") || Mainwindow.Advancemonitortask[i].Size.Contains("RA"))
+                        {
+                            NMP.randomsize = true;
+                        }
+                        Task task1 = new Task(() => NMP.start());
+                        task1.Start();
+                    }
+                }
+            }
         }
     }
 }

@@ -24,14 +24,17 @@ namespace MAIO
         public string size = "";
         public string pid = "";
         public string profile = "";
-        public Main.taskset tk = null;
+        public taskset tk = null;
         public string code = "";
+        
         string GID = Guid.NewGuid().ToString();
         public string skuid = "";
         public string productID = "";
         string cardguid = "";
         string msrp = "";
         int index = 0;
+        int limit = 0;
+        int quantity = 0;
         public string username = "";
         public string password = "";
         public string giftcard = "";
@@ -47,6 +50,7 @@ namespace MAIO
             {
                 try
                 {
+                    quantity=int.Parse(tk.Quantity);
                     GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
                 }
                 catch (NullReferenceException)
@@ -200,6 +204,7 @@ namespace MAIO
                     JObject j = JObject.Parse(jar[0].ToString());
                     string skuids = j["skus"].ToString();
                     msrp = j["merchPrice"]["msrp"].ToString();
+                    limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
                     JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
                     string availableSkus = j["availableSkus"].ToString();
                     JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
@@ -507,7 +512,7 @@ namespace MAIO
             string country = "";
             string currency = "";
             string locale = "";
-            string shippingMethod = "";
+            string shippingMethod = "";         
             if (jo["Country"].ToString() == "GB")
             {
                 country = "GB";
@@ -521,6 +526,10 @@ namespace MAIO
                 currency = "USD";
                 locale = "en_US";
                 shippingMethod = "STANDARD";
+            }
+           if (int.Parse(tk.Quantity)>limit)
+            {
+                quantity = limit;
             }
             JObject payLoad = null;
             payLoad = new JObject(
@@ -539,7 +548,7 @@ namespace MAIO
                 new JProperty("id", productID),
                 new JProperty("skuId", skuid),
                 new JProperty("shippingMethod", shippingMethod),
-                new JProperty("quantity", 1),
+                new JProperty("quantity", quantity),
                 new JProperty("recipient",
                    new JObject(
                    new JProperty("firstName", jo["FirstName"].ToString()),
@@ -576,7 +585,7 @@ namespace MAIO
                     new JProperty("id", productID),
                     new JProperty("skuId", skuid),
                     new JProperty("shippingMethod", shippingMethod),
-                    new JProperty("quantity", 1),
+                    new JProperty("quantity", quantity),
                     new JProperty("recipient",
                        new JObject(
                        new JProperty("firstName", jo["FirstName"].ToString()),
@@ -864,7 +873,7 @@ new JObject(
 new JProperty("id", productID),
 new JProperty("skuId", skuid),
 new JProperty("shippingMethod", shippingMethod),
-new JProperty("quantity", 1),
+new JProperty("quantity", quantity),
 new JProperty("recipient",
   new JObject(
   new JProperty("firstName", jo["FirstName"].ToString()),
@@ -902,7 +911,7 @@ new JProperty("shippingAddress",
  new JProperty("id", productID),
  new JProperty("skuId", skuid),
  new JProperty("shippingMethod", shippingMethod),
- new JProperty("quantity", 1),
+ new JProperty("quantity", quantity),
  new JProperty("recipient",
  new JObject(
  new JProperty("firstName", jo["FirstName"].ToString()),
@@ -965,7 +974,7 @@ new JProperty("shippingAddress",
                 string orderid = jo3["response"]["orderId"].ToString();
                 string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:" + orderid + "Email Address:" + joprofile["EmailAddress"].ToString() + "\",\"inline\":false}]}]}";
                 string webhook2 = "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt";
-                string pd3 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:Email Address:\",\"inline\":false}]}]}";
+                string pd3 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tSite:"+tk.Tasksite+"\",\"inline\":false}]}]}";
                 if (Config.webhook == "")
                 {
                     tk.Status = "Success";
@@ -979,7 +988,7 @@ new JProperty("shippingAddress",
                 if (status.Contains("error") == false)
                 {
                     Http(Config.webhook, pd2, tk);
-                    Http(webhook2, pd2, tk);
+                    Http(webhook2, pd3, tk);
                     tk.Status = "Check Webhook";
                 }
             }

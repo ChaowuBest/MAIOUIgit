@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,7 @@ namespace MAIO
     class NikeUSUKAPI
     {
         Random ran = new Random();
+         string akbmsz = "ak_bmsc=";
         string xb3traceid = Guid.NewGuid().ToString();
         string xnikevisitorid = Guid.NewGuid().ToString();
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
@@ -211,6 +213,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+                var wu = response.Headers["Set-Cookie"];
                 tk.Status = "Login Successful!";
                 Stream tokenStream = response.GetResponseStream();
                 StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
@@ -415,7 +418,6 @@ namespace MAIO
                             ct.ThrowIfCancellationRequested();
                         }
                         Mainwindow.iscookielistnull = true;
-                       // Main.updatelable("123", true);
                         tk.Status = "No Cookie";
                         goto C;
                     }
@@ -490,7 +492,8 @@ namespace MAIO
             string paymentsuccesscode = "";
             try
             {
-                HttpWebResponse resppayment = (HttpWebResponse)reqpayment.GetResponse();               
+                HttpWebResponse resppayment = (HttpWebResponse)reqpayment.GetResponse();
+                var wu = resppayment.Headers["Set-Cookie"];
                 tk.Status = "Submit Shipping";
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
@@ -572,6 +575,10 @@ namespace MAIO
             try
             {
                 HttpWebResponse respcheckstatus = (HttpWebResponse)reqcheckstatus.GetResponse();
+                var wu=respcheckstatus.Headers["Set-Cookie"];
+                string cookiename = "ak_bmsc";
+                Regex rex3 = new Regex(@"(?<=" + cookiename + "=)([^;]+)");
+                akbmsz +=rex3.Match(wu).ToString();
                 string check = "";
                 if (respcheckstatus.ContentEncoding == "gzip")
                 {
@@ -809,6 +816,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse processpayment = (HttpWebResponse)reqprocess.GetResponse();
+                var wu=processpayment.Headers["Set-Cookie"];
                 tk.Status = "Submit Billing";
                 Stream processtream = processpayment.GetResponseStream();
                 StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
@@ -875,7 +883,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse respjob = (HttpWebResponse)reqjob.GetResponse();
-
+                var wu=respjob.Headers["Set-Cookie"];
                 if (respjob.ContentEncoding == "gzip")
                 {
                     Stream jobstream = respjob.GetResponseStream();
@@ -960,7 +968,6 @@ namespace MAIO
                         }
                         tk.Status = "No Cookie";
                         Mainwindow.iscookielistnull = true;
-                      //  Main.updatelable("123", true);
                         goto C;
                     }
                     else
@@ -1004,7 +1011,8 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                            string subcookie=Mainwindow.lines[cookie] + ";" + akbmsz;
+                            reqgetstatus.Headers.Add("Cookie",subcookie.Replace(";","; ") );
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 

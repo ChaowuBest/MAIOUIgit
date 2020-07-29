@@ -44,7 +44,7 @@ namespace MAIO
                 if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor")==false)
                 {
                     string monitortask = "True";
-                    if (kv.Value.Contains("monitortask\":\"False"))
+                    if (kv.Value.Contains("\"monitortask\": \"False\""))
                     {
                         monitortask = "False";
                     }
@@ -545,7 +545,7 @@ namespace MAIO
                     Midtransfer.giftcard = jo["giftcard"].ToString();
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
-                    if (Mainwindow.tasklist[content.Taskid].Contains("False") || (Mainwindow.tasklist[content.Taskid].Contains("False") == false && Mainwindow.tasklist[content.Taskid].Contains("True") == false))
+                    if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"False\""))
                     {
                         Midtransfer.monitor = false;
                     }
@@ -571,7 +571,7 @@ namespace MAIO
 
             for (int n = 0; n < Mainwindow.task.Count; n++)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(1);
                 string taskid = Guid.NewGuid().ToString();           
                 taskset tk = Mainwindow.task.ElementAt(n);
                 bool monitortask = false;

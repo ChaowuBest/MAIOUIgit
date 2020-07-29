@@ -5,16 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MAIO"
         mc:Ignorable="d"
-        Title="MonitorProduct" Height="750" Width="570" Closing="Window_Closing_1">
-    <Grid Margin="0,0,0,-5" Width="570"  Height="750" Background="#FF415C5C">
+        Title="MonitorProduct" Height="750" Width="600" Closing="Window_Closing_1">
+    <Grid Margin="0,0,0,-5" Width="570"  Height="750" Background="#FF415C5C" IsVisibleChanged="Grid_IsVisibleChanged_1" >
         <DataGrid Margin="0,0,0,180" Name="monitorproduct" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Setter Property="Height" Value="90" />
+                    <Setter Property="Height" Value="120" />
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn  Header="Photo"  Width="100">
+                <DataGridTemplateColumn  Header="Photo"  Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -27,30 +27,28 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="BtnDelete" Height="30" Width="30" Margin="30,-60,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" >
+                                <Button x:Name="BtnDelete" Height="30" Width="30" Margin="30,-90,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" >
                                 </Button>
-                                <Button x:Name="start" Height="30" Width="30" Margin="-90,-60,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" >
+                                <Button x:Name="start" Height="30" Width="30" Margin="-90,-90,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" >
                                     <Button.Background>
                                         <ImageBrush ImageSource="/play.png"/>
                                     </Button.Background>
                                 </Button>
-                                <TextBox Width="380" Height="30" IsReadOnly="True" Margin="0,-60,0,0">
+                                <TextBox Width="380" Height="30" Text="{Binding Sku}" IsReadOnly="True" Margin="0,-90,0,0">
                                 </TextBox>
-                                <TextBlock Margin="-760,0,0,0" Text="Region:" Width="50" Height="20">
+                                <TextBlock Margin="-710,-30,0,0" Text="Region:" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-655,0,0,0" Text="{Binding Region}" Width="50" Height="20">
+                                <TextBlock Margin="-605,-30,0,0" Text="{Binding Region}" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-540,0,0,0" Text="Status:" Width="50" Height="20">
+                                <TextBlock Margin="-490,-30,0,0" Text="Status:" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-430,0,0,0" Text="{Binding Status}" Width="50" Height="20">
+                                <TextBlock Margin="-390,-30,0,0" Text="{Binding Status}" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-315,0,0,0" Text="Price:" Width="50" Height="20">
+                                <TextBlock Margin="-270,-30,0,0" Text="Price:" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-230,0,0,0" Text="{Binding Price}" Width="50" Height="20">
+                                <TextBlock Margin="-180,-30,0,0" Text="{Binding Price}" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-115,0,0,0" Text="Stock:" Width="50" Height="20">
-                                </TextBlock>
-                                <TextBlock Margin="-30,0,0,0" Text="{Binding Stock}" Width="50" Height="20">
+                                <TextBlock Margin="-430,55,0,0" TextWrapping="Wrap" Text="{Binding Stock}" Width="440" Height="100">
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>

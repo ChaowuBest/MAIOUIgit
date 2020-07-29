@@ -24,12 +24,13 @@ namespace MAIO
         public string pid = "";
         public string profile = "";
         public string Quantity = "";
-        public Main.taskset tk = null;
+        public taskset tk = null;
         public string productid = "";
         string GID = Guid.NewGuid().ToString();
         public string skuid = "";
         string priceid = "";
         string msrp = "";
+        int limit = 0;
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
         ArrayList skuidlist = new ArrayList();
         JObject joprofile = null;
@@ -39,6 +40,7 @@ namespace MAIO
         A: joprofile = JObject.Parse(profile);
             try
             {
+                Quantity = tk.Quantity;
                 GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
             }
             catch (NullReferenceException ex)
@@ -138,6 +140,7 @@ namespace MAIO
                 JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                 JObject j = JObject.Parse(jar[0].ToString());
                 string skuids = j["skus"].ToString();
+                limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
                 priceid = j["merchPrice"]["snapshotId"].ToString();
                 msrp = j["merchPrice"]["msrp"].ToString();
                 JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
@@ -252,7 +255,11 @@ namespace MAIO
                 currency = "CAD";
             }
 
-           string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
+            if (int.Parse(tk.Quantity) > limit)
+            {
+                Quantity = limit.ToString();
+            }
+            string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
             JObject payLoad = new JObject(
                 new JProperty("country", tk.Tasksite.Replace("Nike", "")),
                 new JProperty("language", "en-GB"),
@@ -302,7 +309,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string webhook2 = "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt";
-            string pd1 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + tk.Sku + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";
+            string pd1 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Chekcout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + tk.Sku + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\"Site:" + tk.Tasksite + ",\"inline\":false}]}]}";
             if (Config.webhook == "")
             {
                 tk.Status = paymenturl;
