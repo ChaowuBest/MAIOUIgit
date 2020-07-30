@@ -191,7 +191,8 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
-                tk.Status = "Forbidden";
+                //tk.Status = "Forbidden";
+                tk.Status = response.StatusCode.ToString();
                 Thread.Sleep(1500);
                 goto B;
             }
@@ -303,14 +304,24 @@ namespace MAIO
                     NAU.tk = tk;
                     NAU.Quantity = int.Parse(tk.Quantity);
                     NAU.StartTask(ct, cts);
-
                 }
 
-
             }
-            catch (Exception ex)
+            catch (WebException ex)
             {
                 tk.Status = ex.ToString() + "Retrying";
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                sourcecode = readStream.ReadToEnd();
                 goto C;
             }
             return sourcecode;

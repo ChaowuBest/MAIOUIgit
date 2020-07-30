@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MAIO"
-             mc:Ignorable="d" Width="961" Height="769">
+             mc:Ignorable="d" Width="1080" Height="769">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -12,20 +12,20 @@
             </ResourceDictionary.MergedDictionaries>
             <XmlDataProvider x:Key="AllItem" />
             <Style x:Key="dgCell" TargetType="{x:Type TextBlock}">
-                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="TextAlignment" Value="Left"/>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Rectangle HorizontalAlignment="Center" Height="769" VerticalAlignment="Top" Width="961" Fill="#FF243B55" Margin="0,-8,0,0"/>
-        <StackPanel Margin="0,663,1,-1" Orientation="Horizontal" Background="#FF243B55">
-            <Button Cursor="Hand" x:Name="createtask" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF6F7D8D" Content="New Task" FontFamily="Arial" FontSize="16" Margin="2,8,0,8" Click="createtask_Click">
+    <Grid Width="1080">
+        <Rectangle HorizontalAlignment="Center" Height="769" VerticalAlignment="Top" Width="1080" Fill="#FF243B55" Margin="0,-8,0,0"/>
+        <StackPanel Margin="0,663,1,-1" Orientation="Horizontal" Background="#FF233B55">
+            <Button Cursor="Hand" x:Name="createtask" Opacity="1" Foreground="White" Width="108" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF021F1F" Content="New Task" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="24,8,0,8" Click="createtask_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -33,13 +33,13 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Cursor="Hand" x:Name="startall" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF6F7D8D" Content="Start All" FontFamily="Arial" FontSize="16" Margin="89,0,0,0" Click="startall_Click">
+            <Button Cursor="Hand" x:Name="startall" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF021F1F" Content="Start All" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="289,0,0,0" Click="startall_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"   x:Name="PART_Background">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -47,13 +47,13 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF6F7D8D" Content="Stop All" FontFamily="Arial" FontSize="16" Margin="89,0,0,0" Click="button1_Copy1_Click">
+            <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF021F1F" Content="Stop All" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="35,0,0,0" Click="button1_Copy1_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"  x:Name="PART_Background">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -61,13 +61,13 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Cursor="Hand" x:Name="button1_Copy2" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF6F7D8D" Content="Edit" FontFamily="Arial" FontSize="16" Margin="89,0,0,0" Click="button1_Copy2_Click">
+            <Button Cursor="Hand" x:Name="button1_Copy2" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF021F1F" Content="Edit" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="133,0,0,0" Click="button1_Copy2_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"  x:Name="PART_Background">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -75,13 +75,13 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Cursor="Hand" x:Name="button1_Copy3" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF6F7D8D" Content="Delete All" FontFamily="Arial" FontSize="16" Margin="89,0,65,0" Click="button1_Copy3_Click">
+            <Button Cursor="Hand" x:Name="button1_Copy3" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF021F1F" Content="Delete All" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="35,0,64,0" Click="button1_Copy3_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"  x:Name="PART_Background">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -90,17 +90,25 @@
                 </Button.Template>
             </Button>
         </StackPanel>
-        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="917,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
-        <StackPanel Background="#FF011F1F" Orientation="Horizontal" Margin="0,47,1,675">
-            <Label Content="Site" Margin="79,0,0,0" Height="32" Width="73" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16" VerticalAlignment="Center"/>
-            <Label Content="Sku" Background="#FF011F1F" Margin="65,0,0,0" Foreground="#FFF5EBEB" FontSize="16" FontFamily="Arial" RenderTransformOrigin="0.42,0.516" Height="32" Width="68"/>
-            <Label Content="Size" Height="32" Width="76" Margin="60,0,0,0" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16"/>
-            <Label Content="Profile" Margin="43,0,0,0" Height="32" Width="75" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16"/>
-            <Label Content="Proxies" Height="32" Margin="52,0,0,0" Width="75" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16"/>
-            <Label Content="Status" Height="32" Width="75" Margin="52,0,0,0" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16"/>
-            <Label Content="Action" Height="32" Width="55" Margin="50,0,0,0" Background="#FF011F1F" Foreground="#FFF5EBEB" FontFamily="Arial" FontSize="16"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
+        <StackPanel Background="#FF021F1F" Orientation="Horizontal" Margin="24,47,24,675">
+            <Label Content="Site" Margin="24,0,0,0" Height="32" Width="68" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" VerticalAlignment="Center" FontSize="16"/>
+            <Label Content="Sku" Background="#FF011F1F" Margin="90,0,0,0" Foreground="White" FontSize="16" FontFamily="PingFangSC-Semibold" RenderTransformOrigin="0.42,0.516" Height="32" Width="68"/>
+            <Label Content="Size" Height="32" Width="76" Margin="74,0,0,0" Background="#FF011F1F" Foreground="#FFFFFF" FontFamily="PingFangSC-Semibold" FontSize="16"/>
+            <Label Content="Profile" Margin="50,0,0,0" Height="32" Width="75" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
+            <Label Content="Proxies" Height="32" Margin="70,0,0,0" Width="75" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
+            <Label Content="Status" Height="32" Width="80" Margin="120,0,0,0" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
+            <Label Content="Action" Height="32" Width="55" Margin="80,0,0,0" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
         </StackPanel>
-        <DataGrid GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="None" Margin="44,99,0,202" x:Name="datagrid" FontFamily="Bahnschrift Light SemiCondensed" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" MouseDoubleClick="datagrid_MouseDoubleClick">
+        <DataGrid GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="None" Margin="24,99,0,202" x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" MouseDoubleClick="datagrid_MouseDoubleClick">
+            <DataGrid.Resources>
+                <ResourceDictionary>
+                    <XmlDataProvider x:Key="AllItem" />
+                    <Style x:Key="dgCell2" TargetType="{x:Type TextBlock}">
+                        <Setter Property="TextAlignment" Value="Center"/>
+                    </Style>
+                </ResourceDictionary>
+            </DataGrid.Resources>
             <DataGrid.Background>
                 <ImageBrush/>
             </DataGrid.Background>
@@ -128,24 +136,24 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Site"  Binding="{Binding Tasksite}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                <DataGridTextColumn Header="Sku" Binding="{Binding Sku}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                <DataGridTextColumn Header="Size" Binding="{Binding Size}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <DataGridTextColumn Header="Profile" Binding="{Binding Profile}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <DataGridTextColumn Header="Proxies" Binding="{Binding Proxies}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <DataGridTemplateColumn  Header="Action" Width="127">
+                <DataGridTextColumn Header="Site"  Binding="{Binding Tasksite}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="120" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF" />
+                <DataGridTextColumn Header="Sku" Binding="{Binding Sku}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="170" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF" />
+                <DataGridTextColumn Header="Size" Binding="{Binding Size}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="110" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                <DataGridTextColumn Header="Profile" Binding="{Binding Profile}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="170" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                <DataGridTextColumn Header="Proxies" Binding="{Binding Proxies}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="100" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="260" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                <DataGridTemplateColumn  Header="Action" Width="140" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="BtnDelete" Height="20" Width="20" Margin="90,1,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" Click="BtnDelete_Click_1" >
+                                <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,1,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" Click="BtnDelete_Click_1" >
                                 </Button>
-                                <Button x:Name="start" Height="12" Width="12" Margin="-130,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" Click="start_Click" >
+                                <Button x:Name="start" Height="12" Width="12" Margin="-170,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" Click="start_Click" >
                                     <Button.Background>
                                         <ImageBrush ImageSource="/play.png"/>
                                     </Button.Background>
                                 </Button>
-                                <Button x:Name="stop" Height="12" Width="12" Margin="-60,0,0,0" Click="stop_Click" BorderBrush="{x:Null}"  Foreground="#FFD44444" >
+                                <Button x:Name="stop" Height="12" Width="12" Margin="-90,0,0,0" Click="stop_Click" BorderBrush="{x:Null}"  Foreground="#FFD44444" >
 
                                     <Button.Background>
                                         <ImageBrush ImageSource="/stop.png"/>
@@ -155,13 +163,26 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="TaskID" Binding="{Binding TaskID}" Visibility="Collapsed" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="127" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <DataGridTextColumn Header="TaskID" Binding="{Binding TaskID}" Visibility="Collapsed" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="140" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Grid  Margin="0,-8,0,0"/>
-        <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Height="767"/>
-        <Label Content="Cookie:" HorizontalAlignment="Center" Height="25" VerticalAlignment="Center" Width="62" Margin="-882,-723,0,0" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Label Content="" Name="cookienum"  HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="62" Margin="64,10.5,0,0" FontFamily="Arial" FontSize="14" Background="{x:Null}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Button Content="monitor" HorizontalAlignment="Left" Height="20" Margin="188,15,0,0" VerticalAlignment="Top" Width="70" Click="Button_Click_1"/>
+        <Grid  Margin="0,-8,0,0" Width="1080"/>
+        <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Height="767" Width="1080"/>
+        <Label Content="Cookie:" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="62" Margin="24,10,0,0" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="" Name="cookienum"  HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="62" Margin="91,10,0,0" FontFamily="PingFangSC-Semibold" FontSize="14" Background="{x:Null}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Button Cursor="Hand" x:Name="monitor" Opacity="1" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="108" Height="45" Background="#FF021F1F" Content="Monitor" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="190,695,782,29" Click="Button_Click_1">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"  x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </UserControl>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MAIO"
         mc:Ignorable="d"
-        Title="Mainwindow" Height="754" Width="1025" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="{x:Null}">
+        Title="MAIO" Height="754" FontFamily="PingFangSC-Semibold" Width="1142" WindowStartupLocation="CenterScreen"  AllowsTransparency="True" WindowStyle="None" MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="Black" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -17,27 +17,29 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" HorizontalAlignment="Left" Width="1092">
+    <Grid MouseLeftButtonDown="Grid_MouseLeftButtonDown" HorizontalAlignment="Left" Width="1142">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="65*"/>
-            <ColumnDefinition Width="960*"/>
-            <ColumnDefinition Width="67*"/>
+            <ColumnDefinition Width="1080*"/>
         </Grid.ColumnDefinitions>
         <Path Data="M155.33333,-3.24" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="1" Margin="62,0,0,756" Stretch="Fill" Stroke="Black" VerticalAlignment="Bottom" Width="1" Grid.Column="1"/>
         <Path Data="M62.666667,2.76 L62.666667,746.02" HorizontalAlignment="Left" Height="756" Margin="63,-1,0,0" Stretch="Fill" Stroke="Black" VerticalAlignment="Top" Width="1" Fill="#FF578370"/>
-        <Rectangle HorizontalAlignment="Left" Height="769" VerticalAlignment="Top" Width="1026" Fill="#FF243B55" Grid.ColumnSpan="3" Margin="0,-8,0,0"/>
-        <Button Content="X" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="934,0,0,0" VerticalAlignment="Top" Width="27" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
-        <Grid  Margin="0,-8,66,0" Grid.ColumnSpan="3">
-            <Grid x:Name="GridPrincipal" VerticalAlignment="Center" Height="762" Margin="0,0,1,0"/>
+        <Rectangle HorizontalAlignment="Center" Height="769" VerticalAlignment="Center" Width="1080" Fill="#FF243B55" Grid.Column="1" RenderTransformOrigin="0.5,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleY="-0.126"/>
+                    <RotateTransform/>
+                    <TranslateTransform Y="-1.331"/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+        <Button Content="X" Grid.Column="1" HorizontalAlignment="Left" Height="20" Margin="1034,0,0,0" VerticalAlignment="Top" Width="27" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click"/>
+        <Grid  Margin="0,-8,0,0" Grid.ColumnSpan="2">
+            <Grid x:Name="GridPrincipal" VerticalAlignment="Center" Height="762" Margin="0,0,75,0"/>
         </Grid>
-        <StackPanel>
-            <StackPanel.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="#FF172F39" Offset="0.278"/>
-                </LinearGradientBrush>
-            </StackPanel.Background>
-            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,130,0,0" Click="MenuClick">
+        <StackPanel Background="#FF172E39">
+            <Button Content="" Height="24" Width="24" BorderThickness="0" FontSize="16" Margin="0,94,0,0" Click="MenuClick">
                 <Button.Background>
                     <ImageBrush ImageSource="/dashboard.png"/>
                 </Button.Background>
@@ -61,7 +63,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Content=""  Height="41" Width="43" BorderThickness="0" Margin="0,50,0,0" FontSize="16" Click="ProxyClick">
+            <Button Content=""  Height="24" Width="24" BorderThickness="0" Margin="0,69,0,0" FontSize="16" Click="ProxyClick">
                 <Button.Background>
                     <ImageBrush ImageSource="/proxy.png"/>
                 </Button.Background>
@@ -85,7 +87,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,60,0,0" Click="AccountClick">
+            <Button Content="" Height="24" Width="24" BorderThickness="0" FontSize="16" Margin="0,78,0,0" Click="AccountClick">
                 <Button.Background>
                     <ImageBrush ImageSource="/account.png"/>
                 </Button.Background>
@@ -109,7 +111,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,70,0,0" Click="ProfileClick">
+            <Button Content="" Height="24" Width="24" BorderThickness="0" FontSize="16" Margin="0,79,0,0" Click="ProfileClick">
                 <Button.Background>
                     <ImageBrush ImageSource="/user.png"/>
                 </Button.Background>
@@ -135,7 +137,7 @@
             </Button>
             <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,80,0,0" Click="SettingClick">
                 <Button.Background>
-                    <ImageBrush ImageSource="/settings2.png"/>
+                    <ImageBrush ImageSource="/settings.png"/>
                 </Button.Background>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -157,9 +159,16 @@
                     </Style>
                 </Button.Style>
             </Button>
+            <TextBlock Height="10" Text="PROXIES" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="44" Margin="6,-634,0,0" Foreground="White" FontSize="10"/>
+            <TextBlock Height="10" Text="ACCOUNT" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="48" Foreground="White" FontSize="10" Margin="1,-428,0,0" RenderTransformOrigin="0.5,0.5">
+
+            </TextBlock>
+            <TextBlock Height="10" Text="USER" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="38" Foreground="White" FontSize="10" RenderTransformOrigin="0.5,0.5" Margin="13,-220,0,0"/>
+            <TextBlock Height="10" Text="TASK" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="32" Foreground="White" FontSize="10" Margin="8,-822,0,0"/>
+            <TextBlock Height="12" Text="Settings" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="43" Foreground="White" FontSize="10" RenderTransformOrigin="0.5,0.5" Margin="6,2,0,0"/>
         </StackPanel>
-        <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Grid.Column="1" Height="769" Margin="0,0,0,-15"/>
-        <Grid Grid.Column="1" Name="maingrid" Margin="0,0,66,0" Grid.ColumnSpan="2"/>
+        <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Grid.Column="1" Margin="0,0,10,-15"/>
+        <Grid Grid.Column="1" Name="maingrid"/>
     </Grid>
 </Window>
     

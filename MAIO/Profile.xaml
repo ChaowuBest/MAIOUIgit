@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MAIO"
-             mc:Ignorable="d" Height="769" Width="961">
-    <Grid Background="#FF243B55" RenderTransformOrigin="0.5,0.5" Margin="1,0,-1,0">
+             mc:Ignorable="d" Height="769" Width="1080">
+    <Grid Background="#FF243B55" RenderTransformOrigin="0.5,0.5" Margin="1,0,-1,0" Width="1080">
         <Grid.RenderTransform>
             <TransformGroup>
                 <ScaleTransform/>
@@ -14,7 +14,7 @@
                 <TranslateTransform/>
             </TransformGroup>
         </Grid.RenderTransform>
-        <ListView Margin="93,120,587,80" Name="profilelist"  Background="#FF292F34" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontFamily="Arial" FontSize="14" SizeChanged="profilelist_SizeChanged" MouseDoubleClick="profilelist_MouseDoubleClick">
+        <ListView Margin="93,120,652,80" Name="profilelist"  Background="#FF292F34" Foreground="White" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontFamily="PingFangSC-Semibold" FontSize="14" SizeChanged="profilelist_SizeChanged" MouseDoubleClick="profilelist_MouseDoubleClick">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
                     <Setter Property="Template">
@@ -70,8 +70,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <StackPanel Margin="390,114,23,80" Name="panel" Orientation="Horizontal">
-            <Label Content="Billing Info" Height="35" Width="94" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" HorizontalAlignment="Stretch" Margin="20,0,0,530"/>
+        <StackPanel Margin="513,114,23,80" Name="panel" Orientation="Horizontal">
+            <Label Content="Billing Info" Height="35" Width="94" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" HorizontalAlignment="Stretch" Margin="20,0,0,530"/>
             <TextBox Height="25" TextWrapping="Wrap" Name="firstname" Width="200" Margin="-83,0,0,465" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center" SelectionBrush="#FF0078D7">
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
@@ -265,7 +265,7 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
-            <Label Content="Card Info" Height="35" Width="94" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="-888,0,0,0"/>
+            <Label Content="Card Info" Height="35" Width="94" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" Margin="-888,0,0,0"/>
             <TextBox Height="25" Name="nameoncard" TextWrapping="Wrap" Width="200" Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionTextBrushKey}}" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center" Margin="-760,0,0,-60">
                 <TextBox.Resources>
                     <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.3" Stretch="None" AlignmentX="Left">
@@ -371,13 +371,13 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
-            <Button Content="Save"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="Arial"  Height="36" Width="97" Margin="-480,0,0,-442" Click="save">
+            <Button Content="Save"  Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold"  Height="36" Width="97" Margin="-480,0,0,-442" Click="save">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -387,8 +387,8 @@
             </Button>
             <ComboBox Height="25" Name="countrylist" Width="200" Margin="-760,-146,0,0" FontFamily="Arial" FontSize="14" Text="Country"/>
         </StackPanel>
-        <Label Content="Profiles" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="291" Margin="92,80,0,0" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="917,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
+        <Label Content="Profiles" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="291" Margin="92,80,0,0" FontSize="16" FontFamily="Arial" Foreground="White"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1035,1,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
     </Grid>
 
 </UserControl>
