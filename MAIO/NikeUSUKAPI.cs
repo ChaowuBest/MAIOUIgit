@@ -19,7 +19,7 @@ namespace MAIO
         Random ran = new Random();
          string akbmsz = "ak_bmsc=";
         string xb3traceid = Guid.NewGuid().ToString();
-        string xnikevisitorid = Guid.NewGuid().ToString();
+      // string xnikevisitorid = Guid.NewGuid().ToString();
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
@@ -82,7 +82,6 @@ namespace MAIO
         }
         public string Postlogin(string url, string logininfo, bool isrefresh, string account, Main.taskset tk, CancellationToken ct)
         {
-           // MessageBox.Show("123");
         retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             if (ct.IsCancellationRequested)
@@ -948,82 +947,84 @@ namespace MAIO
             reqgetstatus.ContentType = "application/json; charset=UTF-8";
             byte[] paymenttokeninfo = Encoding.UTF8.GetBytes(payload);
             reqgetstatus.Headers.Add("authorization", Authorization);
-            if (Mainwindow.iscookielistnull)
-            {
-                reqgetstatus.Headers.Add("Cookie", "");
-            }
-            else
-            {
-                if ((Config.cjevent != "") && (Config.cid != ""))
-                {
-                reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 500);
-                    Thread.Sleep(sleeptime);
-                C: if (Mainwindow.lines.Count == 0)
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        tk.Status = "No Cookie";
-                        Mainwindow.iscookielistnull = true;
-                        goto C;
-                    }
-                    else
-                    {
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
-                        try
-                        {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
-                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
-                            Mainwindow.lines.RemoveAt(cookie);
-                            if (Mainwindow.lines.Count == 0)
-                            {
-                                Mainwindow.iscookielistnull = true;
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            goto reloadcookie;
-                        }
-                    }
-                }
-                else
-                {
-                reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 500);
-                    Thread.Sleep(sleeptime);
-                C: if (Mainwindow.lines.Count == 0)
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        Mainwindow.iscookielistnull = true;
-                        tk.Status = "No Cookie";
-                        goto C;
+            /*  if (Mainwindow.iscookielistnull)
+              {
+                  reqgetstatus.Headers.Add("Cookie", "");
+              }
+              else
+              {
+                  if ((Config.cjevent != "") && (Config.cid != ""))
+                  {
+                  reloadcookie: Random ra = new Random();
+                      int sleeptime = ra.Next(0, 500);
+                      Thread.Sleep(sleeptime);
+                  C: if (Mainwindow.lines.Count == 0)
+                      {
+                          if (ct.IsCancellationRequested)
+                          {
+                              tk.Status = "IDLE";
+                              ct.ThrowIfCancellationRequested();
+                          }
+                          tk.Status = "No Cookie";
+                          Mainwindow.iscookielistnull = true;
+                          goto C;
+                      }
+                      else
+                      {
+                          int cookie = ra.Next(0, Mainwindow.lines.Count);
+                          try
+                          {
+                              Main.updatelable(Mainwindow.lines[cookie], false);
+                              reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
+                              Mainwindow.lines.RemoveAt(cookie);
+                              if (Mainwindow.lines.Count == 0)
+                              {
+                                  Mainwindow.iscookielistnull = true;
+                              }
+                          }
+                          catch (Exception)
+                          {
+                              goto reloadcookie;
+                          }
+                      }
+                  }
+                  else
+                  {
+                  reloadcookie: Random ra = new Random();
+                      int sleeptime = ra.Next(0, 500);
+                      Thread.Sleep(sleeptime);
+                  C: if (Mainwindow.lines.Count == 0)
+                      {
+                          if (ct.IsCancellationRequested)
+                          {
+                              tk.Status = "IDLE";
+                              ct.ThrowIfCancellationRequested();
+                          }
+                          Mainwindow.iscookielistnull = true;
+                          tk.Status = "No Cookie";
+                          goto C;
 
-                    }
-                    else
-                    {
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
-                        try
-                        {
-                            string subcookie=Mainwindow.lines[cookie] + ";" + akbmsz;
-                            reqgetstatus.Headers.Add("Cookie",subcookie.Replace(";","; ") );
-                            Main.updatelable(Mainwindow.lines[cookie], false);
-                            Mainwindow.lines.RemoveAt(cookie);
+                      }
+                      else
+                      {
+                          int cookie = ra.Next(0, Mainwindow.lines.Count);
+                          try
+                          {
+                              string subcookie=Mainwindow.lines[cookie] + ";" + akbmsz;
+                              reqgetstatus.Headers.Add("Cookie",subcookie.Replace(";","; ") );
 
-                        }
-                        catch (Exception)
-                        {
-                            goto reloadcookie;
-                        }
-                    }
-                }
-            }
+                              Main.updatelable(Mainwindow.lines[cookie], false);
+                              Mainwindow.lines.RemoveAt(cookie);
+
+                          }
+                          catch (Exception)
+                          {
+                              goto reloadcookie;
+                          }
+                      }
+                  }
+              }*/
+            reqgetstatus.Headers.Add("Cookie", "CONSUMERCHOICE_SESSION=t; s_ecid=MCMID%7C08335113933111001613113946980067283425; AMCVS_F0935E09512D2C270A490D4D%40AdobeOrg=1; RES_TRACKINGID=284443253138423; ResonanceSegment=1; guidU=3a11afe2-776d-4582-b254-350bcbfcc42c; _gcl_au=1.1.1349716998.1595434350; _fbp=fb.1.1595434350671.2092163292; _ga=GA1.2.676227799.1595434351; AnalysisUserId=60.210.20.122.77481595434355226; _pin_unauth=dWlkPU16Y3dZVEEwTnpFdFlXRXpNQzAwWVdReExUZzVZekl0WkdObVlqTXpZemszWXpObA; crl8.fpcuid=03846fa9-3d3f-4704-a2d2-33ab89f13f57; _scid=2a661624-1208-4dad-abde-b203927c7850; _sctr=1|1595433600000; bc_nike_singapore_triggermail=%7B%22distinct_id%22%3A%20%22173774c38d9682-0ffdb7be458f47-7f2f4867-1704a0-173774c38da5ef%22%2C%22cart_total%22%3A%20149%7D; sq=3; optimizelyEndUserId=oeu1595553435393r0.37849959429315416; s_sess=%20tp%3D1657%3B%20c51%3Dhorizontal%3B%20s_cc%3Dtrue%3B%20s_ppv%3Dnikecom%25253Echeckout%25253Eshipping%252C55%252C54%252C917.3333339691162%3B; bc_nike_canada_triggermail=%7B%22distinct_id%22%3A%20%221737e64fb0795-06afe3b666aeb7-7f2f4867-1704a0-1737e64fb084fb%22%2C%22cart_total%22%3A%20160%7D; cid=undefined%7Cundefined; geoloc=cc=CN,rc=JL,tp=vhigh,tz=GMT+8,la=43.89,lo=125.32; anonymousId=A62273FE0B60DBF46517E04C7C973E37; _gid=GA1.2.296899278.1595934192; utag_main=_st:1595990134377$ses_id:1595988399771%3Bexp-session; bc_nike_australia_triggermail=%7B%22distinct_id%22%3A%20%22173775a1d78400-07b46735cae0ef-7f2f4867-1704a0-173775a1d793c2%22%2C%22cart_total%22%3A%20170%7D; NIKE_COMMERCE_COUNTRY=US; NIKE_COMMERCE_LANG_LOCALE=en_US; CONSUMERCHOICE=us/en_us; nike_locale=us/en_us; lls=3; slCheck=1Ok7NLYrZb+ARA2NCtpsyKdTWlaTbS+usEv27cy91aPRut9PxNugW2IN4sn8g48F0FmfWlOEsD1wIp9C7xt4gvK8Wx5F7NLx8ApdG6nkpwuqOyWFRYGwc9KqV2keLb7U; llCheck=jNZJe1rnB7d5psp0oAVGEAA2AEY+Rpe8KKpleXIAnHfNtsD0NvNZitS2jmmXAGI8ItYuwmaRruJkFJisXqaZc/R4nWiBhdBHWn6q7LyjWVKM4g9ZmKUmunJD+xUFJD5AIbbWGFvehCac/7OlkIeb70xmuZhTorkJo5KEeXa6mpc=; sls=3; fs_uid=rs.fullstory.com#BM7A6#6266740190363648:6356050518556672/1622087170; AMCV_F0935E09512D2C270A490D4D%40AdobeOrg=1994364360%7CMCMID%7C08335113933111001613113946980067283425%7CMCAID%7CNONE%7CMCOPTOUT-1596034688s%7CNONE%7CvVersion%7C3.4.0%7CMCIDTS%7C18473%7CMCAAMLH-1596632288%7C9%7CMCAAMB-1596632288%7Cj8Odv6LonN4r3an7LhD3WZrU1bUpAkFkkiY1ncBR96t2PTI; siteCatalyst_sample=30; dreamcatcher_sample=65; neo_sample=89; guidS=05cf781a-2766-4479-d1fc-09589764206c; guidSTimestamp=1596029236444|1596029939275; ppd=pdp|snkrs>pdp>lebron%2017%20fp; AKA_A2=A; bm_sz=26981972EE83CFDD00A312075C8292E4~YAAQXZ7C3Z8tX4ZzAQAA+sUJmwiCIqWuWyN4ChN25MT/w4yy4pXZi2MkkoNNYrvNIxI3oLfVeoZHHx32PBydOxBLkQ8XKbzywytMZmZErQqXHrxZX/UXivFL0kNNd5HGagQzgJVyx5/n/OpUJCxjgtquBL2w/QXajYpewf5MdvozF2tee6MoYOjq4E5R7Q==; _gat_UA-171421696-1=1; _gat_UA-167630499-2=1; bm_mi=A2211DF285C1EC8716C837717B924654~XN/yXo0MkZ54lQSsSvuFquVjIdxfsyFqlgS1PoA2pAoMZE1QrJjb+y69Y2002CI7wLegYTx5b/mOt9Yw8k/ml1mxFD29RxlFD773N1UUvWRYKysm7SHZF+/h9aO/ds7t0mi2fIoWsrrHd9xvvjLPDPF55asgbXoZ6aAkwXZJylet21TgzTb7wcs0kGQFMn/eLZiDdHcHr8QRviPQ6ZUlQ0S6F71jKAHtPh48q/G8X5Iu//PYl4AnoONQ8kXFYqPlJ6VAyslJH1LpTlVNAqoQNQ==; ak_bmsc=D336D8146B8797A5DF8C5C1DE2753F84DDC29E5D79370000B68B215F2E3D8A1A~plkfhkg2OYaozokEVfLDw1e8OgItvMkuPdLq5kzMdSetoFxEkRJwsxdzyT2h1Hn/sUOyUaUnTbLERVQwauxDnLQhHPfBMhsyPTlhjVV3qpcdIGbYZZXhCg7jtLdRCe4H/rXg5xID64uvRzPcNy2cSyLTQ7inLrXoZG5MDTuVzQPubuG61M5NMLkmFwZOz8XNdD6xTxOkux3EBaX876HNv5IhgVg4NILJpl7m5f+C4eTmKxx+cIRd/aOoDEaobgJmm+; RES_SESSIONID=466682712331018; _uetsid=feee5da5f3ca3f164782a94b834bfd5f; _uetvid=bcb6a6620ee9f73367d0347ba1d3af85; bc_nike_triggermail=%7B%22distinct_id%22%3A%20%22173807e221813a-020cf4978e2fd3-7f2f4867-1704a0-173807e22193e3%22%2C%22cart_total%22%3A%200%2C%22ch%22%3A%20%221433069869%22%7D; _abck=3F11837CD8282673D22ACD936F59D9DA~-1~YAAQXZ7C3QowX4ZzAQAA0z0KmwTCWFRCFtYYqX4w9mBaTS7siHnuPygVUIXnzyovxG/Ov0TKSmKr/F0Yd6Rrn2XllQbPuF2Loh+kpmTUB9BHK1vgmIkmh5Yp1w6XG4txtIixHPSlFvTFN0pZwLfLcEXS9oko/MQ7xFAGk4hrN7vMK5oeU3TIP0+iMlmS0uCHEWzx5FdRV7H4ol45QpJKa2ewnn/U0yfRzy3GXYo3/aBNlAEc5gnXtkt9EsqpW45IBY57bESxkpB37MTbwL8NMyIx5tQs9xOvJfI2v49SaXuxw4WIlDWjyU9UYJgxfcSn/uNUT7n3dOUf8SxWLwbhiZcNhErAyXqvLJexgteNJcY=~-1~-1~-1; bm_sv=6AAC2D128BA53D4F88E55EC40E9E9C70~ZzEqMWy9TV2DXmT7xWq/HgODTGTpFd8SUlYHSd/yLimJKsY8ZIlIPTPH1yx9GyX+p1HDusG9PhaEoFvxQyDaYG6xeAB1E+Z2zis31/OD1aSeVxYb8/90EcwwGMKvMFARDV6XM1uv3RDNrw4ov0jXRA==");
             reqgetstatus.Headers.Add("accept-encoding", "gzip, deflate,br");
             reqgetstatus.Headers.Add("accept-language", "en-US, en; q=0.9");
             reqgetstatus.Headers.Add("appid", "com.nike.commerce.checkout.web");
@@ -1057,7 +1058,7 @@ namespace MAIO
         }
         public string finalorder(string url, string Authorization, string profile, Main.taskset tk, string pid, string size, string code, string giftcard, string username, string password, bool randomsize, CancellationToken ct, string productid, string skuid)
         {
-            string status = "";
+          A: string status = "";
             for (int i = 0; i < 10; i++)
             {
                 if (ct.IsCancellationRequested)
@@ -1127,6 +1128,7 @@ namespace MAIO
                     StreamReader readjobstream = new StreamReader(jobstream, Encoding.UTF8);
                     status = readjobstream.ReadToEnd();
                     tk.Status = "Error";
+                    goto A;
 
                 }
                 if ((status.Contains("COMPLETED") == true) && (status.Contains("OUT_OF_STOCK")))

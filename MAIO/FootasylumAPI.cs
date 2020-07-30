@@ -125,7 +125,6 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
             request.Headers.Add("x-requested-with", "XMLHttpRequest");
-            // request.AllowAutoRedirect = true;
             request.Headers.Add("Cookie", firstcookie);
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try

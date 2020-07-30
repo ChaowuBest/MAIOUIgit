@@ -12,7 +12,7 @@ namespace MAIO
         public bool randomsize = false;
         public Main.Monitor mn = null;
         NikeMonitorProductAPI MPAPI = new NikeMonitorProductAPI();
-        public void start()
+        public void start(CancellationToken ct)
         {
         Retry: string country = "";
             string url = "";

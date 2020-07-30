@@ -278,7 +278,7 @@ namespace MAIO
                     NAU.profile = profile;
                     NAU.randomsize = randomsize;
                     NAU.tk = tk;
-                    NAU.Quantity = tk.Quantity;
+                    NAU.Quantity = int.Parse(tk.Quantity);
                     NAU.StartTask(ct, cts);
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
@@ -301,7 +301,7 @@ namespace MAIO
                     NAU.profile = profile;
                     NAU.randomsize = randomsize;
                     NAU.tk = tk;
-                    NAU.Quantity = tk.Quantity;
+                    NAU.Quantity = int.Parse(tk.Quantity);
                     NAU.StartTask(ct, cts);
 
                 }

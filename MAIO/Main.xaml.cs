@@ -147,10 +147,10 @@ namespace MAIO
         }
         private void createtask_Click(object sender, RoutedEventArgs e)
         {
-            string[] setup = new string[6];
+           // string[] setup = new string[6];
             NewTask nt = new NewTask();
             nt.getTextHandler = Ctask;
-            nt.ShowDialog();
+            nt.Show();
         }
         public static MonitorProduct mp = new MonitorProduct();
         public class Monitor : INotifyPropertyChanged
@@ -305,7 +305,7 @@ namespace MAIO
                         NA.profile = Mainwindow.allprofile[tk.Profile];
                         NA.pid = tk.Sku;
                         NA.size = tk.Size;
-                        NA.Quantity = tk.Quantity;
+                        NA.Quantity =int.Parse( tk.Quantity);
                         NA.monitortask = monitortask;
                         if (tk.Size == "RA" || tk.Size == "ra")
                         {
@@ -597,7 +597,7 @@ namespace MAIO
                             NA.profile = Mainwindow.allprofile[tk.Profile];
                             NA.pid = tk.Sku;
                             NA.size = tk.Size;
-                            NA.Quantity = tk.Quantity;
+                            NA.Quantity = int.Parse(tk.Quantity);
                             if (tk.Size == "RA" || tk.Size == "ra")
                             {
                                 NA.randomsize = true;
