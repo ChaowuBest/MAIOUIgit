@@ -44,7 +44,15 @@ namespace MAIO
 
         private void mygrid_Loaded(object sender, RoutedEventArgs e)
         {
-            giftcard.ItemsSource = Mainwindow.giftcardlist.Keys;
+            if (Midtransfer.edit)
+            {
+                giftcard.ItemsSource = Mainwindow.giftcardlist.Keys;         
+            }
+            else
+            {
+                giftcard.ItemsSource = Mainwindow.giftcardlist.Keys;
+            }
+            
 
         }
         private void profiles_Loaded_1(object sender, RoutedEventArgs e)
@@ -182,6 +190,7 @@ namespace MAIO
             if (Midtransfer.edit)
             {
                 site.Text = Midtransfer.sitesel;
+
             }
         }
         private void Quantity_Loaded(object sender, RoutedEventArgs e)
@@ -193,6 +202,7 @@ namespace MAIO
                 monitor.IsChecked = Midtransfer.monitor;
                 num.Visibility = Visibility.Hidden;
                 tasknumber.Visibility = Visibility.Hidden;
+                giftcard.Text = "";
             }
             else
             {

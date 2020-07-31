@@ -203,8 +203,17 @@ namespace MAIO
 
                     JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                     JObject j = JObject.Parse(jar[0].ToString());
+                    var chao=j.ToString();
                     string skuids = j["skus"].ToString();
-                    msrp = j["merchPrice"]["msrp"].ToString();
+                    if (tk.Tasksite == "NikeUS")
+                    {
+                        msrp = j["merchPrice"]["msrp"].ToString();
+                    }
+                    else
+                    {
+                        msrp = j["merchPrice"]["fullPrice"].ToString();
+                    }
+                   // msrp = j["merchPrice"]["msrp"].ToString();
                     try
                     {
                         imageurl = j["imageUrls"]["productImageUrl"].ToString();

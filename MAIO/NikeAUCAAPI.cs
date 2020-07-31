@@ -11,6 +11,8 @@ using System.Windows;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace MAIO
 {
@@ -51,6 +53,7 @@ namespace MAIO
             }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;     
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+           
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
             try
@@ -109,8 +112,35 @@ namespace MAIO
             {
                 wp = default;
             }
+            #region
+            /* A: var client = new HttpClient();
+               client.DefaultRequestVersion = HttpVersion.Version20;
+               client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+               client.DefaultRequestHeaders.Add("appid", "com.nike.commerce.nikedotcom.web");
+               client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
+               client.DefaultRequestHeaders.Add("Sec-Fetch-Dest", "empty");
+               client.DefaultRequestHeaders.Add("Sec-Fetch-Mode", "cors");
+               client.DefaultRequestHeaders.Add("Sec-Fetch-Site", "same-site");
+               client.DefaultRequestHeaders.Add("X-B3-SpanName", "CiCCart");
+               client.DefaultRequestHeaders.Add("X-B3-TraceId", xb3traceid);
+               client.DefaultRequestHeaders.Add("x-nike-visitid", "1");
+               client.DefaultRequestHeaders.Add("x-nike-visitorid", xnikevisitorid);
+               client.DefaultRequestHeaders.Add("Cookie", Mainwindow.lines[10]);
+               client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36");
+               HttpContent httpContent = new StringContent(payinfo);
+               var chao = client.PutAsync(url, httpContent).Result;
+
+               if (chao.ReasonPhrase != "Forbidden")
+               {
+
+               }
+               else
+               {
+                   goto A;
+               }*/
+            #endregion
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);         
             request.Method = "PUT";
             request.Proxy = wp;
             request.ContentType = "application/json; charset=UTF-8";

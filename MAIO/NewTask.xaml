@@ -23,6 +23,7 @@
                 <!--<ComboBoxItem Content="ASOS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
             </ComboBox>
             <ComboBox Width="145" Name="giftcard" Height="21" Margin="-525,0,0,0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Center">
+              
             </ComboBox>
             <ComboBox Width="145" Height="21" Name="profiles" Margin="-525,113,0,0" FontFamily="Arial" FontSize="14" Loaded="profiles_Loaded_1"/>
             <RichTextBox Width="344" Name="sku" Height="23" Margin="78,-111,0,0" FontFamily="Arial" FontSize="14" AutoWordSelection="False">
