@@ -135,7 +135,7 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Content="" Height="41" Width="43" BorderThickness="0" FontSize="16" Margin="0,80,0,0" Click="SettingClick">
+            <Button Content="" Height="24" Width="24" BorderThickness="0" FontSize="16" Margin="0,80,0,0" Click="SettingClick">
                 <Button.Background>
                     <ImageBrush ImageSource="/settings.png"/>
                 </Button.Background>
@@ -159,12 +159,12 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <TextBlock Height="10" Text="PROXIES" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="44" Margin="6,-634,0,0" Foreground="White" FontSize="10"/>
-            <TextBlock Height="10" Text="ACCOUNT" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="48" Foreground="White" FontSize="10" Margin="1,-428,0,0" RenderTransformOrigin="0.5,0.5">
+            <TextBlock Height="10" Text="PROXIES" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="44" Margin="6,-606,0,0" Foreground="White" FontSize="10"/>
+            <TextBlock Height="10" Text="ACCOUNT" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="48" Foreground="White" FontSize="10" Margin="1,-400,0,0" RenderTransformOrigin="0.5,0.5">
 
             </TextBlock>
-            <TextBlock Height="10" Text="USER" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="38" Foreground="White" FontSize="10" RenderTransformOrigin="0.5,0.5" Margin="13,-220,0,0"/>
-            <TextBlock Height="10" Text="TASK" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="32" Foreground="White" FontSize="10" Margin="8,-822,0,0"/>
+            <TextBlock Height="10" Text="USER" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="38" Foreground="White" FontSize="10" RenderTransformOrigin="0.5,0.5" Margin="13,-189,0,0"/>
+            <TextBlock Height="10" Text="TASK" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="32" Foreground="White" FontSize="10" Margin="8,-790,0,0"/>
             <TextBlock Height="12" Text="Settings" FontFamily="PingFangSC-Semibold" TextWrapping="Wrap" Width="43" Foreground="White" FontSize="10" RenderTransformOrigin="0.5,0.5" Margin="6,2,0,0"/>
         </StackPanel>
         <Frame x:Name="frmMain" NavigationUIVisibility="Hidden" Grid.Column="1" Margin="0,0,10,-15"/>

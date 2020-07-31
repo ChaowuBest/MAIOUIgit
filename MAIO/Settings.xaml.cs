@@ -36,7 +36,7 @@ namespace MAIO
             Cid.Text = Config.cid;
             Cjevent.Text = Config.cjevent;
             discordwebhook.Text = Config.webhook;
-
+            autoclearcookie.IsChecked = Config.autoclearcookie;
             delay2.Text = Config.delay;
             if (Config.Usemonitor.Contains("True"))
             {
@@ -97,6 +97,7 @@ namespace MAIO
                 Config.cjevent = Cjevent.Text;
                 Config.Usemonitor = Usemonitor.IsChecked.ToString();
                 Config.UseAdvancemode = useAdvancemode.IsChecked.ToString();
+                Config.autoclearcookie =(bool) autoclearcookie.IsChecked;
                 Random ra = new Random();
                 if (delay2.Text == "")
                 {
@@ -106,7 +107,8 @@ namespace MAIO
                 {
                     Config.delay = delay2.Text;
                 }
-                string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\"" + Usemonitor.IsChecked.ToString() + "\",\"Advancemode\":\"" + useAdvancemode.IsChecked.ToString() + "\"}";
+                string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\"" + Usemonitor.IsChecked.ToString() + "\",\"Advancemode\":\"" + useAdvancemode.IsChecked.ToString() + "\"," +
+                    "\"AutoClearCookie\":\"" + Config.autoclearcookie.ToString()+ "\"}";
                 File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
                 MessageBox.Show("Save success");
             }

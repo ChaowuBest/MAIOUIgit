@@ -57,8 +57,11 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-           Task task2 = new Task(() => clearcookie());
-            task2.Start();
+            if (Config.autoclearcookie)
+            {
+                Task task2 = new Task(() => clearcookie());
+                task2.Start();
+            }     
         }
         public void clearcookie()
         {

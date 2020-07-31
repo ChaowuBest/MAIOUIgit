@@ -15,6 +15,7 @@ namespace MAIO
         public static string quantity { get; set; }
         public static string Usemonitor { get; set; }
         public static string UseAdvancemode { get; set; }
+        public static bool autoclearcookie { get; set; }
         public static Main mn = null;
         public static List<int> qual = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         

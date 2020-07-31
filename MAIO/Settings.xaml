@@ -57,13 +57,13 @@
         </Button>
         <TextBox HorizontalAlignment="Left" Name="discordwebhook" BorderThickness="0" Height="25" Margin="534,218,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="352" Background="#FF9CB0C6" MaxLines="1" FontFamily="PingFangSC-Semibold" FontSize="16"/>
         <Label Content="Discord Webhook" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="176" Margin="534,179,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White"/>
-        <Label Content="Version:" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="534,604,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Label Content="0.97" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="592,604,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Version:" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="538,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="0.99" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="600,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <TextBox HorizontalAlignment="Left" Name="delay2" Height="33" Margin="691,328,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="108" FontFamily="PingFangSC-Semibold" FontSize="16" Background="#FF9CB0C6"/>
         <Label Content="Monitor Delay" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="113" Margin="538,328,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White"/>
-        <Label Content="Expiry" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="705,604,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Label Content="Renew" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="759,604,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Start Gen" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="691,441,162,282" Width="108" Click="gencookie">
+        <Label Content="Expiry" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="702,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Renew" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="762,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Start Gen" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="691,428,281,295" Width="108" Click="gencookie" RenderTransformOrigin="0.13,0.444">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
@@ -77,14 +77,16 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Label Content="Cookie Num" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="117" Margin="534,441,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center"/>
-        <TextBox HorizontalAlignment="Left" x:Name="Cjevent" Height="33" Margin="691,540,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="108" FontFamily="PingFangSC-Semibold" FontSize="16" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778"/>
-        <TextBox HorizontalAlignment="Left" x:Name="Cid" Height="33" Margin="538,540,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="108" FontFamily="PingFangSC-Semibold" FontSize="16" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596"/>
-        <Label Content="Cid" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="84" Margin="538,504,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Label Content="Cjevent" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="88" Margin="691,504,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Cookie Num" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="116" Margin="530,432,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center"/>
+        <TextBox HorizontalAlignment="Left" x:Name="Cjevent" Height="33" Margin="691,588,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="108" FontFamily="PingFangSC-Semibold" FontSize="16" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778"/>
+        <TextBox HorizontalAlignment="Left" x:Name="Cid" Height="33" Margin="538,588,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="108" FontFamily="PingFangSC-Semibold" FontSize="16" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596"/>
+        <Label Content="Cid" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="84" Margin="540,535,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="Cjevent" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="88" Margin="691,535,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <Label Content="Use Monitor" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="108" Margin="538,384,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" RenderTransformOrigin="0.515,-2.047"/>
         <CheckBox Content="" Name="Usemonitor" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="47" Margin="732,389,0,0"/>
         <Label Content="Advanced Mode" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="136" Margin="538,266,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" RenderTransformOrigin="0.515,-2.047"/>
         <CheckBox Content="" x:Name="useAdvancemode" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="47" Margin="736,275,0,0"/>
+        <CheckBox Content="" Name="autoclearcookie" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="89" Margin="732,502,0,0"/>
+        <TextBlock Text="AutoClearCookie" TextWrapping="Wrap" RenderTransformOrigin="3.636,-6.565" Margin="540,499,415,247" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="White"/>
     </Grid>
 </UserControl>

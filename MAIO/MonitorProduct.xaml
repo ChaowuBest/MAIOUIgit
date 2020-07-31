@@ -42,7 +42,7 @@
                                 </TextBlock>
                                 <TextBlock Margin="-490,-30,0,0" Text="Status:" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-390,-30,0,0" Text="{Binding Status}" Width="50" Height="20">
+                                <TextBlock Margin="-380,-30,0,0" Text="{Binding Status}" Width="80" Height="20">
                                 </TextBlock>
                                 <TextBlock Margin="-270,-30,0,0" Text="Price:" Width="50" Height="20">
                                 </TextBlock>

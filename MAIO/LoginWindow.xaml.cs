@@ -21,11 +21,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.98
+    /// version 0.99
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.98";//everychange
+        public static string version = "0.99";//everychange
         public LoginWindow()
         {
             InitializeComponent();
@@ -51,6 +51,14 @@ namespace MAIO
                         Config.delay = jo["delay"].ToString();
                         Config.Usemonitor = jo["Usemonitor"].ToString();
                         Config.UseAdvancemode = jo["Advancemode"].ToString();
+                        if (jo["AutoClearCookie"].ToString() == "True")
+                        {
+                            Config.autoclearcookie = true;
+                        }
+                        else
+                        {
+                            Config.autoclearcookie = false;
+                        }
                         this.Close();
                         MD.Show();
                     }
@@ -86,7 +94,7 @@ namespace MAIO
                     {
                         FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                         fs1.Close();
-                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\"}");
+                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\",\"AutoClearCookie\":\"\"}");
                         Config.Key = MD.Key = key;
                         Config.webhook = MD.webhook = "";
                         Config.cid = MD.cid = "";
@@ -94,6 +102,7 @@ namespace MAIO
                         Config.delay = "";
                         Config.Usemonitor = "";
                         Config.UseAdvancemode = "";
+                        Config.autoclearcookie = false;
                         Close();
                         MD.Show();
                     }
@@ -110,6 +119,15 @@ namespace MAIO
                         Config.delay = jo["delay"].ToString();
                         Config.Usemonitor = jo["Usemonitor"].ToString();
                         Config.UseAdvancemode = jo["Advancemode"].ToString();
+                        Config.UseAdvancemode = jo["Advancemode"].ToString();
+                        if (jo["AutoClearCookie"].ToString() == "True")
+                        {
+                            Config.autoclearcookie = true;
+                        }
+                        else
+                        {
+                            Config.autoclearcookie = false;
+                        }
                         Close();
                         MD.Show();
                     }
