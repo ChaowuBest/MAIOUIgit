@@ -119,13 +119,7 @@ namespace MAIO
         public class taskset : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
-            public string Tasksite { get; set; }
-            public string Sku { get; set; }
-            public string Size { get; set; }
-            public string Profile { get; set; }
-            public string Proxies { get; set; }
             private string status;
-           
             public string Status
             {
                 get { return status; }
@@ -135,6 +129,71 @@ namespace MAIO
                     if (PropertyChanged != null)
                     {
                         PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                    }
+                }
+            }
+            private string tasksite;
+            public string Tasksite
+            {
+                get { return tasksite; }
+                set
+                {
+                    tasksite = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Tasksite"));
+                    }
+                }
+            }
+            private string sku;
+            public string Sku
+            {
+                get { return sku; }
+                set
+                {
+                    sku = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Sku"));
+                    }
+                }
+            }
+            private string size;
+            public string Size
+            {
+                get { return size; }
+                set
+                {
+                    size = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Size"));
+                    }
+                }
+            }
+            private string profile;
+            public string Profile
+            {
+                get { return profile; }
+                set
+                {
+                    profile = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Profile"));
+                    }
+                }
+            }
+            private string proxies;
+            public string Proxies
+            {
+                get { return proxies; }
+                set
+                {
+                    proxies = value;
+                    if (PropertyChanged != null)
+                    {
+                        PropertyChanged(this, new PropertyChangedEventArgs("Proxies"));
                     }
                 }
             }
@@ -150,7 +209,7 @@ namespace MAIO
         }
         private void createtask_Click(object sender, RoutedEventArgs e)
         {
-           // string[] setup = new string[6];
+            Midtransfer.edit = false;
             NewTask nt = new NewTask();
             nt.getTextHandler = Ctask;
             nt.Show();
@@ -246,8 +305,9 @@ namespace MAIO
             }
             taskwrite(profile);
         }
-        public void taskwrite(string task)
+        public static void taskwrite(string task)
         {
+            JArray ja2 = JArray.Parse(task);          
             try
             {
                 string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "task.json";
@@ -267,6 +327,14 @@ namespace MAIO
                 {
                     string read = sr.ReadToEnd();
                     JArray ja = JArray.Parse(read);
+                    for (int i = 0; i < ja.Count; i++)
+                    {
+                        if (ja[i]["Taskid"].ToString() == ja2[0]["Taskid"].ToString())
+                        {
+                            ja.RemoveAt(i);
+                            break;
+                        }
+                    }
                     ja.Add(JObject.Parse(task.Replace("[", "").Replace("]", "")));
                     fs1.SetLength(0);
                     StreamWriter sw = new StreamWriter(fs1);
@@ -308,7 +376,7 @@ namespace MAIO
                         NA.profile = Mainwindow.allprofile[tk.Profile];
                         NA.pid = tk.Sku;
                         NA.size = tk.Size;
-                        NA.Quantity =int.Parse( tk.Quantity);
+                        NA.Quantity =int.Parse(tk.Quantity);
                         NA.monitortask = monitortask;
                         if (tk.Size == "RA" || tk.Size == "ra")
                         {
@@ -534,12 +602,12 @@ namespace MAIO
         private void datagrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var content = (taskset)datagrid.SelectedItem;
-
             try
             {
                 NewTask nt = new NewTask();
                 Midtransfer.sitesel = content.Tasksite;
                 Midtransfer.pid = content.Sku;
+                Midtransfer.taskid = content.Taskid;
                 Midtransfer.sizeid = content.Size;
                 Midtransfer.profilesel = content.Profile;
                 if (Mainwindow.tasklist[content.Taskid] != "")
@@ -548,15 +616,15 @@ namespace MAIO
                     Midtransfer.giftcard = jo["giftcard"].ToString();
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
-                    if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"False\""))
-                    {
-                        Midtransfer.monitor = false;
-                    }
-                    else
+                    Midtransfer.tk = content;
+                    if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"True\""))
                     {
                         Midtransfer.monitor = true;
                     }
-                    
+                    else
+                    {
+                        Midtransfer.monitor = false;
+                    }              
                 }
                 Midtransfer.edit = true;
                 nt.getTextHandler = Ctask;
@@ -729,31 +797,34 @@ namespace MAIO
         }
         private void button1_Copy2_Click(object sender, RoutedEventArgs e)
         {
+            var content = (taskset)datagrid.SelectedItem;
             try
             {
-                var content = (taskset)datagrid.SelectedItem;
-                if (content == null)
+                NewTask nt = new NewTask();
+                Midtransfer.sitesel = content.Tasksite;
+                Midtransfer.pid = content.Sku;
+                Midtransfer.taskid = content.Taskid;
+                Midtransfer.sizeid = content.Size;
+                Midtransfer.profilesel = content.Profile;
+                if (Mainwindow.tasklist[content.Taskid] != "")
                 {
-
-                }
-                else
-                {
-                    NewTask nt = new NewTask();
-                    if (Mainwindow.tasklist[content.Taskid] != "")
+                    JObject jo = JObject.Parse(Mainwindow.tasklist[content.Taskid]);
+                    Midtransfer.giftcard = jo["giftcard"].ToString();
+                    Midtransfer.code = jo["Code"].ToString();
+                    Midtransfer.Quantity = jo["Quantity"].ToString();
+                    Midtransfer.tk = content;
+                    if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"True\""))
                     {
-                        JObject jo = JObject.Parse(Mainwindow.tasklist[content.Taskid]);
-                        Midtransfer.giftcard = jo["giftcard"].ToString();
-                        Midtransfer.code = jo["Code"].ToString();
-                        Midtransfer.Quantity = jo["Quantity"].ToString();
+                        Midtransfer.monitor = true;
                     }
-                    Midtransfer.sitesel = content.Tasksite;
-                    Midtransfer.pid = content.Sku;
-                    Midtransfer.sizeid = content.Size;
-                    Midtransfer.profilesel = content.Profile;
-                    Midtransfer.edit = true;
-                    nt.getTextHandler = Ctask;
-                    nt.ShowDialog();
+                    else
+                    {
+                        Midtransfer.monitor = false;
+                    }
                 }
+                Midtransfer.edit = true;
+                nt.getTextHandler = Ctask;
+                nt.ShowDialog();
             }
             catch
             {

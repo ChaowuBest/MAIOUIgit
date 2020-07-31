@@ -34,27 +34,30 @@ namespace MAIO
         private void save(object sender, RoutedEventArgs e)
         {
             bool duplicate = false;
+            string key = "";
+            string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
+              "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
+              "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
+              Text + "\",\"Country\":\"" + countrylist.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
+              "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
             for (int i = 0; i < Mainwindow.allprofile.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
                 if (kv.Key == profilename.Text)
                 {
                     duplicate = true;
+                    key=kv.Key;
                     break;
                 }              
             }
             if(duplicate)
             {
-                MessageBox.Show("profilename duplicate");
+                Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+                profilewrite(profile);
+                
             }
             else
             {
-                string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
-               "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
-               "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
-               Text + "\",\"Country\":\"" + countrylist.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
-               "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
-                //  Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
                 Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
                 profilewrite(profile);
                 profilelist.Items.Add(profilename.Text);
@@ -63,6 +66,7 @@ namespace MAIO
         }
         public void profilewrite(string profile)
         {
+            JArray ja2 = JArray.Parse(profile);
             try
             {
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "MAIO";
@@ -83,6 +87,14 @@ namespace MAIO
                 {
                     string read = sr.ReadToEnd();
                     JArray ja = JArray.Parse(read);
+                    for (int i = 0; i < ja.Count; i++)
+                    {
+                        if (ja[i]["ProfileName"].ToString() == ja2[0]["ProfileName"].ToString())
+                        {
+                            ja.RemoveAt(i);
+                            break;
+                        }
+                    }
                     ja.Add(JObject.Parse(profile.Replace("[", "").Replace("]", "")));
                     fs1.SetLength(0);
                     StreamWriter sw = new StreamWriter(fs1);

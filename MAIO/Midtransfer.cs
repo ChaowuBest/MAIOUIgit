@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using static MAIO.Main;
 
 namespace MAIO
 {
@@ -14,6 +15,8 @@ namespace MAIO
         public static string giftcard { get; set; }
         public static string code { get; set; }
         public static string Quantity { get; set; }
+        public static string taskid { get; set; }
         public static bool monitor { get; set; }
+        public static taskset tk { get; set; }
     }
 }

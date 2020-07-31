@@ -21,6 +21,7 @@ namespace MAIO
         public bool randomsize = false;
         public bool monitortask = true;
         public string size = "";
+        public string imageurl = "";
         public string pid = "";
         public string profile = "";
         public int Quantity = 0;
@@ -141,6 +142,14 @@ namespace MAIO
                 JObject j = JObject.Parse(jar[0].ToString());
                 string skuids = j["skus"].ToString();
                 limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
+                try
+                {
+                    imageurl = j["imageUrls"]["productImageUrl"].ToString();
+                }
+                catch
+                { 
+
+                }
                 priceid = j["merchPrice"]["snapshotId"].ToString();
                 msrp = j["merchPrice"]["msrp"].ToString();
                 JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
@@ -309,13 +318,12 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string webhook2 = "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt";
-            string pd1 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Checkout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\tSite:" + tk.Tasksite + "\",\"inline\":false}]}]}";
             if (Config.webhook == "")
             {
                 tk.Status = paymenturl;
                 try
                 {
-                    Http(webhook2, pd1);
+                    ProcessNotification(true, webhook2, "");
                 }
                 catch
                 {
@@ -324,11 +332,33 @@ namespace MAIO
             }
             else
             {
-                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Checkout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + paymenturl + "\\t\\t\\t\\tSize:" + tk.Size + "\\t\\t\\t\\t\",\"inline\":false}]}]}";
-                Http(Config.webhook, pd2);
-                Http(webhook2, pd1);
+                ProcessNotification(false,Config.webhook, paymenturl);
+                ProcessNotification(true,webhook2, "");
                 tk.Status = "Check Webhook";
             }
+        }
+        public void ProcessNotification(bool publicsuccess, string webhookurl, string paymenturl)
+        {
+            JObject jobject = null;
+            if (publicsuccess)
+            {
+                jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":3329330,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Site\",\"value\":\"\",\"inline\":true}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
+                jobject["embeds"][0]["title"] = "You Just Checkout!!!";
+                jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+                jobject["embeds"][0]["fields"][2]["value"] = tk.Tasksite;
+                jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
+            }
+            else
+            {
+                jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":3329330,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Paymenturl\",\"value\":\"\",\"inline\":false}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
+                jobject["embeds"][0]["title"] = "You Just Checkout!!!";
+                jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+                jobject["embeds"][0]["fields"][2]["value"] = paymenturl;
+                jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
+            }
+            Http(webhookurl, jobject.ToString());
         }
         public void Http(string url, string postDataStr)
         {

@@ -36,6 +36,7 @@ namespace MAIO
         int limit = 0;
         int quantity = 0;
         public string username = "";
+        public string imageurl = "";
         public string password = "";
         public string giftcard = "";
         Dictionary<string, string> giftcard2 = new Dictionary<string, string>();
@@ -204,6 +205,14 @@ namespace MAIO
                     JObject j = JObject.Parse(jar[0].ToString());
                     string skuids = j["skus"].ToString();
                     msrp = j["merchPrice"]["msrp"].ToString();
+                    try
+                    {
+                        imageurl = j["imageUrls"]["productImageUrl"].ToString();
+                    }
+                    catch
+                    {
+                        
+                    }
                     limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
                     JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
                     string availableSkus = j["availableSkus"].ToString();
@@ -972,13 +981,11 @@ new JProperty("shippingAddress",
             {
                 JObject jo3 = JObject.Parse(status);
                 string orderid = jo3["response"]["orderId"].ToString();
-                string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Checkout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tOrder id:" + orderid + "Email Address:" + joprofile["EmailAddress"].ToString() + "\",\"inline\":false}]}]}";
                 string webhook2 = "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt";
-                string pd3 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"You Just Checkout!\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Checkout out!!!\",\"value\":\"" + pid + "\\t\\t\\t\\tSize:" + size + "\\t\\t\\t\\tSite:"+tk.Tasksite+"\",\"inline\":false}]}]}";
                 if (Config.webhook == "")
                 {
                     tk.Status = "Success";
-                    Http(webhook2, pd3, tk);
+                    ProcessNotification(true, tk, webhook2, joprofile, "");
                 }
                 if (ct.IsCancellationRequested)
                 {
@@ -987,14 +994,39 @@ new JProperty("shippingAddress",
                 }
                 if (status.Contains("error") == false)
                 {
-                    Http(Config.webhook, pd2, tk);
-                    Http(webhook2, pd3, tk);
-                    tk.Status = "Check Webhook";
+                    ProcessNotification(false,tk,Config.webhook, joprofile,orderid);
+                    ProcessNotification(true,tk,webhook2, joprofile ,"");
+                    tk.Status = "Success";
                 }
             }
 
         }
-        public void Http(string url, string postDataStr, Main.taskset tk)
+        public void ProcessNotification(bool publicsuccess,taskset tk,string webhookurl, JObject joprofile,string orderid)
+        {
+            JObject jobject = null;
+            if (publicsuccess)
+            {
+               jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Site\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
+                jobject["embeds"][0]["title"] = "You Just Checkout!!!";
+                jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+                jobject["embeds"][0]["fields"][2]["value"] = tk.Tasksite;
+                jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
+            }
+            else
+            {
+                jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Email\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n            ,\r\n                {\r\n                    \"name\": \"Account\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n,                            {\r\n                    \"name\": \"Orderid\",\r\n                    \"value\": \"\",\r\n                    \"inline\": false\r\n                }\r\n            ],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
+                jobject["embeds"][0]["title"] = "You Just Checkout!!!";
+                jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+                jobject["embeds"][0]["fields"][2]["value"] = joprofile["EmailAddress"].ToString();
+                jobject["embeds"][0]["fields"][3]["value"] = username;
+                jobject["embeds"][0]["fields"][4]["value"] = orderid;
+                jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
+            }            
+            Http(webhookurl, jobject.ToString(),tk);
+        }
+         public void Http(string url, string postDataStr, Main.taskset tk)
         {
         Retry: Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);

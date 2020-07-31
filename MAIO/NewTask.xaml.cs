@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -25,6 +26,11 @@ namespace MAIO
         {
             InitializeComponent();
             Quantity.ItemsSource = Config.qual;
+            tasknumber.Document.Blocks.Clear();
+            Run run4 = new Run("1");
+            Paragraph p4 = new Paragraph();
+            p4.Inlines.Add(run4);
+            tasknumber.Document.Blocks.Add(p4);
         }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -64,6 +70,12 @@ namespace MAIO
                 p3.Inlines.Add(run3);
                 discount.Document.Blocks.Add(p3);
 
+                tasknumber.Document.Blocks.Clear();
+                Run run4 = new Run("1");
+                Paragraph p4 = new Paragraph();
+                p4.Inlines.Add(run4);
+                tasknumber.Document.Blocks.Add(p4);
+
                 int profile = 0;
                 foreach (var i in Mainwindow.allprofile)
                 {
@@ -99,42 +111,59 @@ namespace MAIO
         public GetTextHandler getTextHandler;
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            string productid = new TextRange(sku.Document.ContentStart, sku.Document.ContentEnd).Text;
-            string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text;
-            string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text;
-            string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text;
+            string productid = new TextRange(sku.Document.ContentStart, sku.Document.ContentEnd).Text.Replace("\r\n", "");
+            string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text.Replace("\r\n", "");
+            string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text.Replace("\r\n", "");
+            string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text.Replace("\r\n","");
             string[] setup = new string[9];
             try
             {
                 if (taskNumber != null) {
                     for (int i = 0; i < int.Parse(taskNumber); i++)
                     {
-                        if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
+                        if (Midtransfer.edit)
                         {
-                            setup[0] = site.SelectedItem.ToString();
-                            setup[2] = profiles.SelectedItem.ToString();
+                            JObject jo = JObject.Parse(Mainwindow.tasklist[Midtransfer.taskid].ToString());
+                            string profile = "[{\"Taskid\":\"" + jo["Taskid"].ToString() + "\",\"Tasksite\":\"" + site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + productid + "\"," + "\"Size\":\"" + sizeid + "\"," +
+                                    "\"Profile\":\"" + profiles.Text + "\",\"Proxies\":\"Default\"," + "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code + "\",\"Quantity\":\"" + Quantity.Text + "\"," +
+                                    "\"monitortask\":\"" + monitor.IsChecked.ToString() + "\",\"AdvanceMonitor\":\"False\"}]";
+
+                            Midtransfer.tk.Tasksite = site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ","");
+                            Midtransfer.tk.Sku = productid.Replace("\r\n","");
+                            Midtransfer.tk.Size = sizeid.Replace("\r\n","");
+                            Midtransfer.tk.Profile = profiles.Text.Replace("\r\n","");
+                            Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
+                            Main.taskwrite(profile);
                         }
                         else
                         {
-                            MessageBox.Show("Check your input");
-                        }
-                        if (giftcard.SelectedItem != null)
-                        {
-                            setup[1] = giftcard.SelectedItem.ToString();
-                        }
-                        setup[3] = productid;
-                        setup[4] = sizeid;
-                        setup[5] = code;
-                        setup[6] = Quantity.SelectedItem.ToString();
-                        setup[7] = monitor.IsChecked.ToString();
-                        setup[8]= advancemonitor.IsChecked.ToString();
-                        if ((sizeid != "") && (productid != ""))
-                        {
-                            getTextHandler(setup);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Check your input");
+                            if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
+                            {
+                                setup[0] = site.SelectedItem.ToString();
+                                setup[2] = profiles.SelectedItem.ToString();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Check your input");
+                            }
+                            if (giftcard.SelectedItem != null)
+                            {
+                                setup[1] = giftcard.SelectedItem.ToString();
+                            }
+                            setup[3] = productid;
+                            setup[4] = sizeid;
+                            setup[5] = code;
+                            setup[6] = Quantity.SelectedItem.ToString();
+                            setup[7] = monitor.IsChecked.ToString();
+                            setup[8] = advancemonitor.IsChecked.ToString();
+                            if ((sizeid != "") && (productid != ""))
+                            {
+                                getTextHandler(setup);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Check your input");
+                            }
                         }
                     }
                 } else {
@@ -159,13 +188,16 @@ namespace MAIO
         {
             if (Midtransfer.edit)
             {
+                advancemonitor.Visibility = Visibility.Hidden;
                 Quantity.Text = Midtransfer.Quantity;
                 monitor.IsChecked = Midtransfer.monitor;
+                num.Visibility = Visibility.Hidden;
+                tasknumber.Visibility = Visibility.Hidden;
             }
             else
             {
-                
 
+                Quantity.Text = "1";
             }
 
         }
