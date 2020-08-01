@@ -51,7 +51,7 @@ namespace MAIO
             var hcao = ja.ToString();
             try
             {
-                mn.Price = ja[0]["productInfo"][0]["merchPrice"]["msrp"].ToString();
+                mn.Price = ja[0]["productInfo"][0]["merchPrice"]["currentPrice"].ToString();
                 mn.Status = ja[0]["productInfo"][0]["merchProduct"]["status"].ToString();
                 mn.photo = ja[0]["productInfo"][0]["imageUrls"]["productImageUrl"].ToString();
                 productid = ja[0]["productInfo"][0]["merchProduct"]["id"].ToString();
