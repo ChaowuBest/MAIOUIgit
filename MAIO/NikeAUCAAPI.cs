@@ -55,7 +55,7 @@ namespace MAIO
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
            
             request.Proxy = wp;
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
 
@@ -139,7 +139,7 @@ namespace MAIO
                    goto A;
                }*/
             #endregion
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);         
             request.Method = "PUT";
             request.Proxy = wp;
@@ -204,7 +204,7 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Dest", "empty");
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             request.Headers.Add("X-B3-SpanName", "CiCCart");
             request.Headers.Add("X-B3-TraceId", xb3traceid);
             request.Headers.Add("x-nike-visitid", "1");
