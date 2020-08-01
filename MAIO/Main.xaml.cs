@@ -48,7 +48,20 @@ namespace MAIO
                     {
                         monitortask = "False";
                     }
-                    Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask });
+                    string account = null;
+                    if (kv.Value.Contains("Account"))
+                    {
+                        account=jo["Account"].ToString();
+                        if (account == "")
+                        {
+                            account = null;
+                        }
+                    }
+                    else 
+                    {
+                         account = null;
+                    }
+                    Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask,Account=account});
                 }
             }
             datagrid.ItemsSource = Mainwindow.task;
@@ -200,6 +213,7 @@ namespace MAIO
             public string Taskid { get; set; }
             public string monitortask { get; set; }
             public string Quantity { get; set; }
+            public string Account { get; set; }
 
         }
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -292,16 +306,16 @@ namespace MAIO
             string taskid = Guid.NewGuid().ToString();
             string profile = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + st[3].Replace("\r\n", "") + "\"," +
              "\"Size\":\"" + st[4].Replace("\r\n", "") + "\",\"Profile\":\"" + st[2] + "\",\"Proxies\":\"Default\"," +
-            "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\",\"AdvanceMonitor\":\"" + st[8] + "\"}]";
+            "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\",\"AdvanceMonitor\":\"" + st[8] + "\",\"Account\":\"" + st[9] + "\"}]";
             if (st[8] == "True")
             {
-                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Taskid = taskid });
+                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Taskid = taskid ,});
                 Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
             }
             else
             {
                 Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
-                Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7] });
+                Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7],Account=st[9]});
             }
             taskwrite(profile);
         }
@@ -401,14 +415,28 @@ namespace MAIO
                         try
                         {
                             string[] account = null;
-                            if (Mainwindow.listaccount[random].Contains("-"))
+                            if (tk.Account != null)
                             {
-                                account = Mainwindow.listaccount[random].Split("-");
+                                if (tk.Account.Contains(":"))
+                                {
+                                    account = tk.Account.Split(":");
+                                }
+                                else if(tk.Account.Contains("-"))
+                                {
+                                    account = tk.Account.Split("-");
+                                }
                             }
-                            else if (Mainwindow.listaccount[random].Contains(":"))
+                            else
                             {
-                                account = Mainwindow.listaccount[random].Split(":");
-                            }
+                                if (Mainwindow.listaccount[random].Contains("-"))
+                                {
+                                    account = Mainwindow.listaccount[random].Split("-");
+                                }
+                                else if (Mainwindow.listaccount[random].Contains(":"))
+                                {
+                                    account = Mainwindow.listaccount[random].Split(":");
+                                }
+                            }                    
                             NikeUSUK NSK = new NikeUSUK();
                             NSK.giftcard = giftcard;
                             NSK.pid = tk.Sku;
@@ -617,6 +645,7 @@ namespace MAIO
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
                     Midtransfer.tk = content;
+                    
                     if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"True\""))
                     {
                         Midtransfer.monitor = true;
@@ -692,13 +721,27 @@ namespace MAIO
                             try
                             {
                                 string[] account = null;
-                                if (Mainwindow.listaccount[random].Contains("-"))
+                                if (tk.Account != null)
                                 {
-                                    account = Mainwindow.listaccount[random].Split("-");
+                                    if (tk.Account.Contains(":"))
+                                    {
+                                        account = tk.Account.Split(":");
+                                    }
+                                    else if (tk.Account.Contains("-"))
+                                    {
+                                        account = tk.Account.Split("-");
+                                    }
                                 }
-                                else if (Mainwindow.listaccount[random].Contains(":"))
+                                else
                                 {
-                                    account = Mainwindow.listaccount[random].Split(":");
+                                    if (Mainwindow.listaccount[random].Contains("-"))
+                                    {
+                                        account = Mainwindow.listaccount[random].Split("-");
+                                    }
+                                    else if (Mainwindow.listaccount[random].Contains(":"))
+                                    {
+                                        account = Mainwindow.listaccount[random].Split(":");
+                                    }
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
                                 NSK.monitortask = monitortask;

@@ -25,7 +25,9 @@ namespace MAIO
         public NewTask()
         {
             InitializeComponent();
+            accountlable.Visibility = Visibility.Hidden;
             Quantity.ItemsSource = Config.qual;
+            account.ItemsSource = Mainwindow.listaccount;
             tasknumber.Document.Blocks.Clear();
             Run run4 = new Run("1");
             Paragraph p4 = new Paragraph();
@@ -123,7 +125,8 @@ namespace MAIO
             string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text.Replace("\r\n", "");
             string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text.Replace("\r\n", "");
             string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text.Replace("\r\n","");
-            string[] setup = new string[9];
+            string user=account.Text;
+            string[] setup = new string[10];
             try
             {
                 if (taskNumber != null) {
@@ -134,13 +137,14 @@ namespace MAIO
                             JObject jo = JObject.Parse(Mainwindow.tasklist[Midtransfer.taskid].ToString());
                             string profile = "[{\"Taskid\":\"" + jo["Taskid"].ToString() + "\",\"Tasksite\":\"" + site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + productid + "\"," + "\"Size\":\"" + sizeid + "\"," +
                                     "\"Profile\":\"" + profiles.Text + "\",\"Proxies\":\"Default\"," + "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code + "\",\"Quantity\":\"" + Quantity.Text + "\"," +
-                                    "\"monitortask\":\"" + monitor.IsChecked.ToString() + "\",\"AdvanceMonitor\":\"False\"}]";
+                                    "\"monitortask\":\"" + monitor.IsChecked.ToString() + "\",\"AdvanceMonitor\":\"False\",\"Account\":\""+user+"\"}]";
 
                             Midtransfer.tk.Tasksite = site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ","");
                             Midtransfer.tk.Sku = productid.Replace("\r\n","");
                             Midtransfer.tk.Size = sizeid.Replace("\r\n","");
                             Midtransfer.tk.Profile = profiles.Text.Replace("\r\n","");
                             Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
+                            Midtransfer.tk.Account = user;
                             Main.taskwrite(profile);
                         }
                         else
@@ -164,6 +168,7 @@ namespace MAIO
                             setup[6] = Quantity.SelectedItem.ToString();
                             setup[7] = monitor.IsChecked.ToString();
                             setup[8] = advancemonitor.IsChecked.ToString();
+                            setup[9] = user;
                             if ((sizeid != "") && (productid != ""))
                             {
                                 getTextHandler(setup);
@@ -202,6 +207,7 @@ namespace MAIO
                 monitor.IsChecked = Midtransfer.monitor;
                 num.Visibility = Visibility.Hidden;
                 tasknumber.Visibility = Visibility.Hidden;
+                account.Text = Midtransfer.tk.Account;
                 giftcard.Text = "";
             }
             else
@@ -210,6 +216,27 @@ namespace MAIO
                 Quantity.Text = "1";
             }
 
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void advance_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)advance.IsChecked)
+            {
+                grid.Visibility = Visibility.Visible;
+                save.Visibility = Visibility.Hidden;
+                accountlable.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                save.Visibility = Visibility.Visible;
+                grid.Visibility = Visibility.Hidden;
+                accountlable.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

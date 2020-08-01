@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MAIO"
         mc:Ignorable="d"
-        Title="NewTask" Height="237" Width="833" Background="#FF243B55"  WindowStartupLocation="CenterScreen"  WindowStyle="None"  AllowsTransparency="True" MouseLeftButtonDown="Window_MouseLeftButtonDown" >
-    <Grid  Name="mygrid" Background="#FF415C5C" Loaded="mygrid_Loaded" Width="833" Height="237"  >
+        Title="NewTask" Height="300" Width="833"  WindowStartupLocation="CenterScreen"  WindowStyle="None"  AllowsTransparency="True" MouseLeftButtonDown="Window_MouseLeftButtonDown" >
+    <Window.Background>
+        <ImageBrush/>
+    </Window.Background>
+    <Grid  Name="mygrid" Background="#FF415C5C" Loaded="mygrid_Loaded" Width="833" Height="237" Margin="0,-63,0,0"  >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="260*"/>
             <ColumnDefinition Width="253*"/>
@@ -23,7 +26,7 @@
                 <!--<ComboBoxItem Content="ASOS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
             </ComboBox>
             <ComboBox Width="145" Name="giftcard" Height="21" Margin="-525,0,0,0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Center">
-              
+
             </ComboBox>
             <ComboBox Width="145" Height="21" Name="profiles" Margin="-525,113,0,0" FontFamily="Arial" FontSize="14" Loaded="profiles_Loaded_1"/>
             <RichTextBox Width="344" Name="sku" Height="23" Margin="78,-111,0,0" FontFamily="Arial" FontSize="14" AutoWordSelection="False">
@@ -37,7 +40,7 @@
                     </FlowDocument>
                 </RichTextBox.Document>
             </RichTextBox>
-            <Button Content="Save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="Arial" Width="126" Height="37" Margin="-789,183,0,0" BorderBrush="#FF526C80">
+            <Button Content="Save" Name="save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" Width="126" Height="37" Margin="-789,183,0,0" BorderBrush="#FF526C80">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
@@ -51,12 +54,12 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Label Content="Site" Width="58" Height="24" Margin="-1462,-158,0,0" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-            <Label Content="GiftCard" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="68" Height="24" Margin="-1456,-45,0,0"/>
-            <Label Content="Profiles" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-1462,68,0,0"/>
-            <Label Content="Sku" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-639,-158,0,0"/>
-            <Label Content="Size" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-639,-45,0,0"/>
-            <RichTextBox x:Name="size" FontFamily="Arial" FontSize="14" Width="126" Height="23" Margin="-562,2,0,0">
+            <Label Content="Site" Width="58" Height="24" Margin="-1462,-158,0,0" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <Label Content="GiftCard" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="68" Height="24" Margin="-1456,-45,0,0"/>
+            <Label Content="Profiles" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-1462,68,0,0"/>
+            <Label Content="Sku" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-639,-158,0,0"/>
+            <Label Content="Size" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-639,-45,0,0"/>
+            <RichTextBox x:Name="size" FontFamily="PingFangSC-Semibold" FontSize="14" Width="126" Height="23" Margin="-562,2,0,0">
                 <RichTextBox.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
@@ -67,7 +70,7 @@
                     </FlowDocument>
                 </RichTextBox.Document>
             </RichTextBox>
-            <RichTextBox x:Name="discount" FontFamily="Arial" FontSize="14" Width="129" Height="23" Margin="-1057,2,-20,0" Panel.ZIndex="0">
+            <RichTextBox x:Name="discount" FontFamily="PingFangSC-Semibold" FontSize="14" Width="129" Height="23" Margin="-1057,2,-20,0" Panel.ZIndex="0">
                 <RichTextBox.Resources>
                     <Style TargetType="{x:Type Paragraph}">
                         <Setter Property="Margin" Value="0"/>
@@ -78,22 +81,41 @@
                     </FlowDocument>
                 </RichTextBox.Document>
             </RichTextBox>
-            <Label Content="Code" Name="code" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-1120,-45,0,0"/>
-            <ComboBox x:Name="Quantity" FontFamily="Arial" FontSize="14" Loaded="Quantity_Loaded" Width="129" Height="23" Margin="-1037,115,0,0">
+            <Label Content="Code" Name="code" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-1120,-45,0,0"/>
+            <ComboBox x:Name="Quantity" FontFamily="PingFangSC-Semibold" FontSize="14" Loaded="Quantity_Loaded" Width="129" Height="23" Margin="-1037,115,0,0">
 
             </ComboBox>
 
-            <Label Content="Quantity" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="79" Height="24" Margin="-1099,68,0,0"/>
-            <Label Content="Tasknumber" Name="num" FontFamily="Arial" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="99" Margin="-300,-45,0,0" Height="24"/>
-            <CheckBox Content="Monitor Task" Name="monitor" Width="151" Margin="-530,109,0,0" Height="23" FontFamily="Arial" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-            <CheckBox Content="Advance Monitor" x:Name="advancemonitor" FontFamily="Arial" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="131" Height="16" Margin="-254,0,0,-102"/>
+            <Label Content="Quantity" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="79" Height="24" Margin="-1099,68,0,0"/>
+            <Label Content="Tasknumber" Name="num" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="99" Margin="-300,-45,0,0" Height="24"/>
+            <CheckBox Content="Monitor Task" Name="monitor" Width="151" Margin="-530,109,0,0" Height="23" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <CheckBox Content="Advance Monitor" x:Name="advancemonitor" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="131" Height="16" Margin="-291,0,0,-102"/>
+            <CheckBox Content="Advance" Name="advance" Width="74" Height="26" FontFamily="PingFangSC-Semibold" Margin="-65,19,0,-91" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Checked="CheckBox_Checked" Click="advance_Click"/>
+            <Label Content="Account" Name="accountlable" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="72" Height="24" Margin="-1469,6,0,-196"/>
         </DockPanel>
-        <RichTextBox x:Name="tasknumber" FontFamily="Arial" FontSize="14" Margin="158,113,79,102" Height="23" Width="126" Panel.ZIndex="4" Grid.Column="1">
+        <RichTextBox x:Name="tasknumber" FontFamily="PingFangSC-Semibold" FontSize="14" Margin="158,113,79,102" Height="23" Width="126" Panel.ZIndex="4" Grid.Column="1">
             <FlowDocument>
                 <Paragraph>
                     <Run Text=""/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
+        <Grid Grid.ColumnSpan="2" Name="grid" Margin="0,235,0,-62" Background="#FF415C5C" Visibility="Hidden">
+            <Button Content="Save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" BorderBrush="#FF526C80" Margin="338,24,370,0">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10,10,10,10" x:Name="PART_Background">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="Transparent" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <ComboBox HorizontalAlignment="Left" Name="account" FontFamily="PingFangSC-Semibold" Height="21" Margin="38,-41,0,0" VerticalAlignment="Center" Width="145"/>
+        </Grid>
     </Grid>
 </Window>
