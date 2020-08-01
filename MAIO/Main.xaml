@@ -146,14 +146,14 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,1,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" Click="BtnDelete_Click_1" >
+                                <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,-10,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" Click="BtnDelete_Click_1" >
                                 </Button>
-                                <Button x:Name="start" Height="20" Width="20" Margin="-170,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" Click="start_Click" >
+                                <Button x:Name="start" Height="20" Width="20" Margin="-170,-10,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" Click="start_Click" >
                                     <Button.Background>
                                         <ImageBrush ImageSource="/play.png"/>
                                     </Button.Background>
                                 </Button>
-                                <Button x:Name="stop" Height="20" Width="20" Margin="-90,0,0,0" Click="stop_Click" BorderBrush="{x:Null}"  Foreground="#FFD44444" >
+                                <Button x:Name="stop" Height="20" Width="20" Margin="-90,-10,0,0" Click="stop_Click" BorderBrush="{x:Null}"  Foreground="#FFD44444" >
 
                                     <Button.Background>
                                         <ImageBrush ImageSource="/stop.png"/>
