@@ -213,7 +213,6 @@ namespace MAIO
                     {
                         msrp = j["merchPrice"]["fullPrice"].ToString();
                     }
-                   // msrp = j["merchPrice"]["msrp"].ToString();
                     try
                     {
                         imageurl = j["imageUrls"]["productImageUrl"].ToString();
@@ -292,19 +291,9 @@ namespace MAIO
                                                             giftcard = jo["giftcard"].ToString();
                                                             code = jo["Code"].ToString().Replace("\r\n", "");
                                                         }
-                                                        Random ran = new Random();
-                                                        int random = ran.Next(0, Mainwindow.listaccount.Count);
                                                         try
                                                         {
-                                                            string[] account = null;
-                                                            if (Mainwindow.listaccount[random].Contains("-"))
-                                                            {
-                                                                account = Mainwindow.listaccount[random].Split("-");
-                                                            }
-                                                            else if (Mainwindow.listaccount[random].Contains(":"))
-                                                            {
-                                                                account = Mainwindow.listaccount[random].Split(":");
-                                                            }
+                                                          
                                                             NikeUSUK NSK = new NikeUSUK();
                                                             NSK.monitortask = false;
                                                             NSK.giftcard = giftcard;
@@ -313,8 +302,8 @@ namespace MAIO
                                                             NSK.code = code;
                                                             NSK.profile = Mainwindow.allprofile[tk.Profile];
                                                             NSK.tk = tk1;
-                                                            NSK.username = account[0];
-                                                            NSK.password = account[1];
+                                                            NSK.username = username;
+                                                            NSK.password = password;
                                                             if (tk1.Size == "RA" || tk1.Size == "ra")
                                                             {
                                                                 NSK.randomsize = true;
@@ -325,7 +314,7 @@ namespace MAIO
                                                             dic.Add(tk1.Taskid, cts);
                                                             task2.Start();
                                                         }
-                                                        catch (Exception ex)
+                                                        catch (Exception)
                                                         {
 
                                                             tk.Status = "No Account";

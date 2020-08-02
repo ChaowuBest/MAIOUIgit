@@ -139,7 +139,7 @@ namespace MAIO
                    goto A;
                }*/
             #endregion
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);         
             request.Method = "PUT";
             request.Proxy = wp;

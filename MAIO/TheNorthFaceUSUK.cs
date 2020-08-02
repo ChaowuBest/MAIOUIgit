@@ -313,8 +313,7 @@ namespace MAIO
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
-            }         
-           
+            }              
             string url = "";
             if (tk.Tasksite == "TheNorthFaceUK")
             {

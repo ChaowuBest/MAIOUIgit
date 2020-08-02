@@ -91,7 +91,8 @@
             <CheckBox Content="Monitor Task" Name="monitor" Width="151" Margin="-530,109,0,0" Height="23" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
             <CheckBox Content="Advance Monitor" x:Name="advancemonitor" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="131" Height="16" Margin="-291,0,0,-102"/>
             <CheckBox Content="Advance" Name="advance" Width="74" Height="26" FontFamily="PingFangSC-Semibold" Margin="-65,19,0,-91" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Checked="CheckBox_Checked" Click="advance_Click"/>
-            <Label Content="Account" Name="accountlable" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="72" Height="24" Margin="-1469,6,0,-196"/>
+            <Label Content="AccountList" Name="accountlable" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="92" Height="24" Margin="-1452,6,0,-196"/>
+            <Label Content="AssignAccount" x:Name="assignaccount" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="116" Height="44" Margin="-1081,202,0,0"/>
         </DockPanel>
         <RichTextBox x:Name="tasknumber" FontFamily="PingFangSC-Semibold" FontSize="14" Margin="158,113,79,102" Height="23" Width="126" Panel.ZIndex="4" Grid.Column="1">
             <FlowDocument>
@@ -115,7 +116,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <ComboBox HorizontalAlignment="Left" Name="account" FontFamily="PingFangSC-Semibold" Height="21" Margin="38,-41,0,0" VerticalAlignment="Center" Width="145"/>
+            <ComboBox HorizontalAlignment="Left" Name="account" FontFamily="PingFangSC-Semibold" Height="21" Margin="38,-41,0,0" VerticalAlignment="Center" Width="145" SelectionChanged="account_SelectionChanged"/>
+            <ComboBox HorizontalAlignment="Left" x:Name="assingaccount" FontFamily="PingFangSC-Semibold" Height="21" Margin="211,1,0,0" VerticalAlignment="Top" Width="129"/>
         </Grid>
     </Grid>
 </Window>

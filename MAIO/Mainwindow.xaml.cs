@@ -37,12 +37,11 @@ namespace MAIO
         public string cjevent { get; set; }
         public static Dictionary<string, string> allprofile = new Dictionary<string, string>();
         public static Dictionary<string, string> giftcardlist = new Dictionary<string, string>();
+        public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
-        public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();
-       
+        public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
         public static ArrayList proxypool = new ArrayList();
         public static List<string> listproxy;
-        public static List<string> listaccount = new List<string>();
         public static Dictionary<string, string> tasklist = new Dictionary<string, string>();
         public static Dictionary<long, string> cookiewtime = new Dictionary<long, string>();
         public static List<string> lines = new List<string>();
@@ -50,7 +49,7 @@ namespace MAIO
         string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "MAIO";
         string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
         string path3 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.txt";
-        string path4 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.txt";
+        string path4 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
         public Mainwindow()
         {
@@ -135,13 +134,40 @@ namespace MAIO
             }
             try
             {
-                FileInfo fi = new FileInfo(path4);
+                FileInfo fi = new FileInfo(path5);
                 if (fi.Length == 0)
                 {
                 }
                 else
                 {
-                    listaccount = new List<string>(File.ReadAllLines(path4));
+                    FileStream fs2 = new FileStream(path4, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamReader sr = new StreamReader(fs2);
+                    var srread = sr.ReadToEnd();
+                    if (srread.Contains("["))
+                    {
+                        JArray ja = JArray.Parse(srread);
+                        foreach (var i in ja)
+                        {
+                            var jo = JObject.Parse(i.ToString());
+                            foreach (var n in jo)
+                            {
+                                account.Add(n.Key, n.Value.ToString());
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        JObject jo = JObject.Parse(srread);
+                        foreach (var i in jo)
+                        {
+                            account.Add(i.Key, i.Value.ToString());
+                            var chao = i.Value.ToString();
+                        }
+
+                    }
+                    sr.Close();
+                    fs2.Close();
                 }
             }
             catch (Exception)

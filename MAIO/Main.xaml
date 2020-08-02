@@ -13,21 +13,41 @@
             <XmlDataProvider x:Key="AllItem" />
             <Style x:Key="dgCell" TargetType="{x:Type TextBlock}">
                 <Setter Property="TextAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Width="1080">
         <Rectangle HorizontalAlignment="Center" Height="769" VerticalAlignment="Top" Width="1080" Fill="#FF243B55" Margin="0,-8,0,0"/>
         <StackPanel Margin="0,663,1,-1" Orientation="Horizontal" Background="#FF233B55">
-            <Button Cursor="Hand" x:Name="createtask" Opacity="1" Foreground="White" Width="108" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF021F1F" Content="New Task" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="24,8,0,8" Click="createtask_Click">
+            <Button Cursor="Hand" x:Name="createtask" Opacity="1"  Foreground="White" Width="108" Height="45" HorizontalAlignment="Center" VerticalAlignment="Center"  Content="New Task" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="24,8,0,8" Click="createtask_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" >
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                                        <GradientStop Color="#FF021F1F" Offset="0.0" />
+                                                    </LinearGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                                        <GradientStop Color="#FF021F1F" Offset="0.0" />
+                                                    </LinearGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
@@ -106,6 +126,7 @@
                     <XmlDataProvider x:Key="AllItem" />
                     <Style x:Key="dgCell2" TargetType="{x:Type TextBlock}">
                         <Setter Property="TextAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center" />
                     </Style>
                 </ResourceDictionary>
             </DataGrid.Resources>
@@ -115,7 +136,8 @@
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background" Value="#FF243B55"/>
-                    <Setter Property="Height" Value="32" />
+                    <Setter Property="Height"  Value="32" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.CellStyle>
@@ -136,7 +158,7 @@
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Site"  Binding="{Binding Tasksite}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="120" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF" />
+                <DataGridTextColumn Header="Site"   Binding="{Binding Tasksite}" ElementStyle="{StaticResource ResourceKey=dgCell}" Width="120" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF" />
                 <DataGridTextColumn Header="Sku" Binding="{Binding Sku}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="170" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF" />
                 <DataGridTextColumn Header="Size" Binding="{Binding Size}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="110" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
                 <DataGridTextColumn Header="Profile" Binding="{Binding Profile}" ElementStyle="{StaticResource ResourceKey=dgCell2}" Width="170" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
@@ -146,15 +168,14 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,-10,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" Click="BtnDelete_Click_1" >
+                                <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,0,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" Click="BtnDelete_Click_1" >
                                 </Button>
-                                <Button x:Name="start" Height="20" Width="20" Margin="-170,-10,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" Click="start_Click" >
+                                <Button x:Name="start" Height="20" Width="20" Margin="-170,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial" Click="start_Click" >
                                     <Button.Background>
                                         <ImageBrush ImageSource="/play.png"/>
                                     </Button.Background>
                                 </Button>
-                                <Button x:Name="stop" Height="20" Width="20" Margin="-90,-10,0,0" Click="stop_Click" BorderBrush="{x:Null}"  Foreground="#FFD44444" >
-
+                                <Button x:Name="stop" Height="20" Width="20" Margin="-90,0,0,0" Click="stop_Click" BorderBrush="{x:Null}"  Foreground="#FFD44444" >
                                     <Button.Background>
                                         <ImageBrush ImageSource="/stop.png"/>
                                     </Button.Background>

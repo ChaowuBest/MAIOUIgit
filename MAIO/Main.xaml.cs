@@ -1,6 +1,7 @@
 ﻿using MAIO.ASOS;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -32,16 +33,16 @@ namespace MAIO
     public partial class Main : UserControl
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
-        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);    
+        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public Main()
         {
             InitializeComponent();
-            updatelable("123",true);
+            updatelable("123", true);
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
-                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);       
+                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
                 JObject jo = JObject.Parse(kv.Value);
-                if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor")==false)
+                if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor") == false)
                 {
                     string monitortask = "True";
                     if (kv.Value.Contains("\"monitortask\": \"False\""))
@@ -51,17 +52,17 @@ namespace MAIO
                     string account = null;
                     if (kv.Value.Contains("Account"))
                     {
-                        account=jo["Account"].ToString();
+                        account = jo["Account"].ToString();
                         if (account == "")
                         {
                             account = null;
                         }
                     }
-                    else 
+                    else
                     {
-                         account = null;
+                        account = null;
                     }
-                    Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask,Account=account});
+                    Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask, Account = account });
                 }
             }
             datagrid.ItemsSource = Mainwindow.task;
@@ -74,7 +75,7 @@ namespace MAIO
             {
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
-            }     
+            }
         }
         public void clearcookie()
         {
@@ -128,7 +129,7 @@ namespace MAIO
                     }
                 }
             }
-        }    
+        }
         public class taskset : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -309,19 +310,19 @@ namespace MAIO
             "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\",\"AdvanceMonitor\":\"" + st[8] + "\",\"Account\":\"" + st[9] + "\"}]";
             if (st[8] == "True")
             {
-                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Taskid = taskid ,});
+                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Taskid = taskid, });
                 Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
             }
             else
             {
                 Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
-                Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7],Account=st[9]});
+                Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7], Account = st[9] });
             }
             taskwrite(profile);
         }
         public static void taskwrite(string task)
         {
-            JArray ja2 = JArray.Parse(task);          
+            JArray ja2 = JArray.Parse(task);
             try
             {
                 string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "task.json";
@@ -370,7 +371,7 @@ namespace MAIO
             bool monitortask = false;
             if (tk.monitortask == "True")
             {
-                monitortask = true;   
+                monitortask = true;
             }
             if (dic.Keys.Contains(tk.Taskid))
             {
@@ -390,7 +391,7 @@ namespace MAIO
                         NA.profile = Mainwindow.allprofile[tk.Profile];
                         NA.pid = tk.Sku;
                         NA.size = tk.Size;
-                        NA.Quantity =int.Parse(tk.Quantity);
+                        NA.Quantity = int.Parse(tk.Quantity);
                         NA.monitortask = monitortask;
                         if (tk.Size == "RA" || tk.Size == "ra")
                         {
@@ -411,51 +412,54 @@ namespace MAIO
                             code = jo["Code"].ToString().Replace("\r\n", "");
                         }
                         Random ran = new Random();
-                        int random = ran.Next(0, Mainwindow.listaccount.Count);
+                        int random = ran.Next(0, Mainwindow.account.Count);
                         try
                         {
                             string[] account = null;
-                            if (tk.Account != null)
+                            if (tk.Account != null && tk.Account != "")
                             {
-                                if (tk.Account.Contains(":"))
+                                string sValue = "";
+                                if (Mainwindow.account.TryGetValue(tk.Account, out sValue))
                                 {
-                                    account = tk.Account.Split(":");
+                                    JObject jo = JObject.Parse(sValue);
+                                    ArrayList ar = new ArrayList();
+                                    foreach (var i in jo)
+                                    {
+                                        ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[","").Replace("]","").Replace(" ",""));
+                                    }
+                                    Random ranaccount = new Random();
+                                    int randomaccount= ranaccount.Next(0,dic.Count);
+                                    account=ar[randomaccount].ToString().Split(",");
                                 }
-                                else if(tk.Account.Contains("-"))
+                                else
                                 {
-                                    account = tk.Account.Split("-");
+                                    account = tk.Account.Replace(" ","").Split(",");
                                 }
+                                NikeUSUK NSK = new NikeUSUK();
+                                NSK.giftcard = giftcard;
+                                NSK.pid = tk.Sku;
+                                NSK.size = tk.Size;
+                                NSK.code = code;
+                                NSK.monitortask = monitortask;
+                                NSK.profile = Mainwindow.allprofile[tk.Profile];
+                                NSK.tk = tk;
+                                NSK.username = account[0];
+                                NSK.password = account[1];
+                                if (tk.Size == "RA" || tk.Size == "ra")
+                                {
+                                    NSK.randomsize = true;
+                                }
+                                var cts = new CancellationTokenSource();
+                                var ct = cts.Token;
+                                Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                dic.Add(tk.Taskid, cts);
+                                task2.Start();
                             }
                             else
                             {
-                                if (Mainwindow.listaccount[random].Contains("-"))
-                                {
-                                    account = Mainwindow.listaccount[random].Split("-");
-                                }
-                                else if (Mainwindow.listaccount[random].Contains(":"))
-                                {
-                                    account = Mainwindow.listaccount[random].Split(":");
-                                }
-                            }                    
-                            NikeUSUK NSK = new NikeUSUK();
-                            NSK.giftcard = giftcard;
-                            NSK.pid = tk.Sku;
-                            NSK.size = tk.Size;
-                            NSK.code = code;
-                            NSK.monitortask = monitortask;
-                            NSK.profile = Mainwindow.allprofile[tk.Profile];
-                            NSK.tk = tk;
-                            NSK.username = account[0];
-                            NSK.password = account[1];
-                            if (tk.Size == "RA" || tk.Size == "ra")
-                            {
-                                NSK.randomsize = true;
+                                tk.Status = "No Account";
                             }
-                            var cts = new CancellationTokenSource();
-                            var ct = cts.Token;
-                            Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
-                            dic.Add(tk.Taskid, cts);
-                            task2.Start();
+
                         }
                         catch (Exception ex)
                         {
@@ -645,7 +649,7 @@ namespace MAIO
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
                     Midtransfer.tk = content;
-                    
+
                     if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"True\""))
                     {
                         Midtransfer.monitor = true;
@@ -653,7 +657,7 @@ namespace MAIO
                     else
                     {
                         Midtransfer.monitor = false;
-                    }              
+                    }
                 }
                 Midtransfer.edit = true;
                 nt.getTextHandler = Ctask;
@@ -672,7 +676,7 @@ namespace MAIO
             for (int n = 0; n < Mainwindow.task.Count; n++)
             {
                 Thread.Sleep(1);
-                string taskid = Guid.NewGuid().ToString();           
+                string taskid = Guid.NewGuid().ToString();
                 taskset tk = Mainwindow.task.ElementAt(n);
                 bool monitortask = false;
                 if (tk.monitortask == "True")
@@ -717,51 +721,53 @@ namespace MAIO
                                 code = jo["Code"].ToString().Replace("\r\n", "");
                             }
                             Random ran = new Random();
-                            int random = ran.Next(0, Mainwindow.listaccount.Count);
+                            int random = ran.Next(0, Mainwindow.account.Count);
                             try
                             {
                                 string[] account = null;
-                                if (tk.Account != null)
+                                if (tk.Account != null && tk.Account != "")
                                 {
-                                    if (tk.Account.Contains(":"))
+                                    string sValue = "";
+                                    if (Mainwindow.account.TryGetValue(tk.Account, out sValue))
                                     {
-                                        account = tk.Account.Split(":");
+                                        JObject jo = JObject.Parse(sValue);
+                                        ArrayList ar = new ArrayList();
+                                        foreach (var i in jo)
+                                        {
+                                            ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
+                                        }
+                                        Random ranaccount = new Random();
+                                        int randomaccount = ranaccount.Next(0, dic.Count);
+                                        account = ar[randomaccount].ToString().Split(",");
                                     }
-                                    else if (tk.Account.Contains("-"))
+                                    else
                                     {
-                                        account = tk.Account.Split("-");
+                                        account = tk.Account.Replace(" ", "").Split(",");
                                     }
+                                    NikeUSUK NSK = new NikeUSUK();
+                                    NSK.monitortask = monitortask;
+                                    NSK.giftcard = giftcard;
+                                    NSK.pid = tk.Sku;
+                                    NSK.size = tk.Size;
+                                    NSK.code = code;
+                                    NSK.profile = Mainwindow.allprofile[tk.Profile];
+                                    NSK.tk = tk;
+                                    NSK.username = account[0];
+                                    NSK.password = account[1];
+                                    if (tk.Size == "RA" || tk.Size == "ra")
+                                    {
+                                        NSK.randomsize = true;
+                                    }
+                                    var cts = new CancellationTokenSource();
+                                    var ct = cts.Token;
+                                    Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                    dic.Add(tk.Taskid, cts);
+                                    task2.Start();
                                 }
                                 else
                                 {
-                                    if (Mainwindow.listaccount[random].Contains("-"))
-                                    {
-                                        account = Mainwindow.listaccount[random].Split("-");
-                                    }
-                                    else if (Mainwindow.listaccount[random].Contains(":"))
-                                    {
-                                        account = Mainwindow.listaccount[random].Split(":");
-                                    }
+                                    tk.Status = "No Account";
                                 }
-                                NikeUSUK NSK = new NikeUSUK();
-                                NSK.monitortask = monitortask;
-                                NSK.giftcard = giftcard;
-                                NSK.pid = tk.Sku;
-                                NSK.size = tk.Size;
-                                NSK.code = code;
-                                NSK.profile = Mainwindow.allprofile[tk.Profile];
-                                NSK.tk = tk;
-                                NSK.username = account[0];
-                                NSK.password = account[1];
-                                if (tk.Size == "RA" || tk.Size == "ra")
-                                {
-                                    NSK.randomsize = true;
-                                }
-                                var cts = new CancellationTokenSource();
-                                var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
-                                dic.Add(tk.Taskid, cts);
-                                task2.Start();
                             }
                             catch
                             {
@@ -876,7 +882,7 @@ namespace MAIO
 
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
-        {       
+        {
             mp.Show();
         }
     }

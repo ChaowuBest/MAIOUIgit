@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MAIO"
              mc:Ignorable="d" Height="769" Width="1080">
-    <Grid Background="#FF243B55" Height="769">
+    <Grid Background="#FF243B55" Height="769" Width="1079" Margin="1,0,0,0">
         <StackPanel Margin="15,10,619,10">
             <Label Content="Enter Account" Height="57" Width="148" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="13,30,151,0" VerticalContentAlignment="Bottom"/>
             <RichTextBox Height="519" Name="accountbox" Width="282" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14">
@@ -19,7 +19,7 @@
                     </FlowDocument>
                 </RichTextBox.Document>
             </RichTextBox>
-            <Button Content="Save" x:Name="saveaccount" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" RenderTransformOrigin="2.144,-0.125" Height="37" Width="97" Margin="-178,15,0,0" Click="saveaccount_Click">
+            <Button Content="Save" x:Name="saveaccount" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" RenderTransformOrigin="2.144,-0.125" Height="37" Width="97" Margin="33,15,-148,0" Click="saveaccount_Click">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
@@ -33,23 +33,10 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Content="Del" x:Name="del" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"  RenderTransformOrigin="2.144,-0.125" Height="37" Width="97" Margin="-184,-37,-362,0" Click="del_Click">
-                <Button.Template>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+            <TextBox x:Name="accountname" Text="" TextWrapping="Wrap" Background="White" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="Black" Width="150" Height="33" Margin="-132,-41,0,0"/>
         </StackPanel>
         <StackPanel Margin="761,35,37,55">
-            <Label Content="Giftcard List" Height="47" Width="130" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalContentAlignment="Bottom" Margin="-26,0,0,0"/>
+            <Label Content="Giftcard List" Height="47" Width="130" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalContentAlignment="Bottom" Margin="-26,1,0,0"/>
             <ListView x:Name="giftlist" SizeChanged="giftlist_SizeChanged_1" Loaded="ListView_Loaded" BorderThickness="0" Background="#FF243B55" Foreground="White" MouseDoubleClick="giftlist_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Hidden" FontFamily="PingFangSC-Semibold" FontSize="14" Width="251">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
@@ -101,8 +88,61 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Label Content="Account List" Height="47" Width="130" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalContentAlignment="Bottom" Margin="-26,214,0,0"/>
+            <ListView x:Name="accountlist" SizeChanged="giftlist_SizeChanged_1" Loaded="ListView_Loaded" BorderThickness="0" Background="#FF243B55" Foreground="White" MouseDoubleClick="accountlist_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Hidden" FontFamily="PingFangSC-Semibold" FontSize="14" Width="251" Margin="0,4,0,-52">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border x:Name="Bd"
+                                        Background="{TemplateBinding Background}">
+                                        <GridViewRowPresenter 
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                            Width="Auto" Margin="0" Content="{TemplateBinding Content}"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="true">
+                                            <Setter Property="Background" Value="#FF404040"/>
+                                            <Setter Property="Foreground" Value="#FFFFC400"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="#FF9B8C8C"/>
+                                            <Setter TargetName="Bd" Property="BorderThickness" Value="0,1,0,1"/>
+                                        </Trigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver" Value="true" />
+                                                <Condition Property="IsSelected" Value="false"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="Background" Value="#FF666666"/>
+                                            <Setter Property="Foreground" Value="LightGray"/>
+                                            <Setter Property="BorderBrush" Value="#FFFFC400"/>
+                                            <Setter Property="BorderThickness" Value="0,1,0,1"/>
+                                        </MultiTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn/>
+                        <GridViewColumn Header="Name" Width="Auto"/>
+                        <GridViewColumn Header="Action" Width="151" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button x:Name="BtnDelete" Background="{x:Null}"  BorderBrush="{x:Null}" Click="BtnDelete_Click_1" Content="X" Foreground="#FFD44444" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
         </StackPanel>
-        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1035,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <RichTextBox x:Name="giftcardbox" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14" Margin="403,96,412,154">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">

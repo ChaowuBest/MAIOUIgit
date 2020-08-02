@@ -26,8 +26,9 @@ namespace MAIO
         {
             InitializeComponent();
             accountlable.Visibility = Visibility.Hidden;
+            assignaccount.Visibility = Visibility.Hidden;
             Quantity.ItemsSource = Config.qual;
-            account.ItemsSource = Mainwindow.listaccount;
+            account.ItemsSource = Mainwindow.account.Keys;
             tasknumber.Document.Blocks.Clear();
             Run run4 = new Run("1");
             Paragraph p4 = new Paragraph();
@@ -125,7 +126,15 @@ namespace MAIO
             string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text.Replace("\r\n", "");
             string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text.Replace("\r\n", "");
             string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text.Replace("\r\n","");
-            string user=account.Text;
+            string user = null;
+            if (assingaccount.Text != "" && assingaccount.Text != null)
+            {
+                user = assingaccount.Text;
+            }
+            else 
+            {
+                user = account.Text;
+            }       
             string[] setup = new string[10];
             try
             {
@@ -230,13 +239,27 @@ namespace MAIO
                 grid.Visibility = Visibility.Visible;
                 save.Visibility = Visibility.Hidden;
                 accountlable.Visibility = Visibility.Visible;
+                assignaccount.Visibility = Visibility.Visible;
             }
             else
             {
                 save.Visibility = Visibility.Visible;
                 grid.Visibility = Visibility.Hidden;
                 accountlable.Visibility = Visibility.Hidden;
+                assignaccount.Visibility = Visibility.Hidden;
             }
+        }
+
+        private void account_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           var chao=Mainwindow.account[account.SelectedItem.ToString()];
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            JObject jo = JObject.Parse(chao);
+            foreach (var i in jo)
+            {
+                dic.Add(i.Key, i.Value.ToString().Replace("{", "").Replace("}", ""));
+            }
+            assingaccount.ItemsSource = dic;
         }
     }
 }
