@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MAIO.JDUS;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Security.Policy;
@@ -10,6 +11,7 @@ namespace MAIO.ASOS
 {
     class ASOS
     {
+
         public bool randomsize = false;
         public string link = "";
         public string profile = "";
@@ -43,7 +45,7 @@ namespace MAIO.ASOS
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string url = "https://my.asos.com/identity/connect/authorize?state=9876459885940323&nonce=13191304578348823&client_id=D91F2DAA-898C-4E10-9102-D6C974AFBD59&redirect_uri=https://www.asos.com/women/&response_type=id_token%20token&scope=openid%20sensitive%20profile&ui_locales=en-GB&acr_values=0&response_mode=json&store=COM&country=GB&keyStoreDataversion=j42uv2x-26&lang=en-GB";
+           string url = "https://my.asos.com/identity/connect/authorize?state=9876459885940323&nonce=13191304578348823&client_id=D91F2DAA-898C-4E10-9102-D6C974AFBD59&redirect_uri=https://www.asos.com/women/&response_type=id_token%20token&scope=openid%20sensitive%20profile&ui_locales=en-GB&acr_values=0&response_mode=json&store=COM&country=GB&keyStoreDataversion=j42uv2x-26&lang=en-GB";
             string accesstoken = aSOSAPI.GetHtmlsource(url,tk,ct,session);
             return accesstoken;
         }

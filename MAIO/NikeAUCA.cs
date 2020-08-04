@@ -324,6 +324,7 @@ namespace MAIO
                 try
                 {
                     ProcessNotification(true, webhook2, "");
+                    Thread.Sleep(500000);
                 }
                 catch
                 {

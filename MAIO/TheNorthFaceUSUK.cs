@@ -128,8 +128,7 @@ namespace MAIO
                     Random ran = new Random();
                     int i = ran.Next(0, skuslist.Count);
                     eid = skuslist[i].ToString();
-                }
-               
+                }             
             }
          B: string monitorurl = "";
             if (tk.Tasksite == "TheNorthFaceUK")

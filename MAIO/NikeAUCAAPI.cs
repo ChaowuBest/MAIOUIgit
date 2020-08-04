@@ -276,7 +276,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                tk.Status = "processing";
+                tk.Status = "Processing";
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 if (response.ContentEncoding == "gzip")

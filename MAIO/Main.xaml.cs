@@ -544,6 +544,23 @@ namespace MAIO
                         dic.Add(tk.Taskid, cts);
                         asostask.Start();
                     }
+                    else if (tk.Tasksite == "JDUS")
+                    {
+                        JDUS.JDUS jdus = new JDUS.JDUS();
+                        jdus.link = tk.Sku;
+                        jdus.profile = Mainwindow.allprofile[tk.Profile];
+                        jdus.size = tk.Size;
+                        if (tk.Size == "RA" || tk.Size == "ra")
+                        {
+                            jdus.randomsize = true;
+                        }
+                        jdus.tk = tk;
+                        var cts = new CancellationTokenSource();
+                        var ct = cts.Token;
+                        Task jdustask = new Task(() => { jdus.StartTask(ct, cts); }, ct);
+                        dic.Add(tk.Taskid, cts);
+                        jdustask.Start();
+                    }
                 }
                 catch (Exception ex)
                 {

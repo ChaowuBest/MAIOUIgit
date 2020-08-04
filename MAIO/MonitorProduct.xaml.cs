@@ -24,7 +24,7 @@ namespace MAIO
     /// </summary>
     public partial class MonitorProduct : Window
     {
-       
+
         public MonitorProduct()
         {
             InitializeComponent();
@@ -37,15 +37,15 @@ namespace MAIO
                 JObject jo = JObject.Parse(kv.Value);
                 if (kv.Value.Contains("\"AdvanceMonitor\": \"True\""))
                 {
-                    Mainwindow.Advancemonitortask.Add(new Main.Monitor{ Region = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Taskid = jo["Taskid"].ToString() });
+                    Mainwindow.Advancemonitortask.Add(new Main.Monitor { Region = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Taskid = jo["Taskid"].ToString() });
                 }
-            }          
+            }
             monitorproduct.ItemsSource = Mainwindow.Advancemonitortask;
         }
         private void Window_Closing_1(object sender, CancelEventArgs e)
         {
-            e.Cancel = true;  
-            this.Hide();      
+            e.Cancel = true;
+            this.Hide();
         }
         private void Grid_IsVisibleChanged_1(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -67,8 +67,8 @@ namespace MAIO
                         }
                         NikeMonitorProduct NMP = new NikeMonitorProduct();
                         NMP.mn = Mainwindow.Advancemonitortask[i];
-                      
-                      
+
+
                         if (Mainwindow.Advancemonitortask[i].Size.Contains("ra") || Mainwindow.Advancemonitortask[i].Size.Contains("RA"))
                         {
                             NMP.randomsize = true;
@@ -89,7 +89,7 @@ namespace MAIO
                             break;
                         }
                         NikeMonitorProduct NMP = new NikeMonitorProduct();
-                        NMP.mn = Mainwindow.Advancemonitortask[i];                      
+                        NMP.mn = Mainwindow.Advancemonitortask[i];
                         if (Mainwindow.Advancemonitortask[i].Size.Contains("ra") || Mainwindow.Advancemonitortask[i].Size.Contains("RA"))
                         {
                             NMP.randomsize = true;
@@ -97,6 +97,29 @@ namespace MAIO
                         Task task1 = new Task(() => { NMP.start(ct); }, ct);
                         task1.Start();
                     }
+                    #region
+                    /* else if (Mainwindow.Advancemonitortask[i].Region == "TheNorthFaceUK" || Mainwindow.Advancemonitortask[i].Region == "TheNorthFaceUS")
+                     {
+                         var cts = new CancellationTokenSource();
+                         var ct = cts.Token;
+                         try
+                         {
+                             dic.Add(Mainwindow.Advancemonitortask[i].Taskid, cts);
+                         }
+                         catch (ArgumentException)
+                         {
+                             break;
+                         }
+                         tnfmonitor NMP = new tnfmonitor();
+                         NMP.mn = Mainwindow.Advancemonitortask[i];
+                         if (Mainwindow.Advancemonitortask[i].Size.Contains("ra") || Mainwindow.Advancemonitortask[i].Size.Contains("RA"))
+                         {
+                             NMP.randomsize = true;
+                         }
+                         Task task1 = new Task(() => { NMP.start(ct); }, ct);
+                         task1.Start();
+                     }*/
+                    #endregion
                 }
             }
         }
@@ -135,9 +158,9 @@ namespace MAIO
             int row = monitorproduct.SelectedIndex;
             Main.Monitor tk;
             tk = Mainwindow.Advancemonitortask.ElementAt(row);
-            string task = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + tk.Region + "\",\"Sku\":\"" +tk.Sku + "\"," +
-             "\"Size\":\"" + size.Text.Replace("\r","").Replace("\n","") + "\",\"Profile\":\"" + profile.Text + "\",\"Proxies\":\"Default\"," +
-            "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" +code.Text.Replace("\r", "").Replace("\n", "") + "\",\"Quantity\":\"" + Quantity.Text + "\",\"monitortask\":\"False\",\"AdvanceMonitor\":\"False\"}]";
+            string task = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + tk.Region + "\",\"Sku\":\"" + tk.Sku + "\"," +
+             "\"Size\":\"" + size.Text.Replace("\r", "").Replace("\n", "") + "\",\"Profile\":\"" + profile.Text + "\",\"Proxies\":\"Default\"," +
+            "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code.Text.Replace("\r", "").Replace("\n", "") + "\",\"Quantity\":\"" + Quantity.Text + "\",\"monitortask\":\"False\",\"AdvanceMonitor\":\"False\"}]";
             Mainwindow.tasklist.Add(taskid, task.Replace("[", "").Replace("]", ""));
             Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = tk.Region, Sku = tk.Sku, Size = size.Text.Replace("\r", "").Replace("\n", ""), Profile = profile.Text, Proxies = "Default", Status = "IDLE", Quantity = Quantity.Text, monitortask = "False" });
         }

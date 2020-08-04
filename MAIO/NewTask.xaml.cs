@@ -217,7 +217,6 @@ namespace MAIO
                 num.Visibility = Visibility.Hidden;
                 tasknumber.Visibility = Visibility.Hidden;
                 account.Text = Midtransfer.tk.Account;
-                giftcard.Text = "";
             }
             else
             {

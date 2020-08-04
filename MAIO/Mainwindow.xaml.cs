@@ -54,13 +54,14 @@ namespace MAIO
         public Mainwindow()
         {
             InitializeComponent();
-            Initialprofile();
-            Initialproxy();
-            Initialaccount();
-            Initialgiftcard();
-            Initialtask();
-            InitialCookie();
-            InitialAdvancemode();
+            Task task1 = Task.Run(()=> Initialprofile());
+            Task task2 = Task.Run(() => Initialproxy());
+            Task task3 = Task.Run(() => Initialaccount());
+            Task task4 = Task.Run(() => Initialgiftcard());
+            Task task5 = Task.Run(() => Initialtask());
+            Task task6 = Task.Run(() => InitialCookie());
+            Task task7 = Task.Run(() => InitialAdvancemode());   
+            Task.WaitAll(task1,task2,task3,task4,task5,task6,task7);
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
@@ -134,7 +135,7 @@ namespace MAIO
             }
             try
             {
-                FileInfo fi = new FileInfo(path5);
+                FileInfo fi = new FileInfo(path4);
                 if (fi.Length == 0)
                 {
                 }
