@@ -93,6 +93,18 @@ namespace MAIO
                 {
                     goto D;
                 }
+
+            E:
+                try
+                {
+                    CheckoutpreviewStatus(Authorization, skuid, ct);
+
+                }
+                catch (NullReferenceException)
+                {
+                    goto E;
+                }
+
                 if (giftcard != "")
                 {
 
@@ -188,6 +200,7 @@ namespace MAIO
                 }
                 try
                 {
+
                     JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                     JObject j = JObject.Parse(jar[0].ToString());
                     var chao=j.ToString();
@@ -205,8 +218,7 @@ namespace MAIO
                         imageurl = j["imageUrls"]["productImageUrl"].ToString();
                     }
                     catch
-                    {
-                        
+                    {                     
                     }
                     limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
                     JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
@@ -244,76 +256,75 @@ namespace MAIO
                             {
                                 if (Config.Usemonitor == "True")
                                 {
-                                    string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productID + ")";
-                                    #region
-                                    /*string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, skuid, randomsize,"");
+                                    string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                                    string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\""+skuid+"\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize,skuid);
                                     if (group[0] != null)
                                     {
                                         skuid = group[0];
-                                    }*/
-                                    /*   if (monitortask)
-                                       {
-                                           for (int i = 0; i < 3; i++)
-                                           {
-                                               ThreadPool.QueueUserWorkItem(delegate
-                                               {
-                                                   SynchronizationContext.SetSynchronizationContext(new
-                                                       DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
-                                                   SynchronizationContext.Current.Post(pl =>
-                                                   {
-                                                       taskset tk1 = new taskset();
-                                                       tk1.Tasksite = tk.Tasksite;
-                                                       tk1.Sku = tk.Sku;
-                                                       tk1.Profile = tk.Profile;
-                                                       tk1.Proxies = "Default";
-                                                       tk1.Quantity = tk.Quantity;
-                                                       tk1.Status = "IDLE";
-                                                       tk1.Size = tk.Size;
-                                                       tk1.Taskid = Guid.NewGuid().ToString();
-                                                       Mainwindow.task.Add(tk1);
-                                                       if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
-                                                       {
-                                                           if (Mainwindow.tasklist[tk.Taskid] != "")
-                                                           {
-                                                               JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
-                                                               giftcard = jo["giftcard"].ToString();
-                                                               code = jo["Code"].ToString().Replace("\r\n", "");
-                                                           }
-                                                           try
-                                                           {
+                                    }
+                                    if (monitortask)
+                                    {
+                                        for (int i = 0; i < 3; i++)
+                                        {
+                                            ThreadPool.QueueUserWorkItem(delegate
+                                            {
+                                                SynchronizationContext.SetSynchronizationContext(new
+                                                    DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
+                                                SynchronizationContext.Current.Post(pl =>
+                                                {
+                                                    taskset tk1 = new taskset();
+                                                    tk1.Tasksite = tk.Tasksite;
+                                                    tk1.Sku = tk.Sku;
+                                                    tk1.Profile = tk.Profile;
+                                                    tk1.Proxies = "Default";
+                                                    tk1.Quantity = tk.Quantity;
+                                                    tk1.Status = "IDLE";
+                                                    tk1.Size = tk.Size;
+                                                    tk1.Taskid = Guid.NewGuid().ToString();
+                                                    Mainwindow.task.Add(tk1);
+                                                    if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
+                                                    {
+                                                        if (Mainwindow.tasklist[tk.Taskid] != "")
+                                                        {
+                                                            JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
+                                                            giftcard = jo["giftcard"].ToString();
+                                                            code = jo["Code"].ToString().Replace("\r\n", "");
+                                                        }
+                                                        try
+                                                        {
+                                                          
+                                                            NikeUSUK NSK = new NikeUSUK();
+                                                            NSK.monitortask = false;
+                                                            NSK.giftcard = giftcard;
+                                                            NSK.pid = tk1.Sku;
+                                                            NSK.size = tk1.Size;
+                                                            NSK.code = code;
+                                                            NSK.profile = Mainwindow.allprofile[tk.Profile];
+                                                            NSK.tk = tk1;
+                                                            NSK.username = username;
+                                                            NSK.password = password;
+                                                            if (tk1.Size == "RA" || tk1.Size == "ra")
+                                                            {
+                                                                NSK.randomsize = true;
+                                                            }
+                                                            var cts = new CancellationTokenSource();
+                                                            var ct = cts.Token;
+                                                            Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                                            dic.Add(tk1.Taskid, cts);
+                                                            task2.Start();
+                                                        }
+                                                        catch (Exception)
+                                                        {
 
-                                                               NikeUSUK NSK = new NikeUSUK();
-                                                               NSK.monitortask = false;
-                                                               NSK.giftcard = giftcard;
-                                                               NSK.pid = tk1.Sku;
-                                                               NSK.size = tk1.Size;
-                                                               NSK.code = code;
-                                                               NSK.profile = Mainwindow.allprofile[tk.Profile];
-                                                               NSK.tk = tk1;
-                                                               NSK.username = username;
-                                                               NSK.password = password;
-                                                               if (tk1.Size == "RA" || tk1.Size == "ra")
-                                                               {
-                                                                   NSK.randomsize = true;
-                                                               }
-                                                               var cts = new CancellationTokenSource();
-                                                               var ct = cts.Token;
-                                                               Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
-                                                               dic.Add(tk1.Taskid, cts);
-                                                               task2.Start();
-                                                           }
-                                                           catch (Exception)
-                                                           {
-
-                                                               tk.Status = "No Account";
-                                                           }
-                                                       }
-                                                   }, null);
-                                               });
-                                           }
-
-                                       }*/
-                                    #endregion
+                                                            tk.Status = "No Account";
+                                                        }
+                                                    }
+                                                }, null);
+                                            });
+                                        }
+                                        
+                                    }
                                 }
                                 else
                                 {
@@ -616,12 +627,28 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            USUKAPI.CheckoutPreview(checkoutsessionurl, Authorization, checkoutpayload, GID, tk, ct);
+        }
+        protected void CheckoutpreviewStatus(string Authorization, string skuid, CancellationToken ct)
+        {
+            string url = "https://api.nike.com/buy/checkout_previews/v2/jobs/" + GID;
             bool isdiscount = false;
             if (code != "")
             {
                 isdiscount = true;
             }
-            msrp = USUKAPI.CheckoutPreview(checkoutsessionurl, Authorization, checkoutpayload, tk, ct,isdiscount,GID);
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            msrp = USUKAPI.CheckoutPreviewStatus(url, Authorization, isdiscount, tk, ct, profile, pid, size, code, giftcard, username, password, randomsize, productID, skuid);
+
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
         }
         protected void subimitgiftcard(string Authorization, string skuid, CancellationToken ct)
         {

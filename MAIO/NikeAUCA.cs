@@ -183,8 +183,9 @@ namespace MAIO
                     {
                         if (Config.Usemonitor == "True")
                         {
-                            string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
-                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, skuid, randomsize);
+                            string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                            string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\""+skuid+"\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize,skuid);
                             if (group[0] != null)
                             {
                                 skuid = group[0];
@@ -231,9 +232,7 @@ namespace MAIO
                                             }
                                         }, null);
                                     });
-                                }
-                              
-                              
+                                }                       
                             }
                         }
                         else

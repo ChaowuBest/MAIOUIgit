@@ -296,20 +296,7 @@ namespace MAIO
                 string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("OUT_OF_STOCK")))
                 {
-                    string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
-                    tk.Status = "WaitingRestock";
-                    xb3traceid = Guid.NewGuid().ToString();
-                    xnikevisitorid = Guid.NewGuid().ToString();
-                    NikeAUCA NAU = new NikeAUCA();
-                    NAU.skuid = group[0];
-                    NAU.productid = group[1];
-                    NAU.size = size;
-                    NAU.pid = pid;
-                    NAU.profile = profile;
-                    NAU.randomsize = randomsize;
-                    NAU.tk = tk;
-                    NAU.Quantity = int.Parse(tk.Quantity);
-                    NAU.StartTask(ct, cts);
+                    tk.Status = "OOS";
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
@@ -320,19 +307,7 @@ namespace MAIO
                     var reason = jo2["errors"][0].ToString();
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
-                    string[] group = Monitoring(monitorurl, tk, ct, skuid, randomsize);
-                    xb3traceid = Guid.NewGuid().ToString();
-                    xnikevisitorid = Guid.NewGuid().ToString();
-                    NikeAUCA NAU = new NikeAUCA();
-                    NAU.skuid = group[0];
-                    NAU.productid = group[1];
-                    NAU.size = size;
-                    NAU.pid = pid;
-                    NAU.profile = profile;
-                    NAU.randomsize = randomsize;
-                    NAU.tk = tk;
-                    NAU.Quantity = int.Parse(tk.Quantity);
-                    NAU.StartTask(ct, cts);
+                    tk.Status = errormessage;
                 }
 
             }
@@ -355,13 +330,15 @@ namespace MAIO
             }
             return sourcecode;
         }
-        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string skuid, bool randomsize)
+        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize,string skuid)
         {
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            string traceid = Guid.NewGuid().ToString();
+            string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";
             string[] group = new string[2];
             int random = ran.Next(0, Mainwindow.proxypool.Count);
@@ -388,18 +365,31 @@ namespace MAIO
             }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
-            request.Method = "GET";
+            request.Method = "POST";
             request.Host = "api.nike.com";
             request.Accept = "*/*";
-            request.Headers.Add("Sec-Fetch-Dest", "document");
-            request.Headers.Add("Sec-Fetch-Mode", "navigate");
-            request.Headers.Add("Sec-Fetch-Site", "none");
-            request.Headers.Add("Sec-Fetch-user", "?1");
+            request.ContentType = "application/json; charset=UTF-8";
+            byte[] contentcardinfo = Encoding.UTF8.GetBytes(info);
+            request.ContentLength = contentcardinfo.Length;
+            request.Headers.Add("Accept-Encoding", "gzip, deflate");
+            request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
+            request.Headers.Add("Sec-Fetch-Dest", "empty");
+            request.Headers.Add("Sec-Fetch-Mode", "cors");
+            request.Headers.Add("Sec-Fetch-Site", "same-site");
+            request.Headers.Add("X-B3-SpanName", "CiCCart");
+            request.Headers.Add("X-B3-TraceId", traceid);
+            request.Headers.Add("x-nike-visitid", "1");
+            request.Headers.Add("x-nike-visitorid", nikevistid);
             request.Headers.Add("upgrade-insecure-requests", "1");
             request.UserAgent = "Sogou inst spider";
+            Stream cardstream = request.GetRequestStream();
+            cardstream.Write(contentcardinfo, 0, contentcardinfo.Length);
+            cardstream.Close();
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                traceid = Guid.NewGuid().ToString();
+                nikevistid = Guid.NewGuid().ToString();
                 tk.Status = "WaitingRestock";
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
@@ -413,46 +403,42 @@ namespace MAIO
                 }
                 SourceCode = readStream.ReadToEnd();
                 JObject jo = JObject.Parse(SourceCode);
-                JArray ja = JArray.Parse(jo["objects"].ToString());
-                foreach (var i in ja)
+                JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
+                for (int i = 0; i < ja.Count; i++)
                 {
-                    group[1] = i["productId"].ToString();
+                    group[1] = jo["data"]["skus"][0]["product"]["id"].ToString();
                     if (randomsize)
                     {
-                        if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
+                        if (ja[i]["availability"].ToString() != "False" || ja[i]["availability"].ToString() != "false")
                         {
-                            if (i["level"].ToString() == "OOS")
+                            if (ja[i]["availability"]["level"].ToString() == "OOS")
                             {
                             }
                             else
                             {
-                                group[0] = i["skuId"].ToString();
+                                group[0] = ja[i]["id"].ToString();
                                 break;
                             }
                         }
-                        else
-                        {
-                            if (Config.delay == "")
-                            {
-                                Thread.Sleep(1);
-                            }
-                            else
-                            {
-                                Thread.Sleep(int.Parse(Config.delay));
-                            }
-                            goto A;
-                        }
+
                     }
                     else
                     {
                         group[0] = skuid;
-                        if (i["skuId"].ToString() == skuid)
+                        if (ja[i]["id"].ToString() == skuid)
                         {
-                            if (i["available"].ToString() != "False" || i["available"].ToString() != "false")
+                            if (ja[i]["availability"].ToString() != "False" || ja[i]["availability"].ToString() != "false")
                             {
-                                if (i["level"].ToString() == "OOS")
+                                if (ja[i]["availability"]["level"].ToString() == "OOS")
                                 {
-                                    
+                                    if (Config.delay == "")
+                                    {
+                                        Thread.Sleep(1);
+                                    }
+                                    else
+                                    {
+                                        Thread.Sleep(int.Parse(Config.delay));
+                                    }
                                     goto A;
                                 }
                                 else
@@ -460,27 +446,20 @@ namespace MAIO
                                     break;
                                 }
                             }
-                            else
-                            {
-                                if (Config.delay == "")
-                                {
-                                    Thread.Sleep(1);
-                                }
-                                else
-                                {
-                                    Thread.Sleep(int.Parse(Config.delay));
-                                }
-                                goto A;
-                            }
                         }
                     }
+
                 }
                 response.Close();
                 readStream.Close();
             }
             catch (WebException ex)
             {
-                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                Stream resppaymentStream = resppayment.GetResponseStream();
+                StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
+                string paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
+                tk.Status = "Proxy Error";
                 goto A;
             }
             if (group[0] == null)

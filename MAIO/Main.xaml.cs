@@ -433,7 +433,7 @@ namespace MAIO
                                 }
                                 else
                                 {
-                                    account = tk.Account.Replace(" ","").Split(",");
+                                    account = tk.Account.Replace(" ","").Replace("[","").Replace("]","").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
                                 NSK.giftcard = giftcard;
@@ -759,7 +759,7 @@ namespace MAIO
                                     }
                                     else
                                     {
-                                        account = tk.Account.Replace(" ", "").Split(",");
+                                        account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                     }
                                     NikeUSUK NSK = new NikeUSUK();
                                     NSK.monitortask = monitortask;
