@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -19,7 +20,7 @@ namespace MAIO
         Random ran = new Random();
         string akbmsz = "ak_bmsc=";
         string xb3traceid = Guid.NewGuid().ToString();
-        // string xnikevisitorid = Guid.NewGuid().ToString();
+        public  int failedretry = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
@@ -495,6 +496,7 @@ namespace MAIO
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
                 paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
+              
                 JObject jo = null;
                 jo = JObject.Parse(paymentsuccesscode);
                 try
@@ -521,6 +523,7 @@ namespace MAIO
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
                 paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
+                MessageBox.Show(paymentsuccesscode);
                 goto B;
             }
 
@@ -582,6 +585,7 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(new GZipStream(respcheckstatusstream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
+                    MessageBox.Show(check);
                     JObject jo = JObject.Parse(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
@@ -591,7 +595,7 @@ namespace MAIO
                     if (check.Contains("Non buyable product(s)"))
                     {
                         tk.Status = "Non buyable product(s)";
-
+                        goto A;
                     }
                     total = jo["response"]["totals"]["total"].ToString();
                     if (isdiscount)
@@ -611,6 +615,7 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
+                    MessageBox.Show(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
                         Thread.Sleep(1000);
@@ -619,6 +624,7 @@ namespace MAIO
                     if (check.Contains("Non buyable product(s)"))
                     {
                         tk.Status = "Non buyable product(s)";
+                        goto A;
                     }
                     JObject jo = JObject.Parse(check);
                     total = jo["response"]["totals"]["total"].ToString();
@@ -916,7 +922,7 @@ namespace MAIO
             reqgetstatus.Accept = "application/json";
             reqgetstatus.ContentType = "application/json; charset=UTF-8";
             byte[] paymenttokeninfo = Encoding.UTF8.GetBytes(payload);
-            reqgetstatus.Headers.Add("authorization", Authorization);
+            reqgetstatus.Headers.Add("Authorization", Authorization);
             if (Mainwindow.iscookielistnull)
             {
                 reqgetstatus.Headers.Add("Cookie", "");
@@ -1014,13 +1020,19 @@ namespace MAIO
                 Stream respcheckstatusstream = respgetstatus.GetResponseStream();
                 StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
                 string check = readcheckstatus.ReadToEnd();
+               
 
             }
             catch (WebException ex)
             {
                 HttpWebResponse respjob = (HttpWebResponse)ex.Response;
+                failedretry++;
+                if (failedretry > 20)
+                {
+                    Main.autorestock(tk);
+                }
                 tk.Status = "Processing failed";
-                Thread.Sleep(2000);
+                Thread.Sleep(500);
                 goto D;
             }
         }
@@ -1099,9 +1111,10 @@ namespace MAIO
                     goto A;
 
                 }
-                if ((status.Contains("COMPLETED") == true) && (status.Contains("OUT_OF_STOCK")))
+                if ((status.Contains("COMPLETED") == true) && (status.Contains("inventory")))
                 {
                     tk.Status = "OOS";
+                    Main.autorestock(tk);
                 }
                 if (status.Contains("IN_PROGRESS") == true)
                 {
@@ -1186,6 +1199,10 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
+                if (SourceCode.Contains("Product not found"))
+                {
+                    goto A;
+                }
                 JObject jo = JObject.Parse(SourceCode);
                 JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
                for (int i = 0; i < ja.Count; i++)

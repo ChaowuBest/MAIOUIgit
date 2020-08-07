@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -121,65 +123,93 @@ namespace MAIO
         }
         private void savegiftcard(object sender, RoutedEventArgs e)
         {
+            bool duplicate = false;
+            string key = null;
             Dictionary<string, string> dic = new Dictionary<string, string>();
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
-            if (giftcardname.Text != "")
+            string[] savegiftcard = new TextRange(giftcardbox.Document.ContentStart, giftcardbox.Document.ContentEnd).Text.Split("\r\n");
+            JObject ja = new JObject();
+            for (int i = 0; i < savegiftcard.Length; i++)
             {
-                string[] savegiftcard = new TextRange(giftcardbox.Document.ContentStart, giftcardbox.Document.ContentEnd).Text.Split("\r\n");
-                JObject ja = new JObject();
-                try
+                if (savegiftcard[i] != "")
                 {
-                    for (int i = 0; i < savegiftcard.Length; i++)
-                    {
-                        if (savegiftcard[i] != "")
-                        {
-                            var sp = savegiftcard[i].Split("-");
-                            dic.Add(sp[0], sp[1]);
-                            ja.Add(sp[0], sp[1]);
-                        }
-                    }
-                    JObject jo = new JObject(
-                      new JProperty(giftcardname.Text,
-                      new JObject(ja))
-                     );
-                    Mainwindow.giftcardlist.Add(giftcardname.Text, ja.ToString());
-                    giftlist.Items.Add(giftcardname.Text);               
-                    FileInfo fi = new FileInfo(path);
-                    if (fi.Length == 0)
-                    {
-                        var jot= jo.ToString().Insert(0, "[").Insert(jo.ToString().Length+1,"]");
-                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamWriter sw = new StreamWriter(fs0);
-                        sw.Write(jot.ToString().Replace("\r", "").Replace("\n","").Replace("\t", "").Replace(" ", ""));
-                        sw.Close();
-                        fs0.Close();
-                    }
-                    else
-                    {
-                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamReader sw2 = new StreamReader(fs1);
-                        var read= sw2.ReadToEnd();
-                        JArray ja2 = JArray.Parse(read);
-                        ja2.Add(jo);
-                        var wu = ja2.ToString();
-                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamWriter sw = new StreamWriter(fs0);
-                        fs1.SetLength(0);
-                        sw.Write(ja2.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));                      
-                        sw.Close();
-                        fs0.Close();
-                    }
+                    var sp = savegiftcard[i].Split("-");
+                    dic.Add(sp[0], sp[1]);
+                    ja.Add(sp[0], sp[1]);
                 }
-                catch (Exception)
+            }
+            JObject jo = new JObject(
+              new JProperty(giftcardname.Text,
+              new JObject(ja))
+             );
+            for (int i = 0; i < Mainwindow.giftcardlist.Count; i++)
+            {
+                KeyValuePair<string, string> kv = Mainwindow.giftcardlist.ElementAt(i);
+                if (kv.Key == giftcardname.Text)
                 {
-                    MessageBox.Show("Please check your input");
+                    duplicate = true;
+                    key = kv.Key;
+                    break;
                 }
-
+            }
+            if (duplicate)
+            {
+                Mainwindow.giftcardlist[key] = ja.ToString();
             }
             else
             {
-                MessageBox.Show("Please enter giftcardlist name");
+                if (giftcardname.Text == "")
+                {
+                    MessageBox.Show("Please enter giftcardlist name");
+                }
             }
+            try
+            {
+                if (duplicate==false)
+                {
+                    Mainwindow.giftcardlist.Add(giftcardname.Text, ja.ToString());
+                    giftlist.Items.Add(giftcardname.Text);
+                }                      
+                FileInfo fi = new FileInfo(path);
+                if (fi.Length == 0)
+                {
+                    var jot = jo.ToString().Insert(0, "[").Insert(jo.ToString().Length + 1, "]");
+                    FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter sw = new StreamWriter(fs0);
+                    sw.Write(jot.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
+                    sw.Close();
+                    fs0.Close();
+                }
+                else
+                {
+                    FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamReader sw2 = new StreamReader(fs1);
+                    var read = sw2.ReadToEnd();
+                    JArray ja2 = JArray.Parse(read);
+                    for (int i = 0; i < ja2.Count; i++)
+                    {
+                        Regex rex = new Regex("\"(.*)\"");
+                        var matchkey= rex.Match(ja2[i].ToString()).Value.Replace("\"","");           
+                        if (matchkey == giftcardname.Text.Replace(" ",""))
+                        {
+                            ja2.RemoveAt(i);
+                        }
+                    }
+                    ja2.Add(jo);
+                    var wu = ja2.ToString();
+                    FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter sw = new StreamWriter(fs0);
+                    fs1.SetLength(0);
+                    sw.Write(ja2.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
+                    sw.Close();
+                    fs0.Close();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please check your input");
+            }
+
         }
         private void giftlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -187,6 +217,7 @@ namespace MAIO
             {
                 giftcardbox.Document.Blocks.Clear();
                 string selectdata = Mainwindow.giftcardlist["" + giftlist.SelectedItem.ToString() + ""];
+                giftcardname.Text = giftlist.SelectedItem.ToString();
                 var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
                 for (int i = 0; i < gl.Length; i++)
                 {
@@ -272,7 +303,6 @@ namespace MAIO
                     remainingSpace -= (listView.View as GridView).Columns[i].ActualWidth;
             (listView.View as GridView).Columns[autoFillColumnIndex].Width = remainingSpace >= 0 ? remainingSpace : 0;
         }
-
         private void BtnDelete_Click_1(object sender, RoutedEventArgs e)
         {
             var del = ((Button)sender).DataContext.ToString();
@@ -283,7 +313,6 @@ namespace MAIO
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
             updategiftcard(del, path2);
         }
-
         private void accountlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try

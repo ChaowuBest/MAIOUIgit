@@ -19,6 +19,7 @@ namespace MAIO
     class NikeAUCAAPI
     {
         Random ran = new Random();
+        public int failedretry=0;
         string xb3traceid = Guid.NewGuid().ToString();
         string xnikevisitorid = Guid.NewGuid().ToString();
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
@@ -221,7 +222,11 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "Forbidden";
-              //  tk.Status = response.StatusCode.ToString();
+                failedretry++;
+                if (failedretry > 20)
+                {
+                    Main.autorestock(tk);
+                }
                 Thread.Sleep(1500);
                 goto B;
             }
@@ -402,6 +407,10 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
+                if (SourceCode.Contains("Product not found"))
+                {
+                    goto A;
+                }
                 JObject jo = JObject.Parse(SourceCode);
                 JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
                 for (int i = 0; i < ja.Count; i++)

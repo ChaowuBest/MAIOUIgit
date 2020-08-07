@@ -140,7 +140,6 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-
         </StackPanel>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1035,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <RichTextBox x:Name="giftcardbox" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14" Margin="403,96,412,154">

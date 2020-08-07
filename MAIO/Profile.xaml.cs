@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Security;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -53,8 +54,7 @@ namespace MAIO
             if(duplicate)
             {
                 Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
-                profilewrite(profile);
-                
+                profilewrite(profile);              
             }
             else
             {
@@ -87,8 +87,11 @@ namespace MAIO
                 {
                     string read = sr.ReadToEnd();
                     JArray ja = JArray.Parse(read);
+                    
                     for (int i = 0; i < ja.Count; i++)
                     {
+                        Regex rex = new Regex("\"(.*)\"");
+                        var wuds=rex.Matches(ja[i].ToString());
                         if (ja[i]["ProfileName"].ToString() == ja2[0]["ProfileName"].ToString())
                         {
                             ja.RemoveAt(i);

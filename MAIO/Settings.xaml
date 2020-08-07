@@ -58,7 +58,7 @@
         <TextBox HorizontalAlignment="Left" Name="discordwebhook" BorderThickness="0" Height="25" Margin="534,218,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="352" Background="#FF9CB0C6" MaxLines="1" FontFamily="PingFangSC-Semibold" FontSize="16"/>
         <Label Content="Discord Webhook" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="176" Margin="534,179,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White"/>
         <Label Content="Version:" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="538,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <Label Content="0.99.6" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="600,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Label Content="0.99.8" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="600,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <TextBox HorizontalAlignment="Left" Name="delay2" Height="33" Margin="691,328,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="108" FontFamily="PingFangSC-Semibold" FontSize="16" Background="#FF9CB0C6"/>
         <Label Content="Monitor Delay" HorizontalAlignment="Left" Height="43" VerticalAlignment="Top" Width="113" Margin="538,328,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White"/>
         <Label Content="Expiry" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="702,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
@@ -88,5 +88,19 @@
         <CheckBox Content="" x:Name="useAdvancemode" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="47" Margin="736,275,0,0"/>
         <CheckBox Content="" Name="autoclearcookie" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="89" Margin="732,502,0,0"/>
         <TextBlock Text="AutoClearCookie" TextWrapping="Wrap" RenderTransformOrigin="3.636,-6.565" Margin="540,499,415,247" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="White"/>
+        <Button Cursor="Hand" x:Name="DelAllCookie" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Del Cookie" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="842,432,130,291" Width="108" Click="DelAllCookie_Click" RenderTransformOrigin="0.13,0.444">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </UserControl>

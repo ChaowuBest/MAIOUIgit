@@ -413,7 +413,7 @@ namespace MAIO
                         }
                         Random ran = new Random();
                         int random = ran.Next(0, Mainwindow.account.Count);
-                        try
+                       try
                         {
                             string[] account = null;
                             if (tk.Account != null && tk.Account != "")
@@ -428,7 +428,7 @@ namespace MAIO
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[","").Replace("]","").Replace(" ",""));
                                     }
                                     Random ranaccount = new Random();
-                                    int randomaccount= ranaccount.Next(0,dic.Count);
+                                    int randomaccount= ranaccount.Next(0, ar.Count);
                                     account=ar[randomaccount].ToString().Split(",");
                                 }
                                 else
@@ -460,7 +460,7 @@ namespace MAIO
                                 tk.Status = "No Account";
                             }
 
-                        }
+                       }
                         catch (Exception ex)
                         {
 
@@ -689,7 +689,6 @@ namespace MAIO
         }
         private void startall_Click(object sender, RoutedEventArgs e)
         {
-
             for (int n = 0; n < Mainwindow.task.Count; n++)
             {
                 Thread.Sleep(1);
@@ -754,7 +753,7 @@ namespace MAIO
                                             ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
                                         }
                                         Random ranaccount = new Random();
-                                        int randomaccount = ranaccount.Next(0, dic.Count);
+                                        int randomaccount = ranaccount.Next(0, ar.Count);
                                         account = ar[randomaccount].ToString().Split(",");
                                     }
                                     else
@@ -848,7 +847,6 @@ namespace MAIO
         }
         private void stop_Click(object sender, RoutedEventArgs e)
         {
-
             taskset stop = (taskset)((Button)sender).DataContext;
             if (dic.Keys.Contains(stop.Taskid) == false)
             {
@@ -901,6 +899,122 @@ namespace MAIO
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             mp.Show();
+        }
+        public static void autorestock(taskset tk)
+        {
+            if (dic.Keys.Contains(tk.Taskid) == false)
+            {
+            }
+            else
+            {
+                dic[tk.Taskid].Cancel();
+                dic.Remove(tk.Taskid);
+            }
+            bool monitortask = false;
+            if (tk.monitortask == "True")
+            {
+                monitortask = true;
+            }
+            if (dic.Keys.Contains(tk.Taskid))
+            {
+                MessageBox.Show("Please stop task first");
+            }
+            else
+            {
+                tk.Status = "Starting";
+                try
+                {
+                    string giftcard = "";
+                    string code = "";
+                    if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU")
+                    {
+                        NikeAUCA NA = new NikeAUCA();
+                        NA.tk = tk;
+                        NA.profile = Mainwindow.allprofile[tk.Profile];
+                        NA.pid = tk.Sku;
+                        NA.size = tk.Size;
+                        NA.Quantity = int.Parse(tk.Quantity);
+                        NA.monitortask = monitortask;
+                        if (tk.Size == "RA" || tk.Size == "ra")
+                        {
+                            NA.randomsize = true;
+                        }
+                        var cts = new CancellationTokenSource();
+                        var ct = cts.Token;
+                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
+                        dic.Add(tk.Taskid, cts);
+                        task1.Start();
+                    }
+                    else if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
+                    {
+                        if (Mainwindow.tasklist[tk.Taskid] != "")
+                        {
+                            JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
+                            giftcard = jo["giftcard"].ToString();
+                            code = jo["Code"].ToString().Replace("\r\n", "");
+                        }
+                        Random ran = new Random();
+                        int random = ran.Next(0, Mainwindow.account.Count);
+                        try
+                        {
+                            string[] account = null;
+                            if (tk.Account != null && tk.Account != "")
+                            {
+                                string sValue = "";
+                                if (Mainwindow.account.TryGetValue(tk.Account, out sValue))
+                                {
+                                    JObject jo = JObject.Parse(sValue);
+                                    ArrayList ar = new ArrayList();
+                                    foreach (var i in jo)
+                                    {
+                                        ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
+                                    }
+                                    Random ranaccount = new Random();
+                                    int randomaccount = ranaccount.Next(0, ar.Count);
+                                    account = ar[randomaccount].ToString().Split(",");
+                                }
+                                else
+                                {
+                                    account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
+                                }
+                                NikeUSUK NSK = new NikeUSUK();
+                                NSK.giftcard = giftcard;
+                                NSK.pid = tk.Sku;
+                                NSK.size = tk.Size;
+                                NSK.code = code;
+                                NSK.monitortask = monitortask;
+                                NSK.profile = Mainwindow.allprofile[tk.Profile];
+                                NSK.tk = tk;
+                                NSK.username = account[0];
+                                NSK.password = account[1];
+                                if (tk.Size == "RA" || tk.Size == "ra")
+                                {
+                                    NSK.randomsize = true;
+                                }
+                                var cts = new CancellationTokenSource();
+                                var ct = cts.Token;
+                                Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                dic.Add(tk.Taskid, cts);
+                                task2.Start();
+                            }
+                            else
+                            {
+                                tk.Status = "No Account";
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                            tk.Status = "No Account";
+                        }
+                    }
+                }
+                catch
+                {
+
+                }
+            }
         }
     }
 }

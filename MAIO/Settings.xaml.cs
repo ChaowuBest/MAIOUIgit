@@ -29,7 +29,6 @@ namespace MAIO
     /// </summary>
     public partial class Settings : UserControl
     {
-        //public Mainwindow ParentWindow { get; set; }
         public Settings()
         {
             InitializeComponent();
@@ -287,5 +286,21 @@ namespace MAIO
             });
         }
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        private void DelAllCookie_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Environment.CurrentDirectory + "\\" + "cookie.json";
+            FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            fs0.SetLength(0);
+            fs0.Close();
+            Mainwindow.lines.Clear();
+            Mainwindow.cookiewtime.Clear();
+            Mainwindow.iscookielistnull = true;
+            Config.mn.cookienum.Dispatcher.Invoke(new Action(
+                  delegate
+                  {
+                      Config.mn.cookienum.Content = Mainwindow.lines.Count;
+                  }));
+        }
     }
 }
