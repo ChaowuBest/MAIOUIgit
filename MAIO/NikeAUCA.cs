@@ -283,6 +283,10 @@ namespace MAIO
             {
                 currency = "CAD";
             }
+            else if (tk.Tasksite.Contains("MY"))
+            {
+                currency = "MYR";
+            }
 
             if (int.Parse(tk.Quantity) > limit)
             {

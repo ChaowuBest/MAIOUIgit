@@ -21,9 +21,10 @@
                 <ComboBoxItem Content="NikeCA" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="NikeMY" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="Footasylum" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="TheNorthFaceUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <ComboBoxItem Content="JDUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <!--ComboBoxItem Content="JDUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
                 <!--<ComboBoxItem Content="ASOS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
             </ComboBox>
             <ComboBox Width="145" Name="giftcard" Height="21" Margin="-525,0,0,0" FontFamily="Arial" FontSize="14" HorizontalAlignment="Center">
@@ -89,7 +90,7 @@
 
             <Label Content="Quantity" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="79" Height="24" Margin="-1099,68,0,0"/>
             <Label Content="Tasknumber" Name="num" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="99" Margin="-300,-45,0,0" Height="24"/>
-            <CheckBox Content="Monitor Task" Name="monitor" Width="151" Margin="-530,109,0,0" Height="23" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <CheckBox Content="Fission Task" Name="monitor" Width="151" Margin="-530,109,0,0" Height="23" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
             <CheckBox Content="Advance Monitor" x:Name="advancemonitor" FontFamily="PingFangSC-Semibold" FontSize="14" BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="131" Height="16" Margin="-291,0,0,-102"/>
             <CheckBox Content="Advance" Name="advance" Width="74" Height="26" FontFamily="PingFangSC-Semibold" Margin="-65,19,0,-91" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Checked="CheckBox_Checked" Click="advance_Click"/>
             <Label Content="AccountList" Name="accountlable" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="92" Height="24" Margin="-1452,6,0,-196"/>
