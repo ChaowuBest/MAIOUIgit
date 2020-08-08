@@ -122,6 +122,7 @@ namespace MAIO
                 int i=ran.Next(0,skulist.Count);
                 skuid=skulist[i].ToString();
             }
+            
             if (skuid == "" || skuid == null)
             {
                 tk.Status = "Size Error";

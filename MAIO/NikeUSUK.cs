@@ -25,8 +25,7 @@ namespace MAIO
         public string pid = "";
         public string profile = "";
         public taskset tk = null;
-        public string code = "";
-        
+        public string code = "";      
         string GID = Guid.NewGuid().ToString();
         public string skuid = "";
         public string productID = "";
@@ -58,7 +57,6 @@ namespace MAIO
                 {
                     goto A;
                 }
-
             B: JObject joprofile = JObject.Parse(profile);
                 string Authorization = "";
                 try
@@ -93,7 +91,6 @@ namespace MAIO
                 {
                     goto D;
                 }
-
             E:
                 try
                 {
@@ -104,7 +101,6 @@ namespace MAIO
                 {
                     goto E;
                 }
-
                 if (giftcard != "")
                 {
                     subimitgiftcard(Authorization, skuid, ct);
@@ -178,6 +174,27 @@ namespace MAIO
                     string[] Multiplesize = size.Split("+");
                     Random ra = new Random();
                     size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
+                }
+                if (size.Contains("-"))
+                {
+                    bool Gssize = false;
+                    if (size.Contains("Y"))
+                    {
+                        size = size.Replace("Y", "");
+                        Gssize = true;
+                    }
+                    string[] Multiplesize = size.Split("-");
+                    ArrayList ar = new ArrayList();
+                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i+=0.5)
+                    {
+                        ar.Add(i);
+                    }
+                    Random ra = new Random();
+                    size = ar[ra.Next(0,ar.Count)].ToString();
+                    if (Gssize)
+                    {
+                        size += "Y";
+                    }
                 }
                 var product = "";
                 try
@@ -417,14 +434,14 @@ namespace MAIO
                         string read = sr.ReadToEnd();
                         JArray ja = JArray.Parse(read);
                         string token = "";
-                        foreach (var i in ja)
+                        for (int i = 0; i < ja.Count; i++)
                         {
-                            if (i.ToString().Contains(username))
+                            if (ja[i]["Account"].ToString().ToUpper() ==username.ToUpper())
                             {
-                                token = JObject.Parse(i.ToString())["Token"].ToString();
+                                token = ja[i]["Token"].ToString();
                                 break;
                             }
-                        }
+                        }             
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
@@ -972,6 +989,7 @@ new JProperty("shippingAddress",
                 JObject jo2 = JObject.Parse(obejects);
                 string reason = jo2["message"].ToString();
                 tk.Status = reason;
+                Main.autorestock(tk);
             }
             else
             {
@@ -990,8 +1008,8 @@ new JProperty("shippingAddress",
                 }
                 if (status.Contains("error") == false)
                 {
-                    ProcessNotification(false,tk,Config.webhook, joprofile,orderid);
-                    ProcessNotification(true,tk,webhook2, joprofile ,"");
+                    ProcessNotification(true, tk, webhook2, joprofile, "");
+                    ProcessNotification(false,tk,Config.webhook, joprofile,orderid);  
                     tk.Status = "Success";
                 }
             }
@@ -1011,15 +1029,23 @@ new JProperty("shippingAddress",
             }
             else
             {
-              //  jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Email\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n            ,\r\n                {\r\n                    \"name\": \"Account\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n,                            {\r\n                    \"name\": \"Orderid\",\r\n                    \"value\": \"\",\r\n                    \"inline\": false\r\n                }\r\n            ],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO"+ DateTime.Now.ToLocalTime().ToString() + "\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
-                jobject = JObject.Parse("{\r\n\"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n\"embeds\": [\r\n{\r\n\"title\": \"\",\"color\":3329330,\r\n\"description\": \"\",\r\n\"fields\": [\r\n{\r\n\"name\": \"Style Code\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Size\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Email\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,\r\n{\r\n\"name\": \"Account\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,{\r\n\"name\": \"Orderid\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n},{\r\n\"name\": \"Code\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n}\r\n],\r\n\"thumbnail\": {\r\n\"url\": \"\"\r\n},\r\n\"footer\": {\r\n\"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n\"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n}\r\n}\r\n]\r\n}");
+              // jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Email\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n            ,\r\n                {\r\n                    \"name\": \"Account\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n,                            {\r\n                    \"name\": \"Orderid\",\r\n                    \"value\": \"\",\r\n                    \"inline\": false\r\n                }\r\n            ],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO"+ DateTime.Now.ToLocalTime().ToString() + "\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
+                jobject = JObject.Parse("{\r\n\"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n\"embeds\": [\r\n{\r\n\"title\": \"\",\"color\":3329330,\r\n\"description\": \"\",\r\n\"fields\": [\r\n{\r\n\"name\": \"Style Code\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Size\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Email\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,\r\n{\r\n\"name\": \"Account\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,{\r\n\"name\": \"Orderid\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n},\r\n{\r\n\"name\": \"Profile\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},{\r\n\"name\": \"Code\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n}\r\n],\r\n\"thumbnail\": {\r\n\"url\": \"\"\r\n},\r\n\"footer\": {\r\n\"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n\"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n}\r\n}\r\n]\r\n}");
                 jobject["embeds"][0]["title"] = "You Just Checkout!!!";
                 jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
                 jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
                 jobject["embeds"][0]["fields"][2]["value"] = joprofile["EmailAddress"].ToString();
                 jobject["embeds"][0]["fields"][3]["value"] = username;
                 jobject["embeds"][0]["fields"][4]["value"] = orderid;
-                jobject["embeds"][0]["fields"][4]["value"] = code;
+                jobject["embeds"][0]["fields"][5]["value"] = tk.Profile;
+                if (code == "" || code == null)
+                {
+                    jobject["embeds"][0]["fields"][6]["value"] = "null";
+                }
+                else
+                {
+                    jobject["embeds"][0]["fields"][6]["value"] = code;
+                }
                 jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
             }            
             Http(webhookurl, jobject.ToString(),tk);
@@ -1046,7 +1072,7 @@ new JProperty("shippingAddress",
             }
             catch (WebException ex)
             {
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 tk.Status = ex.Message.ToString();
                 goto Retry;
             }

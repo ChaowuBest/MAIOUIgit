@@ -106,6 +106,12 @@ namespace MAIO
             var sizegroup = ja[0]["PDPProduct"]["eids"].ToString();          
             JArray ja2 = JArray.Parse(sizegroup);
             ArrayList skuslist = new ArrayList();
+            if (size.Contains("+"))
+            {
+                string[] Multiplesize = size.Split("+");
+                Random ra = new Random();
+                size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
+            }
             for (int i = 0; i < ja2.Count; i++)
             {
                 if (randomsize)
@@ -151,36 +157,7 @@ namespace MAIO
                 tk.Status = "Monitoring";
                 goto B;
             }
-            #region
-            /*    foreach (var i in jo["partNumbers"].ToArray())
-                {
-                    if (i.ToString().Contains(eid))
-                    {
-                        Regex rex = new Regex(@"\d{6}");
-                        sizeid = rex.Match(i.ToString()).ToString();
-                        break;
-                    }
-                }
-                foreach (var i in jo["stock"].ToArray())
-                {
-                    if (i.ToString().Contains(sizeid))
-                    {
-                        var st = i.ToString().Replace(sizeid, "").Replace(",", "").Replace(" ", "").Replace("\"", "").Replace(":", "");
-                        int stock = int.Parse(st);
-                        if (stock > 0)
-                        {
-                            isstocknull = false;
-                        }
-                        break;
-                    }
-                }
-             if (isstocknull)
-            {
-                tk.Status = "Monitoring";
-                goto B;
-            }
-            */
-            #endregion
+
 
         }
         public void ATC(CancellationToken ct)

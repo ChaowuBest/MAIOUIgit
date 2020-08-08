@@ -86,7 +86,7 @@ namespace MAIO
                         }
                         catch (ArgumentException)
                         {
-                            break;
+                            continue;
                         }
                         NikeMonitorProduct NMP = new NikeMonitorProduct();
                         NMP.mn = Mainwindow.Advancemonitortask[i];
@@ -97,30 +97,16 @@ namespace MAIO
                         Task task1 = new Task(() => { NMP.start(ct); }, ct);
                         task1.Start();
                     }
-                    #region
-                    /* else if (Mainwindow.Advancemonitortask[i].Region == "TheNorthFaceUK" || Mainwindow.Advancemonitortask[i].Region == "TheNorthFaceUS")
-                     {
-                         var cts = new CancellationTokenSource();
-                         var ct = cts.Token;
-                         try
-                         {
-                             dic.Add(Mainwindow.Advancemonitortask[i].Taskid, cts);
-                         }
-                         catch (ArgumentException)
-                         {
-                             break;
-                         }
-                         tnfmonitor NMP = new tnfmonitor();
-                         NMP.mn = Mainwindow.Advancemonitortask[i];
-                         if (Mainwindow.Advancemonitortask[i].Size.Contains("ra") || Mainwindow.Advancemonitortask[i].Size.Contains("RA"))
-                         {
-                             NMP.randomsize = true;
-                         }
-                         Task task1 = new Task(() => { NMP.start(ct); }, ct);
-                         task1.Start();
-                     }*/
-                    #endregion
+
                 }
+            }
+            else
+            {
+                foreach (var i in dic)
+                {
+                    i.Value.Cancel();
+                }
+
             }
         }
 

@@ -104,6 +104,27 @@ namespace MAIO
                     Random ra = new Random();
                     size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
                 }
+                if (size.Contains("-"))
+                {
+                    bool Gssize = false;
+                    if (size.Contains("Y"))
+                    {
+                        size = size.Replace("Y", "");
+                        Gssize = true;
+                    }
+                    string[] Multiplesize = size.Split("-");
+                    ArrayList ar = new ArrayList();
+                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                    {
+                        ar.Add(i);
+                    }
+                    Random ra = new Random();
+                    size = ar[ra.Next(0, ar.Count)].ToString();
+                    if (Gssize)
+                    {
+                        size += "Y";
+                    }
+                }
                 var product = "";
                 if (ct.IsCancellationRequested)
                 {

@@ -351,9 +351,9 @@ namespace MAIO
                 }
                 tk.Status = "Submit Card Success";
             }
-            catch (WebException ex)
+            catch (WebException)
             {
-                tk.Status = ex.Message.ToString();
+                tk.Status = "Submit Card failed";
                 goto B;
             }
             return balance;
@@ -495,8 +495,7 @@ namespace MAIO
                 tk.Status = "Submit Shipping";
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
-                paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
-              
+                paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();         
                 JObject jo = null;
                 jo = JObject.Parse(paymentsuccesscode);
                 try
@@ -523,7 +522,7 @@ namespace MAIO
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
                 paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
-                MessageBox.Show(paymentsuccesscode);
+              //  MessageBox.Show(paymentsuccesscode);
                 goto B;
             }
 
@@ -585,7 +584,7 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(new GZipStream(respcheckstatusstream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
-                    MessageBox.Show(check);
+                  //  MessageBox.Show(check);
                     JObject jo = JObject.Parse(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
@@ -615,7 +614,7 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
-                    MessageBox.Show(check);
+                  //  MessageBox.Show(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
                         Thread.Sleep(1000);
@@ -1114,7 +1113,7 @@ namespace MAIO
                 if ((status.Contains("COMPLETED") == true) && (status.Contains("inventory")))
                 {
                     tk.Status = "OOS";
-                    Main.autorestock(tk);
+                   
                 }
                 if (status.Contains("IN_PROGRESS") == true)
                 {
