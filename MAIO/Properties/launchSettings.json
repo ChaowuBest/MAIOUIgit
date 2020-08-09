@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MAIO": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

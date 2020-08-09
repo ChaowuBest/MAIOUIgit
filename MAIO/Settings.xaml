@@ -7,26 +7,6 @@
              mc:Ignorable="d" Height="768" Width="1080">
     <Grid Background="#FF243B55" Width="1080">
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" RenderTransformOrigin="0.676,0.332"/>
-        <StackPanel Margin="82,45,480,35">
-            <Label Content="Check Balance" Height="47" Width="126" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="White" HorizontalContentAlignment="Left" Margin="113,-4,112,0" VerticalContentAlignment="Bottom"/>
-            <TextBox Height="543" x:Name="Balancebox"  Width="346" Background="#FF9CB0C6" FontFamily="Arial" TextWrapping="Wrap" AcceptsReturn="True">
-                <!--设置行间距-->
-            </TextBox>
-            <Button Cursor="Hand" x:Name="Check" Opacity="1" Margin="0,24,0,0" Foreground="White" Background="#FF6F7D8D" Content="Check" FontFamily="PingFangSC-Semibold" FontSize="16" Width="105" Height="48" Click="Check_Click">
-                <Button.Template>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-        </StackPanel>
         <Button Cursor="Hand" x:Name="Deactive" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Deactive" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="543,74,429,649" Width="108" Height="45" Click="Deactive_Click">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
