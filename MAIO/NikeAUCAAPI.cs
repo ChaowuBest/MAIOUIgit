@@ -222,11 +222,11 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "Forbidden";
-                failedretry++;
-                if (failedretry > 20)
-                {
-                    Main.autorestock(tk);
-                }
+               // failedretry++;
+              //  if (failedretry > 20)
+              //  {
+             //       Main.autorestock(tk);
+              //  }
                 Thread.Sleep(1500);
                 goto B;
             }
