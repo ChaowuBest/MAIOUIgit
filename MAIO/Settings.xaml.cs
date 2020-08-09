@@ -118,53 +118,7 @@ namespace MAIO
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
-            Task task1 = new Task(() => check());
-            task1.Start();
-        }
-        public void check()
-        {
-            try
-            {
-                string cardurl = "https://api.nike.com/payment/giftcard_balance/v1";
-                ArrayList checkdcardlist = new ArrayList();
-                CheckCard cc = new CheckCard();
-                string[] card = null;
-                Balancebox.Dispatcher.Invoke(new Action(
-             delegate
-             {
-              card = Balancebox.Text.Split("\r\n");
-             }));           
-                for (int i = 0; i < card.Length; i++)
-                {
-                    var sp = card[0].Split("-");
-                    string cardinfo = "{\"accountNumber\":\"" + sp[0] + "\",\"pin\":\"" + sp[1] + "\",\"currency\":\"USD\"}";
-                    checkdcardlist.Add(cc.Postcardinfo(cardurl, cardinfo));
-                }
-                Balancebox.Dispatcher.Invoke(new Action(
-             delegate
-             {
-                 Balancebox.Clear();
-             }));
-               
-                for (int i = 0; i < checkdcardlist.Count; i++)
-                {
-                    Balancebox.Dispatcher.Invoke(new Action(
-              delegate
-              {
-                  Balancebox.AppendText(checkdcardlist[i].ToString());
-                  Balancebox.AppendText("\r\n");
-              }));
-                }
-            
-            }
-            catch (Exception ex)
-            {
-                Balancebox.Dispatcher.Invoke(new Action(
-              delegate
-                {
-                    Balancebox.Text = "Error Input";
-                }));
-            }
+           
         }
         private void gencookie(object sender, RoutedEventArgs e)
         {

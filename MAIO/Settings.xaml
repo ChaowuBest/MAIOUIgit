@@ -5,29 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MAIO"
              mc:Ignorable="d" Height="768" Width="1080">
-    <Grid Background="#FF243B55" Width="1080">
+    <UserControl.Resources>
+        <ControlTemplate x:Key="FilletTextBox" TargetType="{x:Type TextBox}">
+            <Border BorderBrush="#FF1A192B" BorderThickness="1" CornerRadius="10">
+                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+    </UserControl.Resources>
+    <Grid Background="#FF222136" Width="1080">
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" RenderTransformOrigin="0.676,0.332"/>
-        <Button Cursor="Hand" x:Name="Deactive" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Deactive" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="543,74,429,649" Width="108" Height="45" Click="Deactive_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
         <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Save" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="762,74,213,646" Width="105" Click="save_Click">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4">
                         <Border.Background>
                             <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                                <GradientStop Color="#FF70B8EE" Offset="0.0" />
                             </LinearGradientBrush>
                         </Border.Background>
                         <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -35,7 +28,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <TextBox HorizontalAlignment="Left" Name="discordwebhook" BorderThickness="0" Height="25" Margin="534,218,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="352" Background="#FF9CB0C6" MaxLines="1" FontFamily="PingFangSC-Semibold" FontSize="16"/>
+        <TextBox HorizontalAlignment="Left" Template="{StaticResource FilletTextBox}" Name="discordwebhook" BorderThickness="0" Height="25" Margin="534,218,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="352" Background="#FF9CB0C6" MaxLines="1" FontFamily="PingFangSC-Semibold" FontSize="16"/>
         <Label Content="Discord Webhook" HorizontalAlignment="Left" Height="34" VerticalAlignment="Top" Width="176" Margin="534,179,0,0" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White"/>
         <Label Content="Version:" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="538,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <Label Content="0.99.12" HorizontalAlignment="Left" Height="57" VerticalAlignment="Top" Width="108" Margin="600,666,0,0" FontFamily="PingFangSC-Semibold" FontSize="16" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
@@ -46,10 +39,10 @@
         <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Start Gen" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="691,428,281,295" Width="108" Click="gencookie" RenderTransformOrigin="0.13,0.444">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4">
                         <Border.Background>
                             <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                                <GradientStop Color="#FF70B8EE" Offset="0.0" />
                             </LinearGradientBrush>
                         </Border.Background>
                         <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -71,10 +64,25 @@
         <Button Cursor="Hand" x:Name="DelAllCookie" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Del Cookie" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="835,428,137,295" Width="108" Click="DelAllCookie_Click" RenderTransformOrigin="0.13,0.444">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4">
                         <Border.Background>
                             <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                                <GradientStop Color="#FF70B8EE" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <DockPanel LastChildFill="False" Margin="61,30,627,45" Background="#FF2A2C48"/>
+        <Button Cursor="Hand" x:Name="Deactive" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Deactive" FontFamily="PingFangSC-Semibold" FontSize="16" Click="Deactive_Click" Margin="954,696,22,27">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF70B8EE" Offset="0.0" />
                             </LinearGradientBrush>
                         </Border.Background>
                         <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
