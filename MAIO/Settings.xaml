@@ -89,6 +89,6 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Label Content="Settings" FontFamily="PingFangSC-Semibold" HorizontalAlignment="Left" Height="55" VerticalAlignment="Top" Width="140" Margin="30,25,0,0" Foreground="White" FontSize="32"/>
+        <Label Content="Settings" FontFamily="PingFangSC-Semibold" HorizontalAlignment="Left" Height="55" VerticalAlignment="Top" Width="140" Margin="30,25,0,0" Foreground="White" FontSize="32" FontWeight="Bold"/>
     </Grid>
 </UserControl>
