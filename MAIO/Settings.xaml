@@ -115,7 +115,7 @@
                     <ImageBrush/>
                 </TextBox.BorderBrush>
             </TextBox>
-            <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" Click="save_Click" DockPanel.Dock="Top" Height="42" Width="108" Margin="0,62,0,0">
+            <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" Click="save_Click" DockPanel.Dock="Top" Height="42" Width="108" Margin="0,82,0,0">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4" Height="42" Width="108">
