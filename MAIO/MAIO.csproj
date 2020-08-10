@@ -52,4 +52,10 @@
     <Folder Include="puppeteer\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Main - 复制.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

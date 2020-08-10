@@ -86,9 +86,9 @@ namespace MAIO
         }
         public string GetSKUID(CancellationToken ct)
         {
-          A: string url = link;
-            var pid = link.Split("-");
-            string pid2 = pid[pid.Length - 1].Replace("/", "");
+        A: string url = link;
+            Regex rex = new Regex(@"\d{7}");
+           string pid=rex.Match(link).Value;      
             var group = fasyapi.GetHtmlsource(link, tk, ct);
             string sourcecode = group[0];
             coucustomer_id = group[1];
@@ -102,14 +102,14 @@ namespace MAIO
             {
                 if (randomsize)
                 {
-                    if (jo[item.Key]["sku"].ToString().Contains(pid2))
+                    if (jo[item.Key]["sku"].ToString().Contains(pid))
                     {
                         skulist.Add(jo[item.Key]["sku"].ToString());
                     }               
                 }
                 else
                 {
-                    if (jo[item.Key]["option2"].ToString() == tk.Size && jo[item.Key]["sku"].ToString().Contains(pid2))
+                    if (jo[item.Key]["option2"].ToString() == tk.Size && jo[item.Key]["sku"].ToString().Contains(pid))
                     {
                         skuid = jo[item.Key]["sku"].ToString();
                     }

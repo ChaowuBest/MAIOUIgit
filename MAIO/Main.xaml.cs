@@ -709,7 +709,7 @@ namespace MAIO
                     {
                         string giftcard = "";
                         string code = "";
-                        if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU")
+                        if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU"|| tk.Tasksite == "NikeMY")
                         {
                             NikeAUCA NA = new NikeAUCA();
                             NA.monitortask = monitortask;

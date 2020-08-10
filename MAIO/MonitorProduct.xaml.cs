@@ -53,7 +53,7 @@ namespace MAIO
             {
                 for (int i = 0; i < Mainwindow.Advancemonitortask.Count; i++)
                 {
-                    if (Mainwindow.Advancemonitortask[i].Region == "NikeAU" || Mainwindow.Advancemonitortask[i].Region == "NikeCA")
+                    if (Mainwindow.Advancemonitortask[i].Region == "NikeAU" || Mainwindow.Advancemonitortask[i].Region == "NikeCA"|| Mainwindow.Advancemonitortask[i].Region == "NikeMY")
                     {
                         var cts = new CancellationTokenSource();
                         var ct = cts.Token;
