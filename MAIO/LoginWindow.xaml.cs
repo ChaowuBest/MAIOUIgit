@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Net;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
@@ -33,7 +34,10 @@ namespace MAIO
         }     
         public void checkkey()
         {
-            var hwid = MD5Helper.EncryptString(FingerPrint.Value());
+            var ip = HttpGet("https://api.ipify.org", "utf-8");
+            string finger = FingerPrint.Value() + ip;
+            var hwid = MD5Helper.EncryptString(finger);
+            Config.hwid = hwid;
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             if (File.Exists(path))
             {
@@ -73,12 +77,25 @@ namespace MAIO
         {
             this.DragMove();
         }
+        static string HttpGet(string url, string encoding)
+        {
+            Encoding encode = System.Text.Encoding.GetEncoding(encoding);
+            WebClient MyWebClient = new WebClient();
+            MyWebClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36");
+            MyWebClient.Credentials = CredentialCache.DefaultCredentials;//获取或设置用于向Internet资源的请求进行身份验证的网络凭据
+            Byte[] pageData = MyWebClient.DownloadData(url); //从指定网站下载数据
+            string pageHtml = encode.GetString(pageData);  //如果获取网站页面采用的是GB2312，则 使用这句
+            return pageHtml;
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             Mainwindow MD = new Mainwindow();
             string key = Keyinput.Text;
-            var hwid = MD5Helper.EncryptString(FingerPrint.Value());
+            var ip = HttpGet("https://api.ipify.org", "utf-8");
+            string finger = FingerPrint.Value() + ip;
+            var hwid = MD5Helper.EncryptString(finger);
+            Config.hwid = hwid;
             var checkkey = AESHelper.Decrypt(key);
             if (checkkey == "")
             {

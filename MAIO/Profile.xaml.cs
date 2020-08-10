@@ -162,7 +162,6 @@ namespace MAIO
             }
             fs2.Close();
         }
-
         private void profilelist_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
          /*   string selectdata = Mainwindow.allprofile["" + profilelist.SelectedItem.ToString() + ""];
@@ -183,14 +182,15 @@ namespace MAIO
             nameoncard.Text = jo["NameonCard"].ToString();
             profilename.Text = jo["ProfileName"].ToString(); */
         }
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             Button btn = new Button();
             //btn.Name = "newButton";//这里设置的Name是找不到的
             btn.Margin = new Thickness(30, 10, 10, 10);
-            btn.Width = 100;
-            btn.Height = 50;
+            btn.Click += new RoutedEventHandler(check);
+          //  check() += btn.MouseRightButtonDown();
+            btn.Width = 200;
+            btn.Height = 150;
             Random ran2 = new Random();
             int n = ran2.Next(0, 100000);
             btn.Content = n.ToString();
@@ -202,7 +202,10 @@ namespace MAIO
              
         
         }
-
+        public void check(object sender, RoutedEventArgs e)
+        {
+            
+        }
         private void panel_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {
             var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
