@@ -256,5 +256,25 @@ namespace MAIO
                       Config.mn.cookienum.Content = Mainwindow.lines.Count;
                   }));
         }
+
+        private void ToggleButton_Initialized(object sender, EventArgs e)
+        {
+            string resourceStr = "pack://application:,,,/Resource/Style/Primary/Magenta.xaml";
+            UpdataResourceDictionary(resourceStr, 1);
+        }
+        private void UpdataResourceDictionary(string resourceStr, int pos)
+        {
+            if (pos < 0 || pos > 2)
+            {
+                return;
+            }
+            ResourceDictionary resource = new ResourceDictionary
+            {
+                Source = new Uri(resourceStr)
+            };
+           // Resources.MergedDictionaries.RemoveAt(pos);
+            Resources.MergedDictionaries.Insert(0, resource);
+        }
+
     }
 }
