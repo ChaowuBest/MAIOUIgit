@@ -34,6 +34,7 @@ namespace MAIO
         int index = 0;
         int limit = 0;
         int quantity = 0;
+        string paytoken = "";
         public string username = "";
         public string imageurl = "";
         public string password = "";
@@ -274,7 +275,7 @@ namespace MAIO
                                 {
                                     string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                                     string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\""+skuid+"\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize,skuid);
+                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize,skuid,false);
                                     if (group[0] != null)
                                     {
                                         skuid = group[0];
@@ -953,7 +954,7 @@ new JProperty("shippingAddress",
  new JProperty("email", jo["EmailAddress"].ToString()))))
  )))));
             }
-            string paytoken = payinfo.ToString();
+             paytoken = payinfo.ToString();
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -975,7 +976,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.finalorder(url, Authorization, profile, tk, pid, size, code, giftcard, username, password, randomsize, ct, productID, skuid);
+            string status = USUKAPI.finalorder(url, Authorization, tk,randomsize, ct, skuid,paytoken,GID);
 
             if (ct.IsCancellationRequested)
             {
@@ -1050,7 +1051,7 @@ new JProperty("shippingAddress",
             }            
             Http(webhookurl, jobject.ToString(),tk);
         }
-         public void Http(string url, string postDataStr, Main.taskset tk)
+        public void Http(string url, string postDataStr, Main.taskset tk)
         {
         Retry: Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);

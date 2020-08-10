@@ -22,21 +22,22 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.14
+    /// version 0.99.15
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.14";//everychange
+        public static string version = "0.99.15";//everychange
         public LoginWindow()
         {
             InitializeComponent();
             checkkey();
-        }     
+        }
         public void checkkey()
         {
             var ip = HttpGet("https://api.ipify.org", "utf-8");
-            string finger=FingerPrint.Value() + ip;
-            var hwid = MD5Helper.EncryptString(finger);         
+            string finger = FingerPrint.Value() + ip;
+            var hwid = MD5Helper.EncryptString(finger);
+            Config.hwid = hwid;
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             if (File.Exists(path))
             {
@@ -71,6 +72,7 @@ namespace MAIO
                     }
                 }
             }
+
         }
         static string HttpGet(string url, string encoding)
         {
@@ -94,6 +96,7 @@ namespace MAIO
             var ip = HttpGet("https://api.ipify.org", "utf-8");
             string finger = FingerPrint.Value() + ip;
             var hwid = MD5Helper.EncryptString(finger);
+            Config.hwid = hwid;
             var checkkey = AESHelper.Decrypt(key);
             if (checkkey == "")
             {
@@ -153,7 +156,7 @@ namespace MAIO
                 }
             }
         }
-       
+
         public bool keyauth(string md5key, string cpuid, string version)
         {
             var binding = new BasicHttpBinding();

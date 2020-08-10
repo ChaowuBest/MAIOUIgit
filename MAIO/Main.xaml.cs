@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -76,6 +77,31 @@ namespace MAIO
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
             }
+            Task task3 = new Task(()=>check());
+            task3.Start();
+        }
+
+        public void check()
+        {
+        A:
+            Process[] ps = Process.GetProcesses();
+            foreach (Process p in ps)
+            {
+                try
+                {
+                    if (p.ProcessName.ToString().Contains("Fiddler") || p.ProcessName.ToString().ToString().Contains("wireshark") || p.ProcessName.ToString().ToString().Contains("Charles")|| p.ProcessName.ToString().ToString().Contains("dnSpy"))
+                    {
+                        string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"Exception\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Key ban\",\"value\":\"" + Config.hwid + "\\t\\t\\t\\tKey:" + Config.hwid + "\\t\\t\\t\\tKey:" + Config.hwid + "\",\"inline\":false}]}]}";
+                        Http("https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", pd2);
+                        Environment.Exit(0);
+                    }
+                }
+                catch (Exception)
+                {
+                    Environment.Exit(0);
+                }
+            }
+            goto A;
         }
         public void clearcookie()
         {
@@ -1015,6 +1041,32 @@ namespace MAIO
 
                 }
             }
+        }
+        public static void Http(string url, string postDataStr)
+        {
+        Retry: Random ra = new Random();
+            int sleeptime = ra.Next(0, 3000);
+            Thread.Sleep(sleeptime);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "post";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            byte[] bytes = Encoding.UTF8.GetBytes(postDataStr);
+            request.ContentLength = bytes.Length;
+            Stream webstream = request.GetRequestStream();
+            webstream.Write(bytes, 0, bytes.Length);
+            webstream.Close();
+            try
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+                StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8);
+                string result = streamReader.ReadToEnd();
+            }
+            catch (WebException ex)
+            {
+                goto Retry;
+            }
+
         }
     }
 }

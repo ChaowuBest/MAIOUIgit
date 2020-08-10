@@ -19,7 +19,7 @@ namespace MAIO
     class NikeAUCAAPI
     {
         Random ran = new Random();
-        public int failedretry=0;
+        public int failedretry = 0;
         string xb3traceid = Guid.NewGuid().ToString();
         string xnikevisitorid = Guid.NewGuid().ToString();
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
@@ -52,9 +52,9 @@ namespace MAIO
             {
                 wp = default;
             }
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;     
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-           
+
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
@@ -141,7 +141,7 @@ namespace MAIO
                }*/
             #endregion
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);         
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "PUT";
             request.Proxy = wp;
             request.ContentType = "application/json; charset=UTF-8";
@@ -151,55 +151,43 @@ namespace MAIO
             request.Headers.Add("cloud_stack", "buy_domain");
             request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
             request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            if (Config.UseAdvancemode == "True")
+        C: if (Mainwindow.iscookielistnull)
             {
-                string path = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
-                FileStream fs2 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamReader sr = new StreamReader(fs2);
-                string cookie = sr.ReadToEnd();
-                request.Headers.Add("Cookie", cookie);
-                sr.Close();
-                fs2.Close();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                tk.Status = "No Cookie";
+                goto C;
             }
             else
             {
-            C: if (Mainwindow.iscookielistnull)
+                Random ra = new Random();
+                if (ct.IsCancellationRequested)
                 {
-                    if (ct.IsCancellationRequested)
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                int sleeptime = ra.Next(0, 500);
+                Thread.Sleep(sleeptime);
+                int cookie = ra.Next(0, Mainwindow.lines.Count);
+                try
+                {
+                    Main.updatelable(Mainwindow.lines[cookie], false);
+                    request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                    Mainwindow.lines.RemoveAt(cookie);
+                    if (Mainwindow.lines.Count == 0)
                     {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
+                        Mainwindow.iscookielistnull = true;
                     }
-                    tk.Status = "No Cookie";
+                }
+                catch (Exception)
+                {
                     goto C;
                 }
-                else
-                {
-                    Random ra = new Random();
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
-                    }
-                    int sleeptime = ra.Next(0, 500);
-                    Thread.Sleep(sleeptime);
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
-                    try
-                    {
-                        Main.updatelable(Mainwindow.lines[cookie], false);
-                        request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                        Mainwindow.lines.RemoveAt(cookie);
-                        if (Mainwindow.lines.Count == 0)
-                        {
-                            Mainwindow.iscookielistnull = true;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        goto C;
-                    }
-                }
             }
+
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");
@@ -222,11 +210,11 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "Forbidden";
-               // failedretry++;
-              //  if (failedretry > 20)
-              //  {
-             //       Main.autorestock(tk);
-              //  }
+                // failedretry++;
+                //  if (failedretry > 20)
+                //  {
+                //       Main.autorestock(tk);
+                //  }
                 Thread.Sleep(1500);
                 goto B;
             }
@@ -335,7 +323,7 @@ namespace MAIO
             }
             return sourcecode;
         }
-        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize,string skuid)
+        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid)
         {
         A: if (ct.IsCancellationRequested)
             {
