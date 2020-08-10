@@ -14,9 +14,9 @@
             </Border>
         </ControlTemplate>
     </UserControl.Resources>
-    <Grid Background="#FF4C5E96" Width="1080">
-        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF5D6DA0" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" RenderTransformOrigin="0.676,0.332"/>
-        <DockPanel LastChildFill="False" Margin="81,91,81,91" Background="#FF5D6DA0">
+    <Grid Background="#FF252935" Width="1080">
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" RenderTransformOrigin="0.676,0.332"/>
+        <DockPanel LastChildFill="False" Margin="81,91,81,91" Background="#FF2C3040">
             <Label Content="Webhook" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" DockPanel.Dock="Top" Height="34" Width="158" Margin="-518,26,0,17" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -34,7 +34,6 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <CheckBox Content="" x:Name="useAdvancemode" DockPanel.Dock="Top" Height="34" Width="41" Margin="-41,-52,0,0"/>
             <Label Content="Delay" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" DockPanel.Dock="Top" Height="34" Width="145" Margin="-550.5,10,0,15" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -44,7 +43,7 @@
                 </Label.Background>
             </Label>
             <TextBox Template="{StaticResource FilletTextBox}" x:Name="delay2" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="27,-64,0,1" HorizontalAlignment="Stretch"/>
-            <Label Content="Use Monitor" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" RenderTransformOrigin="0.515,-2.047" DockPanel.Dock="Top" Height="34" Width="108" Margin="-506,11,0,15" FontWeight="Bold">
+            <Label Content="Use Monitor" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" RenderTransformOrigin="0.515,-2.047" DockPanel.Dock="Top" Height="34" Width="116" Margin="-499,11,0,15" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
                 </Label.BorderBrush>
@@ -52,8 +51,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <CheckBox Content="" x:Name="Usemonitor" DockPanel.Dock="Top" Height="34" Margin="-51,-51,0,0" Width="31"/>
-            <Label Content="Cookie Num" FontFamily="PingFangSC-Semibold" FontSize="16" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center" DockPanel.Dock="Top" Height="34" Width="109" Margin="-504,11,0,15" FontWeight="Bold">
+            <Label Content="Cookie Num" FontFamily="PingFangSC-Semibold" FontSize="16" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" VerticalContentAlignment="Center" DockPanel.Dock="Top" Height="34" Width="114" Margin="-499,11,0,15" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
                 </Label.BorderBrush>
@@ -61,13 +59,13 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Start Gen" FontFamily="PingFangSC-Semibold" FontSize="14" Click="gencookie" RenderTransformOrigin="0.13,0.444" DockPanel.Dock="Top" Height="45" Width="108" Margin="25,-64,0,2">
+            <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" Click="gencookie" RenderTransformOrigin="0.13,0.444" DockPanel.Dock="Top" Height="45" Width="108" Margin="27,-64,0,2" Content="Start">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF70B8EE" Offset="0.0" />
+                                    <GradientStop Color="#FF43B8FF" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -75,15 +73,16 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Cursor="Hand" x:Name="DelAllCookie" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Del Cookie" FontFamily="PingFangSC-Semibold" FontSize="14" Click="DelAllCookie_Click" RenderTransformOrigin="0.13,0.444" DockPanel.Dock="Top" Height="45" Width="108" Margin="6,-66,-378,0">
+            <Button Cursor="Hand" x:Name="DelAllCookie" Opacity="1" Foreground="White" Content="Del Cookie" FontFamily="PingFangSC-Semibold" FontSize="14" Click="DelAllCookie_Click" RenderTransformOrigin="0.13,0.444" DockPanel.Dock="Top" Height="45" Width="108" Margin="6,-66,-378,0">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="Black"/>
+                        <GradientStop Color="#FF43B8FF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Button.Background>
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF70B8EE" Offset="0.0" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33" Background="#FF43B8FF">
                             <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
@@ -94,7 +93,6 @@
                     <ImageBrush/>
                 </TextBlock.Background>
             </TextBlock>
-            <CheckBox Content="" x:Name="autoclearcookie" DockPanel.Dock="Top" Height="16" Width="66" Margin="-19,-78,0,0"/>
             <Label Content="Cid" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" DockPanel.Dock="Top" Height="34" Width="88" Margin="-566,4,0,15" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -103,7 +101,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cid" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="23,-65,0,1"/>
+            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cid" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="27,-65,0,1"/>
             <Label Content="Cjevent" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" DockPanel.Dock="Top" Height="34" Width="88" Margin="-1,-64,-355,0">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -117,25 +115,29 @@
                     <ImageBrush/>
                 </TextBox.BorderBrush>
             </TextBox>
-            <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Save" FontFamily="PingFangSC-Semibold" FontSize="14" Click="save_Click" DockPanel.Dock="Top" Height="42" Width="108" Margin="0,62,0,0">
+            <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" Click="save_Click" DockPanel.Dock="Top" Height="42" Width="108" Margin="0,62,0,0">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4" Height="42" Width="108">
                             <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF70B8EE" Offset="0.0" />
+                                    <GradientStop Color="#FF43B8FF" Offset="0.0" />
                                 </LinearGradientBrush>
                             </Border.Background>
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ContentPresenter Content="Save" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
         </DockPanel>
-        <Button Cursor="Hand" x:Name="Deactive" Opacity="1" Foreground="White" Background="#FFFF5439" Content="Deactive" FontFamily="PingFangSC-Semibold" FontSize="16" Click="Deactive_Click" Margin="954,699,22,27">
+        <ToggleButton
+        IsChecked="True" Margin="496,422,540,318" Name="clear" Style="{StaticResource ToggleButtonSwitch}"/>
+        <ToggleButton
+        IsChecked="True" Name="advance" Margin="-44,-376,0,0" Style="{StaticResource ToggleButtonSwitch}"/>
+        <Button Cursor="Hand" x:Name="Deactive" Opacity="1" Foreground="White" Background="#FFFF5439" Content="Deactive" FontFamily="PingFangSC-Semibold" FontSize="16" Click="Deactive_Click" Margin="950,693,0,0" Width="108" Height="42" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="4,4,4,4">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="42" Margin="0,0,0,-4">
                         <Border.Background>
                             <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                                 <GradientStop Color="#FFFF5439" Offset="0.0" />
@@ -154,7 +156,7 @@
                 <ImageBrush/>
             </Label.Background>
         </Label>
-        <ToggleButton Margin="0,6,0,0" IsChecked="True" Style="{StaticResource ToggleButtonSwitch}" Initialized="ToggleButton_Initialized" >
-            </ToggleButton>
+        <ToggleButton
+            IsChecked="True" Name="usemonitor"  Margin="500,183,544,321" Style="{StaticResource ToggleButtonSwitch}"/>
     </Grid>
 </UserControl>

@@ -35,23 +35,23 @@ namespace MAIO
             Cid.Text = Config.cid;
             Cjevent.Text = Config.cjevent;
             discordwebhook.Text = Config.webhook;
-            autoclearcookie.IsChecked = Config.autoclearcookie;
+            clear.IsChecked = Config.autoclearcookie;
             delay2.Text = Config.delay;
             if (Config.Usemonitor.Contains("True"))
             {
-                Usemonitor.IsChecked = true;
+                usemonitor.IsChecked = true;
             }
             else
             {
-                Usemonitor.IsChecked = false;
+                usemonitor.IsChecked = false;
             }
             if (Config.UseAdvancemode.Contains("True"))
             {
-                useAdvancemode.IsChecked = true;
+                advance.IsChecked = true;
             }
             else
             {
-                useAdvancemode.IsChecked = false;
+                advance.IsChecked = false;
             }
         }
 
@@ -94,9 +94,10 @@ namespace MAIO
                 Config.webhook = discordwebhook.Text;
                 Config.cid = Cid.Text;
                 Config.cjevent = Cjevent.Text;
-                Config.Usemonitor = Usemonitor.IsChecked.ToString();
-                Config.UseAdvancemode = useAdvancemode.IsChecked.ToString();
-                Config.autoclearcookie =(bool) autoclearcookie.IsChecked;
+                //  Config.Usemonitor = Usemonitor.IsChecked.ToString();
+                Config.Usemonitor = usemonitor.IsChecked.ToString();
+                Config.UseAdvancemode = advance.IsChecked.ToString();
+                Config.autoclearcookie =(bool) clear.IsChecked;
                 Random ra = new Random();
                 if (delay2.Text == "")
                 {
@@ -106,7 +107,7 @@ namespace MAIO
                 {
                     Config.delay = delay2.Text;
                 }
-                string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\"" + Usemonitor.IsChecked.ToString() + "\",\"Advancemode\":\"" + useAdvancemode.IsChecked.ToString() + "\"," +
+                string config = "{\"webhook\":\"" + Config.webhook + "\",\"key\":\"" + Config.Key + "\",\"cid\":\"" + Config.cid + "\",\"cjevent\":\"" + Config.cjevent + "\",\"delay\":\"" + Config.delay + "\",\"Usemonitor\":\""+usemonitor.IsChecked.ToString()+"\",\"Advancemode\":\"" + advance.IsChecked.ToString() + "\"," +
                     "\"AutoClearCookie\":\"" + Config.autoclearcookie.ToString()+ "\"}";
                 File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
                 MessageBox.Show("Save success");
