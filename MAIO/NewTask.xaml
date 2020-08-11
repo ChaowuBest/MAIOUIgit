@@ -102,7 +102,7 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Grid Grid.ColumnSpan="2" Name="grid" Margin="0,235,0,-62" Background="#FF415C5C" Visibility="Hidden">
+        <Grid Grid.ColumnSpan="2" Name="grid" Margin="0,235,0,-62" Background="#FF415C5C" Visibility="Visible">
             <Button Content="Save" Click="Button_Click_2" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" BorderBrush="#FF526C80" Margin="338,24,370,0">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
