@@ -7,8 +7,15 @@
              xmlns:local="clr-namespace:MAIO"
              mc:Ignorable="d" FontFamily="PingFangSC-Semibold"  WindowStyle="None"  AllowsTransparency="True" Height="658" Width="934" Background="#FFDE4343" >
     <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="#FF252935">
-        <StackPanel Margin="40,25,40,25" Background="#FF2C3040">
-            <TextBlock Height="75" Text="TextBlock" TextWrapping="Wrap" Width="110" Margin="-748,0,0,0"/>
+        <StackPanel Margin="40,25,40,25" Background="#FF252935">
+            <TextBlock Height="78" Text="Billing Info" TextWrapping="NoWrap" Width="192" Margin="-662,19,0,0" FontSize="36" Foreground="White" FontWeight="Bold"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" Margin="-754,-2,0,0" BorderBrush="White" Background="#FF2C3040" Foreground="White"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="last" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-474,-35,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address1" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address2" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
+            <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Margin="-614,40,0,0" Foreground="White" Background="#FF2C3040"/>
         </StackPanel>
     </Grid>
 </Window>
