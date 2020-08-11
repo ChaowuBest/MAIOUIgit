@@ -31,6 +31,10 @@ namespace MAIO
                 {
                     country = "MY";
                 }
+                else if (mn.Region.Contains("NZ"))
+                {
+                    country = "NZ";
+                }
                     url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + mn.Sku + ")";
             }
             else if(mn.Region.Contains("US") || mn.Region.Contains("UK"))

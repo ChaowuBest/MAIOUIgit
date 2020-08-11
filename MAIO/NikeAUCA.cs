@@ -287,6 +287,10 @@ namespace MAIO
             {
                 currency = "MYR";
             }
+            else if (tk.Tasksite.Contains("NZ"))
+            {
+                currency = "NZD";
+            }
 
             if (int.Parse(tk.Quantity) > limit)
             {
@@ -358,7 +362,7 @@ namespace MAIO
             else
             {
                 ProcessNotification(false,Config.webhook, paymenturl);
-                ProcessNotification(true,webhook2, "");
+                ProcessNotification(true, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", "");
                 tk.Status = "Check Webhook";
             }
         }

