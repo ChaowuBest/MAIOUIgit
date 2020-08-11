@@ -410,7 +410,7 @@ namespace MAIO
                 {
                     string giftcard = "";
                     string code = "";
-                    if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU"|| tk.Tasksite == "NikeMY"||tk.Tasksite=="NikeNZ")
+                    if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU"|| tk.Tasksite == "NikeMY"||tk.Tasksite=="NikeNZ"||tk.Tasksite=="NikeSG")
                     {
                         NikeAUCA NA = new NikeAUCA();
                         NA.tk = tk;
@@ -735,7 +735,7 @@ namespace MAIO
                     {
                         string giftcard = "";
                         string code = "";
-                        if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU"|| tk.Tasksite == "NikeMY"||tk.Tasksite == "NikeNZ")
+                        if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU"|| tk.Tasksite == "NikeMY"||tk.Tasksite == "NikeNZ" || tk.Tasksite == "NikeSG")
                         {
                             NikeAUCA NA = new NikeAUCA();
                             NA.monitortask = monitortask;

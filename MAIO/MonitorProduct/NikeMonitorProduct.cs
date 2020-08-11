@@ -17,7 +17,7 @@ namespace MAIO
         Retry: string country = "";
             string url = "";
             string locael = "";
-            if (mn.Region.Contains("AU") || mn.Region.Contains("CA")|| mn.Region.Contains("MY"))
+            if (mn.Region.Contains("AU") || mn.Region.Contains("CA")|| mn.Region.Contains("MY")||mn.Region.Contains("NZ")|| mn.Region.Contains("SG"))
             {
                 if (mn.Region.Contains("AU"))
                 {
@@ -34,6 +34,10 @@ namespace MAIO
                 else if (mn.Region.Contains("NZ"))
                 {
                     country = "NZ";
+                }
+                else if (mn.Region.Contains("SG"))
+                {
+                    country = "SG";
                 }
                     url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + mn.Sku + ")";
             }

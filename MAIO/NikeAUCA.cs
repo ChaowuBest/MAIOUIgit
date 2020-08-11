@@ -291,6 +291,10 @@ namespace MAIO
             {
                 currency = "NZD";
             }
+            else if (tk.Tasksite.Contains("SG"))
+            {
+                currency = "SGD";   
+            }
 
             if (int.Parse(tk.Quantity) > limit)
             {

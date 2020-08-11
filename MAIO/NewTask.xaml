@@ -23,6 +23,7 @@
                 <ComboBoxItem Content="NikeUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeMY" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeNZ" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                <ComboBoxItem Content="NikeSG" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="Footasylum" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="TheNorthFaceUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="TheNorthFaceUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
