@@ -224,6 +224,7 @@ namespace MAIO
                 StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
                 var chao = readhtmlStream.ReadToEnd();
                 tk.Status = "Login Failed";
+                Thread.Sleep(1000);
                 goto retry;
             }
             JObject jo = JObject.Parse(token);
@@ -519,6 +520,7 @@ namespace MAIO
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                 //   tk.Status = ex.ToString();
                 tk.Status = "SubmitShipping error";
+                Thread.Sleep(1000);
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
                 paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();

@@ -187,7 +187,6 @@ namespace MAIO
                     goto C;
                 }
             }
-
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");

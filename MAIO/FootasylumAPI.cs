@@ -295,11 +295,14 @@ namespace MAIO
                
                 response.Close();
                 readStream.Close();
-                if (jo["errorsObject"][0]["status"].ToString() == 500.ToString())
+                if (jo["errorsObject"].ToString()!= "[]")
                 {
-                  C: tk.Status = "Size OOS";
-                    Thread.Sleep(36000000);
-                    goto C;
+                    if (jo["errorsObject"][0]["status"].ToString() == 500.ToString())
+                    {
+                    C: tk.Status = "Size OOS";
+                        Thread.Sleep(36000000);
+                        goto C;
+                    }
                 }
                 string[] info = new string[2];
                 info[0] = jo["subtotal"].ToString();
