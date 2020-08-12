@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Security;
@@ -11,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace MAIO
 {
@@ -20,52 +22,52 @@ namespace MAIO
     public partial class Profile : UserControl
     {
         public Profile()
-        {            
+        {
             InitializeComponent();
-          /*  for (int i = 0; i < Mainwindow.allprofile.Count; i++)
-            {
-                KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
-                profilelist.Items.Add(kv.Key);
-            }
-            countrylist.ItemsSource = Countrycode.countrycode;*/
+            /*  for (int i = 0; i < Mainwindow.allprofile.Count; i++)
+              {
+                  KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
+                  profilelist.Items.Add(kv.Key);
+              }
+              countrylist.ItemsSource = Countrycode.countrycode;*/
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Writecoookie.write();
             Application.Current.Shutdown();
         }
-      /*  private void save(object sender, RoutedEventArgs e)
-        {
-           bool duplicate = false;
-            string key = "";
-            string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
-              "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
-              "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
-              Text + "\",\"Country\":\"" + countrylist.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
-              "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
-            for (int i = 0; i < Mainwindow.allprofile.Count; i++)
-            {
-                KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
-                if (kv.Key == profilename.Text)
-                {
-                    duplicate = true;
-                    key=kv.Key;
-                    break;
-                }              
-            }
-            if(duplicate)
-            {
-                Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
-                profilewrite(profile);              
-            }
-            else
-            {
-                Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
-                profilewrite(profile);
-                profilelist.Items.Add(profilename.Text);
-            }
-           
-        }*/
+        /*  private void save(object sender, RoutedEventArgs e)
+          {
+             bool duplicate = false;
+              string key = "";
+              string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
+                "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
+                "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
+                Text + "\",\"Country\":\"" + countrylist.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
+                "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
+              for (int i = 0; i < Mainwindow.allprofile.Count; i++)
+              {
+                  KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
+                  if (kv.Key == profilename.Text)
+                  {
+                      duplicate = true;
+                      key=kv.Key;
+                      break;
+                  }              
+              }
+              if(duplicate)
+              {
+                  Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+                  profilewrite(profile);              
+              }
+              else
+              {
+                  Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
+                  profilewrite(profile);
+                  profilelist.Items.Add(profilename.Text);
+              }
+
+          }*/
         /*public void profilewrite(string profile)
         {
             JArray ja2 = JArray.Parse(profile);
@@ -123,12 +125,12 @@ namespace MAIO
         }
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-       /*     var del = ((Button)sender).DataContext.ToString();
-            profilelist.Items.Remove(del);
-            string needdel = Mainwindow.allprofile[del];
-            Mainwindow.allprofile.Remove(del);
-            profilelist.Items.Refresh();
-            updateprofile(needdel);*/
+            /*     var del = ((Button)sender).DataContext.ToString();
+                 profilelist.Items.Remove(del);
+                 string needdel = Mainwindow.allprofile[del];
+                 Mainwindow.allprofile.Remove(del);
+                 profilelist.Items.Refresh();
+                 updateprofile(needdel);*/
         }
         public void updateprofile(string profile)
         {
@@ -164,55 +166,56 @@ namespace MAIO
         }
         private void profilelist_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-         /*   string selectdata = Mainwindow.allprofile["" + profilelist.SelectedItem.ToString() + ""];
-            JObject jo = JObject.Parse(selectdata);
-            firstname.Text = jo["FirstName"].ToString();
-            lastname.Text = jo["LastName"].ToString();
-            email.Text = jo["EmailAddress"].ToString();
-            address1.Text = jo["Address1"].ToString();
-            address2.Text = jo["Address2"].ToString();
-            tel.Text = jo["Tel"].ToString();
-            zipcode.Text = jo["Zipcode"].ToString();
-            city.Text = jo["City"].ToString();
-            state.Text = jo["State"].ToString();
-            countrylist.Text = jo["Country"].ToString();        
-            cardnumber.Text = jo["Cardnum"].ToString();
-            CVV.Text = jo["Cvv"].ToString();
-            MMYY.Text = jo["MMYY"].ToString();
-            nameoncard.Text = jo["NameonCard"].ToString();
-            profilename.Text = jo["ProfileName"].ToString(); */
+            /*   string selectdata = Mainwindow.allprofile["" + profilelist.SelectedItem.ToString() + ""];
+               JObject jo = JObject.Parse(selectdata);
+               firstname.Text = jo["FirstName"].ToString();
+               lastname.Text = jo["LastName"].ToString();
+               email.Text = jo["EmailAddress"].ToString();
+               address1.Text = jo["Address1"].ToString();
+               address2.Text = jo["Address2"].ToString();
+               tel.Text = jo["Tel"].ToString();
+               zipcode.Text = jo["Zipcode"].ToString();
+               city.Text = jo["City"].ToString();
+               state.Text = jo["State"].ToString();
+               countrylist.Text = jo["Country"].ToString();        
+               cardnumber.Text = jo["Cardnum"].ToString();
+               CVV.Text = jo["Cvv"].ToString();
+               MMYY.Text = jo["MMYY"].ToString();
+               nameoncard.Text = jo["NameonCard"].ToString();
+               profilename.Text = jo["ProfileName"].ToString(); */
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             NewProfile np = new NewProfile();
             np.getTextHandler = Addbilling;
-            np.Show();        
+            np.Show();
         }
-        private void Addbilling(bool st)
+        private void Addbilling(bool st, string profilename)
         {
             if (st)
-            {  
+            {
             }
             else
             {
-         Button btn = new Button();
-          btn.Margin = new Thickness(30, 10, 10, 10);
-          btn.Click += new RoutedEventHandler(check);
-        //  check() += btn.MouseRightButtonDown();
-          btn.Width = 200;
-          btn.Height = 150;
-          Random ran2 = new Random();
-          int n = ran2.Next(0, 100000);
-          btn.Content = n.ToString();
-          panel.Children.Add(btn);
-          Random ran = new Random();
-          int i=ran.Next(0,100000);
-          string btnname="new" + i.ToString();
-          panel.RegisterName(btnname, btn);
+                Button btn = new Button();
+                btn.Margin = new Thickness(30, 10, 10, 10);
+                btn.Click += new RoutedEventHandler(check);
+                //  check() += btn.MouseRightButtonDown();
+                btn.Width = 200;
+                btn.Height = 150;
+                btn.Content = profilename;
+                SolidColorBrush myBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 41, 53));
+                SolidColorBrush formyBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                btn.FontFamily =new System.Windows.Media.FontFamily("PingFangSC-Semibold");
+                btn.FontSize = 16;
+                btn.Background = myBrush;
+                btn.Foreground = formyBrush;
+                panel.Children.Add(btn);
+                panel.RegisterName(profilename.Replace(" ", ""), btn);
             }
         }
         public void check(object sender, RoutedEventArgs e)
-        {          
+        {
         }
         private void panel_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {

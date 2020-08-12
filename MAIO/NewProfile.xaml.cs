@@ -25,6 +25,8 @@ namespace MAIO
         public NewProfile()
         {
             InitializeComponent();
+            country.ItemsSource= Countrycode.countrycode;
+            billingcountry.ItemsSource = Countrycode.countrycode;
         }
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -43,7 +45,7 @@ namespace MAIO
         {
             this.Close();
         }
-        public delegate void GetTextHandler(bool st); //声明委托
+        public delegate void GetTextHandler(bool st,string profilename); //声明委托
         public GetTextHandler getTextHandler;
         private void save_Click(object sender, RoutedEventArgs e)
         {
@@ -71,14 +73,13 @@ Text + "\"}]";
             {
                 Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
                 profilewrite(profile);
-                getTextHandler(duplicate);
+                getTextHandler(duplicate,profilename.Text);
             }
             else
             {
                 Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
                 profilewrite(profile);
-                // profilelist.Items.Add(profilename.Text);
-                getTextHandler(duplicate);
+                getTextHandler(duplicate, profilename.Text);
             }
         }
         public void profilewrite(string profile)
