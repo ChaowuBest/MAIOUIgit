@@ -185,22 +185,27 @@ namespace MAIO
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             NewProfile np = new NewProfile();
+            np.getTextHandler = Addbilling;
             np.Show();
-          /*  Button btn = new Button();
-            //btn.Name = "newButton";//这里设置的Name是找不到的
-            btn.Margin = new Thickness(30, 10, 10, 10);
-            btn.Click += new RoutedEventHandler(check);
-          //  check() += btn.MouseRightButtonDown();
-            btn.Width = 200;
-            btn.Height = 150;
-            Random ran2 = new Random();
-            int n = ran2.Next(0, 100000);
-            btn.Content = n.ToString();
-            panel.Children.Add(btn);
-            Random ran = new Random();
-            int i=ran.Next(0,100000);
-            string btnname="new" + i.ToString();
-            panel.RegisterName(btnname, btn);*/        
+            /*  Button btn = new Button();
+              //btn.Name = "newButton";//这里设置的Name是找不到的
+              btn.Margin = new Thickness(30, 10, 10, 10);
+              btn.Click += new RoutedEventHandler(check);
+            //  check() += btn.MouseRightButtonDown();
+              btn.Width = 200;
+              btn.Height = 150;
+              Random ran2 = new Random();
+              int n = ran2.Next(0, 100000);
+              btn.Content = n.ToString();
+              panel.Children.Add(btn);
+              Random ran = new Random();
+              int i=ran.Next(0,100000);
+              string btnname="new" + i.ToString();
+              panel.RegisterName(btnname, btn);*/
+        }
+        private void Addbilling()
+        {
+            
         }
         public void check(object sender, RoutedEventArgs e)
         {          
