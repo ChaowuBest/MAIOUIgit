@@ -1125,6 +1125,7 @@ namespace MAIO
                 if (status.Contains("IN_PROGRESS") == true)
                 {
                     tk.Status = "Processing";
+                    goto A;
                 }
                 if (status.Contains("COMPLETED") == true)
                 {
