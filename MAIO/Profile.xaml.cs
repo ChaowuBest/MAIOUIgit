@@ -34,9 +34,9 @@ namespace MAIO
             Writecoookie.write();
             Application.Current.Shutdown();
         }
-        private void save(object sender, RoutedEventArgs e)
+      /*  private void save(object sender, RoutedEventArgs e)
         {
-         /*   bool duplicate = false;
+           bool duplicate = false;
             string key = "";
             string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
               "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
@@ -63,10 +63,10 @@ namespace MAIO
                 Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
                 profilewrite(profile);
                 profilelist.Items.Add(profilename.Text);
-            }*/
+            }
            
-        }
-        public void profilewrite(string profile)
+        }*/
+        /*public void profilewrite(string profile)
         {
             JArray ja2 = JArray.Parse(profile);
             try
@@ -112,7 +112,7 @@ namespace MAIO
             {
                 MessageBox.Show("Error to save");
             }
-        }
+        }*/
         private void profilelist_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ListView listView = sender as ListView;
@@ -186,26 +186,30 @@ namespace MAIO
         {
             NewProfile np = new NewProfile();
             np.getTextHandler = Addbilling;
-            np.Show();
-            /*  Button btn = new Button();
-              //btn.Name = "newButton";//这里设置的Name是找不到的
-              btn.Margin = new Thickness(30, 10, 10, 10);
-              btn.Click += new RoutedEventHandler(check);
-            //  check() += btn.MouseRightButtonDown();
-              btn.Width = 200;
-              btn.Height = 150;
-              Random ran2 = new Random();
-              int n = ran2.Next(0, 100000);
-              btn.Content = n.ToString();
-              panel.Children.Add(btn);
-              Random ran = new Random();
-              int i=ran.Next(0,100000);
-              string btnname="new" + i.ToString();
-              panel.RegisterName(btnname, btn);*/
+            np.Show();        
         }
-        private void Addbilling()
+        private void Addbilling(bool st)
         {
-            
+            if (st)
+            {  
+            }
+            else
+            {
+         Button btn = new Button();
+          btn.Margin = new Thickness(30, 10, 10, 10);
+          btn.Click += new RoutedEventHandler(check);
+        //  check() += btn.MouseRightButtonDown();
+          btn.Width = 200;
+          btn.Height = 150;
+          Random ran2 = new Random();
+          int n = ran2.Next(0, 100000);
+          btn.Content = n.ToString();
+          panel.Children.Add(btn);
+          Random ran = new Random();
+          int i=ran.Next(0,100000);
+          string btnname="new" + i.ToString();
+          panel.RegisterName(btnname, btn);
+            }
         }
         public void check(object sender, RoutedEventArgs e)
         {          

@@ -43,16 +43,12 @@ namespace MAIO
         {
             this.Close();
         }
-        public delegate void GetTextHandler(string[] st); //声明委托
+        public delegate void GetTextHandler(bool st); //声明委托
         public GetTextHandler getTextHandler;
         private void save_Click(object sender, RoutedEventArgs e)
         {
             bool duplicate = false;
             string key = "";
-            Firstname fs = new Firstname();
-            string firt = fs.name();
-            string last = fs.name();
-            string fullname = firt + "" + last;
             string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
 "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
 "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
@@ -61,7 +57,6 @@ Text + "\",\"Country\":\"" + country.SelectedItem.ToString() + "\",\"Cardnum\":\
 "\"BillingAddress1\":\"" + billingaddress1.Text + "\",\"BillingAddress2\":\"" + billingaddress2.Text + "\",\"BillingTel\":\"" + billingtel.Text + "\"," +
 "\"BillingCity\":\"" + billingcity.Text + "\",\"Billingstate\":\"" + billingstate.Text + "\",\"Billingzipcode\":\"" + billingzipcode.Text + "\",\"BillingCountry\":\"" + billingcountry.
 Text + "\"}]";
-
             for (int i = 0; i < Mainwindow.allprofile.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
@@ -76,12 +71,14 @@ Text + "\"}]";
             {
                 Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
                 profilewrite(profile);
+                getTextHandler(duplicate);
             }
             else
             {
                 Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
                 profilewrite(profile);
-                //profilelist.Items.Add(profilename.Text);
+                // profilelist.Items.Add(profilename.Text);
+                getTextHandler(duplicate);
             }
         }
         public void profilewrite(string profile)
