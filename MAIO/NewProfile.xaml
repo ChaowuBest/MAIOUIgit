@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:MAIO"
-             mc:Ignorable="d" FontFamily="PingFangSC-Semibold"  WindowStyle="None"  AllowsTransparency="True" Height="667" Width="1085" Background="#FFDE4343" >
+             mc:Ignorable="d" FontFamily="PingFangSC-Semibold"  WindowStyle="None"  AllowsTransparency="True" Height="667" Width="1085" Background="{x:Null}" >
     <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="#FF252935" Width="1085">
         <StackPanel Margin="40,25,40,25" Background="#FF252935">
             <TextBlock Height="41" Text="Billing Info" TextWrapping="NoWrap" Width="192" Margin="-738,-1,0,77" FontSize="36" Foreground="White" FontWeight="Bold"/>
@@ -34,6 +34,7 @@
             <hc:TextBox ShowClearButton="True"  Height="35" Text="card num" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-785,-685,0"/>
             <hc:TextBox ShowClearButton="True"  Height="35" Text="YY" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-485,-545,0"/>
             <hc:TextBox ShowClearButton="True"  Height="35" Text="profile name" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-52,-337,-737,0"/>
+            <CheckBox Content="Billing same as Shipping" IsChecked="False" Margin="15,-186,-583,0" Foreground="White" Width="152"/>
         </StackPanel>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1041,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
     </Grid>
