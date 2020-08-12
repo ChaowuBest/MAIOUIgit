@@ -27,8 +27,14 @@
             <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-335,0,0"/>
             <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-185,0,0"/>
             <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Foreground="White" Background="#FF2C3040" Margin="4,-35,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="Card num" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="685,-935,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="full name" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="685,-935,0,0"/>
             <TextBlock Height="28" Text="Card Info" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="-10,-1047,-647,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="YY" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-635,-826,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="YY" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-635,-545,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="card num" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-785,-685,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="YY" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-485,-545,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="profile name" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-52,-337,-737,0"/>
         </StackPanel>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1041,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
     </Grid>
 </Window>
