@@ -21,6 +21,13 @@
             <TextBlock Height="28" Text="Billing Address" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="58,-1047,0,0"/>
             <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-34,-935,0,0"/>
             <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-935,-246,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-785,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address1" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-635,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address2" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-485,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-335,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-185,0,0"/>
+            <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Foreground="White" Background="#FF2C3040" Margin="106,-35,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="718,-785,0,0"/>
         </StackPanel>
     </Grid>
 </Window>
