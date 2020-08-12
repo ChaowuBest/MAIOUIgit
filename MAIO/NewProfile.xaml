@@ -5,29 +5,30 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:MAIO"
-             mc:Ignorable="d" FontFamily="PingFangSC-Semibold"  WindowStyle="None"  AllowsTransparency="True" Height="658" Width="934" Background="#FFDE4343" >
-    <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="#FF252935">
+             mc:Ignorable="d" FontFamily="PingFangSC-Semibold"  WindowStyle="None"  AllowsTransparency="True" Height="667" Width="1085" Background="#FFDE4343" >
+    <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown" Background="#FF252935" Width="1085">
         <StackPanel Margin="40,25,40,25" Background="#FF252935">
-            <TextBlock Height="41" Text="Billing Info" TextWrapping="NoWrap" Width="192" Margin="-662,-1,0,77" FontSize="36" Foreground="White" FontWeight="Bold"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" Margin="-754,-2,0,0" BorderBrush="White" Background="#FF2C3040" Foreground="White"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="last" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-474,-35,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="address1" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="address2" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,40,0,0"/>
-            <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Margin="-614,115,0,0" Foreground="White" Background="#FF2C3040"/>
-            <TextBlock Height="28" Text="Shipping Address" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="-662,-1047,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-614,-185,0,0"/>
-            <TextBlock Height="28" Text="Billing Address" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="58,-1047,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-34,-935,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="0,-935,-246,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-785,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="address1" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-635,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="address2" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-485,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-335,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="106,-185,0,0"/>
-            <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Foreground="White" Background="#FF2C3040" Margin="106,-35,0,0"/>
-            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="718,-785,0,0"/>
+            <TextBlock Height="41" Text="Billing Info" TextWrapping="NoWrap" Width="192" Margin="-738,-1,0,77" FontSize="36" Foreground="White" FontWeight="Bold"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" Margin="-825,-2,0,0" BorderBrush="White" Background="#FF2C3040" Foreground="White"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="last" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-546,-35,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-685,40,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address1" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-685,40,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address2" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-685,40,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-685,40,0,0"/>
+            <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Margin="-685,115,0,0" Foreground="White" Background="#FF2C3040"/>
+            <TextBlock Height="28" Text="Shipping Address" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="-732,-1047,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-685,-185,0,0"/>
+            <TextBlock Height="28" Text="Billing Address" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="-44,-1047,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="-136,-935,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="first" TextWrapping="Wrap" Width="100" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="52,-935,-92,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="Tel" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-785,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address1" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-635,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="address2" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-485,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="City" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-335,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="State" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="4,-185,0,0"/>
+            <hc:ComboBox Height="35" Width="240" hc:InfoElement.Placeholder="Country" ShowClearButton="True" SelectedIndex="0" Foreground="White" Background="#FF2C3040" Margin="4,-35,0,0"/>
+            <hc:TextBox ShowClearButton="True"  Height="35" Text="Card num" TextWrapping="Wrap" Width="240" BorderBrush="White" Background="#FF2C3040" Foreground="White" Margin="685,-935,0,0"/>
+            <TextBlock Height="28" Text="Card Info" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="-10,-1047,-647,0"/>
         </StackPanel>
     </Grid>
 </Window>
