@@ -203,8 +203,7 @@ namespace MAIO
             panel.RegisterName(btnname, btn);*/        
         }
         public void check(object sender, RoutedEventArgs e)
-        {
-            
+        {          
         }
         private void panel_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {

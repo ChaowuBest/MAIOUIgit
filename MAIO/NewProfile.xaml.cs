@@ -39,5 +39,49 @@ namespace MAIO
         {
             this.Close();
         }
+
+        private void save_Click(object sender, RoutedEventArgs e)
+        {
+          bool duplicate = false;
+           string key = "";
+            Firstname fs = new Firstname();
+           string firt= fs.name();
+           string last=fs.name();
+            string fullname = firt + "" + last;
+            if ((bool)isssb.IsChecked)
+            {
+                string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
+ "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
+ "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zip.Text + "\",\"State\":\"" + state.
+ Text + "\",\"Country\":\"" + country.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
+ "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
+            }
+            else
+            {
+                
+            }
+
+           for (int i = 0; i < Mainwindow.allprofile.Count; i++)
+           {
+               KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
+               if (kv.Key == profilename.Text)
+               {
+                   duplicate = true;
+                   key=kv.Key;
+                   break;
+               }              
+           }
+           if(duplicate)
+           {
+               Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+               profilewrite(profile);              
+           }
+           else
+           {
+               Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
+               profilewrite(profile);
+               profilelist.Items.Add(profilename.Text);
+           }
+        }
     }
 }
