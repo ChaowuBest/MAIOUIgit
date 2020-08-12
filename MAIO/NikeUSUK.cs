@@ -282,7 +282,7 @@ namespace MAIO
                                     }
                                     if (monitortask)
                                     {
-                                        for (int i = 0; i < 3; i++)
+                                        for (int i = 0; i < 1; i++)
                                         {
                                             ThreadPool.QueueUserWorkItem(delegate
                                             {
@@ -983,7 +983,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            if (status.Contains("error") == true)
+            if (status.Contains("error") == true||status.Contains("inventory")==true)
             {
                 JObject jo = JObject.Parse(status);
                 string obejects = jo["error"].ToString();

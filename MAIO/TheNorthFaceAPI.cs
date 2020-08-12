@@ -279,7 +279,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                tk.Status = "SubmittingShipping";
+                tk.Status = "Submit Shipping";
                 var cc = response.Headers["Set-Cookie"];
                 Regex rex3 = new Regex(@"(?<=WC_PERSISTENT)([^;]+)");
                 if (rex3.Match(cc).Success)

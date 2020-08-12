@@ -363,7 +363,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                tk.Status = "Submitshipping";
+                tk.Status = "Submit shipping";
                 string token = "";
                 if (response.ContentEncoding == "gzip")
                 {

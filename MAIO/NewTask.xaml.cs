@@ -25,8 +25,8 @@ namespace MAIO
         public NewTask()
         {
             InitializeComponent();
-            accountlable.Visibility = Visibility.Hidden;
-            assignaccount.Visibility = Visibility.Hidden;
+           // accountlable.Visibility = Visibility.Hidden;
+         //   assignaccount.Visibility = Visibility.Hidden;
             Quantity.ItemsSource = Config.qual;
             account.ItemsSource = Mainwindow.account.Keys;
             tasknumber.Document.Blocks.Clear();
@@ -178,7 +178,7 @@ namespace MAIO
                             setup[7] = monitor.IsChecked.ToString();
                             setup[8] = advancemonitor.IsChecked.ToString();
                             setup[9] = user;
-                            if ((sizeid != "") && (productid != ""))
+                            if (productid != "")
                             {
                                 getTextHandler(setup);
                             }
@@ -233,7 +233,7 @@ namespace MAIO
 
         private void advance_Click(object sender, RoutedEventArgs e)
         {
-            if ((bool)advance.IsChecked)
+           /* if ((bool)advance.IsChecked)
             {
                 grid.Visibility = Visibility.Visible;
                 save.Visibility = Visibility.Hidden;
@@ -246,7 +246,7 @@ namespace MAIO
                 grid.Visibility = Visibility.Hidden;
                 accountlable.Visibility = Visibility.Hidden;
                 assignaccount.Visibility = Visibility.Hidden;
-            }
+            }*/
         }
 
         private void account_SelectionChanged(object sender, SelectionChangedEventArgs e)

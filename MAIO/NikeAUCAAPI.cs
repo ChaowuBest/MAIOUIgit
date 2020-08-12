@@ -209,11 +209,11 @@ namespace MAIO
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "Forbidden";
-                // failedretry++;
-                //  if (failedretry > 20)
-                //  {
-                //       Main.autorestock(tk);
-                //  }
+                failedretry++;
+                if (failedretry > 20)
+                {
+                    Main.autorestock(tk);
+                }
                 Thread.Sleep(1500);
                 goto B;
             }
@@ -286,10 +286,6 @@ namespace MAIO
                     goto C;
                 }
                 string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
-                if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("OUT_OF_STOCK")))
-                {
-                    tk.Status = "OOS";
-                }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
                     tk.Status = "WaitingRestock";
@@ -300,12 +296,12 @@ namespace MAIO
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
                     tk.Status = errormessage;
+                    Main.autorestock(tk);
                 }
-
             }
             catch (WebException ex)
             {
-                tk.Status = ex.ToString() + "Retrying";
+             //   tk.Status = ex.ToString() + "Retrying";
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);

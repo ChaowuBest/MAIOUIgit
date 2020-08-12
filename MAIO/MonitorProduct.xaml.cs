@@ -28,9 +28,7 @@ namespace MAIO
         public MonitorProduct()
         {
             InitializeComponent();
-            giftcard.ItemsSource = Mainwindow.giftcardlist.Keys;
-            profile.ItemsSource = Mainwindow.allprofile.Keys;
-            Quantity.ItemsSource = Config.qual;
+        
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
@@ -53,7 +51,7 @@ namespace MAIO
             {
                 for (int i = 0; i < Mainwindow.Advancemonitortask.Count; i++)
                 {
-                    if (Mainwindow.Advancemonitortask[i].Region == "NikeAU" || Mainwindow.Advancemonitortask[i].Region == "NikeCA"|| Mainwindow.Advancemonitortask[i].Region == "NikeMY"|| Mainwindow.Advancemonitortask[i].Region == "NikeNZ")
+                    if (Mainwindow.Advancemonitortask[i].Region == "NikeAU" || Mainwindow.Advancemonitortask[i].Region == "NikeCA"|| Mainwindow.Advancemonitortask[i].Region == "NikeMY"|| Mainwindow.Advancemonitortask[i].Region == "NikeNZ"|| Mainwindow.Advancemonitortask[i].Region == "NikeSG")
                     {
                         var cts = new CancellationTokenSource();
                         var ct = cts.Token;
@@ -109,7 +107,6 @@ namespace MAIO
 
             }
         }
-
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
             Main.Monitor del = (Main.Monitor)((Button)sender).DataContext;
@@ -137,7 +134,6 @@ namespace MAIO
             }
             Mainwindow.Advancemonitortask.Remove(del);
         }
-
         private void start_Click(object sender, RoutedEventArgs e)
         {
             string taskid = Guid.NewGuid().ToString();
@@ -145,10 +141,10 @@ namespace MAIO
             Main.Monitor tk;
             tk = Mainwindow.Advancemonitortask.ElementAt(row);
             string task = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + tk.Region + "\",\"Sku\":\"" + tk.Sku + "\"," +
-             "\"Size\":\"" + size.Text.Replace("\r", "").Replace("\n", "") + "\",\"Profile\":\"" + profile.Text + "\",\"Proxies\":\"Default\"," +
-            "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code.Text.Replace("\r", "").Replace("\n", "") + "\",\"Quantity\":\"" + Quantity.Text + "\",\"monitortask\":\"False\",\"AdvanceMonitor\":\"False\"}]";
+             "\"Size\":\"" + tk.Size.Replace("\r", "").Replace("\n", "") + "\",\"Profile\":\"" + tk.Profile + "\",\"Proxies\":\"Default\"," +
+            "\"Status\":\"IDLE\",\"giftcard\":\"" + tk.giftcard + "\",\"Code\":\"" + tk.code.Replace("\r", "").Replace("\n", "") + "\",\"Quantity\":\"" + tk.Quantity + "\",\"monitortask\":\"False\",\"AdvanceMonitor\":\"False\"}]";
             Mainwindow.tasklist.Add(taskid, task.Replace("[", "").Replace("]", ""));
-            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = tk.Region, Sku = tk.Sku, Size = size.Text.Replace("\r", "").Replace("\n", ""), Profile = profile.Text, Proxies = "Default", Status = "IDLE", Quantity = Quantity.Text, monitortask = "False" });
+            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = tk.Region, Sku = tk.Sku, Size = tk.Size.Replace("\r", "").Replace("\n", ""), Profile =tk.Profile, Proxies = "Default", Status = "IDLE", Quantity =tk.Quantity, monitortask = "False",Account=tk.Account});
         }
     }
 }

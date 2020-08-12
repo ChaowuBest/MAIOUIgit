@@ -133,7 +133,15 @@ namespace MAIO
             {
                 if (savegiftcard[i] != "")
                 {
-                    var sp = savegiftcard[i].Split("-");
+                    string[] sp = null;
+                    if (savegiftcard.Contains(":"))
+                    {
+                         sp = savegiftcard[i].Split(":");
+                    }
+                    else if (savegiftcard.Contains("-"))
+                    {
+                         sp = savegiftcard[i].Split("-");
+                    }
                     dic.Add(sp[0], sp[1]);
                     ja.Add(sp[0], sp[1]);
                 }

@@ -82,7 +82,29 @@ namespace MAIO
             {
                 return;
             }
-             AutoCheckout(profile, ct, basketid);
+             AutoCheckout(profile, ct, basketid,joprofile);
+        }
+        private static char[] constant = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+        private static char[] num = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+        protected static string GenerateRandomnum(int length)
+        {
+            string checkCode = string.Empty;
+            Random rd = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                checkCode += num[rd.Next(10)].ToString();
+            }
+            return checkCode;
+        }
+        protected static string GenerateRandomString(int length)
+        {
+            string checkCode = string.Empty;
+            Random rd = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                checkCode += constant[rd.Next(26)].ToString();
+            }
+            return checkCode;
         }
         public string GetSKUID(CancellationToken ct)
         {
@@ -113,8 +135,7 @@ namespace MAIO
                     {
                         skuid = jo[item.Key]["sku"].ToString();
                     }
-                }
-              
+                }            
             }
             if (randomsize)
             {
@@ -189,8 +210,48 @@ namespace MAIO
             }
 
         }
-        public void AutoCheckout(string profile, CancellationToken ct, string basketid)
+        public void AutoCheckout(string profile, CancellationToken ct, string basketid,JObject joprofile)
         {
+            if (joprofile["Address1"].ToString().Contains("%char4%"))
+            {
+                Regex regex = new Regex(@"%char4%");
+                joprofile["Address1"] = regex.Replace(joprofile["Address1"].ToString(), GenerateRandomString(4));
+            }
+            if (joprofile["Address1"].ToString().Contains("%num4%"))
+            {
+                Regex regex = new Regex(@"%num4%");
+                joprofile["Address1"] = regex.Replace(joprofile["Address1"].ToString(), GenerateRandomnum(4));
+            }
+            if (joprofile["Address2"].ToString().Contains("%char4%"))
+            {
+                Regex regex = new Regex(@"%char4%");
+                joprofile["Address2"] = regex.Replace(joprofile["Address2"].ToString(), GenerateRandomString(4));
+            }
+            if (joprofile["Tel"].ToString().Contains("%num4%"))
+            {
+                Regex regex = new Regex(@"%num4%");
+                joprofile["Tel"] = regex.Replace(joprofile["Tel"].ToString(), GenerateRandomnum(4));
+            }
+            if (joprofile["FirstName"].ToString().Contains("%fname%"))
+            {
+                Regex regex = new Regex(@"%fname%");
+                Firstname fs = new Firstname();
+                joprofile["FirstName"] = regex.Replace(joprofile["FirstName"].ToString(), fs.name());
+            }
+            if (joprofile["LastName"].ToString().Contains("%lname%"))
+            {
+                Regex regex = new Regex(@"%lname%");
+                Firstname fs = new Firstname();
+                joprofile["LastName"] = regex.Replace(joprofile["LastName"].ToString(), fs.name());
+            }
+            var chao = joprofile["EmailAddress"];
+            if (joprofile["EmailAddress"].ToString().Contains("random"))
+            {
+                Regex regex = new Regex(@"random");
+                Firstname fs = new Firstname();
+                joprofile["EmailAddress"] = regex.Replace(joprofile["EmailAddress"].ToString(), GenerateRandomString(4));
+            }
+
             JObject jo = JObject.Parse(profile);
             string url = "https://paymentgateway.checkout.footasylum.net/basket/paraspar?basket_id="+checkoutsession+"&medium=web&apiKey=lGJjE+ccd0SiBdu3I6yByRp3/yY8uVIRFa9afLx+2YSrSwkWDfxq0YKUsh96/tP84CZO4phvoR+0y9wtm9Dh5w==&checkout_client=secure";
             string[] info = new string[2];

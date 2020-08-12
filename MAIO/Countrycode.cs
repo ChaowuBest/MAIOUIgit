@@ -15,6 +15,9 @@ namespace MAIO
           "DE",
           "FR",
           "AU",
+          "NZ",
+          "MY",
+          "SG"
         };
         
     }
