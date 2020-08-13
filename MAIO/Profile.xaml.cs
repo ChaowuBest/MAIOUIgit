@@ -24,12 +24,12 @@ namespace MAIO
         public Profile()
         {
             InitializeComponent();
-            /*  for (int i = 0; i < Mainwindow.allprofile.Count; i++)
+              for (int i = 0; i < Mainwindow.allprofile.Count; i++)
               {
                   KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
-                  profilelist.Items.Add(kv.Key);
+                //profilelist.Items.Add(kv.Key);
+              //  Addbilling(false,kv.Key);
               }
-              countrylist.ItemsSource = Countrycode.countrycode;*/
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -186,9 +186,15 @@ namespace MAIO
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            NewProfile np = new NewProfile();
-            np.getTextHandler = Addbilling;
-            np.Show();
+          //  StackPanel stp = new StackPanel();
+          //  SolidColorBrush myBrush3 = new SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 41, 53));
+         //   stp.Background = myBrush3;
+         //   stp.Margin = new Thickness(0, 0, 0, 0);
+              NewProfile np = new NewProfile();
+              np.getTextHandler = Addbilling;
+              np.Show();
+          //  panel.Children.Add(stp);
+         //   panel.RegisterName("chao", stp);
         }
         private void Addbilling(bool st, string profilename)
         {
@@ -197,6 +203,19 @@ namespace MAIO
             }
             else
             {
+                SolidColorBrush formyBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
+                SolidColorBrush delbrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 84, 57));
+                Button btndel = new Button();
+                Border border = new Border();
+                btndel.Margin = new Thickness(0,-100,-480,10);
+                Style myStyle = (Style)this.FindResource("ButtonIcon");
+                btndel.Style = myStyle;
+                border
+                btndel.Background = delbrush;
+                btndel.Content = "X";
+                btndel.FontSize = 20;
+                btndel.Foreground = formyBrush;
+                panel.Children.Add(btndel);
                 Button btn = new Button();
                 btn.Margin = new Thickness(30, 10, 10, 10);
                 btn.Click += new RoutedEventHandler(check);
@@ -205,7 +224,6 @@ namespace MAIO
                 btn.Height = 150;
                 btn.Content = profilename;
                 SolidColorBrush myBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 41, 53));
-                SolidColorBrush formyBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
                 btn.FontFamily =new System.Windows.Media.FontFamily("PingFangSC-Semibold");
                 btn.FontSize = 16;
                 btn.Background = myBrush;
@@ -214,6 +232,7 @@ namespace MAIO
                 panel.RegisterName(profilename.Replace(" ", ""), btn);
             }
         }
+        
         public void check(object sender, RoutedEventArgs e)
         {
         }

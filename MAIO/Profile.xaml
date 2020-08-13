@@ -18,7 +18,11 @@
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,1,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <Grid Margin="0,105,6,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <WrapPanel Name="panel" Background="#FF2C3040" Orientation="Horizontal" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" PreviewMouseWheel="panel_PreviewMouseWheel" Margin="40,34,40,43"/>
+                <WrapPanel Name="panel" Background="#FF2C3040" Orientation="Horizontal" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" PreviewMouseWheel="panel_PreviewMouseWheel" Margin="40,34,40,43">
+                    <WrapPanel.BindingGroup>
+                        <BindingGroup/>
+                    </WrapPanel.BindingGroup>
+                </WrapPanel>
             </ScrollViewer>
         </Grid>
         <Label Content="Profiles" FontFamily="PingFangSC-Semibold" HorizontalAlignment="Left" Height="55" VerticalAlignment="Top" Width="155" Margin="30,25,0,0" Foreground="White" FontSize="32" FontWeight="Bold">
