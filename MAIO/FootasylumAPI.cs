@@ -18,7 +18,6 @@ namespace MAIO
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
-
             }
             string SourceCode = "";
             string[] group = new string[2];
