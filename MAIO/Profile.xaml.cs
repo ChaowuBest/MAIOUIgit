@@ -206,7 +206,7 @@ namespace MAIO
                 SolidColorBrush formyBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 255, 255));
                 SolidColorBrush delbrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(255, 84, 57));
                 Button btn = new Button();
-                btn.Margin = new Thickness(25, 20, 10, 10);
+                btn.Margin = new Thickness(25, 20, 5, 10);
                 btn.Click += new RoutedEventHandler(check);
                 //  check() += btn.MouseRightButtonDown();
                 btn.Width = 200;
@@ -222,7 +222,7 @@ namespace MAIO
                 Button btndel = new Button();
                 HandyControl.Controls.BorderElement.SetCornerRadius(btndel, new CornerRadius(12, 12, 12, 12));
                 HandyControl.Controls.IconElement.SetGeometry(btndel, (Geometry)this.FindResource("CloseGeometry"));
-                btndel.Margin = new Thickness(-25, -128, 15, 10);
+                btndel.Margin = new Thickness(-25, -128, 22, 10);
                 Style myStyle = (Style)this.FindResource("ButtonIcon");
                 btndel.Style = myStyle;
                 btndel.Background = delbrush;
