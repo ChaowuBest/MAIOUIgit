@@ -19,9 +19,6 @@
         <Grid Margin="0,105,6,0">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <WrapPanel Name="panel" Background="#FF2C3040" Orientation="Horizontal" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" PreviewMouseWheel="panel_PreviewMouseWheel" Margin="40,34,40,43">
-                    <WrapPanel.BindingGroup>
-                        <BindingGroup/>
-                    </WrapPanel.BindingGroup>
                 </WrapPanel>
             </ScrollViewer>
         </Grid>
