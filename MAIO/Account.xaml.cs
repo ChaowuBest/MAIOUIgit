@@ -134,11 +134,11 @@ namespace MAIO
                 if (savegiftcard[i] != "")
                 {
                     string[] sp = null;
-                    if (savegiftcard.Contains(":"))
+                    if (savegiftcard[i].Contains(":"))
                     {
                          sp = savegiftcard[i].Split(":");
                     }
-                    else if (savegiftcard.Contains("-"))
+                    else if (savegiftcard[i].Contains("-"))
                     {
                          sp = savegiftcard[i].Split("-");
                     }

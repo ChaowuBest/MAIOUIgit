@@ -449,7 +449,6 @@ namespace MAIO
                 {
                     Main.autorestock(tk);
                 }
-                tk.Status = "Processing failed";
                 Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
                 paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();

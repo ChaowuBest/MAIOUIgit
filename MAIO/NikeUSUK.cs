@@ -430,6 +430,7 @@ namespace MAIO
                     }
                     else
                     {
+                        
                         FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                         StreamReader sr = new StreamReader(fs1);
                         string read = sr.ReadToEnd();

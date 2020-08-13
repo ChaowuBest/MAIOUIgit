@@ -22,11 +22,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.17
+    /// version 0.99.18
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.17";//everychange
+        public static string version = "0.99.18";//everychange
         public LoginWindow()
         {
             InitializeComponent();
@@ -35,8 +35,16 @@ namespace MAIO
         public void checkkey()
         {
             var ip = HttpGet("https://api.ipify.org", "utf-8");
-            string finger = FingerPrint.Value() + ip;
-            var hwid = MD5Helper.EncryptString(finger);
+            string finger = null;
+            try
+            {
+                finger = FingerPrint.Value() + ip;
+            }
+            catch(Exception ex)
+            {
+
+            }
+            var hwid = MD5Helper.EncryptString(finger);       
             Config.hwid = hwid;
             string path = Environment.CurrentDirectory + "\\" + "config.json";
             if (File.Exists(path))
@@ -66,8 +74,9 @@ namespace MAIO
                         this.Close();
                         MD.Show();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                       
                         Application.Current.Shutdown();
                     }
                 }
