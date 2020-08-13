@@ -16,6 +16,7 @@ namespace MAIO
         Random ran = new Random();
         string xb3traceid = Guid.NewGuid().ToString();
         string xnikevisitorid = Guid.NewGuid().ToString();
+        public int failedretry = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
@@ -145,53 +146,40 @@ namespace MAIO
             request.Headers.Add("cloud_stack", "buy_domain");
             request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
             request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            if (Config.UseAdvancemode == "True")
+        C: if (Mainwindow.iscookielistnull)
             {
-                string path = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
-                FileStream fs2 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                StreamReader sr = new StreamReader(fs2);
-                string cookie = sr.ReadToEnd();
-                request.Headers.Add("Cookie", cookie);
-                sr.Close();
-                fs2.Close();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                tk.Status = "No Cookie";
+                goto C;
             }
             else
             {
-            C: if (Mainwindow.iscookielistnull)
+                Random ra = new Random();
+                if (ct.IsCancellationRequested)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
-                    }
-                    tk.Status = "No Cookie";
-                    goto C;
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
                 }
-                else
+                int sleeptime = ra.Next(0, 500);
+                Thread.Sleep(sleeptime);
+                int cookie = ra.Next(0, Mainwindow.lines.Count);
+                try
                 {
-                    Random ra = new Random();
-                    if (ct.IsCancellationRequested)
+                    Main.updatelable(Mainwindow.lines[cookie], false);
+                    request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                    Mainwindow.lines.RemoveAt(cookie);
+                    if (Mainwindow.lines.Count == 0)
                     {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
+                        Mainwindow.iscookielistnull = true;
                     }
-                    int sleeptime = ra.Next(0, 500);
-                    Thread.Sleep(sleeptime);
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
-                    try
-                    {
-                        Main.updatelable(Mainwindow.lines[cookie], false);
-                        request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                        Mainwindow.lines.RemoveAt(cookie);
-                        if (Mainwindow.lines.Count == 0)
-                        {
-                            Mainwindow.iscookielistnull = true;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        goto C;
-                    }
+                }
+                catch (Exception)
+                {
+                    goto C;
                 }
             }
             request.ContentLength = contentpaymentinfo.Length;

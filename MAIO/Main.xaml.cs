@@ -998,7 +998,7 @@ namespace MAIO
                 {
                     string giftcard = "";
                     string code = "";
-                    if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU")
+                    if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU"||tk.Tasksite=="NikeNZ"||tk.Tasksite=="NikeSG"||tk.Tasksite=="NikeMY")
                     {
                         NikeAUCA NA = new NikeAUCA();
                         NA.tk = tk;
@@ -1007,7 +1007,7 @@ namespace MAIO
                         NA.size = tk.Size;
                         NA.Quantity = int.Parse(tk.Quantity);
                         NA.monitortask = monitortask;
-                        if (tk.Size == "RA" || tk.Size == "ra")
+                        if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                         {
                             NA.randomsize = true;
                         }
@@ -1059,7 +1059,7 @@ namespace MAIO
                                 NSK.tk = tk;
                                 NSK.username = account[0];
                                 NSK.password = account[1];
-                                if (tk.Size == "RA" || tk.Size == "ra")
+                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                                 {
                                     NSK.randomsize = true;
                                 }

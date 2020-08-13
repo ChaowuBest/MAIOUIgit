@@ -19,7 +19,9 @@ namespace MAIO
     {
         Random ran = new Random();
         string akbmsz = "ak_bmsc=";
-        string xb3traceid = Guid.NewGuid().ToString();
+        string xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+        string xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+        string xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         public int failedretry = 0;
         int failedsubshipp = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
@@ -58,6 +60,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+               
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -220,12 +223,20 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
-                Stream tokenStream = respgethtml.GetResponseStream();
-                StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
-                var chao = readhtmlStream.ReadToEnd();
-                tk.Status = "Login Failed";
-                Thread.Sleep(1000);
+                if (ex.Message.Contains("401"))
+                {
+                    tk.Status = "Refrestoken Error";
+                }
+                else
+                {
+                    HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
+                    Stream tokenStream = respgethtml.GetResponseStream();
+                    StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
+                    var chao = readhtmlStream.ReadToEnd();
+                    tk.Status = "Login Failed";
+                    Thread.Sleep(1000);
+                }
+            
                 goto retry;
             }
             JObject jo = JObject.Parse(token);
@@ -332,9 +343,10 @@ namespace MAIO
             reqcard.Headers.Add("sec-fetch-dest", "empty");
             reqcard.Headers.Add("sec-fetch-mode", "cors");
             reqcard.Headers.Add("sec-fetch-site", "same-site");
-            reqcard.Headers.Add("appid", "com.nike.commerce.snkrs.web");
-            reqcard.Headers.Add("x-b3-spanname", "CiCCart");
-            reqcard.Headers.Add("x-b3-traceid", xb3traceid);
+            reqcard.Headers.Add("appid", "com.nike.commerce.checkout.web");
+            reqcard.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqcard.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqcard.Headers.Add("X-B3-TraceId", xb3traceid);
             Stream cardstream = reqcard.GetRequestStream();
             cardstream.Write(contentcardinfo, 0, contentcardinfo.Length);
             cardstream.Close();
@@ -353,8 +365,16 @@ namespace MAIO
                 }
                 tk.Status = "Submit Card Success";
             }
-            catch (WebException)
+            catch (WebException ex)
             {
+                if (ex.Message.Contains("429"))
+                {
+                    HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
+                    Stream processtream = processpayment.GetResponseStream();
+                    StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                    string processcode = readprocessstream.ReadToEnd();
+                    tk.Status = processcode;
+                }
                 tk.Status = "Submit Card failed";
                 goto B;
             }
@@ -407,8 +427,9 @@ namespace MAIO
             reqpayment.Headers.Add("Sec-Fetch-Mode", "cors");
             reqpayment.Headers.Add("Sec-Fetch-Site", "same-site");
             reqpayment.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            reqpayment.Headers.Add("x-b3-spanname", "CiCCheckout");
-            reqpayment.Headers.Add("x-b3-traceid", xb3traceid);
+            reqpayment.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqpayment.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqpayment.Headers.Add("X-B3-TraceId", xb3traceid);
             Stream paymentstream = reqpayment.GetRequestStream();
             paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
             paymentstream.Close();
@@ -498,8 +519,9 @@ namespace MAIO
             reqcheckstatus.Headers.Add("Sec-Fetch-Mode", "cors");
             reqcheckstatus.Headers.Add("Sec-Fetch-Site", "same-site");
             reqcheckstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            reqcheckstatus.Headers.Add("x-b3-spanname", "CiCCheckout");
-            reqcheckstatus.Headers.Add("x-b3-traceid", xb3traceid);
+            reqcheckstatus.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqcheckstatus.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqcheckstatus.Headers.Add("X-B3-TraceId", xb3traceid);
             try
             {
                 HttpWebResponse respcheckstatus = (HttpWebResponse)reqcheckstatus.GetResponse();
@@ -621,8 +643,7 @@ namespace MAIO
             reqprocess.ContentType = "application/json; charset=UTF-8";
             byte[] processbyteinfo = Encoding.UTF8.GetBytes(paymentinfo);
             reqprocess.Headers.Add("authorization", Authorization);
-            reqprocess.Headers.Add("Cookie", "");
-       
+            reqprocess.Headers.Add("Cookie", "");  
             reqprocess.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqprocess.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqprocess.Headers.Add("Origin", "https://www.nike.com");
@@ -631,8 +652,9 @@ namespace MAIO
             reqprocess.Headers.Add("Sec-Fetch-Mode", "cors");
             reqprocess.Headers.Add("Sec-Fetch-Site", "same-site");
             reqprocess.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            reqprocess.Headers.Add("x-b3-spanname", "CiCCheckout");
-            reqprocess.Headers.Add("x-b3-traceid", xb3traceid);
+            reqprocess.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqprocess.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqprocess.Headers.Add("X-B3-TraceId", xb3traceid);
             Stream processstream = reqprocess.GetRequestStream();
             processstream.Write(processbyteinfo, 0, processbyteinfo.Length);
             processstream.Close();
@@ -701,8 +723,9 @@ namespace MAIO
             reqjob.Headers.Add("Sec-Fetch-Mode", "cors");
             reqjob.Headers.Add("Sec-Fetch-Site", "same-site");
             reqjob.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            reqjob.Headers.Add("x-b3-spanname", "CiCCheckout");
-            reqjob.Headers.Add("x-b3-traceid", xb3traceid);
+            reqjob.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqjob.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqjob.Headers.Add("X-B3-TraceId", xb3traceid);
             string jobstatus = "";
             try
             {
@@ -850,16 +873,16 @@ namespace MAIO
             }
             reqgetstatus.Headers.Add("accept-encoding", "gzip, deflate,br");
             reqgetstatus.Headers.Add("accept-language", "en-US, en; q=0.9");
-            reqgetstatus.Headers.Add("appid", "com.nike.commerce.checkout.web");
+            reqgetstatus.Headers.Add("appid", "com.nike.commerce.snkrs.web");
             reqgetstatus.Headers.Add("Origin", "https://www.nike.com");
-            reqgetstatus.Referer = "https://www.nike.com/us/en/checkout";
             reqgetstatus.ContentLength = paymenttokeninfo.Length;
             reqgetstatus.Headers.Add("sec-fetch-dest", "empty");
             reqgetstatus.Headers.Add("sec-fetch-mode", "cors");
             reqgetstatus.Headers.Add("sec-fetch-site", "same-site");
             reqgetstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            reqgetstatus.Headers.Add("x-b3-spanname", "CiCCheckout");
-            reqgetstatus.Headers.Add("x-b3-traceid", xb3traceid);
+            reqgetstatus.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqgetstatus.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqgetstatus.Headers.Add("X-B3-TraceId", xb3traceid);
             Stream paymenttokenstream = reqgetstatus.GetRequestStream();
             paymenttokenstream.Write(paymenttokeninfo, 0, paymenttokeninfo.Length);
             paymenttokenstream.Close();
@@ -928,8 +951,9 @@ namespace MAIO
                 reqfinal.Headers.Add("Sec-Fetch-Mode", "cors");
                 reqfinal.Headers.Add("Sec-Fetch-Site", "same-site");
                 reqfinal.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-                reqfinal.Headers.Add("x-b3-spanname", "CiCCheckout");
-                reqfinal.Headers.Add("x-b3-traceid", xb3traceid);
+                reqfinal.Headers.Add("X-B3-SpanId", xb3spanID);
+                reqfinal.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+                reqfinal.Headers.Add("X-B3-TraceId", xb3traceid);
                 try
                 {
                     HttpWebResponse respfinal = (HttpWebResponse)reqfinal.GetResponse();
@@ -1044,8 +1068,9 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Dest", "empty");
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
-            request.Headers.Add("X-B3-SpanName", "CiCCart");
-            request.Headers.Add("X-B3-TraceId", traceid);
+            request.Headers.Add("X-B3-SpanId", xb3spanID);
+        //    request.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            request.Headers.Add("X-B3-TraceId", xb3traceid);
             request.Headers.Add("x-nike-visitid", "1");
             request.Headers.Add("x-nike-visitorid", nikevistid);
             request.Headers.Add("upgrade-insecure-requests", "1");
@@ -1056,8 +1081,9 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                traceid = Guid.NewGuid().ToString();
-                nikevistid = Guid.NewGuid().ToString();
+                 xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+                 xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+                 xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
                 tk.Status = "WaitingRestock";
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;

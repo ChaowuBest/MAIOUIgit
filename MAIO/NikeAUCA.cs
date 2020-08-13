@@ -232,7 +232,7 @@ namespace MAIO
                                             tk1.Size = tk.Size;
                                             tk1.Taskid = Guid.NewGuid().ToString();
                                             Mainwindow.task.Add(tk1);
-                                            if (tk1.Tasksite == "NikeCA" || tk1.Tasksite == "NikeAU")
+                                            if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU" || tk.Tasksite == "NikeNZ" || tk.Tasksite == "NikeSG" || tk.Tasksite == "NikeMY")
                                             {
                                                 NikeAUCA NA = new NikeAUCA();
                                                 NA.monitortask = false;
@@ -241,7 +241,7 @@ namespace MAIO
                                                 NA.pid = tk1.Sku;
                                                 NA.size = tk1.Size;
                                                 NA.Quantity = int.Parse(tk1.Quantity);
-                                                if (tk1.Size == "RA" || tk1.Size == "ra")
+                                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                                                 {
                                                     NA.randomsize = true;
                                                 }

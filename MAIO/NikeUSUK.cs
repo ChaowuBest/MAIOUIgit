@@ -424,7 +424,15 @@ namespace MAIO
                     if (fi.Length == 0)
                     {
                         bool isrefresh = false;
-                        string loginurl = "https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                        string loginurl = null;
+                        if (tk.Tasksite.Contains("UK"))
+                        {
+                            loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                        }
+                        else
+                        {
+                            loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                        }
                         string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                         Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
                     }
@@ -453,13 +461,30 @@ namespace MAIO
                         {
                             bool isrefresh2 = true;
                             string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
-                            string loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.ios&locale=en_US&backendEnvironment=identity&browser=Apple%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                            string loginurl2 = null;
+                            //https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=a9bbc919-6822-4cdd-8865-8ed9a6404276 
+                            if (tk.Tasksite.Contains("US"))
+                            {
+                                loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                            }
+                            else
+                            {
+                                loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                            }
                             Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
                         }
                         else
                         {
                             bool isrefresh = false;
-                            string loginurl = "https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            string loginurl = null;
+                            if (tk.Tasksite.Contains("UK"))
+                            {
+                                loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            }
+                            else
+                            {
+                                loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            }
                             string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                             Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
                         }
@@ -694,7 +719,16 @@ namespace MAIO
             {
                 KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
                 string cardurl2 = "https://api.nike.com/payment/giftcard_balance/v1";
-                string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"USD\"}";
+                string currency = null;
+                if (tk.Tasksite.Contains("UK"))
+                {
+                    currency = "GBP";
+                }
+                else
+                {
+                    currency = "USD";
+                }
+                string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\""+currency+"\"}";
                 balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, cardguid, tk, ct);
                 double msrpdouble = Convert.ToDouble(msrp);
                 if (balance > msrpdouble)
