@@ -163,23 +163,31 @@ namespace MAIO
 
         private void profilelist_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            string selectdata = Mainwindow.allprofile["" + profilelist.SelectedItem.ToString() + ""];
-            JObject jo = JObject.Parse(selectdata);
-            firstname.Text = jo["FirstName"].ToString();
-            lastname.Text = jo["LastName"].ToString();
-            email.Text = jo["EmailAddress"].ToString();
-            address1.Text = jo["Address1"].ToString();
-            address2.Text = jo["Address2"].ToString();
-            tel.Text = jo["Tel"].ToString();
-            zipcode.Text = jo["Zipcode"].ToString();
-            city.Text = jo["City"].ToString();
-            state.Text = jo["State"].ToString();
-            countrylist.Text = jo["Country"].ToString();        
-            cardnumber.Text = jo["Cardnum"].ToString();
-            CVV.Text = jo["Cvv"].ToString();
-            MMYY.Text = jo["MMYY"].ToString();
-            nameoncard.Text = jo["NameonCard"].ToString();
-            profilename.Text = jo["ProfileName"].ToString(); 
+            try
+            {
+
+                string selectdata = Mainwindow.allprofile["" + profilelist.SelectedItem.ToString() + ""];
+                JObject jo = JObject.Parse(selectdata);
+                firstname.Text = jo["FirstName"].ToString();
+                lastname.Text = jo["LastName"].ToString();
+                email.Text = jo["EmailAddress"].ToString();
+                address1.Text = jo["Address1"].ToString();
+                address2.Text = jo["Address2"].ToString();
+                tel.Text = jo["Tel"].ToString();
+                zipcode.Text = jo["Zipcode"].ToString();
+                city.Text = jo["City"].ToString();
+                state.Text = jo["State"].ToString();
+                countrylist.Text = jo["Country"].ToString();
+                cardnumber.Text = jo["Cardnum"].ToString();
+                CVV.Text = jo["Cvv"].ToString();
+                MMYY.Text = jo["MMYY"].ToString();
+                nameoncard.Text = jo["NameonCard"].ToString();
+                profilename.Text = jo["ProfileName"].ToString();
+            }
+            catch
+            { 
+
+            }
         }
     }
 }

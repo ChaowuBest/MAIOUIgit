@@ -218,12 +218,12 @@ namespace MAIO
                                 {
                                     bm_sv = jo2["value"].ToString();
                                 }
-                                if (bmsz != "" && geoc != "")
+                                if (bmsz != "" && geoc != ""&&bm_sv!="")
                                 {
                                     break;
                                 }
                             }
-                            string cookie = "bm_sz=" + bmsz + "; _abck=" + jo["value"].ToString();
+                            string cookie = "bm_sz=" + bmsz + "; _abck=" + jo["value"].ToString() + "; ak_bmsc=" + geoc;
                             long time2 = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                             string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
                             if (site == "NIKE")

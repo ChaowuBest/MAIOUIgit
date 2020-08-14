@@ -77,8 +77,8 @@ namespace MAIO
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
             }
-            Task task3 = new Task(()=>check());
-            task3.Start();
+           // Task task3 = new Task(()=>check());
+           // task3.Start();
         }
 
         public void check()

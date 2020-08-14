@@ -60,7 +60,7 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-               
+
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -118,13 +118,18 @@ namespace MAIO
             req.Proxy = wp;
             byte[] contentByte = Encoding.UTF8.GetBytes(logininfo);
             req.Method = "POST";
-            req.Headers.Add("Accept", "*/*");
-            req.Headers.Add("Accept-Language", "en-US,en;q=0.9");
-            req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            req.ContentType = "application/json";
-            req.Headers.Add("Accept-encoding", "gzip, deflate, br");
             req.Headers.Add("Host", "unite.nike.com");
             req.ContentLength = contentByte.Length;
+            req.Headers.Add("Accept", "*/*");
+            req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            req.ContentType = "application/json";
+            req.Headers.Add("origin", "https://www.nike.com");
+            req.Headers.Add("Sec-Fetch-Site", "same-site");
+            req.Headers.Add("Sec-Fetch-Dest", "empty");
+            req.Headers.Add("Sec-Fetch-Mode", "cors");
+            req.Referer = "https://www.nike.com/launch/";
+            req.Headers.Add("Accept-encoding", "gzip, deflate, br");
+            req.Headers.Add("Accept-Language", "en-US,en;q=0.9");
             if (isrefresh == false)
             {
                 if (Mainwindow.iscookielistnull)
@@ -155,7 +160,7 @@ namespace MAIO
                             try
                             {
                                 Main.updatelable(Mainwindow.lines[cookie], false);
-                                req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
+                                req.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                                 Mainwindow.lines.RemoveAt(cookie);
                                 if (Mainwindow.lines.Count == 0)
                                 {
@@ -190,7 +195,7 @@ namespace MAIO
                             try
                             {
                                 // req.Headers.Add("Cookie", "geoloc=cc=CN,rc=JL,tp=vhigh,tz=GMT+8,la=43.89,lo=125.32; crl8.fpcuid=111b9374-3bae-45a8-a2de-8318a14d95a2; s_ecid=MCMID%7C13712291943217497877934437626721125471; AMCVS_F0935E09512D2C270A490D4D%40AdobeOrg=1; fs_uid=rs.fullstory.com#BM7A6#6266740190363648:6363763799834624/1622087170; anonymousId=A62273FE0B60DBF46517E04C7C973E37; RES_TRACKINGID=743197587189211; ResonanceSegment=1; _ga=GA1.2.1522812375.1595248648; _gcl_au=1.1.1583197471.1595248648; AnalysisUserId=60.210.20.122.77481595248738790; AMCV_F0935E09512D2C270A490D4D%40AdobeOrg=1994364360%7CMCMID%7C13712291943217497877934437626721125471%7CMCAID%7CNONE%7CMCOPTOUT-1595255830s%7CNONE%7CvVersion%7C3.4.0%7CMCIDTS%7C18464%7CMCAAMLH-1595853539%7C11%7CMCAAMB-1595853539%7Cj8Odv6LonN4r3an7LhD3WZrU1bUpAkFkkiY1ncBR96t2PTI; Hm_lvt_ed406c6497cc3917d06fd572612b4bba=1593086327,1593254343,1593308143,1595249821; _gscu_207448657=90389346fy6gzr20; _gscbrs_207448657=1; _smt_uid=5f15949d.14434e20; guidS=35146d34-b642-45e5-c9fe-b4598d6274f0; guidU=3c900a92-0373-496d-ea92-099c9c254091; Hm_lpvt_ed406c6497cc3917d06fd572612b4bba=1595249882; _scid=9d85343b-7714-49ac-8f77-a0182b1a8f83; _fbp=fb.1.1595251459673.1766581573; _pin_unauth=dWlkPVlqUTVaR1l5WVdFdE5tVXpNUzAwTlRZNExXRTJPRFF0WlRsbE5XWm1NRFpoTTJFMw; _sctr=1|1595174400000; CONSUMERCHOICE_SESSION=t; AKA_A2=A; bm_sz=504A8FE1F1FF189568D527EA0CA28B8D~YAAQehTSPI9oRxRzAQAAqlrhdQj9IBMrlugd4qWjpOIWMi5BtkJpAzKNJWZuPysavxndJ5msirM5aY6ANyNCGR+JhJBKJPlKcQs3MLYM8nT5LZoRclmhV/wSGoP1GV1nZMxym2cu3HuEsw2bbLeQb/z2nVHlJEsppgKRogX4dbNNntkyrv1YcXY1KjZzQQ==; bm_mi=B7EAFED065D5130FA7DCABB3F5AB5778~u9omNtt9/bWFr2dXdUp5wLxMvvgzt3aJFWsKkZ6b0RL1zfDg9ycWDWPWQULZrTDn3sFciEHTdVLeb7XAZvbcz3HU/9o3jnvsIbX8yeH+rmusK506+oeAjnb3tSgvAJ20x2LnMstRVz41Jir2PztY8Gdhl0CRJFDO24hok++AoTOWarOchhhmoSFW59NOhEopVNkGz2mnDiCg8o29kLH2eTvVOcrXqppXalFEV2lGj51+06RyZBf8n0X0dpZRF1HipW5widsrKgnAB1WhcOQ7JQ==; bc_nike_australia_triggermail=%7B%22distinct_id%22%3A%20%221736c65822e165-0b2e64ee8521e1-7f2f4867-1704a0-1736c65822f48d%22%2C%22cart_total%22%3A%20100%7D; ppd=homepage|nikecom>homepage; ak_bmsc=B4A1D00A30A00A7E2EEB70C00ECC339E3CD2147A441E00008908185F31310145~pl9QzKO1+JjtkHs58i8R66ZiFEpE2VHvZwtxNuuuFhtLz4fFKhKDcDAkAtZnHN2Yfrii/lrZYjwxO6Z0F8x06Lw1rzgYd9xlsKJjasW57ntwXqEumdIeNP0TiQRttcuiI2YG9h+kLa9cgARzL6h1M+m/+8XAmlP5CwdgYLUSxX7gX/NWA73RRk13oyXSVYqEVDrxXTaB8VrsvXXAObQN7KFXtDDcYv98jDzW2vhSQa+Zimk0yFSeY0h94+CxbysQSU; bounceClientVisit2422v=N4IgNgDiBcIBYBcEQM4FIDMBBNAmAYnvgO6kB0AdgJYDWApmQMYD2AtkQIYCuRIANCABOMEKWJkA5s2YSwDFqzJwaIAL5A; _gid=GA1.2.1148988271.1595410576; _gat_UA-171421696-1=1; _gat_UA-167630499-4=1; NIKE_COMMERCE_COUNTRY=US; NIKE_COMMERCE_LANG_LOCALE=en_US; nike_locale=us/en_us; CONSUMERCHOICE=us/en_us; cid=undefined%7Cundefined; _gat_UA-167630499-2=1; optimizelyEndUserId=oeu1595410594908r0.33317420699330036; RES_SESSIONID=550846637672316; _uetsid=0ec99cb22fc24cc08b3184091dd5454e; _uetvid=bcb6a6620ee9f73367d0347ba1d3af85; bc_nike_triggermail=%7B%22distinct_id%22%3A%20%22172f89e3f24529-05ee350331064a-7f2f4867-1704a0-172f89e3f25684%22%2C%22g_search_engine%22%3A%20%22google%22%2C%22cart_total%22%3A%200%2C%22ch%22%3A%20%221433069869%22%7D; bm_sv=1E06D2DF5ED7C0656474A60717C9E86D~HQeDVMFVxaXnEVqjT4PklPSwNCdsrUJEUG2Y2Bfu4uNZuwM3jIqflwZty3r10p0f3G+V7SmwUX7EFniGuAqc9Gs3eeBqkzY4P18YZnLhOrpApGUGYhDndgivzJs6W/hyBbqGlL39kgD4i83OnoIEkA==; _abck=87746C6109FEA40FE3EF49CDCF4E32CD~-1~YAAQDhTSPIeuuWpzAQAALwfidQR2LcWAAt4GZPUISngPkobfyMD3ZLbevPlNTb1zGT0sgwolk7vNsnBChkIS2+TT2gIAalnYWOsIrwWgOO0DSfiW9wdVprtbmJZfelmFvcAuXXDB9eKESKgC9xBlDh/1ZDVhC0htsPkjBoB/YP0TYCw8ziQswPsa+bczKff2rs9cPcOLZ6djYaR+lJ3R35Ai6MC1YmOZyfwjnP9eWgapnKo3tzRgyfnUCkRY2CrofuSYzYRNrBSo1lkKbNd9OsQd7COU1Tg1QWNkffVLM3UxKiUXl8fiDfpHX16oscaRO/g6udoLZd+ocy+65J3kqbq4g/QWGdHjNyavHe6qVpA=~0~-1~-1");
-                                req.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                                req.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; "));
                                 Main.updatelable(Mainwindow.lines[cookie], false);
                                 Mainwindow.lines.RemoveAt(cookie);
                             }
@@ -203,11 +208,7 @@ namespace MAIO
                     }
                 }
             }
-            req.Headers.Add("Sec-Fetch-Dest", "empty");
-            req.Headers.Add("Sec-Fetch-Mode", "cors");
-            req.Headers.Add("Sec-Fetch-Site", "same-site");
-            req.Referer = "https://www.nike.com/launch/";
-            req.Headers.Add("origin", "https://unite.nike.com");
+
             Stream webstream = req.GetRequestStream();
             webstream.Write(contentByte, 0, contentByte.Length);
             webstream.Close();
@@ -223,20 +224,26 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                if (ex.Message.Contains("401"))
+                if (ex.Message.Contains("Email"))
+                {
+                    tk.Status = "Wrong Password";
+                }
+                else if (ex.Message.Contains("401"))
                 {
                     tk.Status = "Refrestoken Error";
                 }
                 else
                 {
-                    HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
-                    Stream tokenStream = respgethtml.GetResponseStream();
-                    StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
-                    var chao = readhtmlStream.ReadToEnd();
                     tk.Status = "Login Failed";
-                    Thread.Sleep(1000);
                 }
-            
+                HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
+                Stream tokenStream = respgethtml.GetResponseStream();
+                StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
+                var chao = readhtmlStream.ReadToEnd();
+                
+                Thread.Sleep(1000);
+
+
                 goto retry;
             }
             JObject jo = JObject.Parse(token);
@@ -308,7 +315,6 @@ namespace MAIO
             WebProxy wp = new WebProxy();
             try
             {
-
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
                 string proxyg = Mainwindow.proxypool[random].ToString();
                 string[] proxy = proxyg.Split(":");
@@ -338,7 +344,6 @@ namespace MAIO
             reqcard.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqcard.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqcard.Headers.Add("Authorization", Authorization);
-            reqcard.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             reqcard.ContentLength = contentcardinfo.Length;
             reqcard.Headers.Add("sec-fetch-dest", "empty");
             reqcard.Headers.Add("sec-fetch-mode", "cors");
@@ -347,6 +352,7 @@ namespace MAIO
             reqcard.Headers.Add("X-B3-SpanId", xb3spanID);
             reqcard.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             reqcard.Headers.Add("X-B3-TraceId", xb3traceid);
+            reqcard.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             Stream cardstream = reqcard.GetRequestStream();
             cardstream.Write(contentcardinfo, 0, contentcardinfo.Length);
             cardstream.Close();
@@ -565,7 +571,7 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
-                   //   MessageBox.Show(check);
+                    //   MessageBox.Show(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
                         Thread.Sleep(1000);
@@ -643,7 +649,7 @@ namespace MAIO
             reqprocess.ContentType = "application/json; charset=UTF-8";
             byte[] processbyteinfo = Encoding.UTF8.GetBytes(paymentinfo);
             reqprocess.Headers.Add("authorization", Authorization);
-            reqprocess.Headers.Add("Cookie", "");  
+            reqprocess.Headers.Add("Cookie", "");
             reqprocess.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqprocess.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqprocess.Headers.Add("Origin", "https://www.nike.com");
@@ -823,7 +829,7 @@ namespace MAIO
                         try
                         {
                             Main.updatelable(Mainwindow.lines[cookie], false);
-                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
+                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
                             {
@@ -858,8 +864,9 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            string subcookie = Mainwindow.lines[cookie] + ";" + akbmsz;
-                            reqgetstatus.Headers.Add("Cookie", subcookie.Replace(";", "; "));
+                            // string subcookie = Mainwindow.lines[cookie] + ";" + akbmsz;
+                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; "));
+                            //  reqgetstatus.Headers.Add("Cookie", "bm_sz=EF4DE2BF7D0521E480ABF12FBD3341F2~YAAQpwNAF4XaSeVzAQAABLee6gioIRJMzB2P/HnMiDne8UD4cahsSDIZqKyzo4BaKijSczVSW9bVT7fA+M7Mgscl7MV/JB6MDSkalIw2wp3OI9k7fuuAjyKk+DkH5qUaD2MPiGstwBx5ZfrJQ8DByalRsrntg4FO98kw+Jo3L9XnA/Pnj0ZEK9+Ip6T2nA==; _abck=D2A49559AFB826A3005E2AD5A6D8CF60~-1~YAAQpwNAFzfbSeVzAQAA5tue6gRWCgPqGArecFDAEpNspqgVWEN/e7c+lk3EkzyYKJz2CqBk55s5yyhTnfP8Bvus6wuOAifoK/u4LUy6zHNiLFLtqWeb22OpFcYG/Vlm1Y1mPZnpUvVo7S9RnGmmYXk0YQEsJjxaKNeQZIRRA7uPwRFXPwlZrqDRZPBzZDbekBMRg4qnDwOe4uLrIDPvPuYF05RUSwKJcxEyEwXFEfvPP7PvU+y4DxLGnUUZ2taunxB9W9AYWJcUI+QNBhVFqLJOs+EOtihvGDiHQ5ckIlWCcf6F+wpGu7TEQouXVNa4oKNa8zG6v7z5+NaE5OKZkOj6G/EJmy+j/LPzxEcIRJQ=~-1~-1~-1; ak_bmsc=C40487C81BA62C705598F9137A5502DC1724022EAE36000009EE355F34296445~plXu6W7M3ok8EwIPrqzhsy354Qlu38FXU4msQDIjg4F3aVm+DqYxpcLvg9cVUWrEBqu+TPMPvZ6ucgyfIw+HAwCmN02b/5NDl3GvTt/pjr6YM8XpRb0KOGI7VCWyjp/uNTyQ7Q/2oN34W8GnKo2QYoPi4PfzNQhiFTDIjqFv2dneJdR48nmx/ZnBjKJ8d14n/a05Rd4HfT5aILmqfMVydnKBNyYIzwa0aConfA1Hl8thE=; bm_sv=5310D071B44C9E3EE0A58329BDC00195~O50rtkfJcuqrkTSPzOg7EjzOOBNpiGqsEbc0fvTfXIpVgxoM62gfIYXfD4XDxbnytCNN3TeWLDVpNub1JS9pDKiKkL0AaNW6s7KL9tTIpCpJnLgUeqpmgC7nYsCh4ZhcFCJWlEjHLc0GJh/wMlPfcA==");
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 
@@ -871,14 +878,17 @@ namespace MAIO
                     }
                 }
             }
-            reqgetstatus.Headers.Add("accept-encoding", "gzip, deflate,br");
-            reqgetstatus.Headers.Add("accept-language", "en-US, en; q=0.9");
+            //     reqgetstatus.Referer = "https://www.nike.com/launch/t/jordan-break-slide-TXRbpl";
+            reqgetstatus.Headers.Add("Accept-encoding", "gzip, deflate,br");
+            reqgetstatus.Headers.Add("Accept-language", "en-US, en; q=0.9");
             reqgetstatus.Headers.Add("appid", "com.nike.commerce.snkrs.web");
             reqgetstatus.Headers.Add("Origin", "https://www.nike.com");
             reqgetstatus.ContentLength = paymenttokeninfo.Length;
-            reqgetstatus.Headers.Add("sec-fetch-dest", "empty");
-            reqgetstatus.Headers.Add("sec-fetch-mode", "cors");
-            reqgetstatus.Headers.Add("sec-fetch-site", "same-site");
+            reqgetstatus.Host = "api.nike.com";
+            reqgetstatus.Headers.Add("Sec-Fetch-Dest", "empty");
+            reqgetstatus.Headers.Add("Sec-Fetch-Mode", "cors");
+            reqgetstatus.Headers.Add("Sec-Fetch-Site", "same-site");
+            reqgetstatus.Headers.Add("Upgrade-Insecure-Requests", "1");
             reqgetstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             reqgetstatus.Headers.Add("X-B3-SpanId", xb3spanID);
             reqgetstatus.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
@@ -899,7 +909,7 @@ namespace MAIO
                 failedretry++;
                 if (failedretry > 20)
                 {
-                    Main.autorestock(tk);
+                      Main.autorestock(tk);
                 }
                 tk.Status = "Processing failed";
                 Thread.Sleep(500);
@@ -1069,7 +1079,7 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
             request.Headers.Add("X-B3-SpanId", xb3spanID);
-        //    request.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            //    request.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             request.Headers.Add("X-B3-TraceId", xb3traceid);
             request.Headers.Add("x-nike-visitid", "1");
             request.Headers.Add("x-nike-visitorid", nikevistid);
@@ -1081,9 +1091,9 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                 xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
-                 xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
-                 xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+                xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+                xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+                xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
                 tk.Status = "WaitingRestock";
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
