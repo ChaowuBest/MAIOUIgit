@@ -147,44 +147,44 @@ namespace MAIO
             request.Headers.Add("cloud_stack", "buy_domain");
             request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
             request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            /* C: if (Mainwindow.iscookielistnull)
-                 {
-                     if (ct.IsCancellationRequested)
-                     {
-                         tk.Status = "IDLE";
-                         ct.ThrowIfCancellationRequested();
-                     }
-                     tk.Status = "No Cookie";
-                     goto C;
-                 }
-                 else
-                 {
-                     Random ra = new Random();
-                     if (ct.IsCancellationRequested)
-                     {
-                         tk.Status = "IDLE";
-                         ct.ThrowIfCancellationRequested();
-                     }
-                     int sleeptime = ra.Next(0, 500);
-                     Thread.Sleep(sleeptime);
-                     int cookie = ra.Next(0, Mainwindow.lines.Count);
-                     try
-                     {
-                         Main.updatelable(Mainwindow.lines[cookie], false);
-                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                         Mainwindow.lines.RemoveAt(cookie);
-                         if (Mainwindow.lines.Count == 0)
-                         {
-                             Mainwindow.iscookielistnull = true;
-                         }
-                     }
-                     catch (Exception)
-                     {
-                         goto C;
-                     }
-                 }*/
-            var chao=cookie();
-            request.Headers.Add("Cookie", chao);
+        C: if (Mainwindow.iscookielistnull)
+            {
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                tk.Status = "No Cookie";
+                goto C;
+            }
+            else
+            {
+                Random ra = new Random();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                int sleeptime = ra.Next(0, 500);
+                Thread.Sleep(sleeptime);
+                int cookie = ra.Next(0, Mainwindow.lines.Count);
+                try
+                {
+                    Main.updatelable(Mainwindow.lines[cookie], false);
+                    request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                    Mainwindow.lines.RemoveAt(cookie);
+                    if (Mainwindow.lines.Count == 0)
+                    {
+                        Mainwindow.iscookielistnull = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    goto C;
+                }
+            }
+            //  var chao=cookie();
+            request.Headers.Add("Cookie", "_abck=0A50E8275B5485E5AE557EFD88AAAA7E~-1~YAAQDMrdPEtOVu9zAQAAN4cF8wQoCa55AnV2mrpBVxzK8Qmlzuw59uAriLTv8mDZJjmBV2tZVYxVAEiTmZST07934/jYrBTsBCtGyTvhZ4kpO4cGemSOB9jm+HxOrRWjjzQSZ1KVlC85YJuQ2XXKVK944m3H7AZg4fUkbAhzdb56baSTCDIjOFUBxScX/sQP/bCZqC8a4ZBp51TjaXwsvhs8JDQ5nxXKfNOT41QXeTgIDDl2jeNPpd5UeSfPmTdSaUqVYnZfBXNKgJ2QurHucyHyBZWs/KE8XMH7+B+zAAs4qheBXZ4hJfVB7XKatT5m6+y9U+BMPDBUYvAS0selt2zs3r2Yuv0LjfDTc8fKI+w=~-1~-1~-1; bm_sz=462AB3745FBB9C32332F4A2BE6BD78AE~YAAQDMrdPEpOVu9zAQAAN4cF8wjY3FqVo6p6Ji0pq4VFj1+YasnIweQfkd/cT6kOygFJ4HBk+zHl4PipQZOHkeXImRbyuwE5pCU5J3Ghomq/4zACyu7PUOv9KUncdiqfNxqVN7XgCeLzmsMowNauE4OM79FEfRfaeUvhTMJIdLvVJTRth/i24ERdNJS9Sw==");
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");
@@ -218,7 +218,7 @@ namespace MAIO
         }
         public string cookie()
         {
-           string cookie = null;
+            string cookie = null;
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             try
@@ -240,7 +240,7 @@ namespace MAIO
             {
                 wp = default;
             }
-       
+
 
         A: ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.nike.com/static/42d3d1b61b5ti205e7380486e5b5d0b8f");
@@ -267,7 +267,7 @@ namespace MAIO
                 {
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
-                var wu=readStream.ReadToEnd();
+                var wu = readStream.ReadToEnd();
             }
             catch (WebException ex)
             {
@@ -390,7 +390,7 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-             //   tk.Status = ex.ToString() + "Retrying";
+                //   tk.Status = ex.ToString() + "Retrying";
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
