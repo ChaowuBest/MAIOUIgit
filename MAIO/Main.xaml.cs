@@ -77,8 +77,8 @@ namespace MAIO
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
             }
-           // Task task3 = new Task(()=>check());
-           // task3.Start();
+            Task task3 = new Task(()=>check());
+            task3.Start();
         }
 
         public void check()
@@ -91,7 +91,7 @@ namespace MAIO
                 {
                     if (p.ProcessName.ToString().Contains("Fiddler") || p.ProcessName.ToString().ToString().Contains("wireshark") || p.ProcessName.ToString().ToString().Contains("Charles")|| p.ProcessName.ToString().ToString().Contains("dnSpy"))
                     {
-                        string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"Exception\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Key ban\",\"value\":\"" + Config.hwid + "\\t\\t\\t\\tKey:" + Config.hwid + "\\t\\t\\t\\tKey:" + Config.hwid + "\",\"inline\":false}]}]}";
+                        string pd2 = "{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"Exception\",\"color\":3329330,\"footer\":{\"text\":\"" + "MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"},\"fields\":[{\"name\":\"Key ban\",\"value\":\"" + Config.hwid + "\\t\\t\\t\\tKey:" + Config.hwid + "\\t\\t\\t\\tIp:" + Config.ip + "\",\"inline\":false}]}]}";
                         Http("https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", pd2);
                         Environment.Exit(0);
                     }

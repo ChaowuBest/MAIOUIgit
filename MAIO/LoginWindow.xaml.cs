@@ -35,6 +35,7 @@ namespace MAIO
         public void checkkey()
         {
             var ip = HttpGet("https://api.ipify.org", "utf-8");
+            Config.ip = ip;
             string finger = null;
             try
             {
@@ -103,6 +104,7 @@ namespace MAIO
             Mainwindow MD = new Mainwindow();
             string key = Keyinput.Text;
             var ip = HttpGet("https://api.ipify.org", "utf-8");
+            Config.ip = ip;
             string finger = FingerPrint.Value() + ip;
             var hwid = MD5Helper.EncryptString(finger);
             Config.hwid = hwid;

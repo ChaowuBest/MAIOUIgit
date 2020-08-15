@@ -100,10 +100,10 @@ namespace MAIO
             }
             else
             {
-                foreach (var i in dic)
-                {
-                    i.Value.Cancel();
-                }
+               // foreach (var i in dic)
+             //   {
+              //      i.Value.Cancel();
+             //   }
 
             }
         }
