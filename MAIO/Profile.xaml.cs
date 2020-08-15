@@ -186,16 +186,11 @@ namespace MAIO
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-          //  StackPanel stp = new StackPanel();
-          //  SolidColorBrush myBrush3 = new SolidColorBrush(System.Windows.Media.Color.FromRgb(37, 41, 53));
-         //   stp.Background = myBrush3;
-         //   stp.Margin = new Thickness(0, 0, 0, 0);
               NewProfile np = new NewProfile();
               np.getTextHandler = Addbilling;
               np.Show();
-          //  panel.Children.Add(stp);
-         //   panel.RegisterName("chao", stp);
         }
+        
         private void Addbilling(bool st, string profilename)
         {
             if (st)
@@ -208,7 +203,6 @@ namespace MAIO
                 Button btn = new Button();
                 btn.Margin = new Thickness(25, 20, 5, 10);
                 btn.Click += new RoutedEventHandler(check);
-                //  check() += btn.MouseRightButtonDown();
                 btn.Width = 200;
                 btn.Height = 150;
                 btn.Content = profilename;
@@ -219,23 +213,36 @@ namespace MAIO
                 btn.Foreground = formyBrush;
                 panel.Children.Add(btn);
                 panel.RegisterName(profilename.Replace(" ", ""), btn);
+                Mainwindow.profiles.Add(profilename.Replace(" ", ""),btn);
                 Button btndel = new Button();
                 HandyControl.Controls.BorderElement.SetCornerRadius(btndel, new CornerRadius(12, 12, 12, 12));
                 HandyControl.Controls.IconElement.SetGeometry(btndel, (Geometry)this.FindResource("CloseGeometry"));
                 btndel.Margin = new Thickness(-25, -128, 22, 10);
                 Style myStyle = (Style)this.FindResource("ButtonIcon");
                 btndel.Style = myStyle;
+                btndel.Click += new RoutedEventHandler(delprofile);
                 btndel.Background = delbrush;
                 btndel.Padding = new Thickness(5);
                 btndel.Height = 24;
                 btndel.Width = 24;
+                btndel.Name = "del"+profilename.Replace(" ", "");
                 btndel.Foreground = formyBrush;
                 panel.Children.Add(btndel);
+                panel.RegisterName("del"+profilename.Replace(" ", ""), btndel);
             }
         }
-        
         public void check(object sender, RoutedEventArgs e)
         {
+          
+        }
+        public void delprofile(object sender, RoutedEventArgs e)
+        {
+            Button btn=(Button)sender;
+            panel.Children.Remove((Button)sender);
+            panel.UnregisterName(btn.Name);
+            panel.Children.Remove(Mainwindow.profiles[btn.Name.Replace("del", "")]);
+            panel.UnregisterName(btn.Name.Replace("del", ""));
+
         }
         private void panel_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
         {

@@ -36,6 +36,7 @@ namespace MAIO
         public string cid { get; set; }
         public string cjevent { get; set; }
         public static Dictionary<string, string> allprofile = new Dictionary<string, string>();
+        public static Dictionary<string,Button> profiles = new Dictionary<string, Button>();
         public static Dictionary<string, string> giftcardlist = new Dictionary<string, string>();
         public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
