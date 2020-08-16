@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,8 +26,9 @@ namespace MAIO
         public NewProfile()
         {
             InitializeComponent();
-            country.ItemsSource= Countrycode.countrycode;
+            country.ItemsSource = Countrycode.countrycode;
             billingcountry.ItemsSource = Countrycode.countrycode;
+            edit();
         }
 
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -41,11 +43,42 @@ namespace MAIO
             }
         }
 
+        private void edit()
+        {
+            if (EditeProfile.edit)
+            {
+                firstname.Text = EditeProfile.FirstName;
+                lastname.Text = EditeProfile.LastName;
+                email.Text = EditeProfile.EmailAddress;
+                address1.Text = EditeProfile.Address1;
+                address2.Text = EditeProfile.Address2;
+                tel.Text = EditeProfile.Tel;
+                city.Text = EditeProfile.City;
+                zipcode.Text = EditeProfile.Zipcode;
+                state.Text = EditeProfile.State;
+                country.Text = EditeProfile.Country;
+
+                cardnum.Text = EditeProfile.Cardnum;
+                MMYY.Text = EditeProfile.MMYY;
+                nameoncard.Text = EditeProfile.NameonCard;
+                cvv.Text = EditeProfile.Cvv;
+
+                profilename.Text = EditeProfile.ProfileName;
+                billingfirst.Text = EditeProfile.BillingFirstName;
+                billinglast.Text = EditeProfile.BillingLastName;
+                billingaddress1.Text = EditeProfile.BillingAddress1;
+                billingaddress2.Text = EditeProfile.BillingAddress2;
+                billingcity.Text = EditeProfile.BillingCity;
+                billingstate.Text = EditeProfile.Billingstate;
+                billingzipcode.Text = EditeProfile.Billingzipcode;
+                billingcountry.Text = EditeProfile.BillingCountry;
+            }
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-        public delegate void GetTextHandler(bool st,string profilename); //声明委托
+        public delegate void GetTextHandler(bool st, string profilename, string profile); //声明委托
         public GetTextHandler getTextHandler;
         private void save_Click(object sender, RoutedEventArgs e)
         {
@@ -62,7 +95,7 @@ Text + "\"}]";
             for (int i = 0; i < Mainwindow.allprofile.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
-                if (kv.Key == profilename.Text)
+                if (kv.Key.Replace(" ","") == profilename.Text)
                 {
                     duplicate = true;
                     key = kv.Key;
@@ -71,15 +104,19 @@ Text + "\"}]";
             }
             if (duplicate)
             {
-                Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+                Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "");
                 profilewrite(profile);
-                getTextHandler(duplicate,profilename.Text);
+                getTextHandler(duplicate, profilename.Text, profile);
             }
             else
             {
-                Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
+                Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
                 profilewrite(profile);
-                getTextHandler(duplicate, profilename.Text);
+                getTextHandler(duplicate, profilename.Text, profile);
+            }
+            if (EditeProfile.edit)
+            {
+                this.Close();
             }
         }
         public void profilewrite(string profile)
