@@ -110,6 +110,7 @@ namespace MAIO
                     }
                     gift++;
                 }
+              
             }
             else
             {
@@ -155,6 +156,7 @@ namespace MAIO
                             Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
                             Midtransfer.tk.Account = user;
                             Main.taskwrite(profile);
+                            this.Close();
                         }
                         else
                         {
@@ -188,7 +190,9 @@ namespace MAIO
                             }
                         }
                     }
-                } else {
+                
+                }
+                else {
                     MessageBox.Show("Check your input");
                 }
                 

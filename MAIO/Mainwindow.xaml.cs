@@ -41,6 +41,7 @@ namespace MAIO
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
         public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
         public static ArrayList proxypool = new ArrayList();
+        public static List<string> codepool = new List<string>();
         public static List<string> listproxy;
         public static Dictionary<string, string> tasklist = new Dictionary<string, string>();
         public static Dictionary<long, string> cookiewtime = new Dictionary<long, string>();
@@ -51,6 +52,7 @@ namespace MAIO
         string path3 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.txt";
         string path4 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
+        string path6 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
         public Mainwindow()
         {
             InitializeComponent();
@@ -60,8 +62,9 @@ namespace MAIO
             Task task4 = Task.Run(() => Initialgiftcard());
             Task task5 = Task.Run(() => Initialtask());
             Task task6 = Task.Run(() => InitialCookie());
-            Task task7 = Task.Run(() => InitialAdvancemode());   
-            Task.WaitAll(task1,task2,task3,task4,task5,task6,task7);
+            Task task7 = Task.Run(() => InitialAdvancemode());
+            Task task8 = Task.Run(() => Initialcode());
+            Task.WaitAll(task1,task2,task3,task4,task5,task6,task7,task8);
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
@@ -305,11 +308,36 @@ namespace MAIO
         }
         public void InitialAdvancemode()
         {
-            string path7 = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
+          /*  string path7 = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
             if (!File.Exists(path7))
             {
                 FileStream fs1 = new FileStream(path7, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 fs1.Close();
+            }*/
+        }
+        public void Initialcode()
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                FileStream fs1 = new FileStream(path6, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                fs1.Close();
+            }
+            else
+            {
+                if (!File.Exists(path6))
+                {
+                    FileStream fs1 = new FileStream(path6, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    fs1.Close();
+                }
+            }
+            FileInfo fi = new FileInfo(path6);
+            if (fi.Length == 0)
+            {
+            }
+            else
+            {
+                codepool = new List<string>(File.ReadAllLines(path6));
             }
         }
         private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

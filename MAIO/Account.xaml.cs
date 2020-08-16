@@ -53,6 +53,9 @@ namespace MAIO
         private void saveaccount_Click(object sender, RoutedEventArgs e)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
+           // accountname.Text=
+            bool duplicate = false;
+            string key = null;
             if (new TextRange(accountbox.Document.ContentStart, accountbox.Document.ContentEnd).Text == "")
             {
                 MessageBox.Show("No account");
@@ -87,8 +90,32 @@ namespace MAIO
                       new JProperty(accountname.Text,
                       new JObject(ja))
                      );
-                    Mainwindow.account.Add(accountname.Text, ja.ToString());
-                    accountlist.Items.Add(accountname.Text);
+                    for (int i = 0; i < Mainwindow.account.Count; i++)
+                    {
+                        KeyValuePair<string, string> kv = Mainwindow.account.ElementAt(i);
+                        if (kv.Key == accountname.Text)
+                        {
+                            duplicate = true;
+                            key = kv.Key;
+                            break;
+                        }
+                    }
+                    if (duplicate)
+                    {
+                        Mainwindow.account[key] = ja.ToString();
+                    }
+                    else
+                    {
+                        if (accountname.Text == "")
+                        {
+                            MessageBox.Show("Please enter Account name");
+                        }
+                    }
+                    if (duplicate == false)
+                    {
+                        Mainwindow.account.Add(accountname.Text, ja.ToString());
+                        accountlist.Items.Add(accountname.Text);
+                    }
                     FileInfo fi = new FileInfo(path);
                     if (fi.Length == 0)
                     {
@@ -105,6 +132,15 @@ namespace MAIO
                         StreamReader sw2 = new StreamReader(fs1);
                         var read = sw2.ReadToEnd();
                         JArray ja2 = JArray.Parse(read);
+                        for (int i = 0; i < ja2.Count; i++)
+                        {
+                            Regex rex = new Regex("\"(.*)\"");
+                            var matchkey = rex.Match(ja2[i].ToString()).Value.Replace("\"", "");
+                            if (matchkey == accountname.Text.Replace(" ", ""))
+                            {
+                                ja2.RemoveAt(i);
+                            }
+                        }
                         ja2.Add(jo);
                         var wu = ja2.ToString();
                         FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -326,6 +362,7 @@ namespace MAIO
             try
             {
                 accountbox.Document.Blocks.Clear();
+                accountname.Text = accountlist.SelectedItem.ToString();
                 string selectdata = Mainwindow.account["" + accountlist.SelectedItem.ToString() + ""];
                 var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
                 for (int i = 0; i < gl.Length; i++)

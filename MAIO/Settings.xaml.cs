@@ -53,6 +53,15 @@ namespace MAIO
             {
                 useAdvancemode.IsChecked = false;
             }
+            Balancebox.Clear();
+            if (Mainwindow.codepool != null)
+            {
+                for (int i = 0; i < Mainwindow.codepool.Count; i++)
+                {
+                    Balancebox.AppendText(Mainwindow.codepool[i].ToString());
+                    Balancebox.AppendText("\r\n");
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -118,8 +127,37 @@ namespace MAIO
         }
         private void Check_Click(object sender, RoutedEventArgs e)
         {
-            Task task1 = new Task(() => check());
-            task1.Start();
+            try
+            {
+                if (Balancebox.Text=="")
+                {
+                    MessageBox.Show("No Code");
+                }
+                else
+                {
+                    string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
+                    string[] savecode = Balancebox.Text.Split("\r\n");
+                    FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter sw = new StreamWriter(fs0);
+                    fs0.SetLength(0);
+                    Mainwindow.codepool.Clear();
+                    for (int i = 0; i < savecode.Length; i++)
+                    {
+                        if (savecode[i] != "")
+                        {
+                            sw.WriteLine(savecode[i]);
+                            Mainwindow.codepool.Add(savecode[i]);
+                        }
+                    }
+                    sw.Close();
+                    fs0.Close();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Save Code failed, please Check your input");
+            }
+
         }
         public void check()
         {
@@ -302,6 +340,16 @@ namespace MAIO
                   {
                       Config.mn.cookienum.Content = Mainwindow.lines.Count;
                   }));
+        }
+
+        private void del_Click(object sender, RoutedEventArgs e)
+        {
+            string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
+            FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            fs0.SetLength(0);
+            fs0.Close();
+            Mainwindow.codepool.Clear();
+            Balancebox.Clear();
         }
     }
 }

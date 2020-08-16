@@ -80,7 +80,6 @@ namespace MAIO
             Task task3 = new Task(()=>check());
             task3.Start();
         }
-
         public void check()
         {
         A:
@@ -348,13 +347,28 @@ namespace MAIO
         private void Ctask(string[] st)
         {
             string taskid = Guid.NewGuid().ToString();
-            string profile = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + st[3].Replace("\r\n", "") + "\"," +
+            if (st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") == "NikeUS" || st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") == "NikeUK")
+            {
+                if (st[5] == ""&&Mainwindow.codepool.Count!=0)
+                {
+                    Random ra = new Random();
+                    int ran = ra.Next(0, Mainwindow.codepool.Count);
+                    st[5] = Mainwindow.codepool[ran];
+                    Mainwindow.codepool.Remove(Mainwindow.codepool[ran]);
+                    updatediscount(st[5]);
+                }
+            }
+            if (st[4].Replace("\r\n", "") == "")
+            {
+                st[4] = "RA";
+            }
+                string profile = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + st[3].Replace("\r\n", "") + "\"," +
              "\"Size\":\"" + st[4].Replace("\r\n", "") + "\",\"Profile\":\"" + st[2] + "\",\"Proxies\":\"Default\"," +
             "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\",\"AdvanceMonitor\":\"" + st[8] + "\",\"Account\":\"" + st[9] + "\"}]";
             if (st[8] == "True")
             {
                 Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""),code=st[5], Size = st[4].Replace("\r\n", ""), Taskid = taskid, Account=st[9],Profile=st[2],giftcard=st[1],Quantity= st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") });
-              //  Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
+              
             }
             else
             {
@@ -362,6 +376,31 @@ namespace MAIO
                 Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7], Account = st[9] });
             }
             taskwrite(profile);
+        }
+        public void updatediscount(string discount)
+        {
+            ArrayList ar = new ArrayList();   
+            string path= Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
+            ar = new ArrayList(File.ReadAllLines(path));
+            for (int i = 0; i < ar.Count; i++)
+            {
+                if ((string)ar[i] == discount)
+                {
+                    ar.RemoveAt(i);
+                }
+            }
+            FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            StreamWriter sw = new StreamWriter(fs0);
+            fs0.SetLength(0);
+            for (int i = 0; i < ar.Count; i++)
+            {
+                if (ar[i].ToString()!= "")
+                {
+                    sw.WriteLine(ar[i]);
+                }
+            }
+            sw.Close();
+            fs0.Close();
         }
         public static void taskwrite(string task)
         {
@@ -438,6 +477,7 @@ namespace MAIO
                         NA.monitortask = monitortask;
                         if (tk.Size == "RA" || tk.Size == "ra"||tk.Size==""||tk.Size==null||tk.Size==" ")
                         {
+                            tk.Size = "RA";
                             NA.randomsize = true;
                         }
                         var cts = new CancellationTokenSource();
@@ -490,6 +530,7 @@ namespace MAIO
                                 NSK.password = account[1];
                                 if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                                 {
+                                    tk.Size = "RA";
                                     NSK.randomsize = true;
                                 }
                                 var cts = new CancellationTokenSource();
@@ -517,6 +558,7 @@ namespace MAIO
                             Footasylum fasy = new Footasylum();
                             if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
+                                tk.Size = "RA";
                                 fasy.randomsize = true;
                             }
                             fasy.link = tk.Sku;
@@ -542,6 +584,7 @@ namespace MAIO
                         tnfus.size = tk.Size;
                         if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                         {
+                            tk.Size = "RA";
                             tnfus.randomsize = true;
                         }
                         tnfus.tasksite = tk.Tasksite;
@@ -561,6 +604,7 @@ namespace MAIO
                         tnfus.tasksite = tk.Tasksite;
                         if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                         {
+                            tk.Size = "RA";
                             tnfus.randomsize = true;
                         }
                         tnfus.tk = tk;
@@ -578,6 +622,7 @@ namespace MAIO
                         asos.size = tk.Size;
                         if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                         {
+                            tk.Size = "RA";
                             asos.randomsize = true;
                         }
                         asos.tk = tk;
@@ -595,6 +640,7 @@ namespace MAIO
                         jdus.size = tk.Size;
                         if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                         {
+                            tk.Size = "RA";
                             jdus.randomsize = true;
                         }
                         jdus.tk = tk;
@@ -763,6 +809,7 @@ namespace MAIO
                             NA.Quantity = int.Parse(tk.Quantity);
                             if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
+                                tk.Size = "RA";
                                 NA.randomsize = true;
                             }
                             var cts = new CancellationTokenSource();
@@ -815,6 +862,7 @@ namespace MAIO
                                     NSK.password = account[1];
                                     if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                                     {
+                                        tk.Size = "RA";
                                         NSK.randomsize = true;
                                     }
                                     var cts = new CancellationTokenSource();
@@ -840,6 +888,7 @@ namespace MAIO
                                 Footasylum fasy = new Footasylum();
                                 if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                                 {
+                                    tk.Size = "RA";
                                     fasy.randomsize = true;
                                 }
                                 fasy.link = tk.Sku;
@@ -865,6 +914,7 @@ namespace MAIO
                             tnfus.size = tk.Size;
                             if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
+                                tk.Size = "RA";
                                 tnfus.randomsize = true;
                             }
                             tnfus.tasksite = tk.Tasksite;
@@ -885,6 +935,7 @@ namespace MAIO
                             tnfus.tasksite = tk.Tasksite;
                             if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
+                                tk.Size = "RA";
                                 tnfus.randomsize = true;
                             }
                             tnfus.tk = tk;
@@ -1009,6 +1060,7 @@ namespace MAIO
                         NA.monitortask = monitortask;
                         if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                         {
+                            tk.Size = "RA";
                             NA.randomsize = true;
                         }
                         var cts = new CancellationTokenSource();
@@ -1061,6 +1113,7 @@ namespace MAIO
                                 NSK.password = account[1];
                                 if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                                 {
+                                    tk.Size = "RA";
                                     NSK.randomsize = true;
                                 }
                                 var cts = new CancellationTokenSource();
@@ -1114,5 +1167,6 @@ namespace MAIO
             }
 
         }
+      
     }
 }
