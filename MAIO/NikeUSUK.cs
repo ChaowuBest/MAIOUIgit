@@ -1026,6 +1026,7 @@ new JProperty("shippingAddress",
                 JObject jo2 = JObject.Parse(obejects);
                 string reason = jo2["message"].ToString();
                 tk.Status = reason;
+                MessageBox.Show(reason);
                 if (Config.webhook != "")
                 {
                     failcheckout(tk, Config.webhook, joprofile, reason);

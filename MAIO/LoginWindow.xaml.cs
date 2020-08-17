@@ -43,7 +43,6 @@ namespace MAIO
             }
             catch(Exception ex)
             {
-
             }
             var hwid = MD5Helper.EncryptString(finger);       
             Config.hwid = hwid;
