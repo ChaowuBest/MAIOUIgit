@@ -37,13 +37,6 @@ namespace MAIO
             InitializeComponent();
             if (Mainwindow.proxylist != null)
             {
-              /*  for (int i = 0; i < Mainwindow.proxylist.Count; i++)
-                {
-                    KeyValuePair<string, string> kv = Mainwindow.proxylist.ElementAt(i);
-                    //  proxybox.AppendText(Mainwindow.proxypool[i].ToString());
-                    //   proxybox.AppendText("\r\n");
-                    Mainwindow.proxy.Add(new Proxyclass { Index=i.ToString(),Name=kv.Key});
-                }*/
             }
             proxylistview.ItemsSource = Mainwindow.proxy;
         }
@@ -83,16 +76,6 @@ namespace MAIO
             Writecoookie.write();
             Application.Current.Shutdown();
         }
-        private void del_Click(object sender, RoutedEventArgs e)
-        {
-            /* string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.txt";
-             FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-             fs0.SetLength(0);
-             fs0.Close();
-             Mainwindow.proxypool.Clear();
-             proxybox.Document.Blocks.Clear();*/
-        }
-
         private void test_Click(object sender, RoutedEventArgs e)
         {
             /*  testbox.Document.Blocks.Clear();
@@ -184,10 +167,6 @@ namespace MAIO
                       ));
                }*/
         }
-        private void proxttest_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-        }
-
         private void clearfailed_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -229,13 +208,12 @@ namespace MAIO
                 MessageBox.Show("Clear fail failed");
             }
         }
-
         private void saveproxy(object sender, RoutedEventArgs e)
         {
             bool duplicate = false;
             string key = null;
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
-            string[] saveproxy = proxybox.Text.Split("\r\n");
+            string[] saveproxy = proxybox.Text.Split("\n");
             JObject ja = new JObject();
             for (int i = 0; i < saveproxy.Length; i++)
             {
@@ -273,8 +251,8 @@ namespace MAIO
             {
                 if (duplicate == false)
                 {
-                    Mainwindow.proxylist.Add(proxylistname.Text, ja.ToString());
-                    //  giftlist.Items.Add(giftcardname.Text);
+                     Mainwindow.proxylist.Add(proxylistname.Text, ja.ToString());
+                    Mainwindow.proxy.Add(new Proxyclass {Index=(Mainwindow.proxy.Count+1).ToString(),Name=proxylistname.Text});
                 }
                 FileInfo fi = new FileInfo(path);
                 if (fi.Length == 0)
@@ -316,6 +294,47 @@ namespace MAIO
                 MessageBox.Show("Please check your input");
             }
 
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var del = (Proxyclass)((Button)sender).DataContext;
+            string needdel = Mainwindow.proxylist[del.Name];
+            Mainwindow.proxy.Remove(del);
+            string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
+           updateproxy(del.Name, path2);
+
+        }
+        private void updateproxy(string gft, string path2)
+        {
+            FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            StreamReader sr = new StreamReader(fs0);
+            string pro = sr.ReadToEnd();
+            JArray ja = JArray.Parse(pro);
+            var test = ja.ToString();
+            sr.Close();
+            fs0.Close();
+            foreach (var item in ja)
+            {
+                if (item[gft] != null)
+                {
+                    item.Remove();
+                    break;
+                }
+            }
+            FileStream fs1 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            StreamWriter sw = new StreamWriter(fs1);
+            fs1.SetLength(0);
+            sw.Write(ja.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
+            sw.Close();
+            fs1.Close();
+            FileInfo fi = new FileInfo(path2);
+            FileStream fs2 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            if (fi.Length == 2)
+            {
+                fs2.SetLength(0);
+            }
+            fs2.Close();
         }
     }
 }
