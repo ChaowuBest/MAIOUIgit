@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using static MAIO.Main;
 using static MAIO.Mainwindow;
+using static MAIO.Proxy;
 
 namespace MAIO
 {
@@ -37,18 +38,19 @@ namespace MAIO
         public string cjevent { get; set; }
         public static Dictionary<string, string> allprofile = new Dictionary<string, string>();
         public static Dictionary<string, string> giftcardlist = new Dictionary<string, string>();
+        public static Dictionary<string, string> proxylist = new Dictionary<string, string>();
         public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
+        public static ObservableCollection<Proxyclass> proxy = new ObservableCollection<Proxyclass>();
         public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
         public static ArrayList proxypool = new ArrayList();
-        public static List<string> listproxy;
         public static Dictionary<string, string> tasklist = new Dictionary<string, string>();
         public static Dictionary<long, string> cookiewtime = new Dictionary<long, string>();
         public static List<string> lines = new List<string>();
         public static bool iscookielistnull = false;
         string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "MAIO";
         string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
-        string path3 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.txt";
+        string path3 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
         string path4 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
         public Mainwindow()
@@ -84,17 +86,41 @@ namespace MAIO
                 }
             }
             FileInfo fi = new FileInfo(path3);
-            if (fi.Length == 0)
+            if (fi.Length != 0)
             {
-            }
-            else
-            {
-                listproxy = new List<string>(File.ReadAllLines(path3));
-                for (int i = 0; i < listproxy.Count; i++)
+                FileStream fs2 = new FileStream(path3, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                StreamReader sr = new StreamReader(fs2);
+                var srread = sr.ReadToEnd();
+                if (srread.Contains("["))
                 {
-                    proxypool.Add(listproxy[i]);
+                    JArray ja = JArray.Parse(srread);
+                    foreach (var i in ja)
+                    {
+                        var jo = JObject.Parse(i.ToString());
+                        foreach (var n in jo)
+                        {
+                            proxylist.Add(n.Key, n.Value.ToString());
+                        }
+                    }
                 }
+                else
+                {
+                    JObject jo = JObject.Parse(srread);
+                    foreach (var i in jo)
+                    {
+                        proxylist.Add(i.Key, i.Value.ToString());
+                        var chao = i.Value.ToString();
+                    }
+                }
+                for (int i = 0; i < Mainwindow.proxylist.Count; i++)
+                {
+                    KeyValuePair<string, string> kv = Mainwindow.proxylist.ElementAt(i);
+                    proxy.Add(new Proxyclass { Index = i.ToString(), Name = kv.Key });
+                }
+                sr.Close();
+                fs2.Close();
             }
+           
         }
         public void Initialprofile()
         {
@@ -206,9 +232,7 @@ namespace MAIO
                             {
                                 giftcardlist.Add(n.Key, n.Value.ToString());
                             }
-
                         }
-
                     }
                     else
                     {
@@ -218,7 +242,6 @@ namespace MAIO
                             giftcardlist.Add(i.Key, i.Value.ToString());
                             var chao = i.Value.ToString();
                         }
-
                     }
                     sr.Close();
                     fs2.Close();

@@ -25,7 +25,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <TextBox Template="{StaticResource FilletTextBox}" x:Name="discordwebhook" BorderThickness="0" Height="34" TextWrapping="NoWrap" Background="#FF9CB0C6" MaxLines="1" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="400" Margin="0,-68,-318,2"/>
+            <TextBox Template="{StaticResource FilletTextBox}" x:Name="discordwebhook" BorderThickness="0" Height="34" TextWrapping="NoWrap" Background="#FF9CB0C6" MaxLines="1" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="400" Margin="0,-68,-318,2" CaretBrush="White"/>
             <Label Content="Advanced Mode" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" RenderTransformOrigin="0.515,-2.047" DockPanel.Dock="Top" Height="34" Width="160" Margin="-468,10,0,15" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -42,7 +42,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <TextBox Template="{StaticResource FilletTextBox}" x:Name="delay2" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="27,-64,0,1" HorizontalAlignment="Stretch"/>
+            <TextBox Template="{StaticResource FilletTextBox}" x:Name="delay2" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="27,-64,0,1" HorizontalAlignment="Stretch" CaretBrush="White"/>
             <Label Content="Use Monitor" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" RenderTransformOrigin="0.515,-2.047" DockPanel.Dock="Top" Height="34" Width="116" Margin="-499,11,0,15" FontWeight="Bold">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -101,7 +101,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cid" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="27,-65,0,1"/>
+            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cid" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.512,1.596" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="27,-65,0,1" CaretBrush="White"/>
             <Label Content="Cjevent" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" DockPanel.Dock="Top" Height="34" Width="88" Margin="-1,-64,-355,0">
                 <Label.BorderBrush>
                     <ImageBrush/>
@@ -110,7 +110,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cjevent" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="0,-65,-602,0">
+            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cjevent" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="0,-148,-602,0" CaretBrush="White">
                 <TextBox.BorderBrush>
                     <ImageBrush/>
                 </TextBox.BorderBrush>

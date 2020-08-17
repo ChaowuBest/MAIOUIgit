@@ -3,84 +3,82 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:MAIO"
              mc:Ignorable="d" Height="769" Width="1080" VerticalAlignment="Bottom">
-    <Grid Background="#FF243B55" Height="769" RenderTransformOrigin="0.534,0.484" Width="1080">
-        <RichTextBox Margin="65,118,469,138" x:Name="testbox" BorderThickness="0" Background="#FF243B55" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="White">
-            <FlowDocument/>
-        </RichTextBox>
-        <StackPanel Background="#FF011F1F" Orientation="Horizontal" Margin="0,47,0,675" Height="47">
-            <Label Content="Proxy" Margin="70,0,0,0" Height="32" Width="225" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalAlignment="Center"/>
-            <Label Content="Speed" Margin="100,0,0,0" Height="32" Width="98" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
-            <Label Content="Import Proxies" HorizontalContentAlignment="Center" Height="32" Width="309" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalAlignment="Center" Margin="132,0,0,0"/>
+    <Page.Resources>
+        <ControlTemplate x:Key="FilletTextBox" TargetType="{x:Type TextBox}">
+            <Border BorderBrush="White" BorderThickness="1" CornerRadius="5">
+                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+    </Page.Resources>
+    <Grid Background="#FF252935" Height="769" RenderTransformOrigin="0.534,0.484" Width="1080">
+        <StackPanel>
+            <TextBox Margin="639,154,13,138" Name="proxybox" Background="#FF2C3040" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="565" Width="428" CaretBrush="White">
+            </TextBox>
+            <Label Content="Proxies" FontFamily="PingFangSC-Semibold" HorizontalAlignment="Left" Height="55" VerticalAlignment="Top" Width="155" Margin="30,-833,0,0" Foreground="White" FontSize="32" FontWeight="Bold">
+                <Label.Background>
+                    <ImageBrush/>
+                </Label.Background>
+                <Label.BorderBrush>
+                    <ImageBrush/>
+                </Label.BorderBrush>
+            </Label>
+            <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="108" Content="Save" Margin="785,-1483,0,0" Click="saveproxy">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FF43B8FF" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <TextBox Template="{StaticResource FilletTextBox}" Name="proxylistname" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778" Foreground="#FFE0D2D2" Width="108" CaretBrush="White" Margin="464,-1483,0,0">
+                <TextBox.BorderBrush>
+                    <ImageBrush/>
+                </TextBox.BorderBrush>
+            </TextBox>
+            <hc:TransitioningContentControl Width="389" Margin="-500,-883,0,0" Height="543">
+                <DataGrid HeadersVisibility="All" RowHeaderWidth="60" Name="proxylistview" AutoGenerateColumns="False"  ItemsSource="{Binding}"  Margin="-66,-45,-129,-37" Background="#FF2C3040">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="#FF2C3040"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.RowHeaderTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=DataGridRow}}"/>
+                        </DataTemplate>
+                    </DataGrid.RowHeaderTemplate>
+                    <DataGrid.Resources>
+                        <Style x:Key="DataGridTextCenterColumnStyle" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Index" IsReadOnly="True"  Binding="{Binding Index}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}"  Width="90" CanUserResize="False"  FontFamily="PingFangSC-Semibold"/>
+                        <DataGridTextColumn Header="Name"  Width="1*" Binding="{Binding Name}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}"  FontFamily="PingFangSC-Semibold" />
+                        <DataGridTemplateColumn  Header="Action" Width="140" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="40,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" FontSize="20"/>
+                                    </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </hc:TransitioningContentControl>
         </StackPanel>
-        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,739" VerticalAlignment="Bottom" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
-        <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Save" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="634,651,219,73" Width="108" Click="save_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <Button Cursor="Hand"  x:Name="del" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Delete" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="843,651,10,73" Width="108" Click="del_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <Button Cursor="Hand" Click="clearfailed_Click" x:Name="clearfailed" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Clear Failed" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="372,688,480,36" Width="108">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <Button Cursor="Hand" x:Name="test" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Test All" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="133,688,720,36" Width="108" Click="test_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <RichTextBox Margin="616,118,13,138" Name="proxybox" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14">
-            <RichTextBox.Resources>
-                <Style TargetType="{x:Type Paragraph}">
-                    <Setter Property="Margin" Value="0"/>
-                </Style>
-            </RichTextBox.Resources>
-            <RichTextBox.Document>
-                <FlowDocument PageWidth="2048">
-                </FlowDocument>
-            </RichTextBox.Document>
-        </RichTextBox>
+        <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
     </Grid>
 </Page>

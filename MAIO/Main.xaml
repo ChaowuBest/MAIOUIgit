@@ -120,7 +120,7 @@
             <Label Content="Status" Height="32" Width="80" Margin="120,0,0,0" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
             <Label Content="Action" Height="32" Width="55" Margin="80,0,0,0" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
         </StackPanel>
-        <DataGrid GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="None" Margin="24,99,0,202" x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" MouseDoubleClick="datagrid_MouseDoubleClick">
+        <DataGrid GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column" Margin="24,99,0,202" x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" MouseDoubleClick="datagrid_MouseDoubleClick">
             <DataGrid.Resources>
                 <ResourceDictionary>
                     <XmlDataProvider x:Key="AllItem" />
