@@ -255,7 +255,7 @@ namespace MAIO
                     JArray ja = JArray.Parse(read);
                     for (int i = 0; i < ja.Count; i++)
                     {
-                        tasklist.Add(ja[i]["Taskid"].ToString(), ja[i].ToString().Replace("\n", "").Replace("\t", ""));
+                        tasklist.Add(ja[i]["Taskid"].ToString(), ja[i].ToString().Replace("\n", ""));
                     }
                     sr.Close();
                     fs2.Close();

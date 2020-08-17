@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System.Windows.Shapes;
 using System.Windows;
 using System.Text.RegularExpressions;
+using static MAIO.Main;
 
 namespace MAIO
 {
@@ -306,7 +307,7 @@ namespace MAIO
 
             return cookie;
         }
-        public string GetMethod(string url, string profile, string skuid, string pid, bool randomsize, Main.taskset tk, CancellationToken ct, CancellationTokenSource cts, string productid, string size)
+        public string GetMethod(string url, string iamgeurl, Main.taskset tk, CancellationToken ct)
         {
         C: if (ct.IsCancellationRequested)
             {
@@ -373,7 +374,7 @@ namespace MAIO
                     Thread.Sleep(1500);
                     goto C;
                 }
-                string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
+            //    string monitorurl = "https://api.nike.com/deliver/available_skus/v1?filter=productIds(" + productid + ")";
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
                     tk.Status = "WaitingRestock";
@@ -384,12 +385,16 @@ namespace MAIO
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
                     tk.Status = errormessage;
+                    if (Config.webhook!="")
+                    {
+                        failcheckout(tk, Config.webhook, errormessage, iamgeurl);
+                    }                  
                     Main.autorestock(tk);
                 }
             }
             catch (WebException ex)
             {
-                //   tk.Status = ex.ToString() + "Retrying";
+              
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
@@ -547,6 +552,43 @@ namespace MAIO
                 goto A;
             }
             return group;
+        }
+        public void failcheckout(taskset tk, string webhookurl, string reason,string imageurl)
+        {
+            JObject jobject = null;
+            jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":16711680,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Reason\",\"value\":\"\",\"inline\":false}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
+            jobject["embeds"][0]["title"] = "You Just Checkout!!!";
+            jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
+            jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+            jobject["embeds"][0]["fields"][2]["value"] = reason;
+            jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
+
+            Http(webhookurl, jobject.ToString());
+        }
+        public void Http(string url, string postDataStr)
+        {
+        Retry: Random ra = new Random();
+            int sleeptime = ra.Next(0, 3000);
+            Thread.Sleep(sleeptime);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "post";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            byte[] bytes = Encoding.UTF8.GetBytes(postDataStr);
+            request.ContentLength = bytes.Length;
+            Stream webstream = request.GetRequestStream();
+            webstream.Write(bytes, 0, bytes.Length);
+            webstream.Close();
+            try
+            {
+                HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                Thread.Sleep(1000);
+                goto Retry;
+            }
+
         }
     }
 }

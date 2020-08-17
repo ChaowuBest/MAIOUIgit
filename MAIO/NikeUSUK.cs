@@ -25,7 +25,7 @@ namespace MAIO
         public string pid = "";
         public string profile = "";
         public taskset tk = null;
-        public string code = "";      
+        public string code = "";
         string GID = Guid.NewGuid().ToString();
         public string skuid = "";
         public string productID = "";
@@ -51,7 +51,7 @@ namespace MAIO
             {
                 try
                 {
-                    quantity=int.Parse(tk.Quantity);
+                    quantity = int.Parse(tk.Quantity);
                     GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
                 }
                 catch (NullReferenceException)
@@ -186,12 +186,12 @@ namespace MAIO
                     }
                     string[] Multiplesize = size.Split("-");
                     ArrayList ar = new ArrayList();
-                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i+=0.5)
+                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
                     {
                         ar.Add(i);
                     }
                     Random ra = new Random();
-                    size = ar[ra.Next(0,ar.Count)].ToString();
+                    size = ar[ra.Next(0, ar.Count)].ToString();
                     if (Gssize)
                     {
                         size += "Y";
@@ -220,7 +220,7 @@ namespace MAIO
 
                     JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                     JObject j = JObject.Parse(jar[0].ToString());
-                    var chao=j.ToString();
+                    var chao = j.ToString();
                     string skuids = j["skus"].ToString();
                     if (tk.Tasksite == "NikeUS")
                     {
@@ -235,7 +235,7 @@ namespace MAIO
                         imageurl = j["imageUrls"]["productImageUrl"].ToString();
                     }
                     catch
-                    {                     
+                    {
                     }
                     limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
                     JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
@@ -274,8 +274,8 @@ namespace MAIO
                                 if (Config.Usemonitor == "True")
                                 {
                                     string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                                    string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\""+skuid+"\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize,skuid,false);
+                                    string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, false);
                                     if (group[0] != null)
                                     {
                                         skuid = group[0];
@@ -310,7 +310,7 @@ namespace MAIO
                                                         }
                                                         try
                                                         {
-                                                          
+
                                                             NikeUSUK NSK = new NikeUSUK();
                                                             NSK.monitortask = false;
                                                             NSK.giftcard = giftcard;
@@ -340,7 +340,7 @@ namespace MAIO
                                                 }, null);
                                             });
                                         }
-                                        
+
                                     }
                                 }
                                 else
@@ -430,7 +430,7 @@ namespace MAIO
                             loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
                         }
                         else
-                        {              
+                        {
                             loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
                         }
                         string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
@@ -438,7 +438,7 @@ namespace MAIO
                     }
                     else
                     {
-                        
+
                         FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                         StreamReader sr = new StreamReader(fs1);
                         string read = sr.ReadToEnd();
@@ -446,12 +446,12 @@ namespace MAIO
                         string token = "";
                         for (int i = 0; i < ja.Count; i++)
                         {
-                            if (ja[i]["Account"].ToString().ToUpper() ==username.ToUpper())
+                            if (ja[i]["Account"].ToString().ToUpper() == username.ToUpper())
                             {
                                 token = ja[i]["Token"].ToString();
                                 break;
                             }
-                        }             
+                        }
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
@@ -465,7 +465,7 @@ namespace MAIO
                             //https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=a9bbc919-6822-4cdd-8865-8ed9a6404276 
                             if (tk.Tasksite.Contains("US"))
                             {
-                                        //          
+                                //          
                                 loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                             }
                             else
@@ -563,7 +563,7 @@ namespace MAIO
             string country = "";
             string currency = "";
             string locale = "";
-            string shippingMethod = "";         
+            string shippingMethod = "";
             if (jo["Country"].ToString() == "GB")
             {
                 country = "GB";
@@ -578,7 +578,7 @@ namespace MAIO
                 locale = "en_US";
                 shippingMethod = "STANDARD";
             }
-           if (int.Parse(tk.Quantity)>limit)
+            if (int.Parse(tk.Quantity) > limit)
             {
                 quantity = limit;
             }
@@ -729,7 +729,7 @@ namespace MAIO
                 {
                     currency = "USD";
                 }
-                string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\""+currency+"\"}";
+                string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
                 balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, cardguid, tk, ct);
                 double msrpdouble = Convert.ToDouble(msrp);
                 if (balance > msrpdouble)
@@ -990,7 +990,7 @@ new JProperty("shippingAddress",
  new JProperty("email", jo["EmailAddress"].ToString()))))
  )))));
             }
-             paytoken = payinfo.ToString();
+            paytoken = payinfo.ToString();
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1012,20 +1012,24 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.finalorder(url, Authorization, tk,randomsize, ct, skuid,paytoken,GID);
+            string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
 
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            if (status.Contains("error") == true||status.Contains("inventory")==true)
+            if (status.Contains("error") == true || status.Contains("inventory") == true)
             {
                 JObject jo = JObject.Parse(status);
                 string obejects = jo["error"].ToString();
                 JObject jo2 = JObject.Parse(obejects);
                 string reason = jo2["message"].ToString();
                 tk.Status = reason;
+                if (Config.webhook != "")
+                {
+                    failcheckout(tk, Config.webhook, joprofile, reason);
+                }   
                 Main.autorestock(tk);
             }
             else
@@ -1046,18 +1050,44 @@ new JProperty("shippingAddress",
                 if (status.Contains("error") == false)
                 {
                     ProcessNotification(true, tk, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", joprofile, "");
-                    ProcessNotification(false,tk,Config.webhook, joprofile,orderid);  
+                    ProcessNotification(false, tk, Config.webhook, joprofile, orderid);
                     tk.Status = "Success";
                 }
             }
-
         }
-        public void ProcessNotification(bool publicsuccess,taskset tk,string webhookurl, JObject joprofile,string orderid)
+        public void failcheckout(taskset tk, string webhookurl, JObject joprofile, string reson)
+        {
+            JObject jobject = null;
+            jobject = JObject.Parse("{\r\n\"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n\"embeds\": [\r\n{\r\n\"title\": \"\",\"color\":16711680,\r\n\"description\": \"\",\r\n\"fields\": [\r\n{\r\n\"name\": \"Style Code\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Size\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Email\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,\r\n{\r\n\"name\": \"Account\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,{\r\n\"name\": \"Reason\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n},\r\n{\r\n\"name\": \"Profile\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},{\r\n\"name\": \"Code\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n}\r\n],\r\n\"thumbnail\": {\r\n\"url\": \"\"\r\n},\r\n\"footer\": {\r\n\"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n\"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n}\r\n}\r\n]\r\n}");
+            jobject["embeds"][0]["title"] = "Failed Checkout!!!";
+            if (tk.Size == null || tk.Size == "")
+            {
+                tk.Size = "RA";
+            }
+            jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
+            jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+            jobject["embeds"][0]["fields"][2]["value"] = joprofile["EmailAddress"].ToString();
+            jobject["embeds"][0]["fields"][3]["value"] = username;
+            jobject["embeds"][0]["fields"][4]["value"] = reson;
+            jobject["embeds"][0]["fields"][5]["value"] = tk.Profile;
+            if (code == "" || code == null)
+            {
+                jobject["embeds"][0]["fields"][6]["value"] = "null";
+            }
+            else
+            {
+                jobject["embeds"][0]["fields"][6]["value"] = code;
+            }
+            jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
+
+            Http(webhookurl, jobject.ToString(), tk);
+        }
+        public void ProcessNotification(bool publicsuccess, taskset tk, string webhookurl, JObject joprofile, string orderid)
         {
             JObject jobject = null;
             if (publicsuccess)
             {
-               jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Site\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO"+ DateTime.Now.ToLocalTime().ToString() + "\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
+                jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Site\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
                 jobject["embeds"][0]["title"] = "You Just Checkout!!!";
                 if (tk.Size == null || tk.Size == "")
                 {
@@ -1070,7 +1100,6 @@ new JProperty("shippingAddress",
             }
             else
             {
-              // jobject = JObject.Parse("{\r\n    \"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n    \"embeds\": [\r\n        {\r\n            \"title\": \"\",\"color\":3329330,\r\n            \"description\": \"\",\r\n            \"fields\": [\r\n                              {\r\n                    \"name\": \"Style Code\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Size\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                },\r\n                {\r\n                    \"name\": \"Email\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n            ,\r\n                {\r\n                    \"name\": \"Account\",\r\n                    \"value\": \"\",\r\n                    \"inline\": true\r\n                }\r\n,                            {\r\n                    \"name\": \"Orderid\",\r\n                    \"value\": \"\",\r\n                    \"inline\": false\r\n                }\r\n            ],\r\n            \"thumbnail\": {\r\n                \"url\": \"\"\r\n            },\r\n            \"footer\": {\r\n                \"text\": \"MAIO"+ DateTime.Now.ToLocalTime().ToString() + "\",\r\n                \"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n            }\r\n        }\r\n    ]\r\n}");
                 jobject = JObject.Parse("{\r\n\"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n\"embeds\": [\r\n{\r\n\"title\": \"\",\"color\":3329330,\r\n\"description\": \"\",\r\n\"fields\": [\r\n{\r\n\"name\": \"Style Code\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Size\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Email\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,\r\n{\r\n\"name\": \"Account\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,{\r\n\"name\": \"Orderid\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n},\r\n{\r\n\"name\": \"Profile\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},{\r\n\"name\": \"Code\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n}\r\n],\r\n\"thumbnail\": {\r\n\"url\": \"\"\r\n},\r\n\"footer\": {\r\n\"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n\"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n}\r\n}\r\n]\r\n}");
                 jobject["embeds"][0]["title"] = "You Just Checkout!!!";
                 if (tk.Size == null || tk.Size == "")
@@ -1092,8 +1121,8 @@ new JProperty("shippingAddress",
                     jobject["embeds"][0]["fields"][6]["value"] = code;
                 }
                 jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
-            }            
-            Http(webhookurl, jobject.ToString(),tk);
+            }
+            Http(webhookurl, jobject.ToString(), tk);
         }
         public void Http(string url, string postDataStr, Main.taskset tk)
         {
@@ -1112,8 +1141,6 @@ new JProperty("shippingAddress",
             try
             {
                 HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
-                //   StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream(), Encoding.UTF8);
-                //   string result = streamReader.ReadToEnd();
             }
             catch (WebException ex)
             {

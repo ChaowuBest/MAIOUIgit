@@ -34,6 +34,7 @@ namespace MAIO
     public partial class Main : UserControl
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
+        public static Dictionary<string, string> randomdic = new Dictionary<string, string>();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public Main()
         {
@@ -510,8 +511,20 @@ namespace MAIO
                                     {
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[","").Replace("]","").Replace(" ",""));
                                     }
-                                    Random ranaccount = new Random();
+                            A:       Random ranaccount = new Random();
                                     int randomaccount= ranaccount.Next(0, ar.Count);
+                                    if (randomdic.Count ==ar.Count)
+                                    {
+                                        randomdic.Clear();
+                                    }
+                                    try
+                                    {
+                                        randomdic.Add(ar[randomaccount].ToString(), "1");
+                                    }
+                                    catch
+                                    {
+                                        goto A;
+                                    }
                                     account=ar[randomaccount].ToString().Split(",");
                                 }
                                 else
@@ -842,8 +855,20 @@ namespace MAIO
                                         {
                                             ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
                                         }
-                                        Random ranaccount = new Random();
+                                    A: Random ranaccount = new Random();
                                         int randomaccount = ranaccount.Next(0, ar.Count);
+                                        if (randomdic.Count == ar.Count)
+                                        {
+                                            randomdic.Clear();
+                                        }
+                                        try
+                                        {
+                                            randomdic.Add(ar[randomaccount].ToString(), "1");
+                                        }
+                                        catch
+                                        {
+                                            goto A;
+                                        }
                                         account = ar[randomaccount].ToString().Split(",");
                                     }
                                     else

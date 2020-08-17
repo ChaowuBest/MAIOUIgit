@@ -53,12 +53,12 @@ namespace MAIO
             }
             if(duplicate)
             {
-                Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", "");
+                Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "");
                 profilewrite(profile);              
             }
             else
             {
-                Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "").Replace("\t", ""));
+                Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
                 profilewrite(profile);
                 profilelist.Items.Add(profilename.Text);
             }
@@ -149,7 +149,7 @@ namespace MAIO
             FileStream fs1 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             StreamWriter sw = new StreamWriter(fs1);
             fs1.SetLength(0);
-            sw.Write(ja.ToString().Replace("\n", "").Replace("\t", ""));
+            sw.Write(ja.ToString().Replace("\n", ""));
             sw.Close();
             fs1.Close();
             FileInfo fi = new FileInfo(path2);
