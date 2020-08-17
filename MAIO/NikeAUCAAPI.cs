@@ -184,7 +184,6 @@ namespace MAIO
                 }
             }
             //  var chao=cookie();
-            request.Headers.Add("Cookie", "_abck=0A50E8275B5485E5AE557EFD88AAAA7E~-1~YAAQDMrdPEtOVu9zAQAAN4cF8wQoCa55AnV2mrpBVxzK8Qmlzuw59uAriLTv8mDZJjmBV2tZVYxVAEiTmZST07934/jYrBTsBCtGyTvhZ4kpO4cGemSOB9jm+HxOrRWjjzQSZ1KVlC85YJuQ2XXKVK944m3H7AZg4fUkbAhzdb56baSTCDIjOFUBxScX/sQP/bCZqC8a4ZBp51TjaXwsvhs8JDQ5nxXKfNOT41QXeTgIDDl2jeNPpd5UeSfPmTdSaUqVYnZfBXNKgJ2QurHucyHyBZWs/KE8XMH7+B+zAAs4qheBXZ4hJfVB7XKatT5m6+y9U+BMPDBUYvAS0selt2zs3r2Yuv0LjfDTc8fKI+w=~-1~-1~-1; bm_sz=462AB3745FBB9C32332F4A2BE6BD78AE~YAAQDMrdPEpOVu9zAQAAN4cF8wjY3FqVo6p6Ji0pq4VFj1+YasnIweQfkd/cT6kOygFJ4HBk+zHl4PipQZOHkeXImRbyuwE5pCU5J3Ghomq/4zACyu7PUOv9KUncdiqfNxqVN7XgCeLzmsMowNauE4OM79FEfRfaeUvhTMJIdLvVJTRth/i24ERdNJS9Sw==");
             request.ContentLength = contentpaymentinfo.Length;
             request.Headers.Add("Origin", "https://www.nike.com");
             request.Headers.Add("Sec-Fetch-Dest", "empty");
