@@ -23,7 +23,7 @@
                 <ComboBoxItem Content="NikeUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeMY" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="NikeNZ" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
-                <!--<ComboBoxItem Content="NikeSG" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>-->
+                <ComboBoxItem Content="NikeSG" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="Footasylum" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="TheNorthFaceUS" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
                 <ComboBoxItem Content="TheNorthFaceUK" Padding="65,0,0,0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
@@ -75,17 +75,8 @@
                     </FlowDocument>
                 </RichTextBox.Document>
             </RichTextBox>
-            <RichTextBox x:Name="discount" FontFamily="PingFangSC-Semibold" FontSize="14" Width="129" Height="23" Margin="-1057,2,-20,0" Panel.ZIndex="0">
-                <RichTextBox.Resources>
-                    <Style TargetType="{x:Type Paragraph}">
-                        <Setter Property="Margin" Value="0"/>
-                    </Style>
-                </RichTextBox.Resources>
-                <RichTextBox.Document>
-                    <FlowDocument PageWidth="2048">
-                    </FlowDocument>
-                </RichTextBox.Document>
-            </RichTextBox>
+            <ComboBox x:Name="discount" FontFamily="PingFangSC-Semibold" FontSize="14" Width="129" Height="23" Margin="-1057,2,-20,0" Panel.ZIndex="0">
+            </ComboBox>
             <Label Content="Code" Name="code" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Width="58" Height="24" Margin="-1120,-45,0,0"/>
             <ComboBox x:Name="Quantity" FontFamily="PingFangSC-Semibold" FontSize="14" Loaded="Quantity_Loaded" Width="129" Height="23" Margin="-1037,115,0,0">
 

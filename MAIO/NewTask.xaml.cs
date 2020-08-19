@@ -25,8 +25,6 @@ namespace MAIO
         public NewTask()
         {
             InitializeComponent();
-           // accountlable.Visibility = Visibility.Hidden;
-         //   assignaccount.Visibility = Visibility.Hidden;
             Quantity.ItemsSource = Config.qual;
             account.ItemsSource = Mainwindow.account.Keys;
             tasknumber.Document.Blocks.Clear();
@@ -34,6 +32,7 @@ namespace MAIO
             Paragraph p4 = new Paragraph();
             p4.Inlines.Add(run4);
             tasknumber.Document.Blocks.Add(p4);
+            discount.ItemsSource=Mainwindow.codepool;
         }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -75,11 +74,7 @@ namespace MAIO
                 p2.Inlines.Add(run2);
                 sku.Document.Blocks.Add(p2);
 
-                discount.Document.Blocks.Clear();
-                Run run3 = new Run(Midtransfer.code);
-                Paragraph p3 = new Paragraph();
-                p3.Inlines.Add(run3);
-                discount.Document.Blocks.Add(p3);
+                discount.Text = Midtransfer.code;
 
                 tasknumber.Document.Blocks.Clear();
                 Run run4 = new Run("1");
@@ -125,7 +120,7 @@ namespace MAIO
         {
             string productid = new TextRange(sku.Document.ContentStart, sku.Document.ContentEnd).Text.Replace("\r\n", "");
             string sizeid = new TextRange(size.Document.ContentStart, size.Document.ContentEnd).Text.Replace("\r\n", "");
-            string code = new TextRange(discount.Document.ContentStart, discount.Document.ContentEnd).Text.Replace("\r\n", "");
+            string code = discount.Text;
             string taskNumber = new TextRange(tasknumber.Document.ContentStart, tasknumber.Document.ContentEnd).Text.Replace("\r\n","");
             string user = null;
             if (assingaccount.Text != "" && assingaccount.Text != null)

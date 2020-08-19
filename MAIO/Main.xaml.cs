@@ -348,7 +348,7 @@ namespace MAIO
         private void Ctask(string[] st)
         {
             string taskid = Guid.NewGuid().ToString();
-            if (st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") == "NikeUS" || st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") == "NikeUK")
+            /*if (st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") == "NikeUS" || st[0].Replace("System.Windows.Controls.ComboBoxItem: ", "") == "NikeUK")
             {
                 if (st[5] == ""&&Mainwindow.codepool.Count!=0)
                 {
@@ -358,7 +358,7 @@ namespace MAIO
                     Mainwindow.codepool.Remove(Mainwindow.codepool[ran]);
                     updatediscount(st[5]);
                 }
-            }
+            }*/
             if (st[4].Replace("\r\n", "") == "")
             {
                 st[4] = "RA";

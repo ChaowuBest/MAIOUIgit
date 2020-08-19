@@ -54,13 +54,13 @@ namespace MAIO
             {
                 wp = default;
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = wp;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = null;
                 if (response.ContentEncoding == "gzip")
@@ -114,6 +114,7 @@ namespace MAIO
             {
                 wp = default;
             }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             req.Proxy = wp;
             byte[] contentByte = Encoding.UTF8.GetBytes(logininfo);
@@ -464,7 +465,6 @@ namespace MAIO
                 catch (NullReferenceException ex)
                 {
                 }
-
             }
             catch (WebException ex)
             {

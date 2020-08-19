@@ -385,10 +385,10 @@ namespace MAIO
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
                     tk.Status = errormessage;
-                    if (Config.webhook!="")
-                    {
-                        failcheckout(tk, Config.webhook, errormessage, iamgeurl);
-                    }                  
+               //   if (Config.webhook!="")
+                  //  {
+                //  、、      failcheckout(tk, Config.webhook, errormessage, iamgeurl);
+                //    }                  
                     Main.autorestock(tk);
                 }
             }

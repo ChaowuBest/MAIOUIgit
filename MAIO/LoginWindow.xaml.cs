@@ -22,11 +22,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.23
+    /// version 0.99.24
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.23";//everychange
+        public static string version = "0.99.24";//everychange
         public LoginWindow()
         {
             InitializeComponent();
@@ -40,46 +40,49 @@ namespace MAIO
             try
             {
                 finger = FingerPrint.Value() + ip;
-            }
-            catch(Exception ex)
-            {
-            }
-            var hwid = MD5Helper.EncryptString(finger);       
-            Config.hwid = hwid;
-            string path = Environment.CurrentDirectory + "\\" + "config.json";
-            if (File.Exists(path))
-            {
-                if (this.keycheck(hwid))
+
+
+                var hwid = MD5Helper.EncryptString(finger);
+                Config.hwid = hwid;
+                string path = Environment.CurrentDirectory + "\\" + "config.json";
+                if (File.Exists(path))
                 {
-                    try
+                    if (this.keycheck(hwid))
                     {
-                        Mainwindow MD = new Mainwindow();
-                        string config = File.ReadAllText(path);
-                        JObject jo = JObject.Parse(config);
-                        Config.Key = MD.Key = jo["key"].ToString();
-                        Config.webhook = MD.webhook = jo["webhook"].ToString();
-                        Config.cid = MD.cid = jo["cid"].ToString();
-                        Config.cjevent = MD.cjevent = jo["cjevent"].ToString();
-                        Config.delay = jo["delay"].ToString();
-                        Config.Usemonitor = jo["Usemonitor"].ToString();
-                        Config.UseAdvancemode = jo["Advancemode"].ToString();
-                        if (jo["AutoClearCookie"].ToString() == "True")
+                        try
                         {
-                            Config.autoclearcookie = true;
+                            Mainwindow MD = new Mainwindow();
+                            string config = File.ReadAllText(path);
+                            JObject jo = JObject.Parse(config);
+                            Config.Key = MD.Key = jo["key"].ToString();
+                            Config.webhook = MD.webhook = jo["webhook"].ToString();
+                            Config.cid = MD.cid = jo["cid"].ToString();
+                            Config.cjevent = MD.cjevent = jo["cjevent"].ToString();
+                            Config.delay = jo["delay"].ToString();
+                            Config.Usemonitor = jo["Usemonitor"].ToString();
+                            Config.UseAdvancemode = jo["Advancemode"].ToString();
+                            if (jo["AutoClearCookie"].ToString() == "True")
+                            {
+                                Config.autoclearcookie = true;
+                            }
+                            else
+                            {
+                                Config.autoclearcookie = false;
+                            }
+                            this.Close();
+                            MD.Show();
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Config.autoclearcookie = false;
+
+                            Application.Current.Shutdown();
                         }
-                        this.Close();
-                        MD.Show();
-                    }
-                    catch (Exception ex)
-                    {
-                       
-                        Application.Current.Shutdown();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+
             }
 
         }
