@@ -148,7 +148,7 @@ namespace MAIO
                     if ((Config.cjevent != "") && (Config.cid != ""))
                     {
                     reloadcookie: Random ra = new Random();
-                        int sleeptime = ra.Next(0, 500);
+                        int sleeptime = ra.Next(0, 100);
                         Thread.Sleep(sleeptime);
                         if (Mainwindow.lines.Count == 0)
                         {
@@ -183,7 +183,7 @@ namespace MAIO
                     else
                     {
                     reloadcookie: Random ra = new Random();
-                        int sleeptime = ra.Next(0, 500);
+                        int sleeptime = ra.Next(0, 100);
                         Thread.Sleep(sleeptime);
                     E: if (Mainwindow.lines.Count == 0)
                         {
@@ -855,7 +855,7 @@ namespace MAIO
                 if ((Config.cjevent != "") && (Config.cid != ""))
                 {
                 reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 500);
+                    int sleeptime = ra.Next(0, 100);
                     Thread.Sleep(sleeptime);
                 C: if (Mainwindow.lines.Count == 0)
                     {
@@ -890,7 +890,7 @@ namespace MAIO
                 else
                 {
                 reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 500);
+                    int sleeptime = ra.Next(0, 100);
                     Thread.Sleep(sleeptime);
                 C: if (Mainwindow.lines.Count == 0)
                     {
