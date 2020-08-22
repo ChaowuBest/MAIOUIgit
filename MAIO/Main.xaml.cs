@@ -79,7 +79,7 @@ namespace MAIO
                 task2.Start();
             }
             Task task3 = new Task(()=>check());
-            task3.Start();
+          //  task3.Start();
         }
         public void check()
         {

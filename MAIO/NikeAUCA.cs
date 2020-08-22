@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -83,7 +84,7 @@ namespace MAIO
             {
                 return;
             }
-            tk.Status = "Success";
+          
         }
         public void GetSKUID(string country, string pid, CancellationToken ct)
         {
@@ -168,7 +169,7 @@ namespace MAIO
                     imageurl = j["imageUrls"]["productImageUrl"].ToString();
                 }
                 catch
-                { 
+                {
 
                 }
                 priceid = j["merchPrice"]["snapshotId"].ToString();
@@ -205,8 +206,8 @@ namespace MAIO
                         if (Config.Usemonitor == "True")
                         {
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                            string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\""+skuid+"\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize,skuid);
+                            string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid);
                             if (group[0] != null)
                             {
                                 skuid = group[0];
@@ -253,7 +254,7 @@ namespace MAIO
                                             }
                                         }, null);
                                     });
-                                }                       
+                                }
                             }
                         }
                         else
@@ -270,10 +271,11 @@ namespace MAIO
                     goto Retry;
                 }
             }
-       
+
         }
-        public string Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
+        public  string Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
         {
+
             string currency = "";
             if (tk.Tasksite.Contains("AU"))
             {
@@ -293,7 +295,7 @@ namespace MAIO
             }
             else if (tk.Tasksite.Contains("SG"))
             {
-                currency = "SGD";   
+                currency = "SGD";
             }
 
             if (int.Parse(tk.Quantity) > limit)
@@ -332,18 +334,17 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string payinfo = payLoad.ToString();          
+            string payinfo = payLoad.ToString();
             AUCAAPI.PutMethod(url, payinfo, tk, ct);
-
             return payinfo;
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
-            string sourcecode = AUCAAPI.GetMethod(url,imageurl, tk, ct);
+            string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
             JObject jo = JObject.Parse(sourcecode);
             string paymenturl = jo["response"]["redirectUrl"].ToString();
-
+            tk.Status = "Success";
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -365,7 +366,7 @@ namespace MAIO
             }
             else
             {
-                ProcessNotification(false,Config.webhook, paymenturl);
+                ProcessNotification(false, Config.webhook, paymenturl);
                 ProcessNotification(true, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", "");
                 tk.Status = "Check Webhook";
             }
@@ -375,7 +376,7 @@ namespace MAIO
             JObject jobject = null;
             if (publicsuccess)
             {
-                jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":3329330,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Site\",\"value\":\"\",\"inline\":true}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO" + DateTime.Now.ToLocalTime().ToString()+"\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
+                jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":3329330,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Site\",\"value\":\"\",\"inline\":true}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
                 jobject["embeds"][0]["title"] = "You Just Checkout!!!";
                 jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
                 jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
@@ -384,7 +385,7 @@ namespace MAIO
             }
             else
             {
-                jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":3329330,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Paymenturl\",\"value\":\"\",\"inline\":false}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO"+DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
+                jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":3329330,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Paymenturl\",\"value\":\"\",\"inline\":false}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
                 jobject["embeds"][0]["title"] = "You Just Checkout!!!";
                 jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
                 jobject["embeds"][0]["fields"][1]["value"] = tk.Size;

@@ -615,8 +615,7 @@ namespace MAIO
                    new JProperty("city", jo["City"].ToString()),
                    new JProperty("postalCode", jo["Zipcode"].ToString()),
                    new JProperty("state", jo["State"].ToString()),
-                   new JProperty("country", country),
-                   new JProperty("email", jo["EmailAddress"].ToString()))))
+                   new JProperty("country", country))))
                 )))));
             if (code != "")
             {
@@ -652,8 +651,7 @@ namespace MAIO
                        new JProperty("city", jo["City"].ToString()),
                        new JProperty("postalCode", jo["Zipcode"].ToString()),
                        new JProperty("state", jo["State"].ToString()),
-                       new JProperty("country", country),
-                       new JProperty("email", jo["EmailAddress"].ToString()))))
+                       new JProperty("country", country))))
                     )))));
             }
             string checkoutpayload = "";
@@ -843,15 +841,12 @@ new JObject(
 new JProperty("address1", jo["Address1"].ToString()),
 new JProperty("address2", jo["Address2"].ToString()),
 new JProperty("city", jo["City"].ToString()),
-new JProperty("state", jo["State"].ToString()),
 new JProperty("postalCode", jo["Zipcode"].ToString()),
-new JProperty("country", country),
-new JProperty("email", jo["EmailAddress"].ToString()),
-new JProperty("phoneNumber", jo["Tel"].ToString())))))),
+new JProperty("country", country)))))),
 new JProperty("paymentInfo",
 new JArray(
 new JObject(
-new JProperty("id", cardguid),
+new JProperty("id", Guid.NewGuid().ToString()),
 new JProperty("type", "CreditCard"),
 new JProperty("creditCardInfoId", cardguid),
 new JProperty("billingInfo",
@@ -924,8 +919,6 @@ new JProperty("email", jo["EmailAddress"].ToString()),
 new JProperty("locale", locale),
 new JProperty("paymentToken", id),
 new JProperty("channel", "SNKRS"),
-new JProperty("promotionCodes",
-new JArray()),
 new JProperty("items",
 new JArray(
 new JObject(
@@ -941,15 +934,15 @@ new JProperty("contactInfo",
   new JObject(
   new JProperty("phoneNumber", jo["Tel"].ToString()),
   new JProperty("email", jo["EmailAddress"].ToString()))),
-new JProperty("shippingAddress",
+new JProperty("shippingAddress", 
   new JObject(
   new JProperty("address1", jo["Address1"].ToString()),
   new JProperty("address2", jo["Address2"].ToString()),
   new JProperty("city", jo["City"].ToString()),
   new JProperty("state", jo["State"].ToString()),
   new JProperty("postalCode", jo["Zipcode"].ToString()),
-  new JProperty("country", country),
-  new JProperty("email", jo["EmailAddress"].ToString()))))
+  new JProperty("country", country))
+  ))
 )))));
             if (code != "")
             {
@@ -986,8 +979,7 @@ new JProperty("shippingAddress",
  new JProperty("city", jo["City"].ToString()),
  new JProperty("state", jo["State"].ToString()),
  new JProperty("postalCode", jo["Zipcode"].ToString()),
- new JProperty("country", country),
- new JProperty("email", jo["EmailAddress"].ToString()))))
+ new JProperty("country", country))))
  )))));
             }
             paytoken = payinfo.ToString();
@@ -996,7 +988,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            USUKAPI.final(Authorization, url, paytoken, GID, tk, ct);
+            USUKAPI.final(Authorization, url, paytoken, GID, tk, ct,id);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1012,8 +1004,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
-
+              string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
