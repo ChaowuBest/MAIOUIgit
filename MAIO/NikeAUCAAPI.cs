@@ -204,7 +204,6 @@ namespace MAIO
                      tk.Status = "IDLE";
                      ct.ThrowIfCancellationRequested();
                  }
-                 #region
                  int random = ran.Next(0, Mainwindow.proxypool.Count);
                  WebProxy wp = new WebProxy();
                  try
