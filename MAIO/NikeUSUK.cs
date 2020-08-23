@@ -39,6 +39,7 @@ namespace MAIO
         public string imageurl = "";
         public string password = "";
         public string giftcard = "";
+        public static bool subcard = false;
         Dictionary<string, string> giftcard2 = new Dictionary<string, string>();
         NikeUSUKAPI USUKAPI = new NikeUSUKAPI();
         ArrayList skuidlist = new ArrayList();
@@ -71,17 +72,25 @@ namespace MAIO
                     goto B;
                 }
             C:
-                if (giftcard == "")
+                try
                 {
-                    try
+                    if (giftcard == "")
                     {
-                        Submitcardinfo(Authorization, skuid, ct);
-                    }
-                    catch (NullReferenceException)
-                    {
-                        goto C;
-                    }
 
+                        //    Submitcardinfo(Authorization, skuid, ct);
+                        Task task = new Task(() => Submitcardinfo(Authorization, skuid, ct));
+                        task.Start();
+                    }
+                    else
+                    {
+                        Task task = new Task(() => subimitgiftcard(Authorization, skuid, ct));
+                        task.Start();
+                        // subimitgiftcard(Authorization, skuid, ct);
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    goto C;
                 }
             D:
                 try
@@ -102,16 +111,20 @@ namespace MAIO
                 {
                     goto E;
                 }
-                if (giftcard != "")
-                {
-                    subimitgiftcard(Authorization, skuid, ct);
-                }
+
                 try
                 {
-                    string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
-                    PreviewJob(id, Authorization, skuid, ct);
-                    paymenttoken(Authorization, id, skuid, joprofile, ct);
-                    finalorder(Authorization, ct, joprofile);
+                F: if (subcard)
+                    {
+                        string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
+                        PreviewJob(id, Authorization, skuid, ct);
+                        paymenttoken(Authorization, id, skuid, joprofile, ct);
+                        finalorder(Authorization, ct, joprofile);
+                    }
+                    else
+                    {
+                        goto F;
+                    }
                 }
                 catch (NullReferenceException)
                 {
@@ -555,6 +568,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            subcard = true;
 
         }
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
@@ -741,6 +755,7 @@ namespace MAIO
                     break;
                 }
             }
+            subcard = true;
         }
         ArrayList giftcardadd = new ArrayList();
         protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
@@ -934,7 +949,7 @@ new JProperty("contactInfo",
   new JObject(
   new JProperty("phoneNumber", jo["Tel"].ToString()),
   new JProperty("email", jo["EmailAddress"].ToString()))),
-new JProperty("shippingAddress", 
+new JProperty("shippingAddress",
   new JObject(
   new JProperty("address1", jo["Address1"].ToString()),
   new JProperty("address2", jo["Address2"].ToString()),
@@ -988,7 +1003,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            USUKAPI.final(Authorization, url, paytoken, GID, tk, ct,id);
+            USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1004,7 +1019,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-              string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
+            string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1020,7 +1035,7 @@ new JProperty("shippingAddress",
                 if (Config.webhook != "")
                 {
                     failcheckout(tk, Config.webhook, joprofile, reason);
-                }   
+                }
                 Main.autorestock(tk);
             }
             else

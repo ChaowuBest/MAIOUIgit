@@ -403,8 +403,8 @@ namespace MAIO
                 sourcecode = readStream.ReadToEnd();
                 goto C;
             }
-            _page.Dispose();
-            _browser.Dispose();
+          //  _page.Dispose();
+           // _browser.Dispose();
             return sourcecode;
         }
         public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid)

@@ -169,7 +169,7 @@ namespace MAIO
                 }
             }
         }
-
+        private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public bool keyauth(string md5key, string cpuid, string version)
         {
             var binding = new BasicHttpBinding();

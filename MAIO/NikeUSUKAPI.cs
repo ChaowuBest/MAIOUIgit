@@ -28,6 +28,7 @@ namespace MAIO
         string xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+       
         public int failedretry = 0;
         int failedsubshipp = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
@@ -391,6 +392,7 @@ namespace MAIO
                 tk.Status = "Submit Card failed";
                 goto B;
             }
+
             return balance;
 
         }
