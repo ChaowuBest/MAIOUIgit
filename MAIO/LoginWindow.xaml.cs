@@ -26,7 +26,7 @@ namespace MAIO
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.23";//everychange
+        public static string version = "0.99.25";//everychange
         public LoginWindow()
         {
             InitializeComponent();

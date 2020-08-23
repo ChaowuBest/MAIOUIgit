@@ -1,0 +1,17 @@
+﻿<Window x:Class="MAIO.AddAccount"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MAIO"
+        mc:Ignorable="d"
+        Title="AddAccount" Height="564" WindowStartupLocation="CenterScreen" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" Width="474">
+    <Border CornerRadius="10,10,10,10"  Background="#FF252935" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+        <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+            <StackPanel>
+                <Button Content="X" Height="30" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" Margin="0,0,-430,0"/>
+                <TextBox x:Name="proxybox" Background="#FF2C3040" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="465" Width="322" CaretBrush="White"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

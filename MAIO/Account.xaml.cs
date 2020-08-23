@@ -27,7 +27,7 @@ namespace MAIO
         public Account()
         {
             InitializeComponent();
-            if (Mainwindow.account != null)
+         /*   if (Mainwindow.account != null)
             {
                 for (int i = 0; i < Mainwindow.account.Count; i++)
                 {
@@ -42,7 +42,7 @@ namespace MAIO
                     KeyValuePair<string, string> kv = Mainwindow.giftcardlist.ElementAt(i);
                     giftlist.Items.Add(kv.Key);
                 }
-            }
+            }*/
 
         }
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -52,7 +52,7 @@ namespace MAIO
         }
         private void saveaccount_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<string, string> dic = new Dictionary<string, string>();
+         /*   Dictionary<string, string> dic = new Dictionary<string, string>();
             if (new TextRange(accountbox.Document.ContentStart, accountbox.Document.ContentEnd).Text == "")
             {
                 MessageBox.Show("No account");
@@ -119,11 +119,11 @@ namespace MAIO
                 {
                     MessageBox.Show("Please check your input");
                 }
-            }
+            }*/
         }
         private void savegiftcard(object sender, RoutedEventArgs e)
         {
-            bool duplicate = false;
+          /*  bool duplicate = false;
             string key = null;
             Dictionary<string, string> dic = new Dictionary<string, string>();
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
@@ -208,12 +208,12 @@ namespace MAIO
             catch (Exception)
             {
                 MessageBox.Show("Please check your input");
-            }
+            }*/
 
         }
         private void giftlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            try
+          /*  try
             {
                 giftcardbox.Document.Blocks.Clear();
                 string selectdata = Mainwindow.giftcardlist["" + giftlist.SelectedItem.ToString() + ""];
@@ -231,18 +231,18 @@ namespace MAIO
             catch
             {
                 
-            }
+            }*?
 
         }
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            var del = ((Button)sender).DataContext.ToString();
+         /*   var del = ((Button)sender).DataContext.ToString();
             giftlist.Items.Remove(del);
             string needdel = Mainwindow.giftcardlist[del];
             Mainwindow.giftcardlist.Remove(del);
             giftlist.Items.Refresh();
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
-            updategiftcard(del, path2);
+            updategiftcard(del, path2);*/
 
         }
         public void updategiftcard(string gft,string path2)
@@ -305,17 +305,17 @@ namespace MAIO
         }
         private void BtnDelete_Click_1(object sender, RoutedEventArgs e)
         {
-            var del = ((Button)sender).DataContext.ToString();
+         /*   var del = ((Button)sender).DataContext.ToString();
             accountlist.Items.Remove(del);
             string needdel = Mainwindow.account[del];
             Mainwindow.account.Remove(del);
             accountlist.Items.Refresh();
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
-            updategiftcard(del, path2);
+            updategiftcard(del, path2);*/
         }
         private void accountlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            try
+          /*  try
             {
                 accountbox.Document.Blocks.Clear();
                 string selectdata = Mainwindow.account["" + accountlist.SelectedItem.ToString() + ""];
@@ -332,7 +332,13 @@ namespace MAIO
             catch
             {
 
-            }
+            }*/
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            AddAccount ad = new AddAccount();
+            ad.Show();
         }
     }
 }

@@ -210,88 +210,91 @@ namespace MAIO
         }
         private void saveproxy(object sender, RoutedEventArgs e)
         {
-            bool duplicate = false;
-            string key = null;
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
-            string[] saveproxy = proxybox.Text.Split("\n");
-            JObject ja = new JObject();
-            for (int i = 0; i < saveproxy.Length; i++)
+            if (proxybox.Text != "")
             {
-                if (saveproxy[i] != "")
+                bool duplicate = false;
+                string key = null;
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
+                string[] saveproxy = proxybox.Text.Split("\n");
+                JObject ja = new JObject();
+                for (int i = 0; i < saveproxy.Length; i++)
                 {
-                    ja.Add(i.ToString(), saveproxy[i]);
+                    if (saveproxy[i] != "")
+                    {
+                        ja.Add(i.ToString(), saveproxy[i]);
+                    }
                 }
-            }
-            JObject jo = new JObject(
-              new JProperty(proxylistname.Text,
-              new JObject(ja))
-             );
-            for (int i = 0; i < Mainwindow.proxylist.Count; i++)
-            {
-                KeyValuePair<string, string> kv = Mainwindow.proxylist.ElementAt(i);
-                if (kv.Key == proxylistname.Text)
+                JObject jo = new JObject(
+                  new JProperty(proxylistname.Text,
+                  new JObject(ja))
+                 );
+                for (int i = 0; i < Mainwindow.proxylist.Count; i++)
                 {
-                    duplicate = true;
-                    key = kv.Key;
-                    break;
+                    KeyValuePair<string, string> kv = Mainwindow.proxylist.ElementAt(i);
+                    if (kv.Key == proxylistname.Text)
+                    {
+                        duplicate = true;
+                        key = kv.Key;
+                        break;
+                    }
                 }
-            }
-            if (duplicate)
-            {
-                Mainwindow.proxylist[key] = ja.ToString();
-            }
-            else
-            {
-                if (proxylistname.Text == "")
+                if (duplicate)
                 {
-                    MessageBox.Show("Please enter proxylistname ");
-                }
-            }
-            try
-            {
-                if (duplicate == false)
-                {
-                     Mainwindow.proxylist.Add(proxylistname.Text, ja.ToString());
-                    Mainwindow.proxy.Add(new Proxyclass {Index=(Mainwindow.proxy.Count+1).ToString(),Name=proxylistname.Text});
-                }
-                FileInfo fi = new FileInfo(path);
-                if (fi.Length == 0)
-                {
-                    var jot = jo.ToString().Insert(0, "[").Insert(jo.ToString().Length + 1, "]");
-                    FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    StreamWriter sw = new StreamWriter(fs0);
-                    sw.Write(jot.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
-                    sw.Close();
-                    fs0.Close();
+                    Mainwindow.proxylist[key] = ja.ToString();
                 }
                 else
                 {
-                    FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    StreamReader sw2 = new StreamReader(fs1);
-                    var read = sw2.ReadToEnd();
-                    JArray ja2 = JArray.Parse(read);
-                    for (int i = 0; i < ja2.Count; i++)
+                    if (proxylistname.Text == "")
                     {
-                        Regex rex = new Regex("\"(.*)\"");
-                        var matchkey = rex.Match(ja2[i].ToString()).Value.Replace("\"", "");
-                        if (matchkey == proxylistname.Text.Replace(" ", ""))
-                        {
-                            ja2.RemoveAt(i);
-                        }
+                        MessageBox.Show("Please enter proxylistname ");
                     }
-                    ja2.Add(jo);
-                    var wu = ja2.ToString();
-                    FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    StreamWriter sw = new StreamWriter(fs0);
-                    fs1.SetLength(0);
-                    sw.Write(ja2.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
-                    sw.Close();
-                    fs0.Close();
                 }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Please check your input");
+                try
+                {
+                    if (duplicate == false)
+                    {
+                        Mainwindow.proxylist.Add(proxylistname.Text, ja.ToString());
+                        Mainwindow.proxy.Add(new Proxyclass { Index = (Mainwindow.proxy.Count + 1).ToString(), Name = proxylistname.Text });
+                    }
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Length == 0)
+                    {
+                        var jot = jo.ToString().Insert(0, "[").Insert(jo.ToString().Length + 1, "]");
+                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter sw = new StreamWriter(fs0);
+                        sw.Write(jot.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
+                        sw.Close();
+                        fs0.Close();
+                    }
+                    else
+                    {
+                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamReader sw2 = new StreamReader(fs1);
+                        var read = sw2.ReadToEnd();
+                        JArray ja2 = JArray.Parse(read);
+                        for (int i = 0; i < ja2.Count; i++)
+                        {
+                            Regex rex = new Regex("\"(.*)\"");
+                            var matchkey = rex.Match(ja2[i].ToString()).Value.Replace("\"", "");
+                            if (matchkey == proxylistname.Text.Replace(" ", ""))
+                            {
+                                ja2.RemoveAt(i);
+                            }
+                        }
+                        ja2.Add(jo);
+                        var wu = ja2.ToString();
+                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter sw = new StreamWriter(fs0);
+                        fs1.SetLength(0);
+                        sw.Write(ja2.ToString().Replace("\r", "").Replace("\n", "").Replace("\t", "").Replace(" ", ""));
+                        sw.Close();
+                        fs0.Close();
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Please check your input");
+                }
             }
 
         }
@@ -300,6 +303,7 @@ namespace MAIO
         {
             var del = (Proxyclass)((Button)sender).DataContext;
             string needdel = Mainwindow.proxylist[del.Name];
+            Mainwindow.proxylist.Remove(del.Name);
             Mainwindow.proxy.Remove(del);
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
            updateproxy(del.Name, path2);
