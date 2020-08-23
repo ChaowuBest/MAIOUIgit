@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace MAIO
         string priceid = "";
         string msrp = "";
         int limit = 0;
+        public string cookie = "";
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
         ArrayList skuidlist = new ArrayList();
         JObject joprofile = null;
@@ -56,7 +58,15 @@ namespace MAIO
         B: string payinfo = "";
             try
             {
-                payinfo = Checkout(joprofile.ToString(), skuid, priceid, msrp, ct);
+                if (cookie != "")
+                {
+                    payinfo = Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                }
+                else
+                {
+                    goto B;
+                }
+               
             }
             catch (NullReferenceException)
             {
@@ -83,10 +93,9 @@ namespace MAIO
             catch (OperationCanceledException)
             {
                 return;
-            }
-          
+            }        
         }
-        public void GetSKUID(string country, string pid, CancellationToken ct)
+        public  void GetSKUID(string country, string pid, CancellationToken ct)
         {
             if (skuid != "" && productid != "")
             {
@@ -208,6 +217,7 @@ namespace MAIO
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                             string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
                             string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid);
+                            getcookie(Config.hwid);
                             if (group[0] != null)
                             {
                                 skuid = group[0];
@@ -273,7 +283,7 @@ namespace MAIO
             }
 
         }
-        public  string Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
+        public  string Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct,string cookie)
         {
 
             string currency = "";
@@ -419,6 +429,15 @@ namespace MAIO
                 goto Retry;
             }
 
+        }
+        public async void getcookie(string hwid)
+        {
+            var binding = new BasicHttpBinding();
+            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+            var callClient = factory.CreateChannel();
+            JObject result = JObject.Parse(callClient.getcookieAsync(hwid).Result);
+            cookie= result["cookie"].ToString();
         }
     }
 }

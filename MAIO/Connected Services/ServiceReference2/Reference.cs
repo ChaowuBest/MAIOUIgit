@@ -28,9 +28,9 @@ namespace ServiceReference2
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<bool> keycheckAsync(string cpuid);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/isoos", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getcookie", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<bool> isoosAsync(string PID, string size);
+        System.Threading.Tasks.Task<string> getcookieAsync(string hwid);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
@@ -91,9 +91,9 @@ namespace ServiceReference2
             return base.Channel.keycheckAsync(cpuid);
         }
         
-        public System.Threading.Tasks.Task<bool> isoosAsync(string PID, string size)
+        public System.Threading.Tasks.Task<string> getcookieAsync(string hwid)
         {
-            return base.Channel.isoosAsync(PID, size);
+            return base.Channel.getcookieAsync(hwid);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

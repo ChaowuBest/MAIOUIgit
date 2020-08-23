@@ -31,8 +31,8 @@ namespace MAIO
         public Browser _browser = null;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
-          //  Task task2 = new Task(()=>browsercheckout(tk,ct));
-            //task2.Start();
+        //  Task task2 = new Task(()=>browsercheckout(tk,ct));
+        //task2.Start();
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -93,214 +93,216 @@ namespace MAIO
             }
             return SourceCode;
         }
-        public async void browsercheckout(Main.taskset tk, CancellationToken ct)
+        #region
+        /*  public async void browsercheckout(Main.taskset tk, CancellationToken ct)
+          {
+          A: if (ct.IsCancellationRequested)
+              {
+                  tk.Status = "IDLE";
+                  ct.ThrowIfCancellationRequested();
+              }
+              bool local = false;
+              try
+              {
+              C: if (Mainwindow.iscookielistnull)
+                  {
+                      if (ct.IsCancellationRequested)
+                      {
+                          tk.Status = "IDLE";
+                          ct.ThrowIfCancellationRequested();
+                      }
+                      tk.Status = "No Cookie";
+                      goto C;
+                  }
+                  Random ran = new Random();
+                  string[] sArray = null;
+                  try
+                  {
+                      int random = ran.Next(0, Mainwindow.proxypool.Count - 1);
+                      sArray = Mainwindow.listproxy[random].ToString().Split(':');
+                  }
+                  catch
+                  { 
+                      local=true;
+                  }           
+                  LaunchOptions launchOptions = await ChromiumBrowser.ChromiumLaunchOptions(true, true);
+                  launchOptions.Headless = true;
+                  if (local == false)
+                  {
+                      launchOptions.Args = new string[]{
+                 "--blink-settings=imagesEnabled=false",
+                 "--proxy-server="+sArray[0]+":"+sArray[1]
+                       };
+                  }
+                  int ra = ran.Next(0, Mainwindow.lines.Count);
+                  Mainwindow.lines.RemoveAt(ra);
+                  string[] cookie2 = Mainwindow.lines[ra].Split(";");
+                  CookieParam bmsz = new CookieParam();
+                  bmsz.Name = "bm_sz";
+                  bmsz.Value = cookie2[0].Replace("bm_sz=", "").Replace(" ", "");
+                  bmsz.Domain = ".nike.com";
+                  CookieParam abck = new CookieParam();
+                  abck.Name = "_abck";
+                  abck.Value = cookie2[1].Replace("_abck=", "").Replace(" ", "");
+                  abck.Domain = ".nike.com";
+                  try
+                  {
+                      if (local == false)
+                      {
+                          Credentials cre = new Credentials();
+                          cre.Username = sArray[2];
+                          cre.Password = sArray[3];
+                      }                 
+                      Browser browser = await Puppeteer.LaunchAsync(launchOptions);
+                      Page page = await ChromiumBrowser.NewPageAndInitAsync(browser);
+                     await page.GoToAsync("https://www.nike.com");
+                      await page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36");
+                      await page.SetCookieAsync(bmsz);
+                      await page.SetCookieAsync(abck);
+                      _page = page;
+                      _browser = browser;
+                      ready = true;
+                  }
+                  catch (Exception ex)
+                  {
+                      if (ex.Message.ToString().Contains("Failed to fetch"))
+                      {
+                          tk.Status = "IP ban";
+                      }
+                      goto A;
+                  }
+              }
+              catch
+              {
+                  goto A;
+              }
+          }*/
+        #endregion
+        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct)
         {
-        A: if (ct.IsCancellationRequested)
+        #region
+        /* B: if (ready)
+             {
+                 string sec = "fetch(\"url\",{\"headers\":{\"accept\":\"application/json\",\"accept-language\":\"zh-CN,zh;q=0.9\",\"appid\":\"com.nike.commerce.checkout.web\",\"content-type\":\"application/json; charset=UTF-8\",\"sec-fetch-dest\":\"empty\",\"sec-fetch-mode\":\"cors\",\"sec-fetch-site\":\"same-site\",\"x-b3-spanname\":\"undefined\",\"x-b3-traceid\":\"xb3trace\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"xb3pare\"},\"referrer\":\"https://www.nike.com/us/en/checkout\",\"referrerPolicy\":\"no-referrer-when-downgrade\",\"body\":\"payload\",\"method\":\"PUT\",\"mode\":\"cors\",\"credentials\":\"include\"});";
+                 payinfo = payinfo.Replace("\"", "\\\"").Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", "");
+                 sec = sec.Replace("url", url).Replace("xb3pare", xnikevisitorid).Replace("xb3trace", xb3traceid).Replace("payload", payinfo);
+              //  MessageBox.Show(sec.ToString());
+                 try
+                 {
+                     await _page.EvaluateExpressionAsync(sec);
+                 }
+                 catch(Exception ex)
+                 {
+                 }
+                 tk.Status = "Submit Order";
+             }
+             else
+             {
+                 goto B;
+             }*/
+        #endregion
+        B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            bool local = false;
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
+            WebProxy wp = new WebProxy();
             try
             {
-            C: if (Mainwindow.iscookielistnull)
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
-                    }
-                    tk.Status = "No Cookie";
-                    goto C;
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
                 }
-                Random ran = new Random();
-                string[] sArray = null;
-                try
+                else if (proxy.Length == 4)
                 {
-                    int random = ran.Next(0, Mainwindow.proxypool.Count - 1);
-                    sArray = Mainwindow.listproxy[random].ToString().Split(':');
-                }
-                catch
-                { 
-                    local=true;
-                }           
-                LaunchOptions launchOptions = await ChromiumBrowser.ChromiumLaunchOptions(true, true);
-                launchOptions.Headless = true;
-                if (local == false)
-                {
-                    launchOptions.Args = new string[]{
-               "--blink-settings=imagesEnabled=false",
-               "--proxy-server="+sArray[0]+":"+sArray[1]
-                     };
-                }
-                int ra = ran.Next(0, Mainwindow.lines.Count);
-                Mainwindow.lines.RemoveAt(ra);
-                string[] cookie2 = Mainwindow.lines[ra].Split(";");
-                CookieParam bmsz = new CookieParam();
-                bmsz.Name = "bm_sz";
-                bmsz.Value = cookie2[0].Replace("bm_sz=", "").Replace(" ", "");
-                bmsz.Domain = ".nike.com";
-                CookieParam abck = new CookieParam();
-                abck.Name = "_abck";
-                abck.Value = cookie2[1].Replace("_abck=", "").Replace(" ", "");
-                abck.Domain = ".nike.com";
-                try
-                {
-                    if (local == false)
-                    {
-                        Credentials cre = new Credentials();
-                        cre.Username = sArray[2];
-                        cre.Password = sArray[3];
-                    }                 
-                    Browser browser = await Puppeteer.LaunchAsync(launchOptions);
-                    Page page = await ChromiumBrowser.NewPageAndInitAsync(browser);
-                   await page.GoToAsync("https://www.nike.com");
-                    await page.SetUserAgentAsync("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36");
-                    await page.SetCookieAsync(bmsz);
-                    await page.SetCookieAsync(abck);
-                    _page = page;
-                    _browser = browser;
-                    ready = true;
-                }
-                catch (Exception ex)
-                {
-                    if (ex.Message.ToString().Contains("Failed to fetch"))
-                    {
-                        tk.Status = "IP ban";
-                    }
-                    goto A;
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
                 }
             }
             catch
             {
-                goto A;
+                wp = default;
             }
-        }
-        public  void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct)
-        {
-            #region
-            /* B: if (ready)
-                 {
-                     string sec = "fetch(\"url\",{\"headers\":{\"accept\":\"application/json\",\"accept-language\":\"zh-CN,zh;q=0.9\",\"appid\":\"com.nike.commerce.checkout.web\",\"content-type\":\"application/json; charset=UTF-8\",\"sec-fetch-dest\":\"empty\",\"sec-fetch-mode\":\"cors\",\"sec-fetch-site\":\"same-site\",\"x-b3-spanname\":\"undefined\",\"x-b3-traceid\":\"xb3trace\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"xb3pare\"},\"referrer\":\"https://www.nike.com/us/en/checkout\",\"referrerPolicy\":\"no-referrer-when-downgrade\",\"body\":\"payload\",\"method\":\"PUT\",\"mode\":\"cors\",\"credentials\":\"include\"});";
-                     payinfo = payinfo.Replace("\"", "\\\"").Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", "");
-                     sec = sec.Replace("url", url).Replace("xb3pare", xnikevisitorid).Replace("xb3trace", xb3traceid).Replace("payload", payinfo);
-                  //  MessageBox.Show(sec.ToString());
-                     try
-                     {
-                         await _page.EvaluateExpressionAsync(sec);
-                     }
-                     catch(Exception ex)
-                     {
-                     }
-                     tk.Status = "Submit Order";
-                 }
-                 else
-                 {
-                     goto B;
-                 }*/
-            #endregion
-             B: if (ct.IsCancellationRequested)
-                 {
-                     tk.Status = "IDLE";
-                     ct.ThrowIfCancellationRequested();
-                 }
-                 int random = ran.Next(0, Mainwindow.proxypool.Count);
-                 WebProxy wp = new WebProxy();
-                 try
-                 {
-                     string proxyg = Mainwindow.proxypool[random].ToString();
-                     string[] proxy = proxyg.Split(":");
-                     if (proxy.Length == 2)
-                     {
-                         wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                     }
-                     else if (proxy.Length == 4)
-                     {
-                         wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                         wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                     }
-                 }
-                 catch
-                 {
-                     wp = default;
-                 }
-                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                 request.Method = "PUT";
-                 request.Proxy = wp;
-                 request.ContentType = "application/json; charset=UTF-8";
-                 byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(payinfo);
-                 request.Accept = "application/json";
-                 request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-                 request.Headers.Add("cloud_stack", "buy_domain");
-                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
-                 request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-             C: if (Mainwindow.iscookielistnull)
-                 {
-                     if (ct.IsCancellationRequested)
-                     {
-                         tk.Status = "IDLE";
-                         ct.ThrowIfCancellationRequested();
-                     }
-                     tk.Status = "No Cookie";
-                     goto C;
-                 }
-                 else
-                 {
-                     Random ra = new Random();
-                     if (ct.IsCancellationRequested)
-                     {
-                         tk.Status = "IDLE";
-                         ct.ThrowIfCancellationRequested();
-                     }
-                     int sleeptime = ra.Next(0, 100);
-                     Thread.Sleep(sleeptime);
-                     int cookie = ra.Next(0, Mainwindow.lines.Count);
-                     try
-                     {
-                         Main.updatelable(Mainwindow.lines[cookie], false);
-                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                         Mainwindow.lines.RemoveAt(cookie);
-                         if (Mainwindow.lines.Count == 0)
-                         {
-                             Mainwindow.iscookielistnull = true;
-                         }
-                     }
-                     catch (Exception)
-                     {
-                         goto C;
-                     }
-                 }
-                 request.ContentLength = contentpaymentinfo.Length;
-                 request.Headers.Add("Origin", "https://www.nike.com");
-                 request.Headers.Add("Sec-Fetch-Dest", "empty");
-                 request.Headers.Add("Sec-Fetch-Mode", "cors");
-                 request.Headers.Add("Sec-Fetch-Site", "same-site");
-                 request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
-                 request.Headers.Add("X-B3-SpanName", "CiCCart");
-                 request.Headers.Add("X-B3-TraceId", xb3traceid);
-                 request.Headers.Add("x-nike-visitid", "1");
-                 request.Headers.Add("x-nike-visitorid", xnikevisitorid);
-                 Stream paymentstream = request.GetRequestStream();
-                 paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
-                 paymentstream.Close();
-                 try
-                 {
-                     HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
-                     tk.Status = "SubmitOrder";
-                 }
-                 catch (WebException ex)
-                 {
-                     HttpWebResponse response = (HttpWebResponse)ex.Response;
-                     tk.Status = "Forbidden";
-                     failedretry++;
-                     if (failedretry > 20)
-                     {
-                         Main.autorestock(tk);
-                     }
-                     Thread.Sleep(1500);
-                     goto B;
-                 }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "PUT";
+            request.Proxy = wp;
+            request.ContentType = "application/json; charset=UTF-8";
+            byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(payinfo);
+            request.Accept = "application/json";
+            request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            request.Headers.Add("cloud_stack", "buy_domain");
+            request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
+            request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
+        C: if (Mainwindow.iscookielistnull)
+            {
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                tk.Status = "No Cookie";
+                goto C;
+            }
+            else
+            {
+                Random ra = new Random();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                int sleeptime = ra.Next(0, 100);
+                Thread.Sleep(sleeptime);
+                int cookie = ra.Next(0, Mainwindow.lines.Count);
+                try
+                {
+                    Main.updatelable(Mainwindow.lines[cookie], false);
+                    request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
+                    Mainwindow.lines.RemoveAt(cookie);
+                    if (Mainwindow.lines.Count == 0)
+                    {
+                        Mainwindow.iscookielistnull = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    goto C;
+                }
+            }
+            request.ContentLength = contentpaymentinfo.Length;
+            request.Headers.Add("Origin", "https://www.nike.com");
+            request.Headers.Add("Sec-Fetch-Dest", "empty");
+            request.Headers.Add("Sec-Fetch-Mode", "cors");
+            request.Headers.Add("Sec-Fetch-Site", "same-site");
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            request.Headers.Add("X-B3-SpanName", "CiCCart");
+            request.Headers.Add("X-B3-TraceId", xb3traceid);
+            request.Headers.Add("x-nike-visitid", "1");
+            request.Headers.Add("x-nike-visitorid", xnikevisitorid);
+            Stream paymentstream = request.GetRequestStream();
+            paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
+            paymentstream.Close();
+            try
+            {
+                HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
+                tk.Status = "SubmitOrder";
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                tk.Status = "Forbidden";
+                failedretry++;
+                if (failedretry > 20)
+                {
+                    Main.autorestock(tk);
+                }
+                Thread.Sleep(1500);
+                goto B;
+            }
         }
         public string GetMethod(string url, string iamgeurl, Main.taskset tk, CancellationToken ct)
         {
@@ -403,8 +405,8 @@ namespace MAIO
                 sourcecode = readStream.ReadToEnd();
                 goto C;
             }
-          //  _page.Dispose();
-           // _browser.Dispose();
+            //  _page.Dispose();
+            // _browser.Dispose();
             return sourcecode;
         }
         public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid)
