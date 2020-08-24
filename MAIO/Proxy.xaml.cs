@@ -211,7 +211,7 @@ namespace MAIO
             {
                 bool duplicate = false;
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
-                string[] saveproxy = proxybox.Text.Split("\n");
+                string[] saveproxy = proxybox.Text.Replace("\r","").Split("\n");
                 JObject ja = new JObject();
                 for (int i = 0; i < saveproxy.Length; i++)
                 {
@@ -225,7 +225,7 @@ namespace MAIO
                   new JObject(ja))
                  );
                 string sValue = "";
-                if (Mainwindow.account.TryGetValue(proxylistname.Text, out sValue))
+                if (Mainwindow.proxylist.TryGetValue(proxylistname.Text, out sValue))
                 {
                     duplicate = true;
                 }
@@ -289,7 +289,6 @@ namespace MAIO
             }
 
         }
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var del = (Proxyclass)((Button)sender).DataContext;
@@ -330,6 +329,30 @@ namespace MAIO
                 fs2.SetLength(0);
             }
             fs2.Close();
+        }
+        private void proxylistview_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var proxy = (Proxyclass)proxylistview.SelectedItem;
+            try
+            {
+                string selectdata = Mainwindow.proxylist[proxy.Name];
+                JObject jo = JObject.Parse(selectdata);
+                var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Split("\r\n");
+                proxylistname.Clear();
+                proxylistname.Text = proxy.Name;
+                foreach (var i in jo)
+                {
+                    if (i.Value.ToString() != "{}")
+                    {
+                        proxybox.AppendText(i.Value.ToString().Replace("{", "").Replace("}", ""));
+                        proxybox.AppendText("\r\n");                     
+                    }                  
+                }
+
+            }
+            catch
+            {
+            }
         }
     }
 }

@@ -201,6 +201,7 @@ namespace MAIO
                 string selectdata = Mainwindow.account[account.Name];
                 var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
                 EditAccount.account= gl;
+                Editgiftcard.editgiftcard = false;
                 EditAccount.editaccount = true;
                 EditAccount.accountname = account.Name;
                 AddAccount ad = new AddAccount();
@@ -219,6 +220,7 @@ namespace MAIO
                 string selectdata = Mainwindow.giftcardlist[giftcard.Name];
                 var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
                 Editgiftcard.giftcardlist = gl;
+                EditAccount.editaccount = false;
                 Editgiftcard.editgiftcard = true;
                 Editgiftcard.giftcardlistname = giftcard.Name;
                 AddAccount ad = new AddAccount();

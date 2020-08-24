@@ -29,7 +29,8 @@ namespace MAIO
         {
             if (EditAccount.editaccount)
             {
-                giftaccountbox.Text=EditAccount.accountname;
+                giftaccount.Clear();
+                giftaccount.Text=EditAccount.accountname;
                 for (int i = 0; i < EditAccount.account.Length; i++)
                 {
                     if (EditAccount.account[i] != "")
@@ -41,7 +42,8 @@ namespace MAIO
             }
             else if (Editgiftcard.editgiftcard)
             {
-                giftaccountbox.Text = Editgiftcard.giftcardlistname;
+                giftaccount.Clear();
+                giftaccount.Text = Editgiftcard.giftcardlistname;
                 for (int i = 0; i < Editgiftcard.giftcardlist.Length; i++)
                 {
                     if (Editgiftcard.giftcardlist[i] != "")
@@ -87,7 +89,7 @@ namespace MAIO
                 if (giftaccountbox.Text.Contains("@"))
                 {
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
-                    string[] saveaccount = giftaccountbox.Text.Split("\r\n");
+                    string[] saveaccount = giftaccountbox.Text.Replace("\r", "").Split("\n");
                     JObject ja = new JObject();
                     JObject jo = null;
                     try
@@ -134,7 +136,7 @@ namespace MAIO
                 else
                 {
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
-                    string[] savegiftcard = giftaccountbox.Text.Split("\n");
+                    string[] savegiftcard = giftaccountbox.Text.Replace("\r", "").Split("\n");
                     JObject ja = new JObject();
                     JObject jo = null;
                     try
