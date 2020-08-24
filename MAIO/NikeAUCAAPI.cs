@@ -378,11 +378,7 @@ namespace MAIO
                     var reason = jo2["errors"][0].ToString();
                     JObject jo3 = JObject.Parse(reason);
                     string errormessage = jo3["code"].ToString();
-                    tk.Status = errormessage;
-                    //   if (Config.webhook!="")
-                    //  {
-                    //  、、      failcheckout(tk, Config.webhook, errormessage, iamgeurl);
-                    //    }                  
+                    tk.Status = errormessage;              
                     Main.autorestock(tk);
                 }
             }
@@ -403,8 +399,6 @@ namespace MAIO
                 sourcecode = readStream.ReadToEnd();
                 goto C;
             }
-            //  _page.Dispose();
-            // _browser.Dispose();
             return sourcecode;
         }
         public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid)

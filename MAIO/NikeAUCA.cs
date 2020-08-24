@@ -58,14 +58,14 @@ namespace MAIO
         B: string payinfo = "";
             try
             {
-                if (cookie != "")
-                {
+               // if (cookie != "")
+               // {
                     payinfo = Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                }
-                else
-                {
-                    goto B;
-                }
+             //   }
+              //  else
+                //{
+                //    goto B;
+              //  }
                
             }
             catch (NullReferenceException)
@@ -217,7 +217,7 @@ namespace MAIO
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                             string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
                             string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid);
-                            getcookie(Config.hwid);
+                         //   getcookie(Config.hwid);
                             if (group[0] != null)
                             {
                                 skuid = group[0];

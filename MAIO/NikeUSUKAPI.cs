@@ -551,7 +551,6 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(new GZipStream(respcheckstatusstream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
-                    //MessageBox.Show(check);
                     JObject jo = JObject.Parse(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
@@ -561,7 +560,6 @@ namespace MAIO
                     if (check.Contains("Non buyable product(s)"))
                     {
                         tk.Status = "Non buyable product(s)";
-                        // goto A;
                         Main.autorestock(tk);
                     }
                     total = jo["response"]["totals"]["total"].ToString();
@@ -1062,7 +1060,6 @@ namespace MAIO
             }
             return status;
         }
-
         public static long time = 0;
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool advancemode)
