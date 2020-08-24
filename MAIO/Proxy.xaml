@@ -45,7 +45,7 @@
                 </TextBox.BorderBrush>
             </TextBox>
             <hc:TransitioningContentControl Width="389" Margin="-500,-883,0,0" Height="543">
-                <DataGrid HeadersVisibility="All" RowHeaderWidth="60" Name="proxylistview" AutoGenerateColumns="False"  ItemsSource="{Binding}"  Margin="-66,-45,-129,-37" Background="#FF2C3040">
+                <DataGrid HeadersVisibility="All"  CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" Name="proxylistview" AutoGenerateColumns="False"  ItemsSource="{Binding}"  Margin="-66,-45,-129,-37" Background="#FF2C3040">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="{x:Type DataGridColumnHeader}">
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>

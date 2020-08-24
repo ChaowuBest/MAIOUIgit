@@ -8,7 +8,7 @@
              mc:Ignorable="d" Height="769" Width="1080">
     <Grid Background="#FF252935" Height="769" Width="1079" Margin="1,0,0,0">
         <StackPanel>
-            <DataGrid HeadersVisibility="All" RowHeaderWidth="60" x:Name="accountlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-511,138,0,0" Height="567">
+            <DataGrid HeadersVisibility="All" CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" x:Name="accountlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-511,138,0,0" Height="567">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -40,7 +40,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid HeadersVisibility="All" RowHeaderWidth="60" x:Name="proxylistview_Copy" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-82,-567,-591,0" Height="567">
+            <DataGrid HeadersVisibility="All"  CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" x:Name="giftcardlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-82,-567,-591,0" Height="567">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -65,7 +65,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="40,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" FontSize="20" />
+                                    <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="40,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" FontSize="20" Click="delgiftcard" />
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -81,9 +81,11 @@
                 </Label.BorderBrush>
             </Label>
             <Button Height="32" Width="32" Padding="6"  Style="{StaticResource ButtonPrimary}"
-                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="111,-1214,0,0"/>
+                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="111,-1214,0,0" Click="Button_Click_1"/>
             <Button Height="32" Width="32" Padding="6"  Style="{StaticResource ButtonPrimary}"
                 Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="-909,-1214,0,0" Click="Button_Click_1"/>
+            <TextBlock Height="28" Text="Account List" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="-648,-1209,0,0"/>
+            <TextBlock Height="28" Text="GiftCard List" TextWrapping="NoWrap" Width="192" FontSize="16" Foreground="White" FontWeight="Bold" Margin="0,-1209,-371,0"/>
         </StackPanel>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1035,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
     </Grid>

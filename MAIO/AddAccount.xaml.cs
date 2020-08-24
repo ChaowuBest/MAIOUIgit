@@ -37,12 +37,10 @@ namespace MAIO
                 
             }
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             try
@@ -54,7 +52,6 @@ namespace MAIO
 
             }
         }
-
         private void save(object sender, RoutedEventArgs e)
         {
             if (giftaccount.Text != "")
@@ -81,7 +78,6 @@ namespace MAIO
                                     var sp = saveaccount[i].Split(":");
                                     ja.Add(sp[0], sp[1]);
                                 }
-
                             }
                         }
                        jo = new JObject(
@@ -109,7 +105,43 @@ namespace MAIO
                 }
                 else
                 {
-
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
+                    string[] savegiftcard = giftaccountbox.Text.Split("\n");
+                    JObject ja = new JObject();
+                    JObject jo = null;
+                    try
+                    {
+                        for (int i = 0; i < savegiftcard.Length; i++)
+                        {
+                            if (savegiftcard[i] != "")
+                            {
+                                var sp = savegiftcard[i].Split("-");
+                                ja.Add(sp[0], sp[1]);
+                            }
+                        }
+                        jo = new JObject(
+                         new JProperty(giftaccount.Text,
+                         new JObject(ja))
+                        );
+                     
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Giftcard Input Error");
+                    }
+                    string sValue = "";
+                    if (Mainwindow.giftcardlist.TryGetValue(giftaccount.Text, out sValue))
+                    {
+                        Mainwindow.giftcardlist[giftaccount.Text] = ja.ToString();
+                        updatedetail(path, jo, giftaccount.Text);
+                        getTextHandler(true, giftaccount.Text, false);
+                    }
+                    else
+                    {
+                        Mainwindow.giftcardlist.Add(giftaccount.Text, ja.ToString());
+                        updatedetail(path, jo, giftaccount.Text);
+                        getTextHandler(false, giftaccount.Text, false);
+                    }
                 }
             }    
         }

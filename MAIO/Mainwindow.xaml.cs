@@ -43,8 +43,9 @@ namespace MAIO
         public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
         public static ObservableCollection<AccountClass> Acccountclass = new ObservableCollection<AccountClass>();
+        public static ObservableCollection<GiftcardClass> Giftcardclass = new ObservableCollection<GiftcardClass>();
         public static ObservableCollection<Proxyclass> proxy = new ObservableCollection<Proxyclass>();
-        public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
+        public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();
         public static ArrayList proxypool = new ArrayList();
         public static Dictionary<string, string> tasklist = new Dictionary<string, string>();
         public static Dictionary<long, string> cookiewtime = new Dictionary<long, string>();
@@ -58,14 +59,14 @@ namespace MAIO
         public Mainwindow()
         {
             InitializeComponent();
-            Task task1 = Task.Run(()=> Initialprofile());
+            Task task1 = Task.Run(() => Initialprofile());
             Task task2 = Task.Run(() => Initialproxy());
             Task task3 = Task.Run(() => Initialaccount());
             Task task4 = Task.Run(() => Initialgiftcard());
             Task task5 = Task.Run(() => Initialtask());
             Task task6 = Task.Run(() => InitialCookie());
-            Task task7 = Task.Run(() => InitialAdvancemode());   
-            Task.WaitAll(task1,task2,task3,task4,task5,task6,task7);
+            Task task7 = Task.Run(() => InitialAdvancemode());
+            Task.WaitAll(task1, task2, task3, task4, task5, task6, task7);
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
@@ -122,7 +123,7 @@ namespace MAIO
                 sr.Close();
                 fs2.Close();
             }
-           
+
         }
         public void Initialprofile()
         {
@@ -164,7 +165,7 @@ namespace MAIO
             try
             {
                 FileInfo fi = new FileInfo(path4);
-                if(fi.Length!=0)
+                if (fi.Length != 0)
                 {
                     FileStream fs2 = new FileStream(path4, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamReader sr = new StreamReader(fs2);
@@ -217,10 +218,7 @@ namespace MAIO
             try
             {
                 FileInfo fi = new FileInfo(path5);
-                if (fi.Length == 0)
-                {
-                }
-                else
+                if (fi.Length != 0)
                 {
                     FileStream fs2 = new FileStream(path5, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamReader sr = new StreamReader(fs2);
@@ -245,6 +243,11 @@ namespace MAIO
                             giftcardlist.Add(i.Key, i.Value.ToString());
                             var chao = i.Value.ToString();
                         }
+                    }
+                    for (int i = 0; i < giftcardlist.Count; i++)
+                    {
+                        KeyValuePair<string, string> kv = giftcardlist.ElementAt(i);
+                        Giftcardclass.Add(new GiftcardClass { Index = i.ToString(), Name = kv.Key });
                     }
                     sr.Close();
                     fs2.Close();
@@ -313,12 +316,12 @@ namespace MAIO
                     for (int i = 0; i < ja.Count; i++)
                     {
                         JObject jo = JObject.Parse(ja[i].ToString());
-                        var chao=jo.ToString();
+                        var chao = jo.ToString();
                         if (jo["site"].ToString() == "NIKE")
                         {
                             lines.Add(jo["cookie"].ToString());
                             cookiewtime.Add(long.Parse(jo["time"].ToString()), jo["cookie"].ToString());
-                        }                     
+                        }
                     }
                     sw.Close();
                     fs3.Close();
