@@ -561,7 +561,8 @@ namespace MAIO
                     if (check.Contains("Non buyable product(s)"))
                     {
                         tk.Status = "Non buyable product(s)";
-                        goto A;
+                        // goto A;
+                        Main.autorestock(tk);
                     }
                     total = jo["response"]["totals"]["total"].ToString();
                     if (isdiscount)

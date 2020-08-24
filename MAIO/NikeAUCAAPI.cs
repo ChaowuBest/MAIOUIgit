@@ -31,8 +31,6 @@ namespace MAIO
         public Browser _browser = null;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
-        //  Task task2 = new Task(()=>browsercheckout(tk,ct));
-        //task2.Start();
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
