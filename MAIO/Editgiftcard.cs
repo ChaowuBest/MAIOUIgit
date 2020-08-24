@@ -8,6 +8,6 @@ namespace MAIO
     {
         public static string[] giftcardlist { get; set; }
         public static bool editgiftcard { get; set; }
-        public static string giftcardlistname { get;set }
+        public static string giftcardlistname { get; set; }
     }
 }

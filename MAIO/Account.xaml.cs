@@ -202,7 +202,7 @@ namespace MAIO
                 var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
                 EditAccount.account= gl;
                 EditAccount.editaccount = true;
-                EditAccount.accountname = giftcard.Name;
+                EditAccount.accountname = account.Name;
                 AddAccount ad = new AddAccount();
                 ad.getTextHandler = Addaccountorgiftcard;
                 ad.Show();       
