@@ -96,40 +96,6 @@ namespace MAIO
             Writecoookie.write();
             Application.Current.Shutdown();
         }
-        private void giftlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            /*  try
-              {
-                  giftcardbox.Document.Blocks.Clear();
-                  string selectdata = Mainwindow.giftcardlist["" + giftlist.SelectedItem.ToString() + ""];
-                  giftcardname.Text = giftlist.SelectedItem.ToString();
-                  var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
-                  for (int i = 0; i < gl.Length; i++)
-                  {
-                      if (gl[i] != "")
-                      {
-                          giftcardbox.AppendText(gl[i]);
-                          giftcardbox.AppendText("\r\n");
-                      }
-                  }
-              }
-              catch
-              {
-
-              }*?
-
-          }
-          private void BtnDelete_Click(object sender, RoutedEventArgs e)
-          {
-           /*   var del = ((Button)sender).DataContext.ToString();
-              giftlist.Items.Remove(del);
-              string needdel = Mainwindow.giftcardlist[del];
-              Mainwindow.giftcardlist.Remove(del);
-              giftlist.Items.Refresh();
-              string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
-              updategiftcard(del, path2);*/
-
-        }
         public void updategiftcard(string gft, string path2)
         {
             FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
@@ -163,6 +129,8 @@ namespace MAIO
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            EditAccount.editaccount = false;
+            Editgiftcard.editgiftcard = false;
             AddAccount ad = new AddAccount();
             ad.getTextHandler = Addaccountorgiftcard;
             ad.Show();
@@ -234,9 +202,28 @@ namespace MAIO
                 var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
                 EditAccount.account= gl;
                 EditAccount.editaccount = true;
+                EditAccount.accountname = giftcard.Name;
                 AddAccount ad = new AddAccount();
                 ad.getTextHandler = Addaccountorgiftcard;
                 ad.Show();       
+            }
+            catch
+            {
+            }
+        }
+        private void giftcardlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var giftcard = (GiftcardClass)giftcardlist.SelectedItem;
+            try
+            {
+                string selectdata = Mainwindow.giftcardlist[giftcard.Name];
+                var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
+                Editgiftcard.giftcardlist = gl;
+                Editgiftcard.editgiftcard = true;
+                Editgiftcard.giftcardlistname = giftcard.Name;
+                AddAccount ad = new AddAccount();
+                ad.getTextHandler = Addaccountorgiftcard;
+                ad.Show();
             }
             catch
             {

@@ -8,5 +8,6 @@ namespace MAIO
     {
         public static string[] account { get; set; }
         public static bool editaccount { get; set; }
+        public static string accountname { get; set }
     }
 }

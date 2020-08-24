@@ -29,11 +29,24 @@ namespace MAIO
         {
             if (EditAccount.editaccount)
             {
+                giftaccountbox.Text=EditAccount.accountname;
                 for (int i = 0; i < EditAccount.account.Length; i++)
                 {
                     if (EditAccount.account[i] != "")
                     {
                         giftaccountbox.AppendText(EditAccount.account[i]);
+                        giftaccountbox.AppendText("\r\n");
+                    }
+                }
+            }
+            else if (Editgiftcard.editgiftcard)
+            {
+                giftaccountbox.Text = Editgiftcard.giftcardlistname;
+                for (int i = 0; i < Editgiftcard.giftcardlist.Length; i++)
+                {
+                    if (Editgiftcard.giftcardlist[i] != "")
+                    {
+                        giftaccountbox.AppendText(Editgiftcard.giftcardlist[i]);
                         giftaccountbox.AppendText("\r\n");
                     }
                 }

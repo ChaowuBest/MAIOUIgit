@@ -40,7 +40,7 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid HeadersVisibility="All"  CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" x:Name="giftcardlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-82,-567,-591,0" Height="567">
+            <DataGrid HeadersVisibility="All"  CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" x:Name="giftcardlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-82,-567,-591,0" Height="567" MouseDoubleClick="giftcardlist_MouseDoubleClick">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
