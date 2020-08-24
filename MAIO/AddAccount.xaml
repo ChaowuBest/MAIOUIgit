@@ -3,14 +3,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:MAIO"
         mc:Ignorable="d"
-        Title="AddAccount" Height="564" WindowStartupLocation="CenterScreen" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" Width="474">
+        Title="AddAccount" Height="608" WindowStartupLocation="CenterScreen" WindowStyle="None" Background="{x:Null}" AllowsTransparency="True" Width="418">
+    <Window.Resources>
+        <ControlTemplate x:Key="FilletTextBox" TargetType="{x:Type TextBox}">
+            <Border BorderBrush="White" BorderThickness="1" CornerRadius="5">
+                <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
     <Border CornerRadius="10,10,10,10"  Background="#FF252935" MouseLeftButtonDown="Border_MouseLeftButtonDown">
         <Grid  MouseLeftButtonDown="Grid_MouseLeftButtonDown">
             <StackPanel>
-                <Button Content="X" Height="30" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" Margin="0,0,-430,0"/>
-                <TextBox x:Name="proxybox" Background="#FF2C3040" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="465" Width="322" CaretBrush="White"/>
+                <Button Content="X" Height="30" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20" Margin="0,0,-371,0"/>
+                <TextBox x:Name="giftaccountbox" Background="#FF2C3040" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top" Height="465" Width="322" CaretBrush="White"/>
+                <TextBox  Template="{StaticResource FilletTextBox}" x:Name="giftaccount" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778" Foreground="#FFE0D2D2" Width="108" CaretBrush="White" Margin="-186,34,0,0">
+                    <TextBox.BorderBrush>
+                        <ImageBrush/>
+                    </TextBox.BorderBrush>
+                </TextBox>
+                <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="108" Content="Save" Margin="0,-39,-186,0" Click="save">
+                    <Button.Template>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                        <GradientStop Color="#FF43B8FF" Offset="0.0" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </StackPanel>
         </Grid>
     </Border>

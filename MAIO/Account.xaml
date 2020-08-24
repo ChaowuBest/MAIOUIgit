@@ -8,7 +8,7 @@
              mc:Ignorable="d" Height="769" Width="1080">
     <Grid Background="#FF252935" Height="769" Width="1079" Margin="1,0,0,0">
         <StackPanel>
-            <DataGrid HeadersVisibility="All" RowHeaderWidth="60" x:Name="proxylistview" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-511,138,0,0" Height="567">
+            <DataGrid HeadersVisibility="All" RowHeaderWidth="60" x:Name="accountlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-511,138,0,0" Height="567">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -33,7 +33,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="40,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" FontSize="20"/>
+                                    <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="40,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" FontSize="20" Click="delaccount"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -81,9 +81,9 @@
                 </Label.BorderBrush>
             </Label>
             <Button Height="32" Width="32" Padding="6"  Style="{StaticResource ButtonPrimary}"
-                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="111,-1214,0,0" Click="Button_Click_1"/>
+                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="111,-1214,0,0"/>
             <Button Height="32" Width="32" Padding="6"  Style="{StaticResource ButtonPrimary}"
-                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="-909,-1214,0,0"/>
+                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}" Margin="-909,-1214,0,0" Click="Button_Click_1"/>
         </StackPanel>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1035,0,0,0" VerticalAlignment="Top" Width="44" Background="#FF2C3040" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
     </Grid>

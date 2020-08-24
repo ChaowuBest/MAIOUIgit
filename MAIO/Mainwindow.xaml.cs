@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static MAIO.Account;
 using static MAIO.Main;
 using static MAIO.Mainwindow;
 using static MAIO.Proxy;
@@ -41,6 +42,7 @@ namespace MAIO
         public static Dictionary<string, string> proxylist = new Dictionary<string, string>();
         public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
+        public static ObservableCollection<AccountClass> Acccountclass = new ObservableCollection<AccountClass>();
         public static ObservableCollection<Proxyclass> proxy = new ObservableCollection<Proxyclass>();
         public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
         public static ArrayList proxypool = new ArrayList();
@@ -112,7 +114,7 @@ namespace MAIO
                         var chao = i.Value.ToString();
                     }
                 }
-                for (int i = 0; i < Mainwindow.proxylist.Count; i++)
+                for (int i = 0; i < proxylist.Count; i++)
                 {
                     KeyValuePair<string, string> kv = Mainwindow.proxylist.ElementAt(i);
                     proxy.Add(new Proxyclass { Index = i.ToString(), Name = kv.Key });
@@ -162,10 +164,7 @@ namespace MAIO
             try
             {
                 FileInfo fi = new FileInfo(path4);
-                if (fi.Length == 0)
-                {
-                }
-                else
+                if(fi.Length!=0)
                 {
                     FileStream fs2 = new FileStream(path4, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamReader sr = new StreamReader(fs2);
@@ -180,7 +179,6 @@ namespace MAIO
                             {
                                 account.Add(n.Key, n.Value.ToString());
                             }
-
                         }
                     }
                     else
@@ -192,6 +190,11 @@ namespace MAIO
                             var chao = i.Value.ToString();
                         }
 
+                    }
+                    for (int i = 0; i < account.Count; i++)
+                    {
+                        KeyValuePair<string, string> kv = account.ElementAt(i);
+                        Acccountclass.Add(new AccountClass { Index = i.ToString(), Name = kv.Key });
                     }
                     sr.Close();
                     fs2.Close();

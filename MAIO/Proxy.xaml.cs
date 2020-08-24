@@ -35,9 +35,6 @@ namespace MAIO
         public Proxy()
         {   
             InitializeComponent();
-            if (Mainwindow.proxylist != null)
-            {
-            }
             proxylistview.ItemsSource = Mainwindow.proxy;
         }
         public class Proxyclass : INotifyPropertyChanged
@@ -213,7 +210,6 @@ namespace MAIO
             if (proxybox.Text != "")
             {
                 bool duplicate = false;
-                string key = null;
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
                 string[] saveproxy = proxybox.Text.Split("\n");
                 JObject ja = new JObject();
@@ -228,19 +224,14 @@ namespace MAIO
                   new JProperty(proxylistname.Text,
                   new JObject(ja))
                  );
-                for (int i = 0; i < Mainwindow.proxylist.Count; i++)
+                string sValue = "";
+                if (Mainwindow.account.TryGetValue(proxylistname.Text, out sValue))
                 {
-                    KeyValuePair<string, string> kv = Mainwindow.proxylist.ElementAt(i);
-                    if (kv.Key == proxylistname.Text)
-                    {
-                        duplicate = true;
-                        key = kv.Key;
-                        break;
-                    }
+                    duplicate = true;
                 }
                 if (duplicate)
                 {
-                    Mainwindow.proxylist[key] = ja.ToString();
+                    Mainwindow.proxylist[proxylistname.Text] = ja.ToString();
                 }
                 else
                 {
@@ -306,7 +297,7 @@ namespace MAIO
             Mainwindow.proxylist.Remove(del.Name);
             Mainwindow.proxy.Remove(del);
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "proxy.json";
-           updateproxy(del.Name, path2);
+            updateproxy(del.Name, path2);
 
         }
         private void updateproxy(string gft, string path2)

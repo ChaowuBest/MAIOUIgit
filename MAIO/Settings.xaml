@@ -110,7 +110,7 @@
                     <ImageBrush/>
                 </Label.Background>
             </Label>
-            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cjevent" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="0,-148,-602,0" CaretBrush="White">
+            <TextBox Template="{StaticResource FilletTextBox}" x:Name="Cjevent" Height="33" TextWrapping="NoWrap" FontFamily="PingFangSC-Semibold" FontSize="14" Background="#FF9CB0C6" RenderTransformOrigin="0.466,1.778" Foreground="#FFE0D2D2" DockPanel.Dock="Top" Width="108" Margin="0,-66,-602,0" CaretBrush="White">
                 <TextBox.BorderBrush>
                     <ImageBrush/>
                 </TextBox.BorderBrush>
