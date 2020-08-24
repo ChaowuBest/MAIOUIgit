@@ -161,27 +161,6 @@ namespace MAIO
             }
             fs2.Close();
         }
-        private void accountlist_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            /*  try
-              {
-                  accountbox.Document.Blocks.Clear();
-                  string selectdata = Mainwindow.account["" + accountlist.SelectedItem.ToString() + ""];
-                  var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
-                  for (int i = 0; i < gl.Length; i++)
-                  {
-                      if (gl[i] != "")
-                      {
-                          accountbox.AppendText(gl[i]);
-                          accountbox.AppendText("\r\n");
-                      }
-                  }
-              }
-              catch
-              {
-
-              }*/
-        }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             AddAccount ad = new AddAccount();
@@ -197,7 +176,7 @@ namespace MAIO
             else if (account == false && st == false)
             {
                 Mainwindow.Giftcardclass.Add(new GiftcardClass { Index = (Mainwindow.Giftcardclass.Count + 1).ToString(), Name = name });
-            } 
+            }
         }
         private void delaccount(object sender, RoutedEventArgs e)
         {
@@ -245,6 +224,23 @@ namespace MAIO
             Mainwindow.Giftcardclass.Remove(del);
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
             updateaccount(del.Name, path2);
+        }
+        private void accountlist_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
+        {
+            var account =(AccountClass)accountlist.SelectedItem;
+            try
+            {
+                string selectdata = Mainwindow.account[account.Name];
+                var gl = selectdata.Replace("\"", "").Replace("{", "").Replace("}", "").Replace(" ", "").Replace(",", "").Replace(":", "-").Split("\r\n");
+                EditAccount.account= gl;
+                EditAccount.editaccount = true;
+                AddAccount ad = new AddAccount();
+                ad.getTextHandler = Addaccountorgiftcard;
+                ad.Show();       
+            }
+            catch
+            {
+            }
         }
     }
 }

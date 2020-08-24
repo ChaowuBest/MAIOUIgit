@@ -23,6 +23,21 @@ namespace MAIO
         public AddAccount()
         {
             InitializeComponent();
+            edit();
+        }
+        public void edit()
+        {
+            if (EditAccount.editaccount)
+            {
+                for (int i = 0; i < EditAccount.account.Length; i++)
+                {
+                    if (EditAccount.account[i] != "")
+                    {
+                        giftaccountbox.AppendText(EditAccount.account[i]);
+                        giftaccountbox.AppendText("\r\n");
+                    }
+                }
+            }
         }
         public delegate void GetTextHandler(bool st, string name,bool account); //声明委托
         public GetTextHandler getTextHandler;
@@ -59,7 +74,7 @@ namespace MAIO
                 if (giftaccountbox.Text.Contains("@"))
                 {
                     string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
-                    string[] saveaccount = giftaccountbox.Text.Split("\n");
+                    string[] saveaccount = giftaccountbox.Text.Split("\r\n");
                     JObject ja = new JObject();
                     JObject jo = null;
                     try

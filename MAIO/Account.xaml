@@ -8,7 +8,7 @@
              mc:Ignorable="d" Height="769" Width="1080">
     <Grid Background="#FF252935" Height="769" Width="1079" Margin="1,0,0,0">
         <StackPanel>
-            <DataGrid HeadersVisibility="All" CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" x:Name="accountlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-511,138,0,0" Height="567">
+            <DataGrid HeadersVisibility="All" CanUserResizeColumns="False" CanUserResizeRows="False" RowHeaderWidth="60" x:Name="accountlist" AutoGenerateColumns="False"  ItemsSource="{Binding}" Background="#FF2C3040" Width="450" Margin="-511,138,0,0" Height="567" MouseDoubleClick="accountlist_MouseDoubleClick_1">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
