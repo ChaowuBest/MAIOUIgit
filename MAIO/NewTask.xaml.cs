@@ -147,6 +147,7 @@ namespace MAIO
                             Midtransfer.tk.Tasksite = site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ","");
                             Midtransfer.tk.Sku = productid.Replace("\r\n","");
                             Midtransfer.tk.Size = sizeid.Replace("\r\n","");
+                            Midtransfer.tk.monitortask = monitor.IsChecked.ToString();
                             Midtransfer.tk.Profile = profiles.Text.Replace("\r\n","");
                             Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
                             Midtransfer.tk.Account = user;

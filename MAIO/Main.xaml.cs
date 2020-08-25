@@ -79,7 +79,7 @@ namespace MAIO
                 task2.Start();
             }
             Task task3 = new Task(() => check());
-            //  task3.Start();
+              task3.Start();
         }
         public void check()
         {
@@ -546,7 +546,7 @@ namespace MAIO
                             }
 
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
 
                             tk.Status = "No Account";
@@ -756,14 +756,18 @@ namespace MAIO
                     Midtransfer.code = jo["Code"].ToString();
                     Midtransfer.Quantity = jo["Quantity"].ToString();
                     Midtransfer.tk = content;
-
-                    if (Mainwindow.tasklist[content.Taskid].Contains("\"monitortask\": \"True\""))
+                    for (int i = 0; i < Mainwindow.task.Count; i++)
                     {
-                        Midtransfer.monitor = true;
-                    }
-                    else
-                    {
-                        Midtransfer.monitor = false;
+                        if (Mainwindow.task[i].monitortask == "True"&&Mainwindow.task[i].Taskid==content.Taskid)
+                        {
+                            Midtransfer.monitor = true;
+                            break;
+                        }
+                        else if(Mainwindow.task[i].Taskid == content.Taskid&&Mainwindow.task[i].monitortask == "False")
+                        {
+                            Midtransfer.monitor = false;
+                            break;
+                        }
                     }
                 }
                 Midtransfer.edit = true;

@@ -38,9 +38,38 @@ namespace MAIO
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
         ArrayList skuidlist = new ArrayList();
         JObject joprofile = null;
-        public void StartTask(CancellationToken ct, CancellationTokenSource cts)
+        public  void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
+            bool monitortask = false;
+            bool ismonitor = false;
+            try
+            {
+                if (tk.monitortask != "True")
+                {
+                D: for (int n = 0; n < Mainwindow.task.Count; n++)
+                    {
+                        Thread.Sleep(1);
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Sku == this.pid && Mainwindow.task[n].Tasksite == this.tk.Tasksite)
+                        {
+                            tk.Status = "Monitoring Task";
+                            monitortask = true;
+                            if (Mainwindow.task[n].Status.Contains("SubmitOrder") || Mainwindow.task[n].Status.Contains("Forbidden") || Mainwindow.task[n].Status.Contains("Processing") || Mainwindow.task[n].Status.Contains("Success"))
+                            {
+                                ismonitor = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (monitortask && ismonitor == false)
+                    {
+                        goto D;
+                    }
+                } 
+            }
+            catch
+            { 
 
+            }
         A: joprofile = JObject.Parse(profile);
             try
             {
@@ -55,18 +84,18 @@ namespace MAIO
             {
                 return;
             }
-        B: string payinfo = "";
+        B:
             try
             {
-               // if (cookie != "")
-               // {
-                    payinfo = Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-             //   }
-              //  else
+                // if (cookie != "")
+                // {
+                Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                //   }
+                //  else
                 //{
                 //    goto B;
-              //  }
-               
+                //  }
+
             }
             catch (NullReferenceException)
             {
@@ -76,7 +105,7 @@ namespace MAIO
             {
                 return;
             }
-        C: int i = 0;
+        C:
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -93,10 +122,11 @@ namespace MAIO
             catch (OperationCanceledException)
             {
                 return;
-            }        
+            }
         }
-        public  void GetSKUID(string country, string pid, CancellationToken ct)
+        public void GetSKUID(string country, string pid, CancellationToken ct)
         {
+            Thread.Sleep(1);
             if (skuid != "" && productid != "")
             {
             }
@@ -217,7 +247,7 @@ namespace MAIO
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                             string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
                             string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid);
-                         //   getcookie(Config.hwid);
+                            //   getcookie(Config.hwid);
                             if (group[0] != null)
                             {
                                 skuid = group[0];
@@ -283,9 +313,9 @@ namespace MAIO
             }
 
         }
-        public  string Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct,string cookie)
+        public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct, string cookie)
         {
-
+            Thread.Sleep(1);
             string currency = "";
             if (tk.Tasksite.Contains("AU"))
             {
@@ -346,10 +376,10 @@ namespace MAIO
             }
             string payinfo = payLoad.ToString();
             AUCAAPI.PutMethod(url, payinfo, tk, ct);
-            return payinfo;
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
+            Thread.Sleep(1);
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
             string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
             JObject jo = JObject.Parse(sourcecode);
@@ -378,11 +408,11 @@ namespace MAIO
             {
                 ProcessNotification(false, Config.webhook, paymenturl);
                 ProcessNotification(true, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", "");
-                tk.Status = "Check Webhook";
             }
         }
         public void ProcessNotification(bool publicsuccess, string webhookurl, string paymenturl)
         {
+            Thread.Sleep(1);
             JObject jobject = null;
             if (publicsuccess)
             {
@@ -406,6 +436,7 @@ namespace MAIO
         }
         public void Http(string url, string postDataStr)
         {
+            Thread.Sleep(1);
         Retry: Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);
             Thread.Sleep(sleeptime);
@@ -432,12 +463,13 @@ namespace MAIO
         }
         public async void getcookie(string hwid)
         {
+            await Task.Delay(1);
             var binding = new BasicHttpBinding();
             var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
             var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
             var callClient = factory.CreateChannel();
             JObject result = JObject.Parse(callClient.getcookieAsync(hwid).Result);
-            cookie= result["cookie"].ToString();
+            cookie = result["cookie"].ToString();
         }
     }
 }

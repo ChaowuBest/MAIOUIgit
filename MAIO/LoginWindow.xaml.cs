@@ -82,7 +82,7 @@ namespace MAIO
             }
             catch (Exception ex)
             {
-
+              
             }
 
         }
@@ -135,6 +135,7 @@ namespace MAIO
                         Config.UseAdvancemode = "";
                         Config.autoclearcookie = false;
                         Close();
+                        
                         MD.Show();
                     }
                     else
@@ -159,7 +160,7 @@ namespace MAIO
                         {
                             Config.autoclearcookie = false;
                         }
-                        Close();
+                        Close();      
                         MD.Show();
                     }
                 }

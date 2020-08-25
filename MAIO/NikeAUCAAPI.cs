@@ -36,6 +36,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             string SourceCode = "";
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
@@ -204,6 +205,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             try
@@ -309,6 +311,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             WebProxy wp = new WebProxy();
             try
             {
@@ -408,6 +411,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             string traceid = Guid.NewGuid().ToString();
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";
@@ -545,6 +549,7 @@ namespace MAIO
         }
         public void failcheckout(taskset tk, string webhookurl, string reason, string imageurl)
         {
+            Thread.Sleep(1);
             JObject jobject = null;
             jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":16711680,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Reason\",\"value\":\"\",\"inline\":false}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
             jobject["embeds"][0]["title"] = "You Just Checkout!!!";
@@ -557,6 +562,7 @@ namespace MAIO
         }
         public void Http(string url, string postDataStr)
         {
+            Thread.Sleep(1);
         Retry: Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);
             Thread.Sleep(sleeptime);

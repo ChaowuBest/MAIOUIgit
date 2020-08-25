@@ -47,6 +47,35 @@ namespace MAIO
         private static char[] num = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
         public void StartTask(CancellationToken ct)
         {
+            bool monitortask = false;
+            bool ismonitor = false;
+            try
+            {
+                if (tk.monitortask != "True")
+                {
+                D: for (int n = 0; n < Mainwindow.task.Count; n++)
+                    {
+                        Thread.Sleep(1);
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Sku == this.pid && Mainwindow.task[n].Tasksite == this.tk.Tasksite)
+                        {
+                            tk.Status = "Monitoring Task";
+                            monitortask = true;
+                            if (Mainwindow.task[n].Status.Contains("Login") || Mainwindow.task[n].Status.Contains("Submit") || Mainwindow.task[n].Status.Contains("Get"))
+                            {
+                                ismonitor = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (monitortask && ismonitor == false)
+                    {
+                        goto D;
+                    }
+                }
+            }
+            catch
+            {
+            }
         A:
             try
             {
@@ -76,8 +105,6 @@ namespace MAIO
                 {
                     if (giftcard == "")
                     {
-
-                        //    Submitcardinfo(Authorization, skuid, ct);
                         Task task = new Task(() => Submitcardinfo(Authorization, skuid, ct));
                         task.Start();
                     }
@@ -85,7 +112,6 @@ namespace MAIO
                     {
                         Task task = new Task(() => subimitgiftcard(Authorization, skuid, ct));
                         task.Start();
-                        // subimitgiftcard(Authorization, skuid, ct);
                     }
                 }
                 catch (NullReferenceException)
@@ -159,6 +185,7 @@ namespace MAIO
         }
         protected void GetSKUID(string country, string pid, CancellationToken ct)
         {
+            Thread.Sleep(1);
             if (skuid != "" && productID != "")
             {
             }
@@ -182,6 +209,7 @@ namespace MAIO
                 string sourcecode = USUKAPI.GetHtmlsource(url, tk, ct);
                 JObject jo = JObject.Parse(sourcecode);
                 string obejects = jo["objects"].ToString();
+                Thread.Sleep(1);
                 JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
                 if (size.Contains("+"))
                 {
@@ -389,6 +417,7 @@ namespace MAIO
         protected string Login(JObject profile, CancellationToken ct)
         {
             string Authorization = "";
+            Thread.Sleep(1);
             if (profile["Address1"].ToString().Contains("%char4%"))
             {
                 Regex regex = new Regex(@"%char4%");
@@ -525,7 +554,7 @@ namespace MAIO
             cardguid = Guid.NewGuid().ToString();
             string cardurl = "";
             string cardinfo = "";
-
+            Thread.Sleep(1);
             JObject jo = JObject.Parse(profile);
             cardurl = "https://paymentcc.nike.com/creditcardsubmit/" + cardguid + "/store";
             string firstcard = jo["Cardnum"].ToString().Substring(0, 1);
@@ -573,6 +602,7 @@ namespace MAIO
         }
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
+            Thread.Sleep(1);
             string checkoutsessionurl = "https://api.nike.com/buy/checkout_previews/v2/" + GID;
             string country = "";
             string currency = "";
@@ -687,6 +717,7 @@ namespace MAIO
         }
         protected void CheckoutpreviewStatus(string Authorization, string skuid, CancellationToken ct)
         {
+            Thread.Sleep(1);
             string url = "https://api.nike.com/buy/checkout_previews/v2/jobs/" + GID;
             bool isdiscount = false;
             if (code != "")
@@ -708,6 +739,7 @@ namespace MAIO
         }
         protected void subimitgiftcard(string Authorization, string skuid, CancellationToken ct)
         {
+            Thread.Sleep(1);
             int count = 0;
             double balance = 0;
             JObject jo = JObject.Parse(Mainwindow.giftcardlist[giftcard]);
@@ -760,6 +792,7 @@ namespace MAIO
         ArrayList giftcardadd = new ArrayList();
         protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
+            Thread.Sleep(1);
             string paymenturl = "https://api.nike.com/payment/preview/v2/";
             JObject payinfo = null;
             string country = "";
@@ -895,6 +928,7 @@ new JObject(
         }
         protected void PreviewJob(string id, string Authorization, string skuid, CancellationToken ct)
         {
+            Thread.Sleep(1);
             string url = "https://api.nike.com/payment/preview/v2/jobs/" + id;
             if (ct.IsCancellationRequested)
             {
@@ -905,6 +939,7 @@ new JObject(
         }
         protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct)
         {
+            Thread.Sleep(1);
             string url = "https://api.nike.com/buy/checkouts/v2/" + GID;
             string country = "";
             string currency = "";
@@ -1013,6 +1048,7 @@ new JProperty("shippingAddress",
         }
         protected void finalorder(string Authorization, CancellationToken ct, JObject joprofile)
         {
+            Thread.Sleep(1);
             string url = "https://api.nike.com/buy/checkouts/v2/jobs/" + GID;
             if (ct.IsCancellationRequested)
             {
@@ -1063,6 +1099,7 @@ new JProperty("shippingAddress",
         }
         public void failcheckout(taskset tk, string webhookurl, JObject joprofile, string reson)
         {
+            Thread.Sleep(1);
             JObject jobject = null;
             jobject = JObject.Parse("{\r\n\"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n\"embeds\": [\r\n{\r\n\"title\": \"\",\"color\":16711680,\r\n\"description\": \"\",\r\n\"fields\": [\r\n{\r\n\"name\": \"Style Code\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Size\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Email\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,\r\n{\r\n\"name\": \"Account\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,{\r\n\"name\": \"Reason\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n},\r\n{\r\n\"name\": \"Profile\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},{\r\n\"name\": \"Code\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n}\r\n],\r\n\"thumbnail\": {\r\n\"url\": \"\"\r\n},\r\n\"footer\": {\r\n\"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n\"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n}\r\n}\r\n]\r\n}");
             jobject["embeds"][0]["title"] = "Failed Checkout!!!";
@@ -1090,6 +1127,7 @@ new JProperty("shippingAddress",
         }
         public void ProcessNotification(bool publicsuccess, taskset tk, string webhookurl, JObject joprofile, string orderid)
         {
+            Thread.Sleep(1);
             JObject jobject = null;
             if (publicsuccess)
             {
@@ -1132,6 +1170,7 @@ new JProperty("shippingAddress",
         }
         public void Http(string url, string postDataStr, Main.taskset tk)
         {
+            Thread.Sleep(1);
         Retry: Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);
             Thread.Sleep(sleeptime);

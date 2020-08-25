@@ -33,6 +33,7 @@ namespace MAIO
         int failedsubshipp = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
+            Thread.Sleep(1);
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -94,6 +95,7 @@ namespace MAIO
         }
         public string Postlogin(string url, string logininfo, bool isrefresh, string account, Main.taskset tk, CancellationToken ct)
         {
+            Thread.Sleep(1);
         retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
             WebProxy wp = new WebProxy();
             if (ct.IsCancellationRequested)
@@ -262,6 +264,7 @@ namespace MAIO
         }
         public void writerefreshtoken(string token, string account)
         {
+            Thread.Sleep(1);
             try
             {
                 if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
@@ -315,6 +318,7 @@ namespace MAIO
         }
         public double Postcardinfo(string url, string cardinfo, string Authorization, string cardguid, Main.taskset tk, CancellationToken ct)
         {
+            Thread.Sleep(1);
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -398,11 +402,13 @@ namespace MAIO
         }
         public void CheckoutPreview(string url, string Authorization, string checkoutpayload, string GID, Main.taskset tk, CancellationToken ct)
         {
+           
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             WebProxy wp = new WebProxy();
             try
             {
@@ -494,11 +500,13 @@ namespace MAIO
         }
         public string CheckoutPreviewStatus(string url, string Authorization, bool isdiscount, Main.taskset tk, CancellationToken ct, string profile, string pid, string size, string code, string giftcard, string username, string password, bool randomsize, string productid, string skuid)
         {
+            
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             WebProxy wp = new WebProxy();
             try
             {
@@ -624,11 +632,13 @@ namespace MAIO
         }
         public string payment(string url, string Authorization, string paymentinfo, Main.taskset tk, CancellationToken ct)
         {
+            
         retry: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             WebProxy wp = new WebProxy();
             try
             {
@@ -703,6 +713,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             WebProxy wp = new WebProxy();
             try
             {
@@ -815,6 +826,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             WebProxy wp = new WebProxy();
             try
             {
@@ -971,6 +983,7 @@ namespace MAIO
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
+                Thread.Sleep(1);
                 WebProxy wp = new WebProxy();
                 try
                 {
@@ -1005,7 +1018,7 @@ namespace MAIO
                 reqfinal.Headers.Add("Sec-Fetch-Dest", "empty");
                 reqfinal.Headers.Add("Sec-Fetch-Mode", "cors");
                 reqfinal.Headers.Add("Sec-Fetch-Site", "same-site");
-                reqfinal.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+                reqfinal.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
                 reqfinal.Headers.Add("X-B3-SpanId", xb3spanID);
                 reqfinal.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
                 reqfinal.Headers.Add("X-B3-TraceId", xb3traceid);
@@ -1033,7 +1046,7 @@ namespace MAIO
                     Stream jobstream = respjob.GetResponseStream();
                     StreamReader readjobstream = new StreamReader(jobstream, Encoding.UTF8);
                     status = readjobstream.ReadToEnd();
-                    tk.Status = "Error";
+                    tk.Status = status;
                     goto A;
                 }
                 if ((status.Contains("COMPLETED") == true) && (status.Contains("error")))
@@ -1073,6 +1086,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            Thread.Sleep(1);
             if (advancemode)
             {
                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
@@ -1224,6 +1238,7 @@ namespace MAIO
         }
         private DateTime ConvertStringToDateTime(string timeStamp)
         {
+            Thread.Sleep(1);
             DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
             long lTime = long.Parse(timeStamp + "0000");
             TimeSpan toNow = new TimeSpan(lTime);
