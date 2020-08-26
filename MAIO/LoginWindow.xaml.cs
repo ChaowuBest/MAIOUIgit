@@ -84,7 +84,6 @@ namespace MAIO
             {
               
             }
-
         }
         static string HttpGet(string url, string encoding)
         {

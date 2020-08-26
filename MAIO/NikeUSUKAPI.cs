@@ -1173,6 +1173,7 @@ namespace MAIO
                 JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
                 for (int i = 0; i < ja.Count; i++)
                 {
+                    Thread.Sleep(1);
                     group[1] = jo["data"]["skus"][0]["product"]["id"].ToString();
                     if (randomsize)
                     {
