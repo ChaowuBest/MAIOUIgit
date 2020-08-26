@@ -27,7 +27,6 @@ namespace MAIO
         Random ran = new Random();
         string xb3traceid = Guid.NewGuid().ToString();
         string xnikevisitorid = Guid.NewGuid().ToString();
-        bool ready = false;
         public int failedretry = 0;
         public Page _page = null;
         public Browser _browser = null;
@@ -97,7 +96,7 @@ namespace MAIO
         public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct)
         {
         C: Thread.Sleep(1);
-         A:  string[] sendcookie = null;
+           string[] sendcookie = null;
             if (Mainwindow.iscookielistnull)
             {
                 Thread.Sleep(1);

@@ -1055,13 +1055,14 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            tk.Status = "Submit Payment";
             string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            if (status.Contains("error") == true || status.Contains("inventory") == true)
+            if (status.Contains("error") == true)
             {
                 JObject jo = JObject.Parse(status);
                 string obejects = jo["error"].ToString();

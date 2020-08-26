@@ -116,6 +116,7 @@ namespace MAIO
         public void check()
         {
         A:
+            Thread.Sleep(1);
             Process[] ps = Process.GetProcesses();
             foreach (Process p in ps)
             {
@@ -178,6 +179,7 @@ namespace MAIO
                 {
                     for (int i = 0; i < Mainwindow.cookiewtime.Count; i++)
                     {
+                        Thread.Sleep(1);
                         KeyValuePair<long, string> kv = Mainwindow.cookiewtime.ElementAt(i);
                         if (kv.Value == cookie)
                         {
