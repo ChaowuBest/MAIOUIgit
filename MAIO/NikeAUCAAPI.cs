@@ -208,6 +208,7 @@ namespace MAIO
                 bool fordidden = false;
                 allSockets[0].OnMessage = delegate (string message)
                 {
+
                     Thread.Sleep(1000);
                     if (message.IndexOf("response") != -1)
                     {
