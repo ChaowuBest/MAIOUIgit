@@ -211,118 +211,125 @@ namespace MAIO
         }
         public void ws(string site)
         {
-            string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
-            Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
-            FleckLog.Level = LogLevel.Debug;
-            var allSockets = new List<IWebSocketConnection>();
-            var server = new WebSocketServer("ws://127.0.0.1:64526");
-            server.Start(socket =>
+            try
             {
-                socket.OnOpen = () => //当建立Socket链接时执行此方法
+                string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
+                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                FleckLog.Level = LogLevel.Debug;
+                var allSockets = new List<IWebSocketConnection>();
+                var server = new WebSocketServer("ws://127.0.0.1:64526");
+                server.Start(socket =>
                 {
-                    var data = socket.ConnectionInfo; //通过data可以获得这个链接传递过来的Cookie信息，用来区分各个链接和用户之间的关系（如果需要后台主动推送信息到某个客户的时候，可以使用Cookie）
-                    allSockets.Add(socket);
-                };
-                socket.OnClose = () =>// 当关闭Socket链接十执行此方法
-                {
-                    //  Console.WriteLine("Close!");
-                    allSockets.Remove(socket);
-                };
-                socket.OnMessage = message =>// 接收客户端发送过来的信息
-                {
-                    if (message.Contains("abck"))
+                    socket.OnOpen = () => //当建立Socket链接时执行此方法
                     {
-                        string bmsz = "";
-                        string geoc = "";
-                        string bm_sv = "";
-                        JObject jo = JObject.Parse(message);
-                        var chao = jo.ToString();
-                       // MessageBox.Show(chao);
-                        if (jo["value"].ToString().Contains("==") == false)
+                        var data = socket.ConnectionInfo; //通过data可以获得这个链接传递过来的Cookie信息，用来区分各个链接和用户之间的关系（如果需要后台主动推送信息到某个客户的时候，可以使用Cookie）
+                        allSockets.Add(socket);
+                    };
+                    socket.OnClose = () =>// 当关闭Socket链接十执行此方法
+                    {
+                        //  Console.WriteLine("Close!");
+                        allSockets.Remove(socket);
+                    };
+                    socket.OnMessage = message =>// 接收客户端发送过来的信息
+                    {
+                        if (message.Contains("abck"))
                         {
-                            JArray ja = JArray.Parse(jo["value1"].ToString());
-                            foreach (var i in ja)
+                            string bmsz = "";
+                            string geoc = "";
+                            string bm_sv = "";
+                            JObject jo = JObject.Parse(message);
+                            var chao = jo.ToString();
+                            // MessageBox.Show(chao);
+                            if (jo["value"].ToString().Contains("==") == false)
                             {
-                                JObject jo2 = JObject.Parse(i.ToString());
-                                if (jo2["name"].ToString() == "bm_sz")
+                                JArray ja = JArray.Parse(jo["value1"].ToString());
+                                foreach (var i in ja)
                                 {
-                                    bmsz = jo2["value"].ToString();
+                                    JObject jo2 = JObject.Parse(i.ToString());
+                                    if (jo2["name"].ToString() == "bm_sz")
+                                    {
+                                        bmsz = jo2["value"].ToString();
+                                    }
+                                    if (jo2["name"].ToString() == "ak_bmsc")
+                                    {
+                                        geoc = jo2["value"].ToString();
+                                    }
+                                    if (jo2["name"].ToString() == "bm_sv")
+                                    {
+                                        bm_sv = jo2["value"].ToString();
+                                    }
+                                    if (bmsz != "" && geoc != "")
+                                    {
+                                        break;
+                                    }
                                 }
-                                if (jo2["name"].ToString() == "ak_bmsc")
+                                string cookie = "bm_sz=" + bmsz + "; _abck=" + jo["value"].ToString();// + "; ak_bmsc=" + geoc;
+                                long time2 = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+                                string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
+                                if (site == "NIKE")
                                 {
-                                    geoc = jo2["value"].ToString();
+                                    Mainwindow.lines.Add(cookie);
+                                    Mainwindow.cookiewtime.Add(time2, cookie);
+                                    Mainwindow.iscookielistnull = false;
                                 }
-                                if (jo2["name"].ToString() == "bm_sv")
+                                Main.updatelable(cookie, true);
+                                FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
+                                if (fi.Length == 0)
                                 {
-                                    bm_sv = jo2["value"].ToString();
-                                }
-                                if (bmsz != "" && geoc !="")
-                                {
-                                    break;
-                                }
-                            }
-                            string cookie = "bm_sz=" + bmsz + "; _abck=" + jo["value"].ToString();// + "; ak_bmsc=" + geoc;
-                            long time2 = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                            string cookiewtime = "[{\"cookie\":\"" + cookie + "\",\"time\":\"" + time2.ToString() + "\",\"site\":\"" + site + "\"}]";
-                            if (site == "NIKE")
-                            {
-                                Mainwindow.lines.Add(cookie);
-                                Mainwindow.cookiewtime.Add(time2, cookie);
-                                Mainwindow.iscookielistnull = false;
-                            }
-                            Main.updatelable(cookie, true);
-                            FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
-                            if (fi.Length == 0)
-                            {
-                                FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-                                JArray ja2 = JArray.Parse(cookiewtime);
-                                StreamWriter sw = new StreamWriter(fs1);
-                                sw.Write(ja2.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
-                                sw.Close();
-                                fs1.Close();
-                            }
-                            else
-                            {
-                                using (FileStream fs2 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
-                                {
-                                    StreamReader sr = new StreamReader(fs2);
-                                    string read = sr.ReadToEnd();
-                                    sr.Close();
-                                    JArray ja3 = JArray.Parse(read);//bug
-                                    ja3.Add(JObject.Parse(cookiewtime.Replace("[", "").Replace("]", "")));
-                                    FileStream fs3 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                                    fs3.SetLength(0);
-                                    StreamWriter sw = new StreamWriter(fs3);
-                                    sw.Write(ja3.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
+                                    FileStream fs1 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                                    JArray ja2 = JArray.Parse(cookiewtime);
+                                    StreamWriter sw = new StreamWriter(fs1);
+                                    sw.Write(ja2.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
                                     sw.Close();
-                                    fs3.Close();
+                                    fs1.Close();
+                                }
+                                else
+                                {
+                                    using (FileStream fs2 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                                    {
+                                        StreamReader sr = new StreamReader(fs2);
+                                        string read = sr.ReadToEnd();
+                                        sr.Close();
+                                        JArray ja3 = JArray.Parse(read);//bug
+                                        ja3.Add(JObject.Parse(cookiewtime.Replace("[", "").Replace("]", "")));
+                                        FileStream fs3 = new FileStream(Environment.CurrentDirectory + "\\" + "cookie.json", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                                        fs3.SetLength(0);
+                                        StreamWriter sw = new StreamWriter(fs3);
+                                        sw.Write(ja3.ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "").Replace(" ", ""));
+                                        sw.Close();
+                                        fs3.Close();
+                                    }
                                 }
                             }
                         }
-                    }
-                    socket.Send(message);
-                    if (message.Contains("{\"type\":\"proxy\"}"))
-                    {
-                        Random ra = new Random();
-                        int index = ra.Next(0, Mainwindow.proxypool.Count);
-                        string proxy = "";
-                        try
+                        socket.Send(message);
+                        if (message.Contains("{\"type\":\"proxy\"}"))
                         {
-                            proxy = "Proxy: " + Mainwindow.proxypool[index] + "";
+                            Random ra = new Random();
+                            int index = ra.Next(0, Mainwindow.proxypool.Count);
+                            string proxy = "";
+                            try
+                            {
+                                proxy = "Proxy: " + Mainwindow.proxypool[index] + "";
+                            }
+                            catch
+                            {
+                                proxy = "Proxy: ";
+                            }
+                            allSockets.ToList().ForEach(s => s.Send(proxy));
                         }
-                        catch
+                        else
                         {
-                            proxy = "Proxy: ";
                         }
-                        allSockets.ToList().ForEach(s => s.Send(proxy));
-                    }
-                    else
-                    {
-                    }
 
-                };
-            });
+                    };
+                });
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

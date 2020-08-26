@@ -1,4 +1,5 @@
-﻿using MAIO.ASOS;
+﻿using Fleck;
+using MAIO.ASOS;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -36,6 +37,7 @@ namespace MAIO
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
         public static Dictionary<string, string> randomdic = new Dictionary<string, string>();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
         public Main()
         {
             InitializeComponent();
@@ -78,8 +80,38 @@ namespace MAIO
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
             }
-            Task task3 = new Task(() => check());
-              task3.Start();
+            Task task4 = Task.Run(()=>openbrowser());
+            
+        }
+        public static void openbrowser()
+        {
+            string ChromePath = Environment.CurrentDirectory + "\\" + "checkouthelp";
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
+            Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+            FleckLog.Level = LogLevel.Debug;
+            new WebSocketServer("ws://127.0.0.1:64525", true).Start(delegate (IWebSocketConnection socket)
+              {
+                  socket.OnOpen = delegate ()
+                  {
+                      allSockets.Add(socket);
+                  };
+                  socket.OnClose = delegate ()
+                  {
+                      allSockets.Remove(socket);
+                      openbrowser();
+                  };
+                  socket.OnMessage = delegate (string message)// 接收客户端发送过来的信息
+                  {
+                      if (message.IndexOf("updatetab") != -1)
+                      {
+                          allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
+                      }
+                      if (message.IndexOf("response") != -1)
+                      {
+                      }
+                      allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
+                  };
+              });
         }
         public void check()
         {

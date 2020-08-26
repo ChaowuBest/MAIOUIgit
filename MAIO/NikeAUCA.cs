@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MAIO.browsercheckout;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -316,7 +317,7 @@ namespace MAIO
         public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct, string cookie)
         {
             Thread.Sleep(1);
-            string currency = "";
+            string currency = null;
             if (tk.Tasksite.Contains("AU"))
             {
                 currency = "AUD";
@@ -374,8 +375,9 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string payinfo = payLoad.ToString();
-            AUCAAPI.PutMethod(url, payinfo, tk, ct);
+       
+             string payinfo = payLoad.ToString();
+              AUCAAPI.PutMethod(url, payinfo, tk, ct);
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
