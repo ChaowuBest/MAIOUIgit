@@ -328,7 +328,7 @@ namespace MAIO
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+               // MessageBox.Show(ex.ToString());
             }
         }
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

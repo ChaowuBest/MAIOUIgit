@@ -908,7 +908,7 @@ namespace MAIO
                 tk.Status = "Submit Payment";
                 Main.allSockets[0].OnMessage = delegate (string message)
                 {
-                   // tk.Status = "Submit Payment";
+                    Thread.Sleep(1000);
                     if (message.IndexOf("response") != -1)
                     {
                        if (message.Contains("\"status\":202"))

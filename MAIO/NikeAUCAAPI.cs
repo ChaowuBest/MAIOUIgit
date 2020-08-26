@@ -203,11 +203,12 @@ namespace MAIO
                 browserData.cookies = cookielist;
                 browserData.id = tk.Taskid;
                 helperRequest.data = browserData;
-                string text12 = JsonConvert.SerializeObject(helperRequest);
-                Main.allSockets[0].Send(text12);
+                string text = JsonConvert.SerializeObject(helperRequest);
+                Main.allSockets[0].Send(text);
                 bool fordidden = false;
                 allSockets[0].OnMessage = delegate (string message)
                 {
+                    Thread.Sleep(1000);
                     if (message.IndexOf("response") != -1)
                     {
                         if (message.Contains("\"status\":202"))
