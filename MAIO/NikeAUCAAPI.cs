@@ -147,77 +147,76 @@ namespace MAIO
             }
             try
             {
-                BrowserRequest helperRequest = new BrowserRequest();
-                helperRequest.type = "request";
-                Data browserData = new Data();
-                browserData.url = url;
-                browserData.method = "PUT";
-                browserData.data = payinfo;
-                browserData.proxy = proxy;
-                browserData.headers = new Dictionary<string, string>
-                                    {
-                                        {
-                                            "Content-Type",
-                                            "application/json"
-                                        },
-                                        {
-                                            "Origin",
-                                            " https://www.nike.com"
-                                        },
-                                        {
-                                            "Accept",
-                                            "application/json"
-                                        },
-                                        {
-                                            "x-nike-visitid",
-                                            "1"
-                                        },
-                                        {
-                                            "x-nike-visitorid",
-                                             xnikevisitorid
-                                        },
-                                        {
-                                            "appid",
-                                            "com.nike.commerce.nikedotcom.web"
-                                        },
-                                         {
-                                            "X-B3-SpanName",
-                                            "CiCCart"
-                                        },
-                                        {
-                                            "X-B3-TraceId",
-                                            xb3traceid
-                                        }
-                                    };
-                List<AddBrowserCookie> cookielist = new List<AddBrowserCookie>();
-                AddBrowserCookie AbC = new AddBrowserCookie();
-                AbC.Name = "_abck";
-                AbC.Value = sendcookie[1].Replace("_abck=", "");
-                AbC.TimeStamp = DateTime.Now.ToLocalTime().ToString();
-                AddBrowserCookie AbC2 = new AddBrowserCookie();
-                AbC2.Name = "bm_sz";
-                AbC2.Value = sendcookie[0].Replace("bm_sz=", "");
-                AbC2.TimeStamp = DateTime.Now.ToLocalTime().ToString();
-                cookielist.Add(AbC);
-                cookielist.Add(AbC2);
-                browserData.cookies = cookielist;           
-                browserData.id = tk.Taskid;
-                helperRequest.data = browserData;
-
-                string sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\""+xnikevisitorid+"\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\""+xb3traceid+"\"},\"url\":\""+url+"\",\"method\":\"PUT\",\"data\":\"{\\r\\n  \\\"country\\\": \\\"CA\\\",\\r\\n  \\\"language\\\": \\\"en-GB\\\",\\r\\n  \\\"channel\\\": \\\"NIKECOM\\\",\\r\\n  \\\"cartId\\\": \\\"72e2aca1-2238-4be5-a7aa-d653834dbfb9\\\",\\r\\n  \\\"currency\\\": \\\"CAD\\\",\\r\\n  \\\"paypalClicked\\\": false,\\r\\n  \\\"items\\\": [\\r\\n    {\\r\\n      \\\"id\\\": \\\"d4570e03-4a10-4211-948c-db6b56600fa0\\\",\\r\\n      \\\"skuId\\\": \\\"0dc80720-810f-535a-82ea-fc2dc98bfd72\\\",\\r\\n      \\\"quantity\\\": 1,\\r\\n      \\\"priceInfo\\\": {\\r\\n        \\\"price\\\": \\\"130\\\",\\r\\n        \\\"subtotal\\\": \\\"130\\\",\\r\\n        \\\"discount\\\": 0,\\r\\n        \\\"valueAddedServices\\\": 0,\\r\\n        \\\"total\\\": \\\"130\\\",\\r\\n        \\\"priceSnapshotId\\\": \\\"ff415859-4d7f-44e0-b1a7-5704ad7f44c1\\\",\\r\\n        \\\"msrp\\\": \\\"130\\\",\\r\\n        \\\"fullPrice\\\": \\\"130\\\"\\r\\n      }\\r\\n    }\\r\\n  ]\\r\\n}\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"EC3ECDFBD382202611518D36464DFE10~-1~YAAQw57C3cnU5+BzAQAAwtQJKwQWK2Z/sANtEYfq5AZiNoNw7YshDnFwk1VbxKScqs6q79WenbLqBU5ZXMQuuLKEwp2Ksh78P0MaNnMy3Pun94c0jXzkzdLD4um+xDtUSoVRbJCL3hdEMiwvZuGTDKMAxfXoliYtmRRaUe1bcL5cerXQ0E5J25KNHl/xmFrBV+jX6H3JicY5FjPybES2aMA0DU/1TlNbXu2XpEtL1oOktLXA5fyrfdoqKCVG/z+A/JtCx9+DthQFFYO6N1J3h9/i7LytD6ucMRGC/mPK6raAfymRmVKKC8tcM8uXn97WPjzbvCUEHGsq2NdsZhest3Zh3IIK4iT6PkHEy+xM6pg=~-1~-1~-1\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"1A8910B2E19B9F280374DE03195522C3~YAAQw57C3XbU5+BzAQAAk8gJKwjoMMYaplZP7Zlv9vxgdKPAvVRlP8t7YUZjzuKIQisWgMlTl0XAudunXjmTj/ZKMPsmtvw8x6g492kvqHmLIL01Cgb56Jh5LDQMtGW6vJUlE+do17kAljV7/ksip+fqpPWAaZ5NaydMEMYXpiIll7+iX06QZA8YgBFwVA==\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"e9cf52dc-1055-4268-b7dd-12a5bd7f3913\"},\"type\":\"request\"}";
-                string text = null;
+                #region
+                /*  BrowserRequest helperRequest = new BrowserRequest();
+                  helperRequest.type = "request";
+                  Data browserData = new Data();
+                  browserData.url = url;
+                  browserData.method = "PUT";
+                  browserData.data = payinfo;
+                  browserData.proxy = proxy;
+                  browserData.headers = new Dictionary<string, string>
+                                      {
+                                          {
+                                              "Content-Type",
+                                              "application/json"
+                                          },
+                                          {
+                                              "Origin",
+                                              " https://www.nike.com"
+                                          },
+                                          {
+                                              "Accept",
+                                              "application/json"
+                                          },
+                                          {
+                                              "x-nike-visitid",
+                                              "1"
+                                          },
+                                          {
+                                              "x-nike-visitorid",
+                                               xnikevisitorid
+                                          },
+                                          {
+                                              "appid",
+                                              "com.nike.commerce.nikedotcom.web"
+                                          },
+                                           {
+                                              "X-B3-SpanName",
+                                              "CiCCart"
+                                          },
+                                          {
+                                              "X-B3-TraceId",
+                                              xb3traceid
+                                          }
+                                      };
+                  List<AddBrowserCookie> cookielist = new List<AddBrowserCookie>();
+                  AddBrowserCookie AbC = new AddBrowserCookie();
+                  AbC.Name = "_abck";
+                  AbC.Value = sendcookie[1].Replace("_abck=", "");
+                  AbC.TimeStamp = DateTime.Now.ToLocalTime().ToString();
+                  AddBrowserCookie AbC2 = new AddBrowserCookie();
+                  AbC2.Name = "bm_sz";
+                  AbC2.Value = sendcookie[0].Replace("bm_sz=", "");
+                  AbC2.TimeStamp = DateTime.Now.ToLocalTime().ToString();
+                  cookielist.Add(AbC);
+                  cookielist.Add(AbC2);
+                  browserData.cookies = cookielist;           
+                  browserData.id = tk.Taskid;
+                  helperRequest.data = browserData;
+                  var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
+                  */
+                #endregion
+                string sendjson = null;
                 try
                 {
-                    JObject jo = JObject.FromObject(helperRequest);
-                    text=jo.ToString();
-                    MessageBox.Show(text);
-               //    text = JsonConvert.SerializeObject(helperRequest);
+                    var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
+                     sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
                 }
                 catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());              
+                {        
                 }
-                Main.allSockets[0].Send(text);
+                Main.allSockets[0].Send(sendjson);
                 bool fordidden = false;
                 try
                 {
@@ -225,6 +224,11 @@ namespace MAIO
                     {
                         if (message.IndexOf("response") != -1)
                         {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             if (message.Contains("\"status\":202"))
                             {
                                 tk.Status = "Submit Order";
@@ -242,7 +246,7 @@ namespace MAIO
                         }
                     };
                 }
-                catch(Exception ex)
+                catch(Exception)
                 {  
                 }
                 if (fordidden)

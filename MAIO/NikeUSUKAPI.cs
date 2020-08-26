@@ -846,6 +846,8 @@ namespace MAIO
             }
             try
             {
+                #region
+                /*
                 BrowserRequest helperRequest = new BrowserRequest();
                 helperRequest.type = "request";
                 Data browserData = new Data();
@@ -901,8 +903,10 @@ namespace MAIO
                 cookielist.Add(AbC2);
                 browserData.cookies = cookielist;
                 browserData.id = tk.Taskid;
-                helperRequest.data = browserData;
-                string  json = JsonConvert.SerializeObject(helperRequest);
+                helperRequest.data = browserData;*/
+#endregion
+                var chao= JsonConvert.SerializeObject(payload).Replace("\"{", "{").Replace("}\"", "}");
+                string json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\""+Authorization+"\",\"X-B3-SpanId\":\""+xb3spanID+"\",\"X-B3-ParentSpanId\":\""+xb3parentspanid+"\",\"appid\":\"com.nike.commerce.snkrs.web\",\"X-B3-TraceId\":\""+xb3traceid+"\"},\"url\":\""+url+"\",\"method\":\"PUT\",\"data\":\""+ chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString()+ "\",\"Value\":\""+ sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\""+ sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\""+tk.Taskid+"\"},\"type\":\"request\"}";
                 Main.allSockets[0].Send(json);
                 bool fordidden = false;
                 tk.Status = "Submit Payment";
@@ -910,8 +914,18 @@ namespace MAIO
                 {
                     Main.allSockets[0].OnMessage = delegate (string message)
                     {
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
                         if (message.IndexOf("response") != -1)
                         {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             if (message.Contains("\"status\":202"))
                             {
                                 tk.Status = "Submit Payment";
