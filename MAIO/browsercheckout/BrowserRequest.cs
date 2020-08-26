@@ -4,7 +4,8 @@ using System.Text;
 
 namespace MAIO.browsercheckout
 {
-    class BrowserRequest
+	[Serializable]
+	class BrowserRequest
     {
 		public Data data { get; set; }
 		public string type { get; set; }	

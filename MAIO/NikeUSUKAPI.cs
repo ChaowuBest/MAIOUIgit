@@ -906,22 +906,34 @@ namespace MAIO
                 Main.allSockets[0].Send(json);
                 bool fordidden = false;
                 tk.Status = "Submit Payment";
-                Main.allSockets[0].OnMessage = delegate (string message)
+                try
                 {
-                    Thread.Sleep(1000);
-                    if (message.IndexOf("response") != -1)
+                    Main.allSockets[0].OnMessage = delegate (string message)
                     {
-                       if (message.Contains("\"status\":202"))
+                        if (message.IndexOf("response") != -1)
                         {
-                            tk.Status = "Submit Payment";
+                            if (message.Contains("\"status\":202"))
+                            {
+                                tk.Status = "Submit Payment";
+                                fordidden = false;
+                            }
+                            else if (message.Contains("Access Denied") == false)
+                            {
+                                fordidden = true;
+                                tk.Status = "Forbidden";
+                            }
+                            else if (message.Contains("Access Denied") == true||message.Contains("fetch"))
+                            {
+                                fordidden = true;
+                                tk.Status = "Forbidden";
+                            }
                         }
-                        else if(message.Contains("Access Denied"))
-                        {
-                            tk.Status = "Processing failed";
-                            fordidden = true;
-                        }
-                    }
-                };
+                    };
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
                 if (fordidden)
                 {
                    goto D;

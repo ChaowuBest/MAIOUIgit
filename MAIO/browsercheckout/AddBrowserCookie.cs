@@ -5,7 +5,8 @@ using System.Text;
 
 namespace MAIO.browsercheckout
 {
-    class AddBrowserCookie
+	[Serializable]
+	class AddBrowserCookie
     {
 		public string Name { get; set; }
 		public string TimeStamp { get; set; }

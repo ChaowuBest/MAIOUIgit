@@ -4,7 +4,8 @@ using System.Text;
 
 namespace MAIO.browsercheckout
 {
-    class Data
+	[Serializable]
+	class Data
     {
 		public Dictionary<string, string> headers { get; set; }
 		public string url { get; set; }
