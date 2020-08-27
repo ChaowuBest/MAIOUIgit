@@ -884,9 +884,13 @@ namespace MAIO
                         goto B;
                     }
                 }
-                catch
+                catch (NullReferenceException)
                 {
                     goto B;
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
                 }
                 if (fordidden)
                 {

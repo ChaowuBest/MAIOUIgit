@@ -260,12 +260,10 @@ namespace MAIO
             }
             string getorderviewurl = "";
             string orderinfo = "";
-           
             if (tk.Tasksite == "TheNorthFaceUS")
             {
                 getorderviewurl = "https://www.thenorthface.com/shop/VFAjaxGetOrderView";
                 orderinfo = "storeId=7001&orderId=" + orderid + "&requesttype=ajax";
-
                 tnfAPI.orderdetail(getorderviewurl, tk, ct, orderinfo);
             }          
             if (ct.IsCancellationRequested)
@@ -277,7 +275,6 @@ namespace MAIO
             string ajaxorderurl = "";
             if (tk.Tasksite == "TheNorthFaceUS")
             {
-
                 AjaxOrderCalculate = "orderId=" + orderid + "&storeId=7001&langId=-1&updatePrices=1&calculationUsageId=-1&calculationUsageId=-2&calculationUsageId=-3&calculationUsageId=-4&calculationUsageId=-5&calculationUsageId=-6&calculationUsageId=-7&showOrder=1&promoCode=&altAction=OrderCalculate&requesttype=ajax";
                 ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
                 tnfAPI.orderdetail(ajaxorderurl, tk, ct, AjaxOrderCalculate);

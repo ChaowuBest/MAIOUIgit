@@ -53,7 +53,6 @@ namespace MAIO
         private void saveaccount_Click(object sender, RoutedEventArgs e)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
-           // accountname.Text=
             bool duplicate = false;
             string key = null;
             if (new TextRange(accountbox.Document.ContentStart, accountbox.Document.ContentEnd).Text == "")
@@ -161,7 +160,7 @@ namespace MAIO
         {
             bool duplicate = false;
             string key = null;
-            Dictionary<string, string> dic = new Dictionary<string, string>();
+          //  Dictionary<string, string> dic = new Dictionary<string, string>();
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
             string[] savegiftcard = new TextRange(giftcardbox.Document.ContentStart, giftcardbox.Document.ContentEnd).Text.Split("\r\n");
             JObject ja = new JObject();
@@ -178,8 +177,15 @@ namespace MAIO
                     {
                          sp = savegiftcard[i].Split("-");
                     }
-                    dic.Add(sp[0], sp[1]);
-                    ja.Add(sp[0], sp[1]);
+                    //   dic.Add(sp[0], sp[1]);
+                    try
+                    {
+                        ja.Add(sp[0], sp[1]);
+                    }
+                    catch
+                    {
+                        
+                    }
                 }
             }
             JObject jo = new JObject(
