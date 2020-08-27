@@ -70,7 +70,7 @@ namespace MAIO
             }
             try
             {
-                payment(ct);
+                payment(ct,joprofile);
             }
             catch (OperationCanceledException)
             {
@@ -157,8 +157,6 @@ namespace MAIO
                 tk.Status = "Monitoring";
                 goto B;
             }
-
-
         }
         public void ATC(CancellationToken ct)
         {
@@ -253,7 +251,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
         }
-        public void payment(CancellationToken ct)
+        public void payment(CancellationToken ct,JObject jprofile)
         {
             if (ct.IsCancellationRequested)
             {
@@ -284,7 +282,6 @@ namespace MAIO
                 ajaxorderurl = "https://www.thenorthface.com/webapp/wcs/stores/servlet/AjaxOrderCalculate";
                 tnfAPI.orderdetail(ajaxorderurl, tk, ct, AjaxOrderCalculate);
             }
-
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -293,15 +290,33 @@ namespace MAIO
             string url = "";
             if (tk.Tasksite == "TheNorthFaceUK")
             {
-                string precheckouturl = "https://www.thenorthface.co.uk/shop/VFCAjaxWorldpayPunchoutCmd";
-                string precheckoutinfo = "billingAddress="+addressid+"&payMethodId=PAYPAL&orderId="+orderid+ "&ipAddress=127.0.0.1&userAgent=Mozilla%2F5.0+(Windows+NT+10.0%3B+WOW64)+AppleWebKit%2F537.36+(KHTML%2C+like+Gecko)+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D" + orderid+"%26storeId%3D7005%26langId%3D-11&isFromPaymentPage=true&requesttype=ajax";
-                string source=tnfAPI.precheckout(precheckouturl,tk,ct,precheckoutinfo);
+                #region
+                /*string precheckouturl = "https://www.thenorthface.co.uk/shop/VFCAjaxWorldpayPunchoutCmd";
+                string precheckoutinfo = "billingAddress="+addressid+ "&payMethodId=WPCARDS&orderId=" + orderid+ "&ipAddress=127.0.0.1&userAgent=Mozilla%2F5.0+(Windows+NT+10.0%3B+WOW64)+AppleWebKit%2F537.36+(KHTML%2C+like+Gecko)+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D" + orderid+"%26storeId%3D7005%26langId%3D-11&isFromPaymentPage=true&requesttype=ajax";
+                 var mmyy=jprofile["MMYY"].ToString().Split("/");
+                string source =tnfAPI.precheckout(precheckouturl,tk,ct,precheckoutinfo);
+                JObject jo2 = JObject.Parse(source);
+                string cclink = jo2["wpRedirectUrl"].ToString().Replace("amp;", "").Replace("&amp", "");
+             //   string checkouturl = "https://hpp.worldpay.com/app/hpp/59-0/rest/cardtypes;jsessionid=" + Guid.NewGuid().ToString() + ".os";
+                //string checkoutinfo = "selectedPaymentMethodName=&cardNumber="+jprofile["Cardnum"].ToString() +"&cardholderName="+jprofile["NameonCard"].ToString().Replace(" ","+") +"&expiryDate.expiryMonth="+ mmyy[0]+ "&expiryDate.expiryYear="+ mmyy [1]+ "&securityCodeVisibilityType=MANDATORY&mandatoryForUnknown=true&securityCode="+ jprofile["Cvv"].ToString() + "&dfReferenceId=&tmxSessionId=&_csrf="+Guid.NewGuid().ToString()+"&ajax=true";
+             //   string checkoutinfo = "cardNumber=51426886244";
+                tnfAPI.cccheckout(cclink, tk, ct, "");
                 JObject jo = JObject.Parse(source);
-                paypallink=jo["wpRedirectUrl"].ToString().Replace("amp;", "").Replace("&amp", "");
+                paypallink = jo["wpRedirectUrl"].ToString().Replace("amp;", "").Replace("&amp", "");
+                ProcessNotification(true, "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt", "");
+                ProcessNotification(false, Config.webhook, paypallink);
+                tk.Status = "Success";*/
+                #endregion
+                string precheckouturl = "https://www.thenorthface.co.uk/shop/VFCAjaxWorldpayPunchoutCmd";
+                string precheckoutinfo = "billingAddress=" + addressid + "&payMethodId=PAYPAL&orderId=" + orderid + "&ipAddress=127.0.0.1&userAgent=Mozilla%2F5.0+(Windows+NT+10.0%3B+WOW64)+AppleWebKit%2F537.36+(KHTML%2C+like+Gecko)+Chrome%2F81.0.4044.138+Safari%2F537.36+OPR%2F68.0.3618.173&callBackURL=https%3A%2F%2Fwww.thenorthface.co.uk%2Fshop%2FVFCWorldpayPunchoutCallbackCmd%3ForderId%3D" + orderid + "%26storeId%3D7005%26langId%3D-11&isFromPaymentPage=true&requesttype=ajax";
+                string source = tnfAPI.precheckout(precheckouturl, tk, ct, precheckoutinfo);
+                JObject jo = JObject.Parse(source);
+                paypallink = jo["wpRedirectUrl"].ToString().Replace("amp;", "").Replace("&amp", "");
 
                 ProcessNotification(true, "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt", "");
                 ProcessNotification(false, Config.webhook, paypallink);
                 tk.Status = "Success";
+                autocheckout();
             }
             else
             {

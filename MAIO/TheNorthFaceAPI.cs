@@ -651,6 +651,94 @@ namespace MAIO
             }
             return paypalurl;
         }
+        public void cccheckout(string url, Main.taskset tk, CancellationToken ct, string info) 
+        {
+        A: if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string SourceCode = "";
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
+            WebProxy wp = new WebProxy();
+            try
+            {
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
+            }
+            catch
+            {
+                wp = default;
+            }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Host = "hpp.worldpay.com";
+            request.Proxy = wp;
+         //   request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+         //   byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
+            request.Accept = "*/*";
+            request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
+            request.Headers.Add("X-hpp-ajax", "1");
+         //   request.ContentLength = contentpaymentinfo.Length;
+            if (isGB)
+            {
+                request.Headers.Add("Origin", "https://hpp.worldpay.com");
+            }
+            else
+            {
+                request.Headers.Add("Origin", "https://www.thenorthface.com");
+            }
+            request.Headers.Add("Sec-Fetch-Dest", "empty");
+            request.Headers.Add("Sec-Fetch-Mode", "cors");
+            request.Headers.Add("Sec-Fetch-Site", "same-origin");
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 OPR/68.0.3618.173";
+            request.Headers.Add("X-Requested-With", "XMLHttpRequest");
+          //  Stream paymentstream = request.GetRequestStream();
+          //  paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
+          //  paymentstream.Close();
+            try
+            {
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                SourceCode = readStream.ReadToEnd();
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+                if (response.ContentEncoding == "gzip")
+                {
+                    readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                }
+                SourceCode = readStream.ReadToEnd();
+                goto A;
+            }
+        }
         public string precheckout(string url, Main.taskset tk, CancellationToken ct, string info)
         {
         A: if (ct.IsCancellationRequested)
@@ -792,7 +880,6 @@ namespace MAIO
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                request.Proxy = wp;
             request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
-           // request.Headers.Add("Cookie", "test=1; null");
             request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             request.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");
             request.Headers.Add("Upgrade-Insecure-Requests", "1");
@@ -845,7 +932,6 @@ namespace MAIO
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
-
             }
             string SourceCode = "";
             bool isstocknull = true;
