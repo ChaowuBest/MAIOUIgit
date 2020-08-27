@@ -37,6 +37,7 @@ namespace MAIO
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
         public static Dictionary<string, string> randomdic = new Dictionary<string, string>();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
         public Main()
         {
@@ -108,6 +109,15 @@ namespace MAIO
                       }
                       if (message.IndexOf("response") != -1)
                       {
+                          try
+                          {
+                              JObject jo = JObject.Parse(message);
+                              returnstatus.Add(jo["id"].ToString(), jo);
+                          }
+                          catch
+                          {
+                              
+                          }
                       }
                       allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
                   };

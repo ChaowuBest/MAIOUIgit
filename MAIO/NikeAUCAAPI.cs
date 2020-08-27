@@ -96,7 +96,7 @@ namespace MAIO
         public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct)
         {
         C: Thread.Sleep(1);
-           string[] sendcookie = null;
+            string[] sendcookie = null;
             if (Mainwindow.iscookielistnull)
             {
                 Thread.Sleep(1);
@@ -147,110 +147,95 @@ namespace MAIO
             }
             try
             {
-                #region
-                /*  BrowserRequest helperRequest = new BrowserRequest();
-                  helperRequest.type = "request";
-                  Data browserData = new Data();
-                  browserData.url = url;
-                  browserData.method = "PUT";
-                  browserData.data = payinfo;
-                  browserData.proxy = proxy;
-                  browserData.headers = new Dictionary<string, string>
-                                      {
-                                          {
-                                              "Content-Type",
-                                              "application/json"
-                                          },
-                                          {
-                                              "Origin",
-                                              " https://www.nike.com"
-                                          },
-                                          {
-                                              "Accept",
-                                              "application/json"
-                                          },
-                                          {
-                                              "x-nike-visitid",
-                                              "1"
-                                          },
-                                          {
-                                              "x-nike-visitorid",
-                                               xnikevisitorid
-                                          },
-                                          {
-                                              "appid",
-                                              "com.nike.commerce.nikedotcom.web"
-                                          },
-                                           {
-                                              "X-B3-SpanName",
-                                              "CiCCart"
-                                          },
-                                          {
-                                              "X-B3-TraceId",
-                                              xb3traceid
-                                          }
-                                      };
-                  List<AddBrowserCookie> cookielist = new List<AddBrowserCookie>();
-                  AddBrowserCookie AbC = new AddBrowserCookie();
-                  AbC.Name = "_abck";
-                  AbC.Value = sendcookie[1].Replace("_abck=", "");
-                  AbC.TimeStamp = DateTime.Now.ToLocalTime().ToString();
-                  AddBrowserCookie AbC2 = new AddBrowserCookie();
-                  AbC2.Name = "bm_sz";
-                  AbC2.Value = sendcookie[0].Replace("bm_sz=", "");
-                  AbC2.TimeStamp = DateTime.Now.ToLocalTime().ToString();
-                  cookielist.Add(AbC);
-                  cookielist.Add(AbC2);
-                  browserData.cookies = cookielist;           
-                  browserData.id = tk.Taskid;
-                  helperRequest.data = browserData;
-                  var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
-                  */
-                #endregion
                 string sendjson = null;
                 try
                 {
                     var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
-                     sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                    sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
                 }
-                catch(Exception ex)
-                {        
+                catch (Exception)
+                {
                 }
-                Main.allSockets[0].Send(sendjson);
+                allSockets[0].Send(sendjson);
                 bool fordidden = false;
+            B: JObject sValue = null;
                 try
                 {
-                    allSockets[0].OnMessage= message =>
+                    if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                     {
-                        if (message.IndexOf("response") != -1)
+                        if (ct.IsCancellationRequested)
                         {
-                            if (ct.IsCancellationRequested)
-                            {
-                                tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
-                            }
-                            if (message.Contains("\"status\":202"))
-                            {
-                                tk.Status = "Submit Order";
-                            }
-                            else if(message.Contains("Denied")==false)
-                            {
-                                tk.Status = "Forbidden";
-                                fordidden = true;
-                            }
-                            else if (message.Contains("Access Denied") == true || message.Contains("fetch"))
-                            {
-                                tk.Status = "Forbidden";
-                                fordidden = true;
-                            }
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
                         }
-                    };
+                        if (sValue["status"].ToString() == "202")
+                        {
+                            tk.Status = "Submit Order";
+                            returnstatus.Remove(tk.Taskid);
+                        }
+                        else if (sValue["status"].ToString() == "403" || sValue.ToString().Contains("fetch"))
+                        {
+                            tk.Status = "Forbidden";
+                            fordidden = true;
+                            returnstatus.Remove(tk.Taskid);
+                        }
+                        else
+                        {
+                            tk.Status = "Forbidden";
+                            fordidden = true;
+                            returnstatus.Remove(tk.Taskid);
+                        }
+                    }
+                    else
+                    {
+                        goto B;
+                    }
                 }
-                catch(Exception)
-                {  
-                }
+                catch
+                {
+                    goto B;
+                }          
+                #region
+                //   try
+                //   {
+                /*allSockets[0].OnMessage = message =>
+                 {
+                     if (message.IndexOf("response") != -1)
+                     {
+                         if (ct.IsCancellationRequested)
+                         {
+                             tk.Status = "IDLE";
+                             ct.ThrowIfCancellationRequested();
+                         }
+                         if (message.Contains("\"status\":202"))
+                         {
+                             tk.Status = "Submit Order";
+                         }
+                         else if (message.Contains("Denied") == false)
+                         {
+                             tk.Status = "Forbidden";
+                             fordidden = true;
+                         }
+                         else if (message.Contains("Access Denied") == true || message.Contains("fetch"))
+                         {
+                             tk.Status = "Forbidden";
+                             fordidden = true;
+                         }
+                     }
+                 };*/
+                //   }
+                //   catch (Exception)
+                //   {
+                //   }
+                #endregion
                 if (fordidden)
                 {
+                    failedretry++;
+                    if (failedretry > 20)
+                    {
+                        Main.autorestock(tk);
+                    }
+                    Thread.Sleep(1500);
                     goto C;
                 }
             }
