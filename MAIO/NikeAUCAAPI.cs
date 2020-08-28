@@ -173,7 +173,7 @@ namespace MAIO
                             tk.Status = "Submit Order";
                             returnstatus.Remove(tk.Taskid);
                         }
-                        else if (sValue["status"].ToString() == "403" || sValue.ToString().Contains("fetch"))
+                        else if (sValue["status"].ToString() == "403")
                         {
                             tk.Status = "Forbidden";
                             fordidden = true;

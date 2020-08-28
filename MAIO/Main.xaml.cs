@@ -39,6 +39,7 @@ namespace MAIO
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
+        public static int i = 0;
         public Main()
         {
             InitializeComponent();
@@ -103,9 +104,16 @@ namespace MAIO
                   };
                   socket.OnMessage = delegate (string message)// 接收客户端发送过来的信息
                   {
+                     
                       if (message.IndexOf("updatetab") != -1)
                       {
-                          allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
+                          if (i == 0)
+                          {
+                              allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
+                              i++;
+                          }
+                        
+                          return;
                       }
                       if (message.IndexOf("response") != -1)
                       {
@@ -119,7 +127,8 @@ namespace MAIO
                               
                           }
                       }
-                      allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
+             
+                   
                   };
               });
         }
