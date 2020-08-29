@@ -321,68 +321,6 @@ namespace MAIO
                                     {
                                         skuid = group[0];
                                     }
-                                    if (monitortask)
-                                    {
-                                        for (int i = 0; i < 1; i++)
-                                        {
-                                            ThreadPool.QueueUserWorkItem(delegate
-                                            {
-                                                SynchronizationContext.SetSynchronizationContext(new
-                                                    DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
-                                                SynchronizationContext.Current.Post(pl =>
-                                                {
-                                                    taskset tk1 = new taskset();
-                                                    tk1.Tasksite = tk.Tasksite;
-                                                    tk1.Sku = tk.Sku;
-                                                    tk1.Profile = tk.Profile;
-                                                    tk1.Proxies = "Default";
-                                                    tk1.Quantity = tk.Quantity;
-                                                    tk1.Status = "IDLE";
-                                                    tk1.Size = tk.Size;
-                                                    tk1.Taskid = Guid.NewGuid().ToString();
-                                                    Mainwindow.task.Add(tk1);
-                                                    if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
-                                                    {
-                                                        if (Mainwindow.tasklist[tk.Taskid] != "")
-                                                        {
-                                                            JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
-                                                            giftcard = jo["giftcard"].ToString();
-                                                            code = jo["Code"].ToString().Replace("\r\n", "");
-                                                        }
-                                                        try
-                                                        {
-
-                                                            NikeUSUK NSK = new NikeUSUK();
-                                                            NSK.monitortask = false;
-                                                            NSK.giftcard = giftcard;
-                                                            NSK.pid = tk1.Sku;
-                                                            NSK.size = tk1.Size;
-                                                            NSK.code = code;
-                                                            NSK.profile = Mainwindow.allprofile[tk.Profile];
-                                                            NSK.tk = tk1;
-                                                            NSK.username = username;
-                                                            NSK.password = password;
-                                                            if (tk1.Size == "RA" || tk1.Size == "ra")
-                                                            {
-                                                                NSK.randomsize = true;
-                                                            }
-                                                            var cts = new CancellationTokenSource();
-                                                            var ct = cts.Token;
-                                                            Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
-                                                            dic.Add(tk1.Taskid, cts);
-                                                            task2.Start();
-                                                        }
-                                                        catch (Exception)
-                                                        {
-
-                                                            tk.Status = "No Account";
-                                                        }
-                                                    }
-                                                }, null);
-                                            });
-                                        }
-
-                                    }
                                 }
                                 else
                                 {
