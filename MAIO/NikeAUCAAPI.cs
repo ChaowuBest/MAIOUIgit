@@ -93,46 +93,54 @@ namespace MAIO
             }
             return SourceCode;
         }
-        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct)
+        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string ccookie)
         {
         C: Thread.Sleep(1);
+
             string[] sendcookie = null;
-            if (Mainwindow.iscookielistnull)
+            if (ccookie != "")
             {
-                Thread.Sleep(1);
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                tk.Status = "No Cookie";
-                goto C;
+                sendcookie = ccookie.Split(";");
             }
             else
             {
-                Thread.Sleep(1);
-                Random ra = new Random();
-                if (ct.IsCancellationRequested)
+                if (Mainwindow.iscookielistnull)
                 {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                int sleeptime = ra.Next(0, 100);
-                Thread.Sleep(sleeptime);
-                int cookie = ra.Next(0, Mainwindow.lines.Count);
-                try
-                {
-                    Main.updatelable(Mainwindow.lines[cookie], false);
-                    sendcookie = Mainwindow.lines[cookie].Split(";");
-                    Mainwindow.lines.RemoveAt(cookie);
-                    if (Mainwindow.lines.Count == 0)
+                    Thread.Sleep(1);
+                    if (ct.IsCancellationRequested)
                     {
-                        Mainwindow.iscookielistnull = true;
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
                     }
-                }
-                catch (Exception)
-                {
+                    tk.Status = "No Cookie";
                     goto C;
+                }
+                else
+                {
+                    Thread.Sleep(1);
+                    Random ra = new Random();
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    int sleeptime = ra.Next(0, 100);
+                    Thread.Sleep(sleeptime);
+                    int cookie = ra.Next(0, Mainwindow.lines.Count);
+                    try
+                    {
+                        Main.updatelable(Mainwindow.lines[cookie], false);
+                        sendcookie = Mainwindow.lines[cookie].Split(";");
+                        Mainwindow.lines.RemoveAt(cookie);
+                        if (Mainwindow.lines.Count == 0)
+                        {
+                            Mainwindow.iscookielistnull = true;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        goto C;
+                    }
                 }
             }
             string proxy = "";

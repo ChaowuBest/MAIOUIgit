@@ -39,7 +39,7 @@ namespace MAIO
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
         ArrayList skuidlist = new ArrayList();
         JObject joprofile = null;
-        public  void StartTask(CancellationToken ct, CancellationTokenSource cts)
+        public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
             bool monitortask = false;
             bool ismonitor = false;
@@ -65,10 +65,10 @@ namespace MAIO
                     {
                         goto D;
                     }
-                } 
+                }
             }
             catch
-            { 
+            {
 
             }
         A: joprofile = JObject.Parse(profile);
@@ -88,14 +88,21 @@ namespace MAIO
         B:
             try
             {
-                // if (cookie != "")
-                // {
-                Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                //   }
-                //  else
-                //{
-                //    goto B;
-                //  }
+                if (Config.UseAdvancemode == "True")
+                {
+                    if (cookie != "")
+                    {
+                        Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                    }
+                    else
+                    {
+                        goto B;
+                    }
+                }
+                else
+                {
+                    Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                }
 
             }
             catch (NullReferenceException)
@@ -248,55 +255,15 @@ namespace MAIO
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                             string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
                             string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid);
-                            //   getcookie(Config.hwid);
+                            if (Config.UseAdvancemode == "True")
+                            {
+                                getcookie(Config.hwid);
+                            }    
                             if (group[0] != null)
                             {
                                 skuid = group[0];
                             }
                             productid = group[1];
-                            if (monitortask)
-                            {
-                                for (int i = 0; i < 1; i++)
-                                {
-                                    ThreadPool.QueueUserWorkItem(delegate
-                                    {
-                                        SynchronizationContext.SetSynchronizationContext(new
-                                            DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
-                                        SynchronizationContext.Current.Post(pl =>
-                                        {
-                                            taskset tk1 = new taskset();
-                                            tk1.Tasksite = tk.Tasksite;
-                                            tk1.Sku = tk.Sku;
-                                            tk1.Profile = tk.Profile;
-                                            tk1.Proxies = "Default";
-                                            tk1.Quantity = tk.Quantity;
-                                            tk1.Status = "IDLE";
-                                            tk1.Size = tk.Size;
-                                            tk1.Taskid = Guid.NewGuid().ToString();
-                                            Mainwindow.task.Add(tk1);
-                                            if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU" || tk.Tasksite == "NikeNZ" || tk.Tasksite == "NikeSG" || tk.Tasksite == "NikeMY")
-                                            {
-                                                NikeAUCA NA = new NikeAUCA();
-                                                NA.monitortask = false;
-                                                NA.tk = tk1;
-                                                NA.profile = Mainwindow.allprofile[tk.Profile];
-                                                NA.pid = tk1.Sku;
-                                                NA.size = tk1.Size;
-                                                NA.Quantity = int.Parse(tk1.Quantity);
-                                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                                                {
-                                                    NA.randomsize = true;
-                                                }
-                                                var cts = new CancellationTokenSource();
-                                                var ct = cts.Token;
-                                                Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
-                                                dic.Add(tk1.Taskid, cts);
-                                                task1.Start();
-                                            }
-                                        }, null);
-                                    });
-                                }
-                            }
                         }
                         else
                         {
@@ -375,9 +342,9 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-       
-             string payinfo = payLoad.ToString();
-              AUCAAPI.PutMethod(url, payinfo, tk, ct);
+
+            string payinfo = payLoad.ToString();
+            AUCAAPI.PutMethod(url, payinfo, tk, ct,cookie);
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
