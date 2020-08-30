@@ -101,72 +101,79 @@ namespace MAIO
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string path = Environment.CurrentDirectory + "\\" + "config.json";
-            Mainwindow MD = new Mainwindow();
-            string key = Keyinput.Text;
-            var ip = HttpGet("https://api.ipify.org", "utf-8");
-            Config.ip = ip;
-            string finger = FingerPrint.Value() + ip;
-            var hwid = MD5Helper.EncryptString(finger);
-            Config.hwid = hwid;
-            var checkkey = AESHelper.Decrypt(key);
-            if (checkkey == "")
+            try
             {
-                Keyinput.Text = "";
-            }
-            else
-            {
-                var md5checkkey = MD5Helper.EncryptString(key);
-                bool keyvaild = keyauth(md5checkkey, hwid, version);
-                if (keyvaild)
-                {
-                    if (!File.Exists(path))
-                    {
-                        FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        fs1.Close();
-                        File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\",\"AutoClearCookie\":\"\"}");
-                        Config.Key = MD.Key = key;
-                        Config.webhook = MD.webhook = "";
-                        Config.cid = MD.cid = "";
-                        Config.cjevent = MD.cjevent = "";
-                        Config.delay = "";
-                        Config.Usemonitor = "";
-                        Config.UseAdvancemode = "";
-                        Config.autoclearcookie = false;
-                        Close();
-                        
-                        MD.Show();
-                    }
-                    else
-                    {
-                        string config = File.ReadAllText(path);
-                        JObject jo = JObject.Parse(config);
-                        jo["key"] = key;
-                        File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
-                        Config.Key = jo["key"].ToString();
-                        Config.webhook = jo["webhook"].ToString();
-                        Config.cid = jo["cid"].ToString();
-                        Config.cjevent = jo["cjevent"].ToString();
-                        Config.delay = jo["delay"].ToString();
-                        Config.Usemonitor = jo["Usemonitor"].ToString();
-                        Config.UseAdvancemode = jo["Advancemode"].ToString();
-                        Config.UseAdvancemode = jo["Advancemode"].ToString();
-                        if (jo["AutoClearCookie"].ToString() == "True")
-                        {
-                            Config.autoclearcookie = true;
-                        }
-                        else
-                        {
-                            Config.autoclearcookie = false;
-                        }
-                        Close();      
-                        MD.Show();
-                    }
-                }
-                else
+                string path = Environment.CurrentDirectory + "\\" + "config.json";
+                Mainwindow MD = new Mainwindow();
+                string key = Keyinput.Text;
+                var ip = HttpGet("https://api.ipify.org", "utf-8");
+                Config.ip = ip;
+                string finger = FingerPrint.Value() + ip;
+                var hwid = MD5Helper.EncryptString(finger);
+                Config.hwid = hwid;
+                var checkkey = AESHelper.Decrypt(key);
+                if (checkkey == "")
                 {
                     Keyinput.Text = "";
                 }
+                else
+                {
+                    var md5checkkey = MD5Helper.EncryptString(key);
+                    bool keyvaild = keyauth(md5checkkey, hwid, version);
+                    if (keyvaild)
+                    {
+                        if (!File.Exists(path))
+                        {
+                            FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            fs1.Close();
+                            File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\",\"AutoClearCookie\":\"\"}");
+                            Config.Key = MD.Key = key;
+                            Config.webhook = MD.webhook = "";
+                            Config.cid = MD.cid = "";
+                            Config.cjevent = MD.cjevent = "";
+                            Config.delay = "";
+                            Config.Usemonitor = "";
+                            Config.UseAdvancemode = "";
+                            Config.autoclearcookie = false;
+                            Close();
+
+                            MD.Show();
+                        }
+                        else
+                        {
+                            string config = File.ReadAllText(path);
+                            JObject jo = JObject.Parse(config);
+                            jo["key"] = key;
+                            File.WriteAllText(Environment.CurrentDirectory + "\\" + "config.json", config);
+                            Config.Key = jo["key"].ToString();
+                            Config.webhook = jo["webhook"].ToString();
+                            Config.cid = jo["cid"].ToString();
+                            Config.cjevent = jo["cjevent"].ToString();
+                            Config.delay = jo["delay"].ToString();
+                            Config.Usemonitor = jo["Usemonitor"].ToString();
+                            Config.UseAdvancemode = jo["Advancemode"].ToString();
+                            Config.UseAdvancemode = jo["Advancemode"].ToString();
+                            if (jo["AutoClearCookie"].ToString() == "True")
+                            {
+                                Config.autoclearcookie = true;
+                            }
+                            else
+                            {
+                                Config.autoclearcookie = false;
+                            }
+                            Close();
+                            MD.Show();
+                        }
+                    }
+                    else
+                    {
+                        Keyinput.Text = "";
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+              //  MessageBox.Show(ex.ToString());
             }
         }
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

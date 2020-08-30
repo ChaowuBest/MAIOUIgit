@@ -9,6 +9,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
 using System.ServiceModel;
 using System.Text;
 using System.Threading;
@@ -146,34 +147,43 @@ namespace MAIO
                 JObject jo = JObject.Parse(sourcecode);
                 string obejects = jo["objects"].ToString();
                 JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
+                bool multisize = false;
+                string[] Multiesize = null;
                 if (size.Contains("+"))
                 {
-                    string[] Multiplesize = size.Split("+");
-                    Random ra = new Random();
-                    size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
+                    multisize = true;
+                    Multiesize = size.Split("+");
                 }
                 if (size.Contains("-"))
                 {
                     bool Gssize = false;
+                    multisize = true;
                     if (size.Contains("Y"))
                     {
                         size = size.Replace("Y", "");
                         Gssize = true;
                     }
                     string[] Multiplesize = size.Split("-");
-                    ArrayList ar = new ArrayList();
+                    size = "";
                     for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
                     {
-                        ar.Add(i);
+                        if (Gssize)
+                        {
+                            size += i+"Y+";
+                        }
+                        else
+                        {
+                            size +=i.ToString()+"+";
+                        }
                     }
-                    Random ra = new Random();
-                    size = ar[ra.Next(0, ar.Count)].ToString();
                     if (Gssize)
                     {
                         size += "Y";
                     }
+                    Multiesize = size.Split("+");
                 }
                 var product = "";
+                size=size.Remove(size.Length-1);
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
@@ -232,6 +242,17 @@ namespace MAIO
                         skuidlist.Add(jsku[i]["id"].ToString());
                         sizefind = true;
                     }
+                    else if (multisize)
+                    {
+                        for (int n = 0; n < Multiesize.Length; n++)
+                        {
+                            if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
+                            {
+                                skuid = jsku[i]["id"].ToString();
+                                skuidlist.Add(jsku[i]["id"].ToString());
+                            }
+                        }
+                    }
                     else
                     {
                         if (size == jsku[i]["nikeSize"].ToString())
@@ -254,10 +275,10 @@ namespace MAIO
                         {
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                             string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid);
+                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid,multisize, skuidlist);
                             if (Config.UseAdvancemode == "True")
                             {
-                                getcookie(Config.hwid);
+                                Task task2 = Task.Run(()=>getcookie(Config.hwid));
                             }    
                             if (group[0] != null)
                             {
@@ -279,7 +300,6 @@ namespace MAIO
                     goto Retry;
                 }
             }
-
         }
         public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct, string cookie)
         {
@@ -430,15 +450,22 @@ namespace MAIO
             }
 
         }
-        public async void getcookie(string hwid)
+        public  async void getcookie(string hwid)
         {
-            await Task.Delay(1);
-            var binding = new BasicHttpBinding();
-            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-            var callClient = factory.CreateChannel();
-            JObject result = JObject.Parse(callClient.getcookieAsync(hwid).Result);
-            cookie = result["cookie"].ToString();
+            try
+            {
+                await Task.Delay(1);
+                var binding = new BasicHttpBinding();
+                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                var callClient = factory.CreateChannel();
+                JObject result = JObject.Parse(callClient.getcookieAsync(hwid).Result);
+                cookie = result["cookie"].ToString();
+            }
+            catch
+            {
+                
+            }
         }
     }
 }

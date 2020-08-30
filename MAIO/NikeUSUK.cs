@@ -211,32 +211,40 @@ namespace MAIO
                 string obejects = jo["objects"].ToString();
                 Thread.Sleep(1);
                 JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
+                bool multisize = false;
+                string[] Multiesize = null;
                 if (size.Contains("+"))
                 {
-                    string[] Multiplesize = size.Split("+");
-                    Random ra = new Random();
-                    size = Multiplesize[ra.Next(0, Multiplesize.Length)].ToString();
+                    multisize = true;
+                    Multiesize = size.Split("+");
                 }
                 if (size.Contains("-"))
                 {
                     bool Gssize = false;
+                    multisize = true;
                     if (size.Contains("Y"))
                     {
                         size = size.Replace("Y", "");
                         Gssize = true;
                     }
                     string[] Multiplesize = size.Split("-");
-                    ArrayList ar = new ArrayList();
+                    size = "";
                     for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
                     {
-                        ar.Add(i);
+                        if (Gssize)
+                        {
+                            size += i + "Y+";
+                        }
+                        else
+                        {
+                            size += i.ToString() + "+";
+                        }
                     }
-                    Random ra = new Random();
-                    size = ar[ra.Next(0, ar.Count)].ToString();
                     if (Gssize)
                     {
                         size += "Y";
                     }
+                    Multiesize = size.Split("+");
                 }
                 var product = "";
                 try
@@ -289,7 +297,17 @@ namespace MAIO
                             skuidlist.Add(jsku[i]["id"].ToString());
                             productID = jsku[i]["productId"].ToString();
                             sizefind = true;
-
+                        }
+                        else if (multisize)
+                        {
+                            for (int n = 0; n < Multiesize.Length; n++)
+                            {
+                                if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
+                                {
+                                    skuid = jsku[i]["id"].ToString();
+                                    skuidlist.Add(jsku[i]["id"].ToString());
+                                }
+                            }
                         }
                         else
                         {
@@ -316,7 +334,7 @@ namespace MAIO
                                 {
                                     string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                                     string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, false);
+                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, false, multisize, skuidlist);
                                     if (group[0] != null)
                                     {
                                         skuid = group[0];

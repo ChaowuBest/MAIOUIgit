@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -700,6 +701,7 @@ namespace MAIO
                 HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
                 Stream processtream = processpayment.GetResponseStream();
                 StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                processcode = readprocessstream.ReadToEnd();
                 tk.Status = "SubmitBilling error";
                 goto retry;
             }
@@ -795,41 +797,53 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string[] sendcookie = null;
-            if (Mainwindow.iscookielistnull)
+            if (Config.UseAdvancemode=="True")
             {
-                Thread.Sleep(1);
-                goto D;
+                var binding = new BasicHttpBinding();
+                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                var callClient = factory.CreateChannel();
+                JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                sendcookie = result["cookie"].ToString().Split(";");
             }
             else
             {
-            reloadcookie: Random ra = new Random();
-                int sleeptime = ra.Next(0, 100);
-                Thread.Sleep(sleeptime);
-            C: if (Mainwindow.lines.Count == 0)
+                if (Mainwindow.iscookielistnull)
                 {
                     Thread.Sleep(1);
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
-                    }
-                    Mainwindow.iscookielistnull = true;
-                    tk.Status = "No Cookie";
-                    goto C;
+                    goto D;
                 }
                 else
                 {
-                    int cookie = ra.Next(0, Mainwindow.lines.Count);
-                    try
-                    {             
-                        Main.updatelable(Mainwindow.lines[cookie], false);
-                        sendcookie = Mainwindow.lines[cookie].Split(";");
-                        Mainwindow.lines.RemoveAt(cookie);
-
-                    }
-                    catch (Exception)
+                reloadcookie: Random ra = new Random();
+                    int sleeptime = ra.Next(0, 100);
+                    Thread.Sleep(sleeptime);
+                C: if (Mainwindow.lines.Count == 0)
                     {
-                        goto reloadcookie;
+                        Thread.Sleep(1);
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        Mainwindow.iscookielistnull = true;
+                        tk.Status = "No Cookie";
+                        goto C;
+                    }
+                    else
+                    {
+                        int cookie = ra.Next(0, Mainwindow.lines.Count);
+                        try
+                        {
+                            Main.updatelable(Mainwindow.lines[cookie], false);
+                            sendcookie = Mainwindow.lines[cookie].Split(";");
+                            Mainwindow.lines.RemoveAt(cookie);
+
+                        }
+                        catch (Exception)
+                        {
+                            goto reloadcookie;
+                        }
                     }
                 }
             }
@@ -866,13 +880,13 @@ namespace MAIO
                             tk.Status = "Submit Payment";
                             returnstatus.Remove(tk.Taskid);
                         }
-                        else if (sValue["status"].ToString() == "403" || sValue.ToString().Contains("fetch"))
+                        else if (sValue["status"].ToString() == "403")
                         {
                             tk.Status = "Forbidden";
                             fordidden = true;
                             returnstatus.Remove(tk.Taskid);
                         }
-                        else
+                        else if(sValue.ToString().Contains("fail"))
                         {
                             tk.Status = "Forbidden";
                             fordidden = true;
@@ -991,9 +1005,9 @@ namespace MAIO
                     {
                         tk.Status = "OOS";
                         string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                        Monitoring("https://api.nike.com/cic/grand/v1/graphql", tk, ct, info, randomsize, skuid, true);
-                        final(Authorization, "https://api.nike.com/buy/checkouts/v2/" + GID, paytoken, GID, tk, ct, "");
-                        finalorder("https://api.nike.com/buy/checkouts/v2/jobs/" + GID, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
+                      //  Monitoring("https://api.nike.com/cic/grand/v1/graphql", tk, ct, info, randomsize, skuid, true);
+                       // final(Authorization, "https://api.nike.com/buy/checkouts/v2/" + GID, paytoken, GID, tk, ct, "");
+                      //  finalorder("https://api.nike.com/buy/checkouts/v2/jobs/" + GID, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
                         // goto A;
                     }
                 }
@@ -1011,7 +1025,7 @@ namespace MAIO
         }
         public static long time = 0;
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool advancemode)
+        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool advancemode,bool multisize, ArrayList skulist)
         {
             if (advancemode)
             {
@@ -1023,7 +1037,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-            if (advancemode)
+           /* if (advancemode)
             {
                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
                 var cookitime = ConvertStringToDateTime(time.ToString());
@@ -1033,7 +1047,7 @@ namespace MAIO
                 {
                     Main.autorestock(tk);
                 }
-            }
+            }*/
             string traceid = Guid.NewGuid().ToString();
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";
@@ -1074,7 +1088,6 @@ namespace MAIO
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-site");
             request.Headers.Add("X-B3-SpanId", xb3spanID);
-            //    request.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             request.Headers.Add("X-B3-TraceId", xb3traceid);
             request.Headers.Add("x-nike-visitid", "1");
             request.Headers.Add("x-nike-visitorid", nikevistid);
@@ -1124,8 +1137,24 @@ namespace MAIO
                                 break;
                             }
                         }
-
-
+                    }
+                    else if (multisize)
+                    {
+                        for (int n = 0; n < skulist.Count; n++)
+                        {
+                            Thread.Sleep(1);
+                            if (ja[i]["availability"].ToString() != "False" || ja[i]["availability"].ToString() != "false")
+                            {
+                                if (skulist[n].ToString() == ja[i]["id"].ToString())
+                                {
+                                    if (ja[i]["availability"]["level"].ToString() != "OOS")
+                                    {
+                                        group[0] = ja[i]["id"].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {

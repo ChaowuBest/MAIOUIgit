@@ -19,6 +19,9 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using MAIO.browsercheckout;
 using Newtonsoft.Json;
+using System.ServiceModel;
+using System.Collections.Immutable;
+using System.Collections;
 
 namespace MAIO
 {
@@ -96,11 +99,27 @@ namespace MAIO
         public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string ccookie)
         {
         C: Thread.Sleep(1);
-
             string[] sendcookie = null;
             if (ccookie != "")
             {
                 sendcookie = ccookie.Split(";");
+                if (failedretry != 0)
+                {
+                    try
+                    {
+                        var binding = new BasicHttpBinding();
+                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                        var callClient = factory.CreateChannel();
+                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                        sendcookie = result["cookie"].ToString().Split(";");
+                    }
+                    catch
+                    {
+                        ccookie = "";
+                        goto C;
+                    }
+                }
             }
             else
             {
@@ -187,7 +206,7 @@ namespace MAIO
                             fordidden = true;
                             returnstatus.Remove(tk.Taskid);
                         }
-                        else
+                        else if (sValue.ToString().Contains("fail"))
                         {
                             tk.Status = "Forbidden";
                             fordidden = true;
@@ -356,7 +375,7 @@ namespace MAIO
             }
             return sourcecode;
         }
-        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid)
+        public string[] Monitoring(string url, taskset tk, CancellationToken ct, string info, bool randomsize, string skuid,bool multisize,ArrayList skulist)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -374,7 +393,6 @@ namespace MAIO
             {
                 string proxyg = Mainwindow.proxypool[random].ToString();
                 string[] proxy = proxyg.Split(":");
-
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -453,6 +471,24 @@ namespace MAIO
                             }
                         }
 
+                    }
+                    else if (multisize)
+                    {
+                        for (int n = 0; n < skulist.Count; n++)
+                        {
+                            Thread.Sleep(1);
+                            if (ja[i]["availability"].ToString() != "False" || ja[i]["availability"].ToString() != "false")
+                            {
+                                if (skulist[n].ToString()==ja[i]["id"].ToString())
+                                {
+                                    if (ja[i]["availability"]["level"].ToString() != "OOS")
+                                    {
+                                        group[0] = ja[i]["id"].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
