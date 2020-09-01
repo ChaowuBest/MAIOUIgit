@@ -247,7 +247,10 @@ namespace MAIO
                     Multiesize = size.Split("+");
                 }
                 var product = "";
-                size = size.Remove(size.Length - 1);
+                if(multisize)
+               {
+                    size = size.Remove(size.Length - 1);
+                }
                 try
                 {
                     product = ja[0]["productInfo"].ToString();

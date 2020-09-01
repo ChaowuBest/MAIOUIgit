@@ -183,7 +183,10 @@ namespace MAIO
                     Multiesize = size.Split("+");
                 }
                 var product = "";
-                size=size.Remove(size.Length-1);
+                if (multisize)
+                {
+                    size = size.Remove(size.Length - 1);
+                }
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
