@@ -98,34 +98,226 @@ namespace MAIO
         }
         public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string ccookie)
         {
-        C: Thread.Sleep(1);
-            string[] sendcookie = null;
-            if (ccookie != "")
+            if (Config.UseAdvancemode == "True")
             {
-                sendcookie = ccookie.Split(";");
-                if (failedretry != 0)
+            C: Thread.Sleep(1);
+                string[] sendcookie = null;
+                if (ccookie != "")
                 {
-                    try
+                    sendcookie = ccookie.Split(";");
+                    if (failedretry != 0)
                     {
-                        var binding = new BasicHttpBinding();
-                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                        var callClient = factory.CreateChannel();
-                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        sendcookie = result["cookie"].ToString().Split(";");
+                        try
+                        {
+                            var binding = new BasicHttpBinding();
+                            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                            var callClient = factory.CreateChannel();
+                            JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                            sendcookie = result["cookie"].ToString().Split(";");
+                        }
+                        catch
+                        {
+                            ccookie = "";
+                            goto C;
+                        }
                     }
-                    catch
+                }
+                else
+                {
+                    if (Mainwindow.iscookielistnull)
                     {
-                        ccookie = "";
+                        Thread.Sleep(1);
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        tk.Status = "No Cookie";
                         goto C;
                     }
+                    else
+                    {
+                        Thread.Sleep(1);
+                        Random ra = new Random();
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        int sleeptime = ra.Next(0, 100);
+                        Thread.Sleep(sleeptime);
+                        int cookie = ra.Next(0, Mainwindow.lines.Count);
+                        try
+                        {
+                            Main.updatelable(Mainwindow.lines[cookie], false);
+                            sendcookie = Mainwindow.lines[cookie].Split(";");
+                            Mainwindow.lines.RemoveAt(cookie);
+                            if (Mainwindow.lines.Count == 0)
+                            {
+                                Mainwindow.iscookielistnull = true;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            goto C;
+                        }
+                    }
+                }
+                string proxy = "";
+                try
+                {
+                    int random = ran.Next(0, Mainwindow.proxypool.Count);
+                    proxy = Mainwindow.proxypool[random].ToString();
+                }
+                catch
+                {
+                    proxy = "";
+                }
+                try
+                {
+                    string sendjson = null;
+                    try
+                    {
+                        var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
+                        sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    allSockets[0].Send(sendjson);
+                    bool fordidden = false;
+                B: JObject sValue = null;
+                    try
+                    {
+                        if (returnstatus.TryGetValue(tk.Taskid, out sValue))
+                        {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            if (sValue["status"].ToString() == "202")
+                            {
+                                tk.Status = "Submit Order";
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                            else if (sValue["status"].ToString() == "403")
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                            else if (sValue.ToString().Contains("fail"))
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                        }
+                        else
+                        {
+                            goto B;
+                        }
+                    }
+                    catch (NullReferenceException)
+                    {
+                        goto B;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return;
+                    }
+                    #region
+                    //   try
+                    //   {
+                    /*allSockets[0].OnMessage = message =>
+                     {
+                         if (message.IndexOf("response") != -1)
+                         {
+                             if (ct.IsCancellationRequested)
+                             {
+                                 tk.Status = "IDLE";
+                                 ct.ThrowIfCancellationRequested();
+                             }
+                             if (message.Contains("\"status\":202"))
+                             {
+                                 tk.Status = "Submit Order";
+                             }
+                             else if (message.Contains("Denied") == false)
+                             {
+                                 tk.Status = "Forbidden";
+                                 fordidden = true;
+                             }
+                             else if (message.Contains("Access Denied") == true || message.Contains("fetch"))
+                             {
+                                 tk.Status = "Forbidden";
+                                 fordidden = true;
+                             }
+                         }
+                     };*/
+                    //   }
+                    //   catch (Exception)
+                    //   {
+                    //   }
+                    #endregion
+                    if (fordidden)
+                    {
+                        failedretry++;
+                        if (failedretry > 20)
+                        {
+                            Main.autorestock(tk);
+                        }
+                        Thread.Sleep(1500);
+                        goto C;
+                    }
+                }
+                catch
+                {
+                    goto C;
                 }
             }
             else
             {
-                if (Mainwindow.iscookielistnull)
+            B: if (ct.IsCancellationRequested)
                 {
-                    Thread.Sleep(1);
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                Thread.Sleep(1);
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                WebProxy wp = new WebProxy();
+                try
+                {
+                    string proxyg = Mainwindow.proxypool[random].ToString();
+                    string[] proxy = proxyg.Split(":");
+                    if (proxy.Length == 2)
+                    {
+                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                    }
+                    else if (proxy.Length == 4)
+                    {
+                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                    }
+                }
+                catch
+                {
+                    wp = default;
+                }
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "PUT";
+                request.Proxy = wp;
+                request.ContentType = "application/json; charset=UTF-8";
+                byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(payinfo);
+                request.Accept = "application/json";
+                request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+                request.Headers.Add("cloud_stack", "buy_domain");
+                request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
+                request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
+            C: if (Mainwindow.iscookielistnull)
+                {
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
@@ -136,7 +328,6 @@ namespace MAIO
                 }
                 else
                 {
-                    Thread.Sleep(1);
                     Random ra = new Random();
                     if (ct.IsCancellationRequested)
                     {
@@ -149,7 +340,7 @@ namespace MAIO
                     try
                     {
                         Main.updatelable(Mainwindow.lines[cookie], false);
-                        sendcookie = Mainwindow.lines[cookie].Split(";");
+                        request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                         Mainwindow.lines.RemoveAt(cookie);
                         if (Mainwindow.lines.Count == 0)
                         {
@@ -161,118 +352,36 @@ namespace MAIO
                         goto C;
                     }
                 }
-            }
-            string proxy = "";
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                proxy = Mainwindow.proxypool[random].ToString();
-            }
-            catch
-            {
-                proxy = "";
-            }
-            try
-            {
-                string sendjson = null;
+                request.ContentLength = contentpaymentinfo.Length;
+                request.Headers.Add("Origin", "https://www.nike.com");
+                request.Headers.Add("Sec-Fetch-Dest", "empty");
+                request.Headers.Add("Sec-Fetch-Mode", "cors");
+                request.Headers.Add("Sec-Fetch-Site", "same-site");
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+                request.Headers.Add("X-B3-SpanName", "CiCCart");
+                request.Headers.Add("X-B3-TraceId", xb3traceid);
+                request.Headers.Add("x-nike-visitid", "1");
+                request.Headers.Add("x-nike-visitorid", xnikevisitorid);
+                Stream paymentstream = request.GetRequestStream();
+                paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
+                paymentstream.Close();
                 try
                 {
-                    var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
-                    sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                    HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
+                    tk.Status = "SubmitOrder";
                 }
-                catch (Exception)
+                catch (WebException ex)
                 {
-                }
-                allSockets[0].Send(sendjson);
-                bool fordidden = false;
-            B: JObject sValue = null;
-                try
-                {
-                    if (returnstatus.TryGetValue(tk.Taskid, out sValue))
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        if (sValue["status"].ToString() == "202")
-                        {
-                            tk.Status = "Submit Order";
-                            returnstatus.Remove(tk.Taskid);
-                        }
-                        else if (sValue["status"].ToString() == "403")
-                        {
-                            tk.Status = "Forbidden";
-                            fordidden = true;
-                            returnstatus.Remove(tk.Taskid);
-                        }
-                        else if (sValue.ToString().Contains("fail"))
-                        {
-                            tk.Status = "Forbidden";
-                            fordidden = true;
-                            returnstatus.Remove(tk.Taskid);
-                        }
-                    }
-                    else
-                    {
-                        goto B;
-                    }
-                }
-                catch (NullReferenceException)
-                {
-                    goto B;
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
-                }
-                #region
-                //   try
-                //   {
-                /*allSockets[0].OnMessage = message =>
-                 {
-                     if (message.IndexOf("response") != -1)
-                     {
-                         if (ct.IsCancellationRequested)
-                         {
-                             tk.Status = "IDLE";
-                             ct.ThrowIfCancellationRequested();
-                         }
-                         if (message.Contains("\"status\":202"))
-                         {
-                             tk.Status = "Submit Order";
-                         }
-                         else if (message.Contains("Denied") == false)
-                         {
-                             tk.Status = "Forbidden";
-                             fordidden = true;
-                         }
-                         else if (message.Contains("Access Denied") == true || message.Contains("fetch"))
-                         {
-                             tk.Status = "Forbidden";
-                             fordidden = true;
-                         }
-                     }
-                 };*/
-                //   }
-                //   catch (Exception)
-                //   {
-                //   }
-                #endregion
-                if (fordidden)
-                {
+                    HttpWebResponse response = (HttpWebResponse)ex.Response;
+                    tk.Status = "Forbidden";
                     failedretry++;
                     if (failedretry > 20)
                     {
                         Main.autorestock(tk);
                     }
                     Thread.Sleep(1500);
-                    goto C;
+                    goto B;
                 }
-            }
-            catch
-            {
-                goto C;
             }
         }
         public string GetMethod(string url, string iamgeurl, Main.taskset tk, CancellationToken ct)

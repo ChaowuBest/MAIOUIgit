@@ -797,14 +797,166 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string[] sendcookie = null;
-            if (Config.UseAdvancemode=="True")
+            if (Config.UseAdvancemode!="True")
             {
-                var binding = new BasicHttpBinding();
+            #region
+            /*    var binding = new BasicHttpBinding();
                 var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
                 var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                 var callClient = factory.CreateChannel();
                 JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
                 sendcookie = result["cookie"].ToString().Split(";");
+            */
+            #endregion
+            E: if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+                Thread.Sleep(1);
+                WebProxy wp = new WebProxy();
+                try
+                {
+                    int random = ran.Next(0, Mainwindow.proxypool.Count);
+                    string proxyg = Mainwindow.proxypool[random].ToString();
+                    string[] proxy = proxyg.Split(":");
+
+                    if (proxy.Length == 2)
+                    {
+                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                    }
+                    else if (proxy.Length == 4)
+                    {
+                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                    }
+                }
+                catch
+                {
+                    wp = default;
+                }
+                string getstatus = "https://api.nike.com/buy/checkouts/v2/" + GID;
+                ServicePointManager.ServerCertificateValidationCallback = ((object param0, X509Certificate param1, X509Chain param2, SslPolicyErrors param3) => true);
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest reqgetstatus = (HttpWebRequest)WebRequest.Create(url);
+                reqgetstatus.Proxy = wp;
+                reqgetstatus.Method = "PUT";
+                reqgetstatus.Accept = "application/json";
+                reqgetstatus.ContentType = "application/json; charset=UTF-8";
+                byte[] paymenttokeninfo = Encoding.UTF8.GetBytes(payload);
+                reqgetstatus.Headers.Add("Authorization", Authorization);
+                if (Mainwindow.iscookielistnull)
+                {
+                    reqgetstatus.Headers.Add("Cookie", "");
+                }
+                else
+                {
+                    if ((Config.cjevent != "") && (Config.cid != ""))
+                    {
+                    reloadcookie: Random ra = new Random();
+                        int sleeptime = ra.Next(0, 100);
+                        Thread.Sleep(sleeptime);
+                    C: if (Mainwindow.lines.Count == 0)
+                        {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            tk.Status = "No Cookie";
+                            Mainwindow.iscookielistnull = true;
+                            goto C;
+                        }
+                        else
+                        {
+                            int cookie = ra.Next(0, Mainwindow.lines.Count);
+                            try
+                            {
+                                Main.updatelable(Mainwindow.lines[cookie], false);
+                                reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
+                                Mainwindow.lines.RemoveAt(cookie);
+                                if (Mainwindow.lines.Count == 0)
+                                {
+                                    Mainwindow.iscookielistnull = true;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                goto reloadcookie;
+                            }
+                        }
+                    }
+                    else
+                    {
+                    reloadcookie: Random ra = new Random();
+                        int sleeptime = ra.Next(0, 100);
+                        Thread.Sleep(sleeptime);
+                    C: if (Mainwindow.lines.Count == 0)
+                        {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            Mainwindow.iscookielistnull = true;
+                            tk.Status = "No Cookie";
+                            goto C;
+
+                        }
+                        else
+                        {
+                            int cookie = ra.Next(0, Mainwindow.lines.Count);
+                            try
+                            {
+                                reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
+                                Main.updatelable(Mainwindow.lines[cookie], false);
+                                Mainwindow.lines.RemoveAt(cookie);
+
+                            }
+                            catch (Exception)
+                            {
+                                goto reloadcookie;
+                            }
+                        }
+                    }
+                }
+                reqgetstatus.Referer = "https://www.nike.com/us/en/checkout";
+                reqgetstatus.Headers.Add("Accept-encoding", "gzip, deflate,br");
+                reqgetstatus.Headers.Add("Accept-language", "en-US, en; q=0.9");
+                reqgetstatus.Headers.Add("appid", "com.nike.commerce.snkrs.web");
+                reqgetstatus.Headers.Add("Origin", "https://www.nike.com");
+                reqgetstatus.ContentLength = paymenttokeninfo.Length;
+                reqgetstatus.Host = "api.nike.com";
+                reqgetstatus.Headers.Add("Sec-Fetch-Dest", "empty");
+                reqgetstatus.Headers.Add("Sec-Fetch-Mode", "cors");
+                reqgetstatus.Headers.Add("Sec-Fetch-Site", "same-site");
+                reqgetstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+                reqgetstatus.Headers.Add("X-B3-SpanId", xb3spanID);
+                reqgetstatus.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+                reqgetstatus.Headers.Add("X-B3-TraceId", xb3traceid);
+                Stream paymenttokenstream = reqgetstatus.GetRequestStream();
+                paymenttokenstream.Write(paymenttokeninfo, 0, paymenttokeninfo.Length);
+                paymenttokenstream.Close();
+                try
+                {
+                    HttpWebResponse respgetstatus = (HttpWebResponse)reqgetstatus.GetResponse();
+                    Stream respcheckstatusstream = respgetstatus.GetResponseStream();
+                    StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
+                    string check = readcheckstatus.ReadToEnd();
+                }
+                catch (WebException ex)
+                {
+                    HttpWebResponse respjob = (HttpWebResponse)ex.Response;
+                    failedretry++;
+                    if (failedretry > 20)
+                    {
+                        Main.autorestock(tk);
+                    }
+                    tk.Status = "Processing failed";
+                    Thread.Sleep(500);
+                    goto E;
+                }
             }
             else
             {
@@ -846,81 +998,81 @@ namespace MAIO
                         }
                     }
                 }
-            }
-            string proxy = "";
-
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                proxy = Mainwindow.proxypool[random].ToString();
-            }
-            catch
-            {
-                proxy = "";
-            }
-            try
-            {
-                var chao= JsonConvert.SerializeObject(payload).Replace("\"{", "{").Replace("}\"", "}");
-                string json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\""+Authorization+"\",\"X-B3-SpanId\":\""+xb3spanID+"\",\"X-B3-ParentSpanId\":\""+xb3parentspanid+"\",\"appid\":\"com.nike.commerce.snkrs.web\",\"X-B3-TraceId\":\""+xb3traceid+"\"},\"url\":\""+url+"\",\"method\":\"PUT\",\"data\":\""+ chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString()+ "\",\"Value\":\""+ sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\""+ sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\""+tk.Taskid+"\"},\"type\":\"request\"}";
-                Main.allSockets[0].Send(json);
-                bool fordidden = false;
-                tk.Status = "Submit Payment";
-            B: JObject sValue = null;
+                string proxy = "";
                 try
                 {
-                    if (returnstatus.TryGetValue(tk.Taskid, out sValue))
+                    int random = ran.Next(0, Mainwindow.proxypool.Count);
+                    proxy = Mainwindow.proxypool[random].ToString();
+                }
+                catch
+                {
+                    proxy = "";
+                }
+                try
+                {
+                    var chao = JsonConvert.SerializeObject(payload).Replace("\"{", "{").Replace("}\"", "}");
+                    string json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\"" + Authorization + "\",\"X-B3-SpanId\":\"" + xb3spanID + "\",\"X-B3-ParentSpanId\":\"" + xb3parentspanid + "\",\"appid\":\"com.nike.commerce.snkrs.web\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                    Main.allSockets[0].Send(json);
+                    bool fordidden = false;
+                    tk.Status = "Submit Payment";
+                B: JObject sValue = null;
+                    try
                     {
-                        if (ct.IsCancellationRequested)
+                        if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            if (sValue["status"].ToString() == "202")
+                            {
+                                tk.Status = "Submit Payment";
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                            else if (sValue["status"].ToString() == "403")
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                            else if (sValue.ToString().Contains("fail"))
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
                         }
-                        if (sValue["status"].ToString() == "202")
+                        else
                         {
-                            tk.Status = "Submit Payment";
-                            returnstatus.Remove(tk.Taskid);
-                        }
-                        else if (sValue["status"].ToString() == "403")
-                        {
-                            tk.Status = "Forbidden";
-                            fordidden = true;
-                            returnstatus.Remove(tk.Taskid);
-                        }
-                        else if(sValue.ToString().Contains("fail"))
-                        {
-                            tk.Status = "Forbidden";
-                            fordidden = true;
-                            returnstatus.Remove(tk.Taskid);
+                            goto B;
                         }
                     }
-                    else
+                    catch (NullReferenceException)
                     {
                         goto B;
                     }
-                }
-                catch (NullReferenceException)
-                {
-                    goto B;
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
-                }
-                if (fordidden)
-                {
-                    failedretry++;
-                    if (failedretry > 20)
+                    catch (OperationCanceledException)
                     {
-                        Main.autorestock(tk);
+                        return;
                     }
-                    Thread.Sleep(1500);
+                    if (fordidden)
+                    {
+                        failedretry++;
+                        if (failedretry > 20)
+                        {
+                            Main.autorestock(tk);
+                        }
+                        Thread.Sleep(1500);
+                        goto D;
+                    }
+                }
+                catch
+                {
                     goto D;
                 }
             }
-            catch
-            {
-                goto D;
-            }
+           
         }
         public string finalorder(string url, string Authorization, Main.taskset tk, bool randomsize, CancellationToken ct, string skuid, string paytoken, string GID)
         {
