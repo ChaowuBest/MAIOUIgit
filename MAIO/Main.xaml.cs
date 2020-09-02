@@ -82,12 +82,30 @@ namespace MAIO
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
             }
-            if (Config.UseAdvancemode=="True")
-            {
-                Task task4 = Task.Run(() => openbrowser());
-            }
+          
             Task task5 = Task.Run(()=>check());
-            
+            Task task6 = Task.Run(()=>checkusemonitor());
+        }
+        bool alreadystartbrowser = false;
+        public void checkusemonitor() 
+        {
+          A: if (Config.UseAdvancemode == "True")
+            {
+                alreadystartbrowser = true;
+                if (alreadystartbrowser)
+                {
+                    Task task4 = Task.Run(() => openbrowser());
+                }
+            }
+            Thread.Sleep(1);
+            if (alreadystartbrowser != true)
+            {
+                goto A;
+            }
+            else
+            {            
+            }
+
         }
         public static void openbrowser()
         {

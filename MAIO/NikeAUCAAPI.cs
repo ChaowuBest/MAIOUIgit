@@ -197,6 +197,12 @@ namespace MAIO
                                 tk.Status = "IDLE";
                                 ct.ThrowIfCancellationRequested();
                             }
+                            else if (sValue.ToString().Contains("Failed to fetch"))
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
                             if (sValue["status"].ToString() == "202")
                             {
                                 tk.Status = "Submit Order";
@@ -208,12 +214,7 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-                            else if (sValue.ToString().Contains("fail"))
-                            {
-                                tk.Status = "Forbidden";
-                                fordidden = true;
-                                returnstatus.Remove(tk.Taskid);
-                            }
+                          
                         }
                         else
                         {

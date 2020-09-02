@@ -62,9 +62,8 @@ namespace MAIO
             Task task4 = Task.Run(() => Initialgiftcard());
             Task task5 = Task.Run(() => Initialtask());
             Task task6 = Task.Run(() => InitialCookie());
-            Task task7 = Task.Run(() => InitialAdvancemode());
             Task task8 = Task.Run(() => Initialcode());
-            Task.WaitAll(task1,task2,task3,task4,task5,task6,task7,task8);
+            Task.WaitAll(task1,task2,task3,task4,task5,task6,task8);
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
@@ -305,15 +304,6 @@ namespace MAIO
             {
                 MessageBox.Show("Error read cookie");
             }
-        }
-        public void InitialAdvancemode()
-        {
-          /*  string path7 = Environment.CurrentDirectory + "\\" + "advancecookie.txt";
-            if (!File.Exists(path7))
-            {
-                FileStream fs1 = new FileStream(path7, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                fs1.Close();
-            }*/
         }
         public void Initialcode()
         {

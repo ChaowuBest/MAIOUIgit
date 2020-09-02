@@ -22,11 +22,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.35
+    /// version 0.99.36
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.34";//everychange
+        public static string version = "0.99.36";//everychange
         public LoginWindow()
         {
             InitializeComponent();
@@ -152,7 +152,7 @@ namespace MAIO
                             Config.delay = jo["delay"].ToString();
                             Config.Usemonitor = jo["Usemonitor"].ToString();
                             Config.UseAdvancemode = jo["Advancemode"].ToString();
-                            Config.UseAdvancemode = jo["Advancemode"].ToString();
+                       //     Config.UseAdvancemode = jo["Advancemode"].ToString();
                             if (jo["AutoClearCookie"].ToString() == "True")
                             {
                                 Config.autoclearcookie = true;
