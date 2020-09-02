@@ -51,13 +51,15 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Sku == this.pid && Mainwindow.task[n].Tasksite == this.tk.Tasksite)
+                        if (Mainwindow.task[n].monitortask == "True"&& Mainwindow.task[n].Tasksite == this.tk.Tasksite)
                         {
                             tk.Status = "Monitoring Task";
                             monitortask = true;
                             if (Mainwindow.task[n].Status.Contains("SubmitOrder") || Mainwindow.task[n].Status.Contains("Forbidden") || Mainwindow.task[n].Status.Contains("Processing") || Mainwindow.task[n].Status.Contains("Success"))
                             {
                                 ismonitor = true;
+                                this.tk.Sku = Mainwindow.task[n].Sku;
+                                this.pid = this.tk.Sku;
                                 break;
                             }
                         }
@@ -233,7 +235,7 @@ namespace MAIO
 
                 }
                 priceid = j["merchPrice"]["snapshotId"].ToString();
-                msrp = j["merchPrice"]["msrp"].ToString();
+                msrp = j["merchPrice"]["fullPrice"].ToString();
                 JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
                 string availableSkus = j["availableSkus"].ToString();
                 JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);

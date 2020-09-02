@@ -56,13 +56,15 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Sku == this.pid && Mainwindow.task[n].Tasksite == this.tk.Tasksite)
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite)
                         {
                             tk.Status = "Monitoring Task";
                             monitortask = true;
                             if (Mainwindow.task[n].Status.Contains("Login") || Mainwindow.task[n].Status.Contains("Submit") || Mainwindow.task[n].Status.Contains("Get"))
                             {
                                 ismonitor = true;
+                                this.tk.Sku = Mainwindow.task[n].Sku;
+                                this.pid = this.tk.Sku;
                                 break;
                             }
                         }

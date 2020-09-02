@@ -215,7 +215,15 @@ namespace MAIO
             {
                 string ChromePath = Environment.CurrentDirectory + "\\" + "cookiegen";
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
-                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                //   Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                try
+                {
+                    Process.Start("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                }
+                catch
+                {
+                    Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                }
                 FleckLog.Level = LogLevel.Debug;
                 var allSockets = new List<IWebSocketConnection>();
                 var server = new WebSocketServer("ws://127.0.0.1:64526");

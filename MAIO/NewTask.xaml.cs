@@ -176,14 +176,8 @@ namespace MAIO
                             setup[7] = monitor.IsChecked.ToString();
                             setup[8] = advancemonitor.IsChecked.ToString();
                             setup[9] = user;
-                            if (productid != "")
-                            {
-                                getTextHandler(setup);
-                            }
-                            else
-                            {
-                                MessageBox.Show("Check your input");
-                            }
+                            getTextHandler(setup);
+
                         }
                     }
                 
