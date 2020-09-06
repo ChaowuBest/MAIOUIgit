@@ -32,6 +32,7 @@ namespace MAIO
         string xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
+        string servercookie = "";
         public int failedretry = 0;
         int failedsubshipp = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
@@ -203,7 +204,6 @@ namespace MAIO
                     }
                     catch (OperationCanceledException)
                     {
-                        //  return;
                         return "";
                     }
                     if (fordidden)
@@ -757,7 +757,6 @@ namespace MAIO
         }
         public string payment(string url, string Authorization, string paymentinfo, Main.taskset tk, CancellationToken ct)
         {
-
         retry: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -765,6 +764,7 @@ namespace MAIO
             }
             Thread.Sleep(1);
             WebProxy wp = new WebProxy();
+            Task task = Task.Run(()=>getcookie(Config.hwid));
             try
             {
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
@@ -923,13 +923,20 @@ namespace MAIO
             if (Config.UseAdvancemode!="True")
             {
             #region
-            /*    var binding = new BasicHttpBinding();
-                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                var callClient = factory.CreateChannel();
-                JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                sendcookie = result["cookie"].ToString().Split(";");
-            */
+            /*      try
+               {
+                   var binding = new BasicHttpBinding();
+                   var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                   var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                   var callClient = factory.CreateChannel();
+                   JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                   sendcookie = result["cookie"].ToString().Split(";");
+               }
+               catch
+               {
+
+               }*/
+
             #endregion
             E: if (ct.IsCancellationRequested)
                 {
@@ -1083,41 +1090,65 @@ namespace MAIO
             }
             else
             {
-                if (Mainwindow.iscookielistnull)
+                if (servercookie != "")
                 {
-                    Thread.Sleep(1);
-                    goto D;
+                    sendcookie = servercookie.Split(";");
+                    if (failedretry != 0)
+                    {
+                        try
+                        {
+                            var binding = new BasicHttpBinding();
+                            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                            var callClient = factory.CreateChannel();
+                            JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                            sendcookie = result["cookie"].ToString().Split(";");
+                        }
+                        catch
+                        {
+                            servercookie = "";
+                            goto D;
+                        }
+                    }
                 }
                 else
                 {
-                reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 100);
-                    Thread.Sleep(sleeptime);
-                C: if (Mainwindow.lines.Count == 0)
+                    if (Mainwindow.iscookielistnull)
                     {
                         Thread.Sleep(1);
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        Mainwindow.iscookielistnull = true;
-                        tk.Status = "No Cookie";
-                        goto C;
+                        goto D;
                     }
                     else
                     {
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
-                        try
+                    reloadcookie: Random ra = new Random();
+                        int sleeptime = ra.Next(0, 100);
+                        Thread.Sleep(sleeptime);
+                    C: if (Mainwindow.lines.Count == 0)
                         {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
-                            sendcookie = Mainwindow.lines[cookie].Split(";");
-                            Mainwindow.lines.RemoveAt(cookie);
-
+                            Thread.Sleep(1);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            Mainwindow.iscookielistnull = true;
+                            tk.Status = "No Cookie";
+                            goto C;
                         }
-                        catch (Exception)
+                        else
                         {
-                            goto reloadcookie;
+                            int cookie = ra.Next(0, Mainwindow.lines.Count);
+                            try
+                            {
+                                Main.updatelable(Mainwindow.lines[cookie], false);
+                                sendcookie = Mainwindow.lines[cookie].Split(";");
+                                Mainwindow.lines.RemoveAt(cookie);
+
+                            }
+                            catch (Exception)
+                            {
+                                goto reloadcookie;
+                            }
                         }
                     }
                 }
@@ -1484,6 +1515,23 @@ namespace MAIO
             long lTime = long.Parse(timeStamp + "0000");
             TimeSpan toNow = new TimeSpan(lTime);
             return dtStart.Add(toNow);
+        }
+        public async void getcookie(string hwid)
+        {
+            try
+            {
+                await Task.Delay(1);
+                var binding = new BasicHttpBinding();
+                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                var callClient = factory.CreateChannel();
+                JObject result = JObject.Parse(callClient.getcookieAsync(hwid).Result);
+                servercookie = result["cookie"].ToString();
+            }
+            catch
+            {
+
+            }
         }
     }
 }

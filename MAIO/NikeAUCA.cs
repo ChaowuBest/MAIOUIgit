@@ -51,11 +51,11 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True"&& Mainwindow.task[n].Tasksite == this.tk.Tasksite)
+                        if (Mainwindow.task[n].monitortask == "True"&& Mainwindow.task[n].Tasksite == this.tk.Tasksite  && Mainwindow.task[n].Status != "IDLE")
                         {
                             tk.Status = "Monitoring Task";
                             monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("SubmitOrder") || Mainwindow.task[n].Status.Contains("Forbidden") || Mainwindow.task[n].Status.Contains("Processing") || Mainwindow.task[n].Status.Contains("Success"))
+                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") ==false || Mainwindow.task[n].Status.Contains("Proxy Error")==false)
                             {
                                 ismonitor = true;
                                 this.tk.Sku = Mainwindow.task[n].Sku;
@@ -91,21 +91,21 @@ namespace MAIO
         B:
             try
             {
-             //  if (Config.UseAdvancemode == "True")
-            //   {
-             //     if (cookie != "")
-             //       {
+               if (Config.UseAdvancemode == "True")
+               {
+                  if (cookie != "")
+                    {
                         Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-          //       }
-             //       else
-               //     {
-             //          goto B;
-             //     }
-             //}
-          //    else
-           //   {
-              //     Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-            //   }
+                 }
+                    else
+                    {
+                       goto B;
+                  }
+             }
+              else
+              {
+                  Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+               }
 
             }
             catch (NullReferenceException)
@@ -283,7 +283,7 @@ namespace MAIO
                             string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid,multisize, skuidlist);
                             if (Config.UseAdvancemode == "True")
                             {
-                          //    Task task2 = Task.Run(()=>getcookie(Config.hwid));
+                              Task task2 = Task.Run(()=>getcookie(Config.hwid));
                             }    
                             if (group[0] != null)
                             {

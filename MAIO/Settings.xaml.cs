@@ -248,7 +248,6 @@ namespace MAIO
                             string bm_sv = "";
                             JObject jo = JObject.Parse(message);
                             var chao = jo.ToString();
-                            // MessageBox.Show(chao);
                             if (jo["value"].ToString().Contains("==") == false)
                             {
                                 JArray ja = JArray.Parse(jo["value1"].ToString());

@@ -317,6 +317,8 @@ namespace MAIO
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
                 request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
+               // request.Headers.Add("Server-Host", "nike.com");
+              //  request.Headers.Add("Server-Address", "183.136.212.217:443");
             C: if (Mainwindow.iscookielistnull)
                 {
                     if (ct.IsCancellationRequested)
@@ -358,7 +360,8 @@ namespace MAIO
                 request.Headers.Add("Sec-Fetch-Dest", "empty");
                 request.Headers.Add("Sec-Fetch-Mode", "cors");
                 request.Headers.Add("Sec-Fetch-Site", "same-site");
-                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+               // request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36";
                 request.Headers.Add("X-B3-SpanName", "CiCCart");
                 request.Headers.Add("X-B3-TraceId", xb3traceid);
                 request.Headers.Add("x-nike-visitid", "1");

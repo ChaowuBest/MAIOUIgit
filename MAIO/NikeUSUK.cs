@@ -56,11 +56,11 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite)
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status!="IDLE")
                         {
                             tk.Status = "Monitoring Task";
                             monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("Login") || Mainwindow.task[n].Status.Contains("Submit") || Mainwindow.task[n].Status.Contains("Get"))
+                            if (Mainwindow.task[n].Status.Contains("WaitingRestock")==false || Mainwindow.task[n].Status.Contains("Proxy Error") ==false )
                             {
                                 ismonitor = true;
                                 this.tk.Sku = Mainwindow.task[n].Sku;
@@ -374,7 +374,7 @@ namespace MAIO
                     tk.Status = "Restarting";
                     goto retry;
                 }
-            }
+               }
         }
         protected string Login(JObject profile, CancellationToken ct)
         {
@@ -442,7 +442,6 @@ namespace MAIO
                     }
                     else
                     {
-
                         FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                         StreamReader sr = new StreamReader(fs1);
                         string read = sr.ReadToEnd();
