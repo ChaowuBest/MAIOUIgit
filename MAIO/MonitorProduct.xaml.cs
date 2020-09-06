@@ -131,7 +131,7 @@ namespace MAIO
                 {
                     string needdel = Mainwindow.tasklist[jo["Taskid"].ToString()];
                     Mainwindow.tasklist.Remove(jo["Taskid"].ToString());
-                    Config.mn.updatetask(needdel);
+                   // Config.mn.updatetask(needdel);
                     break;
                 }
             }

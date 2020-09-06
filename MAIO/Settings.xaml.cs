@@ -187,7 +187,7 @@ namespace MAIO
                                 Mainwindow.cookiewtime.Add(time2, cookie);
                                 Mainwindow.iscookielistnull = false;
                             }
-                            Main.updatelable(cookie, true);
+                          //  Main.updatelable(cookie, true);
                             FileInfo fi = new FileInfo(Environment.CurrentDirectory + "\\" + "cookie.json");
                             if (fi.Length == 0)
                             {
@@ -251,11 +251,11 @@ namespace MAIO
             Mainwindow.lines.Clear();
             Mainwindow.cookiewtime.Clear();
             Mainwindow.iscookielistnull = true;
-            Config.mn.cookienum.Dispatcher.Invoke(new Action(
+          /*  Config.mn.cookienum.Dispatcher.Invoke(new Action(
                   delegate
                   {
                       Config.mn.cookienum.Content = Mainwindow.lines.Count;
-                  }));
+                  }));*/
         }
 
         private void ToggleButton_Initialized(object sender, EventArgs e)

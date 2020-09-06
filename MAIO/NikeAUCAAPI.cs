@@ -186,7 +186,7 @@ namespace MAIO
                     int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {
-                        Main.updatelable(Mainwindow.lines[cookie], false);
+                     //   Main.updatelable(Mainwindow.lines[cookie], false);
                         request.Headers.Add("Cookie", Mainwindow.lines[cookie]);
                         Mainwindow.lines.RemoveAt(cookie);
                         if (Mainwindow.lines.Count == 0)

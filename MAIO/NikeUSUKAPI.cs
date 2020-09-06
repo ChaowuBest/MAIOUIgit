@@ -150,7 +150,7 @@ namespace MAIO
                                int cookie = ra.Next(0, Mainwindow.lines.Count);
                                try
                                {
-                                   Main.updatelable(Mainwindow.lines[cookie], false);
+                                  // Main.updatelable(Mainwindow.lines[cookie], false);
                                    req.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                                    Mainwindow.lines.RemoveAt(cookie);
                                    if (Mainwindow.lines.Count == 0)
@@ -187,7 +187,7 @@ namespace MAIO
                                {
                                    // req.Headers.Add("Cookie", "geoloc=cc=CN,rc=JL,tp=vhigh,tz=GMT+8,la=43.89,lo=125.32; crl8.fpcuid=111b9374-3bae-45a8-a2de-8318a14d95a2; s_ecid=MCMID%7C13712291943217497877934437626721125471; AMCVS_F0935E09512D2C270A490D4D%40AdobeOrg=1; fs_uid=rs.fullstory.com#BM7A6#6266740190363648:6363763799834624/1622087170; anonymousId=A62273FE0B60DBF46517E04C7C973E37; RES_TRACKINGID=743197587189211; ResonanceSegment=1; _ga=GA1.2.1522812375.1595248648; _gcl_au=1.1.1583197471.1595248648; AnalysisUserId=60.210.20.122.77481595248738790; AMCV_F0935E09512D2C270A490D4D%40AdobeOrg=1994364360%7CMCMID%7C13712291943217497877934437626721125471%7CMCAID%7CNONE%7CMCOPTOUT-1595255830s%7CNONE%7CvVersion%7C3.4.0%7CMCIDTS%7C18464%7CMCAAMLH-1595853539%7C11%7CMCAAMB-1595853539%7Cj8Odv6LonN4r3an7LhD3WZrU1bUpAkFkkiY1ncBR96t2PTI; Hm_lvt_ed406c6497cc3917d06fd572612b4bba=1593086327,1593254343,1593308143,1595249821; _gscu_207448657=90389346fy6gzr20; _gscbrs_207448657=1; _smt_uid=5f15949d.14434e20; guidS=35146d34-b642-45e5-c9fe-b4598d6274f0; guidU=3c900a92-0373-496d-ea92-099c9c254091; Hm_lpvt_ed406c6497cc3917d06fd572612b4bba=1595249882; _scid=9d85343b-7714-49ac-8f77-a0182b1a8f83; _fbp=fb.1.1595251459673.1766581573; _pin_unauth=dWlkPVlqUTVaR1l5WVdFdE5tVXpNUzAwTlRZNExXRTJPRFF0WlRsbE5XWm1NRFpoTTJFMw; _sctr=1|1595174400000; CONSUMERCHOICE_SESSION=t; AKA_A2=A; bm_sz=504A8FE1F1FF189568D527EA0CA28B8D~YAAQehTSPI9oRxRzAQAAqlrhdQj9IBMrlugd4qWjpOIWMi5BtkJpAzKNJWZuPysavxndJ5msirM5aY6ANyNCGR+JhJBKJPlKcQs3MLYM8nT5LZoRclmhV/wSGoP1GV1nZMxym2cu3HuEsw2bbLeQb/z2nVHlJEsppgKRogX4dbNNntkyrv1YcXY1KjZzQQ==; bm_mi=B7EAFED065D5130FA7DCABB3F5AB5778~u9omNtt9/bWFr2dXdUp5wLxMvvgzt3aJFWsKkZ6b0RL1zfDg9ycWDWPWQULZrTDn3sFciEHTdVLeb7XAZvbcz3HU/9o3jnvsIbX8yeH+rmusK506+oeAjnb3tSgvAJ20x2LnMstRVz41Jir2PztY8Gdhl0CRJFDO24hok++AoTOWarOchhhmoSFW59NOhEopVNkGz2mnDiCg8o29kLH2eTvVOcrXqppXalFEV2lGj51+06RyZBf8n0X0dpZRF1HipW5widsrKgnAB1WhcOQ7JQ==; bc_nike_australia_triggermail=%7B%22distinct_id%22%3A%20%221736c65822e165-0b2e64ee8521e1-7f2f4867-1704a0-1736c65822f48d%22%2C%22cart_total%22%3A%20100%7D; ppd=homepage|nikecom>homepage; ak_bmsc=B4A1D00A30A00A7E2EEB70C00ECC339E3CD2147A441E00008908185F31310145~pl9QzKO1+JjtkHs58i8R66ZiFEpE2VHvZwtxNuuuFhtLz4fFKhKDcDAkAtZnHN2Yfrii/lrZYjwxO6Z0F8x06Lw1rzgYd9xlsKJjasW57ntwXqEumdIeNP0TiQRttcuiI2YG9h+kLa9cgARzL6h1M+m/+8XAmlP5CwdgYLUSxX7gX/NWA73RRk13oyXSVYqEVDrxXTaB8VrsvXXAObQN7KFXtDDcYv98jDzW2vhSQa+Zimk0yFSeY0h94+CxbysQSU; bounceClientVisit2422v=N4IgNgDiBcIBYBcEQM4FIDMBBNAmAYnvgO6kB0AdgJYDWApmQMYD2AtkQIYCuRIANCABOMEKWJkA5s2YSwDFqzJwaIAL5A; _gid=GA1.2.1148988271.1595410576; _gat_UA-171421696-1=1; _gat_UA-167630499-4=1; NIKE_COMMERCE_COUNTRY=US; NIKE_COMMERCE_LANG_LOCALE=en_US; nike_locale=us/en_us; CONSUMERCHOICE=us/en_us; cid=undefined%7Cundefined; _gat_UA-167630499-2=1; optimizelyEndUserId=oeu1595410594908r0.33317420699330036; RES_SESSIONID=550846637672316; _uetsid=0ec99cb22fc24cc08b3184091dd5454e; _uetvid=bcb6a6620ee9f73367d0347ba1d3af85; bc_nike_triggermail=%7B%22distinct_id%22%3A%20%22172f89e3f24529-05ee350331064a-7f2f4867-1704a0-172f89e3f25684%22%2C%22g_search_engine%22%3A%20%22google%22%2C%22cart_total%22%3A%200%2C%22ch%22%3A%20%221433069869%22%7D; bm_sv=1E06D2DF5ED7C0656474A60717C9E86D~HQeDVMFVxaXnEVqjT4PklPSwNCdsrUJEUG2Y2Bfu4uNZuwM3jIqflwZty3r10p0f3G+V7SmwUX7EFniGuAqc9Gs3eeBqkzY4P18YZnLhOrpApGUGYhDndgivzJs6W/hyBbqGlL39kgD4i83OnoIEkA==; _abck=87746C6109FEA40FE3EF49CDCF4E32CD~-1~YAAQDhTSPIeuuWpzAQAALwfidQR2LcWAAt4GZPUISngPkobfyMD3ZLbevPlNTb1zGT0sgwolk7vNsnBChkIS2+TT2gIAalnYWOsIrwWgOO0DSfiW9wdVprtbmJZfelmFvcAuXXDB9eKESKgC9xBlDh/1ZDVhC0htsPkjBoB/YP0TYCw8ziQswPsa+bczKff2rs9cPcOLZ6djYaR+lJ3R35Ai6MC1YmOZyfwjnP9eWgapnKo3tzRgyfnUCkRY2CrofuSYzYRNrBSo1lkKbNd9OsQd7COU1Tg1QWNkffVLM3UxKiUXl8fiDfpHX16oscaRO/g6udoLZd+ocy+65J3kqbq4g/QWGdHjNyavHe6qVpA=~0~-1~-1");
                                    req.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                                   Main.updatelable(Mainwindow.lines[cookie], false);
+                                //   Main.updatelable(Mainwindow.lines[cookie], false);
                                    Mainwindow.lines.RemoveAt(cookie);
                                }
                                catch (Exception)
@@ -424,7 +424,7 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
+                          //  Main.updatelable(Mainwindow.lines[cookie], false);
                             reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
@@ -462,7 +462,7 @@ namespace MAIO
                         try
                         {
                             reqpayment.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                            Main.updatelable(Mainwindow.lines[cookie], false);
+                         //   Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 
                         }
@@ -725,7 +725,7 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
+                           // Main.updatelable(Mainwindow.lines[cookie], false);
                             reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
@@ -762,7 +762,7 @@ namespace MAIO
                         try
                         {
                             reqprocess.Headers.Add("Cookie", Mainwindow.lines[cookie]);
-                            Main.updatelable(Mainwindow.lines[cookie], false);
+                          //  Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 
                         }
@@ -949,7 +949,7 @@ namespace MAIO
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
+                          //  Main.updatelable(Mainwindow.lines[cookie], false);
                             reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie] + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
                             Mainwindow.lines.RemoveAt(cookie);
                             if (Mainwindow.lines.Count == 0)
@@ -987,7 +987,7 @@ namespace MAIO
                         {
                             string subcookie = Mainwindow.lines[cookie] + ";" + akbmsz;
                             reqgetstatus.Headers.Add("Cookie", subcookie.Replace(";", "; "));
-                            Main.updatelable(Mainwindow.lines[cookie], false);
+                          //  Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 
                         }

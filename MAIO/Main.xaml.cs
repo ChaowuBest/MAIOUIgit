@@ -37,7 +37,7 @@ namespace MAIO
         public Main()
         {
             InitializeComponent();
-            updatelable("123", true);
+       /*     updatelable("123", true);
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
@@ -75,9 +75,9 @@ namespace MAIO
             {
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
-            }
+            }*/
         }
-        public void clearcookie()
+     /*   public void clearcookie()
         {
         A: foreach (var i in Mainwindow.cookiewtime.ToArray())
             {
@@ -94,7 +94,7 @@ namespace MAIO
                 }
             }
             goto A;
-        }
+        }*/
         private DateTime ConvertStringToDateTime(string timeStamp)
         {
             DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
@@ -103,7 +103,7 @@ namespace MAIO
             return dtStart.Add(toNow);
         }
         public static int counter = 0;
-        public static void updatelable(string cookie, bool addcookie)
+      /*  public static void updatelable(string cookie, bool addcookie)
         {
             if (counter == 0)
             {
@@ -129,7 +129,7 @@ namespace MAIO
                     }
                 }
             }
-        }
+        }*/
         public class taskset : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -362,7 +362,7 @@ namespace MAIO
             {
             }
         }
-        private void start_Click(object sender, RoutedEventArgs e)
+       /* private void start_Click(object sender, RoutedEventArgs e)
         {
             string taskid = Guid.NewGuid().ToString();
             int row = datagrid.SelectedIndex;
@@ -895,7 +895,7 @@ namespace MAIO
                 MessageBox.Show("Error Edit");
             }
 
-        }
+        }*/
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             mp.Show();
