@@ -83,7 +83,7 @@ namespace MAIO
                 task2.Start();
             }
           
-            Task task5 = Task.Run(()=>check());
+           // Task task5 = Task.Run(()=>check());
             Task task6 = Task.Run(()=>checkusemonitor());
         }
         bool alreadystartbrowser = false;

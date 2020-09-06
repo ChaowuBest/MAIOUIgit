@@ -307,7 +307,8 @@ namespace MAIO
                 {
                     wp = default;
                 }
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:1234/buy/partner_cart_preorder/v1/3543df8c-4fd4-4088-a3fd-b8b166504314");
+              //  HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:1234/json");
                 request.Method = "PUT";
                 request.Proxy = wp;
                 request.ContentType = "application/json; charset=UTF-8";
@@ -316,9 +317,13 @@ namespace MAIO
                 request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
-                request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-               // request.Headers.Add("Server-Host", "nike.com");
-              //  request.Headers.Add("Server-Address", "183.136.212.217:443");
+             //   request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
+                request.Headers.Add("Server-Host", "api.nike.com");
+               // request.Headers.Add("Server-Host", "www.ja3er.com");
+                request.Headers.Add("Server-Address", "183.136.212.217:443");
+              //  request.Headers.Add("Server-Address", "160.85.255.180:443");
+                request.Headers.Add("Root-Domain", "nike.com");
+             //   request.Headers.Add("Root-Domain", "ja3er.com");
             C: if (Mainwindow.iscookielistnull)
                 {
                     if (ct.IsCancellationRequested)
@@ -360,19 +365,30 @@ namespace MAIO
                 request.Headers.Add("Sec-Fetch-Dest", "empty");
                 request.Headers.Add("Sec-Fetch-Mode", "cors");
                 request.Headers.Add("Sec-Fetch-Site", "same-site");
-               // request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
-                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36";
+             //  request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+               request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36";
                 request.Headers.Add("X-B3-SpanName", "CiCCart");
-                request.Headers.Add("X-B3-TraceId", xb3traceid);
+               request.Headers.Add("X-B3-TraceId", xb3traceid);
                 request.Headers.Add("x-nike-visitid", "1");
-                request.Headers.Add("x-nike-visitorid", xnikevisitorid);
+               request.Headers.Add("x-nike-visitorid", xnikevisitorid);
                 Stream paymentstream = request.GetRequestStream();
                 paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
-                paymentstream.Close();
+               paymentstream.Close();
                 try
                 {
                     HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
                     tk.Status = "SubmitOrder";
+                    Stream receiveStream = resppayment.GetResponseStream();
+                    StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                    if (resppayment.ContentEncoding == "gzip")
+                    {
+                        readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
+                    }
+                    else
+                    {
+                        readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                    }
+                  string  sourcecode = readStream.ReadToEnd();
                 }
                 catch (WebException ex)
                 {
