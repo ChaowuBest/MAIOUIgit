@@ -35,19 +35,19 @@ namespace MAIO
         public void checkkey()
         {
             var ip = HttpGet("https://api.ipify.org", "utf-8");
+          //  var ip = "";
             Config.ip = ip;
             string finger = null;
             try
             {
                 finger = FingerPrint.Value() + ip;
-
-
                 var hwid = MD5Helper.EncryptString(finger);
                 Config.hwid = hwid;
                 string path = Environment.CurrentDirectory + "\\" + "config.json";
                 if (File.Exists(path))
                 {
                     if (this.keycheck(hwid))
+                //if (true)
                     {
                         try
                         {

@@ -865,28 +865,9 @@ namespace MAIO
         }
         private async void startall_Click(object sender, RoutedEventArgs e)
         {
-            #region
-            /* using (IEnumerator enumerator = ((IEnumerable)datagrid.Items).GetEnumerator())
-             {
-                 while (enumerator.MoveNext())
-                 {
-                     CookieInfo row = (CookieInfo)enumerator.Current;
-                     bool flag = row.Status == "IDLE";
-                     if (flag)
-                     {
-                         this.RunningTasks++;
-                         this.UpdateDiscord();
-                         new Task(delegate ()
-                         {
-                             this.StartAll(row);
-                         }).Start();
-                     }
-                 }
-             }*/
-            #endregion
             for (int n=0; n < Mainwindow.task.Count; n++)
             {
-                await Task.Delay(300);
+                await Task.Delay(220);
                 new Task(delegate ()
                 {
                     this.sta(Mainwindow.task.ElementAt(n));
@@ -1097,9 +1078,6 @@ namespace MAIO
         }
         public void sta(taskset tk)
         {
-            //  Thread.Sleep(1);
-            //   string taskid = Guid.NewGuid().ToString();
-            //  taskset tk = Mainwindow.task.ElementAt(n);
             bool monitortask = false;
             if (tk.monitortask == "True")
             {

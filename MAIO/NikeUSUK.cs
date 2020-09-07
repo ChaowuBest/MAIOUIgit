@@ -56,7 +56,7 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status!="IDLE")
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status!="IDLE"&& Mainwindow.task[n].Sku==this.pid)
                         {
                             tk.Status = "Monitoring Task";
                             monitortask = true;
@@ -147,7 +147,6 @@ namespace MAIO
                         string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
                         PreviewJob(id, Authorization, skuid, ct);
                         paymenttoken(Authorization, id, skuid, joprofile, ct);
-                        finalorder(Authorization, ct, joprofile);
                     }
                     else
                     {
@@ -465,10 +464,8 @@ namespace MAIO
                             bool isrefresh2 = true;
                             string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
                             string loginurl2 = null;
-                            //https://unite.nike.com/login?appVersion=630&experienceVersion=528&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=a9bbc919-6822-4cdd-8865-8ed9a6404276 
                             if (tk.Tasksite.Contains("US"))
-                            {
-                                //          
+                            { 
                                 loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                             }
                             else
@@ -999,25 +996,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-
-        }
-        protected void finalorder(string Authorization, CancellationToken ct, JObject joprofile)
-        {
-            Thread.Sleep(1);
-            string url = "https://api.nike.com/buy/checkouts/v2/jobs/" + GID;
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            tk.Status = "Submit Payment";
-            string status = USUKAPI.finalorder(url, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
+            string status=USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1025,14 +1004,14 @@ new JProperty("shippingAddress",
             }
             if (status.Contains("error") == true)
             {
-                JObject jo = JObject.Parse(status);
+                JObject jo3 = JObject.Parse(status);
                 string obejects = jo["error"].ToString();
                 JObject jo2 = JObject.Parse(obejects);
                 string reason = jo2["message"].ToString();
                 tk.Status = reason;
                 if (Config.webhook != "")
                 {
-                    failcheckout(tk, Config.webhook, joprofile, reason);
+                    failcheckout(tk, Config.webhook, jo3, reason);
                 }
                 Main.autorestock(tk);
             }
@@ -1044,7 +1023,7 @@ new JProperty("shippingAddress",
                 if (Config.webhook == "")
                 {
                     tk.Status = "Success";
-                    ProcessNotification(true, tk, webhook2, joprofile, "");
+                    ProcessNotification(true, tk, webhook2, jo, "");
                 }
                 if (ct.IsCancellationRequested)
                 {
@@ -1053,11 +1032,12 @@ new JProperty("shippingAddress",
                 }
                 if (status.Contains("error") == false)
                 {
-                    ProcessNotification(true, tk, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", joprofile, "");
-                    ProcessNotification(false, tk, Config.webhook, joprofile, orderid);
+                    ProcessNotification(true, tk, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", jo, "");
+                    ProcessNotification(false, tk, Config.webhook, jo, orderid);
                     tk.Status = "Success";
                 }
             }
+
         }
         public void failcheckout(taskset tk, string webhookurl, JObject joprofile, string reson)
         {

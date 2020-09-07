@@ -51,7 +51,7 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True"&& Mainwindow.task[n].Tasksite == this.tk.Tasksite  && Mainwindow.task[n].Status != "IDLE")
+                        if (Mainwindow.task[n].monitortask == "True"&& Mainwindow.task[n].Tasksite == this.tk.Tasksite  && Mainwindow.task[n].Status != "IDLE"&&Mainwindow.task[n].Sku==this.pid)
                         {
                             tk.Status = "Monitoring Task";
                             monitortask = true;
@@ -377,7 +377,8 @@ namespace MAIO
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
             string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
             JObject jo = JObject.Parse(sourcecode);
-            string paymenturl = jo["response"]["redirectUrl"].ToString();
+            string paymenturl = null;
+            paymenturl = jo["response"]["redirectUrl"].ToString();
             tk.Status = "Success";
             if (ct.IsCancellationRequested)
             {

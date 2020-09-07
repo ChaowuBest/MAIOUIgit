@@ -912,7 +912,7 @@ namespace MAIO
                 goto C;
             }
         }
-        public void final(string Authorization, string url, string payload, string GID, Main.taskset tk, CancellationToken ct, string id)
+        public string final(string Authorization, string url, string payload, string GID, Main.taskset tk, CancellationToken ct, string id)
         {
         D: if (ct.IsCancellationRequested)
             {
@@ -1179,15 +1179,15 @@ namespace MAIO
                                 tk.Status = "IDLE";
                                 ct.ThrowIfCancellationRequested();
                             }
-                            if (sValue["status"].ToString() == "202")
-                            {
-                                tk.Status = "Submit Payment";
-                                returnstatus.Remove(tk.Taskid);
-                            }
-                            else if (sValue["status"].ToString() == "403")
+                            if (sValue.ToString().Contains("Failed to fetch"))
                             {
                                 tk.Status = "Forbidden";
                                 fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                            if (sValue["status"].ToString() == "202")
+                            {
+                                tk.Status = "Submit Payment";
                                 returnstatus.Remove(tk.Taskid);
                             }
                             else if (sValue.ToString().Contains("fail"))
@@ -1196,6 +1196,13 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
+                            else if (sValue["status"].ToString() == "403")
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
+                            
                         }
                         else
                         {
@@ -1208,7 +1215,7 @@ namespace MAIO
                     }
                     catch (OperationCanceledException)
                     {
-                        return;
+                        return "";
                     }
                     if (fordidden)
                     {
@@ -1226,10 +1233,6 @@ namespace MAIO
                     goto D;
                 }
             }
-           
-        }
-        public string finalorder(string url, string Authorization, Main.taskset tk, bool randomsize, CancellationToken ct, string skuid, string paytoken, string GID)
-        {
         A: string status = "";
             for (int i = 0; i < 10; i++)
             {
@@ -1261,7 +1264,7 @@ namespace MAIO
                 {
                     wp = default;
                 }
-                HttpWebRequest reqfinal = (HttpWebRequest)HttpWebRequest.Create(url);
+                HttpWebRequest reqfinal = (HttpWebRequest)HttpWebRequest.Create("https://api.nike.com/buy/checkouts/v2/jobs/" + GID);
                 reqfinal.Proxy = wp;
                 reqfinal.Method = "GET";
                 reqfinal.Accept = "application/json";
@@ -1309,12 +1312,6 @@ namespace MAIO
                 {
                     if (Config.UseAdvancemode == "True")
                     {
-                        tk.Status = "OOS";
-                        string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                      //  Monitoring("https://api.nike.com/cic/grand/v1/graphql", tk, ct, info, randomsize, skuid, true);
-                       // final(Authorization, "https://api.nike.com/buy/checkouts/v2/" + GID, paytoken, GID, tk, ct, "");
-                      //  finalorder("https://api.nike.com/buy/checkouts/v2/jobs/" + GID, Authorization, tk, randomsize, ct, skuid, paytoken, GID);
-                        // goto A;
                     }
                 }
                 if (status.Contains("IN_PROGRESS") == true)
