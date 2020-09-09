@@ -51,6 +51,11 @@ namespace MAIO
             bool ismonitor = false;
             try
             {
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (tk.monitortask != "True")
                 {
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
@@ -58,6 +63,11 @@ namespace MAIO
                         Thread.Sleep(1);
                         if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status!="IDLE"&& Mainwindow.task[n].Sku==this.pid)
                         {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             tk.Status = "Monitoring Task";
                             monitortask = true;
                             if (Mainwindow.task[n].Status.Contains("WaitingRestock")==false || Mainwindow.task[n].Status.Contains("Proxy Error") ==false )

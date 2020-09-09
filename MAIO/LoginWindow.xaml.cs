@@ -22,11 +22,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.37
+    /// version 0.99.38
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.37";//everychange
+        public static string version = "0.99.38";//everychange
         public LoginWindow()
         {
             InitializeComponent();
@@ -34,8 +34,8 @@ namespace MAIO
         }
         public void checkkey()
         {
-            var ip = HttpGet("https://api.ipify.org", "utf-8");
-          //  var ip = "";
+           var ip = HttpGet("https://api.ipify.org", "utf-8");
+            //var ip = "";
             Config.ip = ip;
             string finger = null;
             try
@@ -47,7 +47,6 @@ namespace MAIO
                 if (File.Exists(path))
                 {
                     if (this.keycheck(hwid))
-                //if (true)
                     {
                         try
                         {
@@ -74,7 +73,6 @@ namespace MAIO
                         }
                         catch (Exception ex)
                         {
-
                             Application.Current.Shutdown();
                         }
                     }

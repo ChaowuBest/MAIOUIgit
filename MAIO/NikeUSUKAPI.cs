@@ -84,6 +84,11 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 response.Close();
                 readStream.Close();
                 tk.Status = "Get Size";
@@ -91,6 +96,11 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 tk.Status = "Get Size Error";
                 tk.Status = "Change Proxy";
                 goto A;
@@ -99,11 +109,11 @@ namespace MAIO
         }
         public string Postlogin(string url, string logininfo, bool isrefresh, string account, Main.taskset tk, CancellationToken ct)
         {
-          D: string token = null;
+        D: string token = null;
             if (Config.UseAdvancemode == "True")
             {
                 string[] sendcookie = null;
-                if (Mainwindow.iscookielistnull)
+               if (Mainwindow.iscookielistnull)
                 {
                     Thread.Sleep(1);
                     goto D;
@@ -155,12 +165,17 @@ namespace MAIO
                 {
                     var chao = JsonConvert.SerializeObject(logininfo).Replace("\"{", "{").Replace("}\"", "}");
                     string json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\"},\"url\":\"" + url + "\",\"method\":\"POST\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     Main.allSockets[0].Send(json);
                     bool fordidden = false;
                 B: JObject sValue = null;
-                    
                     try
                     {
+
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -177,7 +192,7 @@ namespace MAIO
                             if (sValue["status"].ToString() == "200")
                             {
                                 tk.Status = "Login Successful";
-                                token=sValue["text"].ToString();
+                                token = sValue["text"].ToString();
                                 returnstatus.Remove(tk.Taskid);
                             }
                             else if (sValue["status"].ToString() == "403")
@@ -191,7 +206,7 @@ namespace MAIO
                                 tk.Status = "User/Pw Wrong";
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
-                            } 
+                            }
                         }
                         else
                         {
@@ -348,7 +363,7 @@ namespace MAIO
                 }
                 Stream webstream = req.GetRequestStream();
                 webstream.Write(contentByte, 0, contentByte.Length);
-                webstream.Close();               
+                webstream.Close();
                 try
                 {
                     HttpWebResponse response = (HttpWebResponse)req.GetResponse();
@@ -384,6 +399,11 @@ namespace MAIO
             JObject jo = JObject.Parse(token);
             jo.ToString();
             string Authorization = "Bearer " + jo["access_token"].ToString();
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
             Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]", account));
             task1.Start();
             return Authorization;
@@ -764,7 +784,7 @@ namespace MAIO
             }
             Thread.Sleep(1);
             WebProxy wp = new WebProxy();
-            Task task = Task.Run(()=>getcookie(Config.hwid));
+         //   Task task = Task.Run(() => getcookie(Config.hwid));
             try
             {
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
@@ -920,7 +940,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string[] sendcookie = null;
-            if (Config.UseAdvancemode!="True")
+            if (Config.UseAdvancemode != "True")
             {
             #region
             /*      try
@@ -1113,44 +1133,44 @@ namespace MAIO
                 }
                 else
                 {
-                    if (Mainwindow.iscookielistnull)
+                /* if (Mainwindow.iscookielistnull)
+                 {
+                     Thread.Sleep(1);
+                     goto D;
+                 }*/
+                //    else
+                //     {
+                reloadcookie: Random ra = new Random();
+                    int sleeptime = ra.Next(0, 100);
+                    Thread.Sleep(sleeptime);
+                C: if (Mainwindow.lines.Count == 0)
                     {
                         Thread.Sleep(1);
-                        goto D;
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        Mainwindow.iscookielistnull = true;
+                        tk.Status = "No Cookie";
+                        goto C;
                     }
                     else
                     {
-                    reloadcookie: Random ra = new Random();
-                        int sleeptime = ra.Next(0, 100);
-                        Thread.Sleep(sleeptime);
-                    C: if (Mainwindow.lines.Count == 0)
+                        int cookie = ra.Next(0, Mainwindow.lines.Count);
+                        try
                         {
-                            Thread.Sleep(1);
-                            if (ct.IsCancellationRequested)
-                            {
-                                tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
-                            }
-                            Mainwindow.iscookielistnull = true;
-                            tk.Status = "No Cookie";
-                            goto C;
-                        }
-                        else
-                        {
-                            int cookie = ra.Next(0, Mainwindow.lines.Count);
-                            try
-                            {
-                                Main.updatelable(Mainwindow.lines[cookie], false);
-                                sendcookie = Mainwindow.lines[cookie].Split(";");
-                                Mainwindow.lines.RemoveAt(cookie);
+                            Main.updatelable(Mainwindow.lines[cookie], false);
+                            sendcookie = Mainwindow.lines[cookie].Split(";");
+                            Mainwindow.lines.RemoveAt(cookie);
 
-                            }
-                            catch (Exception)
-                            {
-                                goto reloadcookie;
-                            }
+                        }
+                        catch (Exception)
+                        {
+                            goto reloadcookie;
                         }
                     }
+                    //    }
                 }
                 string proxy = "";
                 try
@@ -1202,7 +1222,14 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-                            
+                            else
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+
+                            }
+
                         }
                         else
                         {
@@ -1223,6 +1250,11 @@ namespace MAIO
                         if (failedretry > 20)
                         {
                             Main.autorestock(tk);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                         }
                         Thread.Sleep(1500);
                         goto D;
@@ -1241,7 +1273,7 @@ namespace MAIO
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
-                tk.Status = "Submit Payment";
+                tk.Status = "Processing";
                 Thread.Sleep(1);
                 WebProxy wp = new WebProxy();
                 try
@@ -1310,8 +1342,11 @@ namespace MAIO
                 }
                 if ((status.Contains("COMPLETED") == true) && (status.Contains("error")))
                 {
-                    if (Config.UseAdvancemode == "True")
+                    Main.autorestock(tk);
+                    if (ct.IsCancellationRequested)
                     {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
                     }
                 }
                 if (status.Contains("IN_PROGRESS") == true)
@@ -1328,7 +1363,7 @@ namespace MAIO
         }
         public static long time = 0;
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool advancemode,bool multisize, ArrayList skulist)
+        public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool advancemode, bool multisize, ArrayList skulist)
         {
             if (advancemode)
             {
@@ -1340,17 +1375,17 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-           /* if (advancemode)
-            {
-                long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                var cookitime = ConvertStringToDateTime(time.ToString());
-                var nowtime = ConvertStringToDateTime(timest.ToString());
-                var difference = nowtime - cookitime;
-                if (difference.Hours >= 1)
-                {
-                    Main.autorestock(tk);
-                }
-            }*/
+            /* if (advancemode)
+             {
+                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+                 var cookitime = ConvertStringToDateTime(time.ToString());
+                 var nowtime = ConvertStringToDateTime(timest.ToString());
+                 var difference = nowtime - cookitime;
+                 if (difference.Hours >= 1)
+                 {
+                     Main.autorestock(tk);
+                 }
+             }*/
             string traceid = Guid.NewGuid().ToString();
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";

@@ -46,16 +46,26 @@ namespace MAIO
             bool ismonitor = false;
             try
             {
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (tk.monitortask != "True")
                 {
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True"&& Mainwindow.task[n].Tasksite == this.tk.Tasksite  && Mainwindow.task[n].Status != "IDLE"&&Mainwindow.task[n].Sku==this.pid)
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status != "IDLE" && Mainwindow.task[n].Sku == this.pid)
                         {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             tk.Status = "Monitoring Task";
                             monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") ==false || Mainwindow.task[n].Status.Contains("Proxy Error")==false)
+                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
                             {
                                 ismonitor = true;
                                 this.tk.Sku = Mainwindow.task[n].Sku;
@@ -91,21 +101,21 @@ namespace MAIO
         B:
             try
             {
-               if (Config.UseAdvancemode == "True")
-               {
-                  if (cookie != "")
-                    {
+                if (Config.UseAdvancemode == "True")
+                {
+                 //   if (cookie != "")
+                 //   {
                         Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                 }
-                    else
-                    {
-                       goto B;
-                  }
-             }
-              else
-              {
-                  Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-               }
+                //    }
+                 //   else
+                 //   {
+                 //       goto B;
+                  //  }
+                }
+                else
+                {
+                    Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                }
 
             }
             catch (NullReferenceException)
@@ -143,12 +153,22 @@ namespace MAIO
             }
             else
             {
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
             Retry: string url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + pid + ")";
                 string sourcecode = AUCAAPI.GetHtmlsource(url, tk, ct);
                 tk.Status = "Get Size";
                 JObject jo = JObject.Parse(sourcecode);
                 string obejects = jo["objects"].ToString();
                 JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 bool multisize = false;
                 string[] Multiesize = null;
                 if (size.Contains("+"))
@@ -171,11 +191,11 @@ namespace MAIO
                     {
                         if (Gssize)
                         {
-                            size += i+"Y+";
+                            size += i + "Y+";
                         }
                         else
                         {
-                            size +=i.ToString()+"+";
+                            size += i.ToString() + "+";
                         }
                     }
                     if (Gssize)
@@ -267,6 +287,11 @@ namespace MAIO
                         }
                     }
                 }
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (sizefind)
                 {
                     Random ra = new Random();
@@ -278,13 +303,23 @@ namespace MAIO
                     {
                         if (Config.Usemonitor == "True")
                         {
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                             string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid,multisize, skuidlist);
+                            string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             if (Config.UseAdvancemode == "True")
                             {
-                              Task task2 = Task.Run(()=>getcookie(Config.hwid));
-                            }    
+                                Task task2 = Task.Run(() => getcookie(Config.hwid));
+                            }
                             if (group[0] != null)
                             {
                                 skuid = group[0];
@@ -369,14 +404,24 @@ namespace MAIO
             }
 
             string payinfo = payLoad.ToString();
-            AUCAAPI.PutMethod(url, payinfo, tk, ct,cookie);
+            AUCAAPI.PutMethod(url, payinfo, tk, ct, cookie);
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
             Thread.Sleep(1);
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
             string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
             JObject jo = JObject.Parse(sourcecode);
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
             string paymenturl = null;
             paymenturl = jo["response"]["redirectUrl"].ToString();
             tk.Status = "Success";
@@ -456,7 +501,7 @@ namespace MAIO
             }
 
         }
-        public  async void getcookie(string hwid)
+        public async void getcookie(string hwid)
         {
             try
             {
@@ -470,7 +515,7 @@ namespace MAIO
             }
             catch
             {
-                
+
             }
         }
     }

@@ -83,6 +83,11 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 response.Close();
                 readStream.Close();
                 tk.Status = "Get Size";
@@ -90,6 +95,11 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 tk.Status = "Get Size Error";
                 tk.Status = "Change Proxy";
                 goto A;
@@ -102,7 +112,7 @@ namespace MAIO
             {
             C: Thread.Sleep(1);
                 string[] sendcookie = null;
-                if (ccookie != "")
+              /*  if (ccookie != "")
                 {
                     sendcookie = ccookie.Split(";");
                     if (failedretry != 0)
@@ -121,10 +131,10 @@ namespace MAIO
                             ccookie = "";
                             goto C;
                         }
-                    }
-                }
-                else
-                {
+                    }*/
+              //  }
+             //   else
+            //    {
                     if (Mainwindow.iscookielistnull)
                     {
                         Thread.Sleep(1);
@@ -163,7 +173,7 @@ namespace MAIO
                             goto C;
                         }
                     }
-                }
+              //  }
                 string proxy = "";
                 try
                 {
@@ -214,7 +224,14 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-                          
+                            else
+                            {
+                                tk.Status = "Forbidden";
+                                fordidden = true;
+                                returnstatus.Remove(tk.Taskid);
+                            }
+
+
                         }
                         else
                         {
@@ -307,8 +324,7 @@ namespace MAIO
                 {
                     wp = default;
                 }
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:1234/buy/partner_cart_preorder/v1/3543df8c-4fd4-4088-a3fd-b8b166504314");
-              //  HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:1234/json");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "PUT";
                 request.Proxy = wp;
                 request.ContentType = "application/json; charset=UTF-8";
@@ -317,13 +333,7 @@ namespace MAIO
                 request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
-             //   request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-                request.Headers.Add("Server-Host", "api.nike.com");
-               // request.Headers.Add("Server-Host", "www.ja3er.com");
-                request.Headers.Add("Server-Address", "183.136.212.217:443");
-              //  request.Headers.Add("Server-Address", "160.85.255.180:443");
                 request.Headers.Add("Root-Domain", "nike.com");
-             //   request.Headers.Add("Root-Domain", "ja3er.com");
             C: if (Mainwindow.iscookielistnull)
                 {
                     if (ct.IsCancellationRequested)
@@ -365,20 +375,24 @@ namespace MAIO
                 request.Headers.Add("Sec-Fetch-Dest", "empty");
                 request.Headers.Add("Sec-Fetch-Mode", "cors");
                 request.Headers.Add("Sec-Fetch-Site", "same-site");
-             //  request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
-               request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
                 request.Headers.Add("X-B3-SpanName", "CiCCart");
-               request.Headers.Add("X-B3-TraceId", xb3traceid);
+                request.Headers.Add("X-B3-TraceId", xb3traceid);
                 request.Headers.Add("x-nike-visitid", "1");
-               request.Headers.Add("x-nike-visitorid", xnikevisitorid);
+                request.Headers.Add("x-nike-visitorid", xnikevisitorid);
                 Stream paymentstream = request.GetRequestStream();
                 paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
-               paymentstream.Close();
+                paymentstream.Close();
                 try
                 {
                     HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
                     tk.Status = "SubmitOrder";
                     Stream receiveStream = resppayment.GetResponseStream();
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
                     if (resppayment.ContentEncoding == "gzip")
                     {
@@ -388,16 +402,26 @@ namespace MAIO
                     {
                         readStream = new StreamReader(receiveStream, Encoding.UTF8);
                     }
-                  string  sourcecode = readStream.ReadToEnd();
+                    string sourcecode = readStream.ReadToEnd();
                 }
                 catch (WebException ex)
                 {
                     HttpWebResponse response = (HttpWebResponse)ex.Response;
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     tk.Status = "Forbidden";
                     failedretry++;
                     if (failedretry > 20)
                     {
                         Main.autorestock(tk);
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
                     }
                     Thread.Sleep(1500);
                     goto B;
@@ -418,7 +442,11 @@ namespace MAIO
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
                 string proxyg = Mainwindow.proxypool[random].ToString();
                 string[] proxy = proxyg.Split(":");
-
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (proxy.Length == 2)
                 {
                     wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -467,10 +495,25 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 sourcecode = readStream.ReadToEnd();
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (sourcecode.Contains("COMPLETED") == false)
                 {
                     Thread.Sleep(200);
                     goto C;
+                }
+                if (sourcecode.Contains("Reservation with Inventory"))
+                {
+                    tk.Status = "WaitingRestock";
+                    Main.autorestock(tk);
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
@@ -483,6 +526,11 @@ namespace MAIO
                     string errormessage = jo3["code"].ToString();
                     tk.Status = errormessage;
                     Main.autorestock(tk);
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
             }
             catch (WebException ex)
@@ -491,6 +539,11 @@ namespace MAIO
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (response.ContentEncoding == "gzip")
                 {
                     readStream = new StreamReader(new GZipStream(receiveStream, CompressionMode.Decompress), Encoding.GetEncoding("utf-8"));
@@ -504,7 +557,7 @@ namespace MAIO
             }
             return sourcecode;
         }
-        public string[] Monitoring(string url, taskset tk, CancellationToken ct, string info, bool randomsize, string skuid,bool multisize,ArrayList skulist)
+        public string[] Monitoring(string url, taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool multisize, ArrayList skulist)
         {
         A: if (ct.IsCancellationRequested)
             {
@@ -608,7 +661,7 @@ namespace MAIO
                             Thread.Sleep(1);
                             if (ja[i]["availability"].ToString() != "False" || ja[i]["availability"].ToString() != "false")
                             {
-                                if (skulist[n].ToString()==ja[i]["id"].ToString())
+                                if (skulist[n].ToString() == ja[i]["id"].ToString())
                                 {
                                     if (ja[i]["availability"]["level"].ToString() != "OOS")
                                     {
