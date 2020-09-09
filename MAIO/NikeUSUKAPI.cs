@@ -34,7 +34,7 @@ namespace MAIO
         string xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string servercookie = "";
-        string logincookie = "";
+     //   string logincookie = "";
         public int failedretry = 0;
         int failedsubshipp = 0;
         int failedlogin = 0;
@@ -116,32 +116,23 @@ namespace MAIO
             string[] sendcookie = new string[2];
             if (Config.UseAdvancemode == "True")
             {
-                if (logincookie != "")
+                try
                 {
-                    sendcookie = logincookie.Split(";");
-                    if (failedlogin != 0)
+                    var binding = new BasicHttpBinding();
+                    var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                    var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                    var callClient = factory.CreateChannel();
+                    JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                    sendcookie = result["cookie"].ToString().Split(";");
+                }
+                catch
+                {
+                    if (sendcookie[0] == null)
                     {
-                        try
-                        {
-                            var binding = new BasicHttpBinding();
-                            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                            var callClient = factory.CreateChannel();
-                            JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                            sendcookie = result["cookie"].ToString().Split(";");
-                        }
-                        catch
-                        {
-                            if (sendcookie[0] == null)
-                            {
-                                logincookie = "";
-                                goto D;
-                            }
-                            logincookie = "";
-                            goto D;
-                        }
+                        goto D;
                     }
-                }       
+                    goto D;
+                }
   reloadcookie: Thread.Sleep(1);
                 try
                 {
@@ -149,6 +140,10 @@ namespace MAIO
                     {
                         sendcookie[0] = "";
                         sendcookie[1] = "";
+                    }
+                    else
+                    {
+                        
                     }
                 }
                 catch (Exception)
