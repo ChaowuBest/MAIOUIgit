@@ -281,7 +281,6 @@ namespace MAIO
                 }
                 try
                 {
-
                     JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                     JObject j = JObject.Parse(jar[0].ToString());
                     var chao = j.ToString();

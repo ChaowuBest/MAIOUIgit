@@ -112,7 +112,7 @@ namespace MAIO
             {
             C: Thread.Sleep(1);
                 string[] sendcookie = null;
-              /*  if (ccookie != "")
+                if (ccookie != "")
                 {
                     sendcookie = ccookie.Split(";");
                     if (failedretry != 0)
@@ -131,10 +131,10 @@ namespace MAIO
                             ccookie = "";
                             goto C;
                         }
-                    }*/
-              //  }
-             //   else
-            //    {
+                    }
+                }
+                else
+                {
                     if (Mainwindow.iscookielistnull)
                     {
                         Thread.Sleep(1);
@@ -173,7 +173,7 @@ namespace MAIO
                             goto C;
                         }
                     }
-              //  }
+               }
                 string proxy = "";
                 try
                 {

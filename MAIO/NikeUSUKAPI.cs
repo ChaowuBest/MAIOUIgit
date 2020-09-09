@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Security;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.Text;
@@ -35,6 +36,7 @@ namespace MAIO
         string servercookie = "";
         public int failedretry = 0;
         int failedsubshipp = 0;
+        public int failedlogin = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
             Thread.Sleep(1);
@@ -112,8 +114,8 @@ namespace MAIO
         D: string token = null;
             if (Config.UseAdvancemode == "True")
             {
-                string[] sendcookie = null;
-               if (Mainwindow.iscookielistnull)
+                string[] sendcookie = new string[2];
+                if (Mainwindow.iscookielistnull)
                 {
                     Thread.Sleep(1);
                     goto D;
@@ -141,7 +143,16 @@ namespace MAIO
                         try
                         {
                             Main.updatelable(Mainwindow.lines[cookie], false);
-                            sendcookie = Mainwindow.lines[cookie].Split(";");
+                            if (isrefresh)
+                            {
+                                sendcookie[0] = "";
+                                sendcookie[1] = "";
+                            }
+                            else
+                            {
+                                sendcookie = Mainwindow.lines[cookie].Split(";");
+                            }
+
                             Mainwindow.lines.RemoveAt(cookie);
 
                         }
@@ -175,7 +186,6 @@ namespace MAIO
                 B: JObject sValue = null;
                     try
                     {
-
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -189,7 +199,7 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-                            if (sValue["status"].ToString() == "200")
+                            else if (sValue["status"].ToString() == "200")
                             {
                                 tk.Status = "Login Successful";
                                 token = sValue["text"].ToString();
@@ -223,10 +233,15 @@ namespace MAIO
                     }
                     if (fordidden)
                     {
-                        failedretry++;
-                        if (failedretry > 20)
+                        failedlogin++;
+                        if (failedlogin > 20)
                         {
                             Main.autorestock(tk);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                         }
                         Thread.Sleep(1500);
                         goto D;
@@ -784,7 +799,7 @@ namespace MAIO
             }
             Thread.Sleep(1);
             WebProxy wp = new WebProxy();
-         //   Task task = Task.Run(() => getcookie(Config.hwid));
+            Task task = Task.Run(() => getcookie(Config.hwid));
             try
             {
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
@@ -1133,44 +1148,44 @@ namespace MAIO
                 }
                 else
                 {
-                /* if (Mainwindow.iscookielistnull)
-                 {
-                     Thread.Sleep(1);
-                     goto D;
-                 }*/
-                //    else
-                //     {
-                reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 100);
-                    Thread.Sleep(sleeptime);
-                C: if (Mainwindow.lines.Count == 0)
+                    if (Mainwindow.iscookielistnull)
                     {
                         Thread.Sleep(1);
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        Mainwindow.iscookielistnull = true;
-                        tk.Status = "No Cookie";
-                        goto C;
+                        goto D;
                     }
                     else
                     {
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
-                        try
+                    reloadcookie: Random ra = new Random();
+                        int sleeptime = ra.Next(0, 100);
+                        Thread.Sleep(sleeptime);
+                    C: if (Mainwindow.lines.Count == 0)
                         {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
-                            sendcookie = Mainwindow.lines[cookie].Split(";");
-                            Mainwindow.lines.RemoveAt(cookie);
-
+                            Thread.Sleep(1);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            Mainwindow.iscookielistnull = true;
+                            tk.Status = "No Cookie";
+                            goto C;
                         }
-                        catch (Exception)
+                        else
                         {
-                            goto reloadcookie;
+                            int cookie = ra.Next(0, Mainwindow.lines.Count);
+                            try
+                            {
+                                Main.updatelable(Mainwindow.lines[cookie], false);
+                                sendcookie = Mainwindow.lines[cookie].Split(";");
+                                Mainwindow.lines.RemoveAt(cookie);
+
+                            }
+                            catch (Exception)
+                            {
+                                goto reloadcookie;
+                            }
                         }
                     }
-                    //    }
                 }
                 string proxy = "";
                 try

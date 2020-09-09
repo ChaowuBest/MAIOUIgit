@@ -103,14 +103,14 @@ namespace MAIO
             {
                 if (Config.UseAdvancemode == "True")
                 {
-                 //   if (cookie != "")
-                 //   {
+                    if (cookie != "")
+                    {
                         Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                //    }
-                 //   else
-                 //   {
-                 //       goto B;
-                  //  }
+                    }
+                    else
+                    {
+                        goto B;
+                    }
                 }
                 else
                 {
