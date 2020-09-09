@@ -235,9 +235,13 @@ namespace MAIO
                         goto D;
                     }
                 }
-                catch
+                catch (NullReferenceException)
                 {
                     goto D;
+                }
+                catch (OperationCanceledException)
+                {
+                    return "";
                 }
             }
             else
@@ -1236,9 +1240,13 @@ namespace MAIO
                         goto D;
                     }
                 }
-                catch
+                catch (NullReferenceException)
                 {
                     goto D;
+                }
+                catch (OperationCanceledException)
+                {
+                    return "";
                 }
             }
         A: string status = "";
