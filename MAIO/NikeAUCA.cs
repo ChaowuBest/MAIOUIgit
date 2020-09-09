@@ -101,21 +101,21 @@ namespace MAIO
         B:
             try
             {
-                if (Config.UseAdvancemode == "True")
-                {
-                    if (cookie != "")
-                    {
+               // if (Config.UseAdvancemode == "True")
+             //   {
+                  //  if (cookie != "")
+                 //   {
                         Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                    }
-                    else
-                    {
-                        goto B;
-                    }
-                }
-                else
-                {
-                    Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                }
+                 //   }
+                 //   else
+                 //   {
+                  //      goto B;
+                  //  }
+               // }
+              //  else
+              //  {
+              //      Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+              //  }
 
             }
             catch (NullReferenceException)
@@ -318,7 +318,7 @@ namespace MAIO
                             }
                             if (Config.UseAdvancemode == "True")
                             {
-                                Task task2 = Task.Run(() => getcookie(Config.hwid));
+                              //  Task task2 = Task.Run(() => getcookie(Config.hwid));
                             }
                             if (group[0] != null)
                             {
