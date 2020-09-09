@@ -149,14 +149,12 @@ namespace MAIO
                     else
                     {
                         Thread.Sleep(1);
-                        Random ra = new Random();
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
                             ct.ThrowIfCancellationRequested();
                         }
-                        int sleeptime = ra.Next(0, 100);
-                        Thread.Sleep(sleeptime);
+                        Random ra = new Random();
                         int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
@@ -246,39 +244,6 @@ namespace MAIO
                     {
                         return;
                     }
-                    #region
-                    //   try
-                    //   {
-                    /*allSockets[0].OnMessage = message =>
-                     {
-                         if (message.IndexOf("response") != -1)
-                         {
-                             if (ct.IsCancellationRequested)
-                             {
-                                 tk.Status = "IDLE";
-                                 ct.ThrowIfCancellationRequested();
-                             }
-                             if (message.Contains("\"status\":202"))
-                             {
-                                 tk.Status = "Submit Order";
-                             }
-                             else if (message.Contains("Denied") == false)
-                             {
-                                 tk.Status = "Forbidden";
-                                 fordidden = true;
-                             }
-                             else if (message.Contains("Access Denied") == true || message.Contains("fetch"))
-                             {
-                                 tk.Status = "Forbidden";
-                                 fordidden = true;
-                             }
-                         }
-                     };*/
-                    //   }
-                    //   catch (Exception)
-                    //   {
-                    //   }
-                    #endregion
                     if (fordidden)
                     {
                         failedretry++;
@@ -336,6 +301,7 @@ namespace MAIO
                 request.Headers.Add("Root-Domain", "nike.com");
             C: if (Mainwindow.iscookielistnull)
                 {
+                    Thread.Sleep(1);
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
@@ -352,8 +318,7 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    int sleeptime = ra.Next(0, 100);
-                    Thread.Sleep(sleeptime);
+                    Thread.Sleep(1);
                     int cookie = ra.Next(0, Mainwindow.lines.Count);
                     try
                     {

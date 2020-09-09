@@ -34,9 +34,10 @@ namespace MAIO
         string xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string servercookie = "";
+        string logincookie = "";
         public int failedretry = 0;
         int failedsubshipp = 0;
-        public int failedlogin = 0;
+        int failedlogin = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
             Thread.Sleep(1);
@@ -112,55 +113,47 @@ namespace MAIO
         public string Postlogin(string url, string logininfo, bool isrefresh, string account, Main.taskset tk, CancellationToken ct)
         {
         D: string token = null;
+            string[] sendcookie = new string[2];
             if (Config.UseAdvancemode == "True")
             {
-                string[] sendcookie = new string[2];
-                if (Mainwindow.iscookielistnull)
+                if (logincookie != "")
                 {
-                     Thread.Sleep(1);
-                    goto D;
-                }
-                else
-                {
-                reloadcookie: Random ra = new Random();
-                    int sleeptime = ra.Next(0, 100);
-                    Thread.Sleep(sleeptime);
-                C: if (Mainwindow.lines.Count == 0)
+                    sendcookie = logincookie.Split(";");
+                    if (failedlogin != 0)
                     {
-                        Thread.Sleep(1);
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        Mainwindow.iscookielistnull = true;
-                        tk.Status = "No Cookie";
-                        goto C;
-                    }
-                    else
-                    {
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
                         try
                         {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
-                            if (isrefresh)
-                            {
-                                sendcookie[0] = "";
-                                sendcookie[1] = "";
-                            }
-                            else
-                            {
-                                sendcookie = Mainwindow.lines[cookie].Split(";");
-                            }
-
-                            Mainwindow.lines.RemoveAt(cookie);
-
+                            var binding = new BasicHttpBinding();
+                            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                            var callClient = factory.CreateChannel();
+                            JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                            sendcookie = result["cookie"].ToString().Split(";");
                         }
-                        catch (Exception)
+                        catch
                         {
-                            goto reloadcookie;
+                            if (sendcookie[0] == null)
+                            {
+                                logincookie = "";
+                                goto D;
+                            }
+                            logincookie = "";
+                            goto D;
                         }
                     }
+                }       
+  reloadcookie: Thread.Sleep(1);
+                try
+                {
+                    if (isrefresh)
+                    {
+                        sendcookie[0] = "";
+                        sendcookie[1] = "";
+                    }
+                }
+                catch (Exception)
+                {
+                    goto reloadcookie;
                 }
                 string proxy = "";
                 try
@@ -181,9 +174,9 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    Main.allSockets[0].Send(json);
+                    allSockets[0].Send(json);
                     bool fordidden = false;
-                B: JObject sValue = null;
+                 B: JObject sValue = null;
                     try
                     {
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
@@ -236,7 +229,7 @@ namespace MAIO
                         failedlogin++;
                         if (failedlogin > 20)
                         {
-                            Main.autorestock(tk);
+                            autorestock(tk);
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
@@ -255,7 +248,7 @@ namespace MAIO
             else
             {
                 Thread.Sleep(1);
-            retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
+         retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
                 WebProxy wp = new WebProxy();
                 if (ct.IsCancellationRequested)
                 {
@@ -266,7 +259,6 @@ namespace MAIO
                 {
                     string proxyg = Mainwindow.proxypool[random].ToString();
                     string[] proxy = proxyg.Split(":");
-
                     if (proxy.Length == 2)
                     {
                         wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
@@ -957,22 +949,6 @@ namespace MAIO
             string[] sendcookie = null;
             if (Config.UseAdvancemode != "True")
             {
-            #region
-            /*      try
-               {
-                   var binding = new BasicHttpBinding();
-                   var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                   var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                   var callClient = factory.CreateChannel();
-                   JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                   sendcookie = result["cookie"].ToString().Split(";");
-               }
-               catch
-               {
-
-               }*/
-
-            #endregion
             E: if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
@@ -1156,8 +1132,7 @@ namespace MAIO
                     else
                     {
                     reloadcookie: Random ra = new Random();
-                        int sleeptime = ra.Next(0, 100);
-                        Thread.Sleep(sleeptime);
+                        Thread.Sleep(1);
                     C: if (Mainwindow.lines.Count == 0)
                         {
                             Thread.Sleep(1);
@@ -1178,7 +1153,6 @@ namespace MAIO
                                 Main.updatelable(Mainwindow.lines[cookie], false);
                                 sendcookie = Mainwindow.lines[cookie].Split(";");
                                 Mainwindow.lines.RemoveAt(cookie);
-
                             }
                             catch (Exception)
                             {
@@ -1237,14 +1211,6 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-                            else
-                            {
-                                tk.Status = "Forbidden";
-                                fordidden = true;
-                                returnstatus.Remove(tk.Taskid);
-
-                            }
-
                         }
                         else
                         {
@@ -1281,7 +1247,7 @@ namespace MAIO
                 }
             }
         A: string status = "";
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 30; i++)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -1390,17 +1356,6 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-            /* if (advancemode)
-             {
-                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                 var cookitime = ConvertStringToDateTime(time.ToString());
-                 var nowtime = ConvertStringToDateTime(timest.ToString());
-                 var difference = nowtime - cookitime;
-                 if (difference.Hours >= 1)
-                 {
-                     Main.autorestock(tk);
-                 }
-             }*/
             string traceid = Guid.NewGuid().ToString();
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";

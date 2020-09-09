@@ -83,6 +83,10 @@ namespace MAIO
                     {
                         goto D;
                     }
+                    else
+                    {
+                        Thread.Sleep(1);
+                    }
                 }
             }
             catch
@@ -117,12 +121,11 @@ namespace MAIO
                 {
                     if (giftcard == "")
                     {
-                        Task task = new Task(() => Submitcardinfo(Authorization, skuid, ct));
-                        task.Start();
+                        Task task =Task.Run(() => Submitcardinfo(Authorization, skuid, ct));
                     }
                     else
                     {
-                        Task task = new Task(() => subimitgiftcard(Authorization, skuid, ct));
+                        Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
                         task.Start();
                     }
                 }
@@ -259,7 +262,7 @@ namespace MAIO
                 }
                 var product = "";
                 if(multisize)
-               {
+                {
                     size = size.Remove(size.Length - 1);
                 }
                 try
@@ -283,7 +286,6 @@ namespace MAIO
                 {
                     JArray jar = (JArray)JsonConvert.DeserializeObject(product);
                     JObject j = JObject.Parse(jar[0].ToString());
-                    var chao = j.ToString();
                     string skuids = j["skus"].ToString();
                     if (tk.Tasksite == "NikeUS")
                     {
@@ -565,7 +567,6 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             subcard = true;
-
         }
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
@@ -1023,6 +1024,11 @@ new JProperty("shippingAddress",
                     failcheckout(tk, Config.webhook, jo3, reason);
                 }
                 Main.autorestock(tk);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             else
             {
@@ -1046,7 +1052,6 @@ new JProperty("shippingAddress",
                     tk.Status = "Success";
                 }
             }
-
         }
         public void failcheckout(taskset tk, string webhookurl, JObject joprofile, string reson)
         {
