@@ -265,7 +265,12 @@ namespace MAIO
                         goto C;
                     }
                 }
-                catch
+                catch (OperationCanceledException)
+                {
+                    return;
+
+                }
+                catch (NullReferenceException)
                 {
                     goto C;
                 }

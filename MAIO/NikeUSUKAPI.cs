@@ -237,6 +237,7 @@ namespace MAIO
                         failedlogin++;
                         if (failedlogin > 20)
                         {
+                            failedlogin = 0;
                             Main.autorestock(tk);
                             if (ct.IsCancellationRequested)
                             {
@@ -248,7 +249,12 @@ namespace MAIO
                         goto D;
                     }
                 }
-                catch
+                catch (OperationCanceledException)
+                {
+                    return "";
+
+                }
+                catch(NullReferenceException)
                 {
                     goto D;
                 }
@@ -602,7 +608,7 @@ namespace MAIO
             reqpayment.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqpayment.Headers.Add("Authorization", Authorization);
             reqpayment.Headers.Add("appid", "com.nike.commerce.snkrs.web");
-            // reqpayment.Headers.Add("Cookie", "");
+             reqpayment.Headers.Add("Cookie", "");
             reqpayment.ContentLength = contentpaymentinfo.Length;
             reqpayment.Referer = "https://www.nike.com/us/en/checkout";
             reqpayment.Headers.Add("Origin", "https://www.nike.com");
@@ -1234,7 +1240,12 @@ namespace MAIO
                         goto D;
                     }
                 }
-                catch
+                catch (OperationCanceledException)
+                {
+                    return "";
+
+                }
+                catch (NullReferenceException)
                 {
                     goto D;
                 }
