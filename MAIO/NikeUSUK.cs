@@ -668,7 +668,8 @@ namespace MAIO
             string checkoutpayload = "";
             try
             {
-                checkoutpayload = payLoad.ToString();
+                string paytest = "{\"request\":{\"email\":\"wu1553992118@gmail.com\",\"country\":\"US\",\"currency\":\"USD\",\"locale\":\"en_US\",\"channel\":\"NIKECOM\",\"items\":[{\"id\":\"83de19f9-cad2-408a-a4cc-7220302e7bed\",\"skuId\":\"872dd437-5ac9-58de-89da-18bc6382c9aa\",\"productId\":\"d7ac9309-ab47-551c-a880-9d0c394231ff\",\"itemCosts\":{\"priceInfo\":{\"taxTotal\":0,\"price\":130,\"discount\":0,\"valueAddedServices\":0,\"total\":130,\"priceId\":\"ee998c37-1b58-5164-b24e-502f654f1e69\",\"priceSnapshotId\":\"e0792117-25d1-4312-8085-648244a955fa\"},\"taxes\":[{\"type\":\"SALESTAX\",\"rate\":0,\"total\":0}],\"promotionDiscounts\":[]},\"quantity\":1,\"fulfillmentDetails\":{\"type\":\"SHIP\",\"getBy\":{\"maxDate\":{\"dateTime\":\"2020-09-16T20:38:17.413Z\",\"timezone\":\"America/Indiana/Indianapolis\",\"precision\":\"DAY\"}},\"location\":{\"postalAddress\":{\"country\":\"US\",\"address1\":\"225 raritan ave\",\"postalCode\":\"08904\",\"city\":\"Highland park\",\"state\":\"NJ\"},\"type\":\"address/shipping\"}},\"valueAddedServices\":[],\"recipient\":{\"firstName\":\"chao\",\"lastName\":\"SSEPJT\"},\"contactInfo\":{\"phoneNumber\":\"4439869527\",\"email\":\"wu1553992118@gmail.com\"}}],\"promotionCodes\":[]}}";
+                checkoutpayload = paytest.ToString();
             }
             catch (Exception)
             {

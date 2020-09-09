@@ -598,7 +598,7 @@ namespace MAIO
             {
                 wp = default;
             }
-            HttpWebRequest reqpayment = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebRequest reqpayment = (HttpWebRequest)WebRequest.Create("https://api.nike.com/buy/checkout_previews/v3/"+Guid.NewGuid().ToString());
             reqpayment.Method = "PUT";
             reqpayment.Proxy = wp;
             reqpayment.ContentType = "application/json; charset=UTF-8";
@@ -606,19 +606,22 @@ namespace MAIO
             reqpayment.Accept = "application/json";
             reqpayment.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqpayment.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            reqpayment.Headers.Add("Authorization", Authorization);
-            reqpayment.Headers.Add("appid", "com.nike.commerce.snkrs.web");
-             reqpayment.Headers.Add("Cookie", "");
+            //      reqpayment.Headers.Add("Authorization", Authorization);
+            reqpayment.Headers.Add("appid", "com.nike.commerce.checkout.web");
             reqpayment.ContentLength = contentpaymentinfo.Length;
-            reqpayment.Referer = "https://www.nike.com/us/en/checkout";
+            reqpayment.Referer = "https://www.nike.com/checkout";
             reqpayment.Headers.Add("Origin", "https://www.nike.com");
             reqpayment.Headers.Add("Sec-Fetch-Dest", "empty");
             reqpayment.Headers.Add("Sec-Fetch-Mode", "cors");
             reqpayment.Headers.Add("Sec-Fetch-Site", "same-site");
             reqpayment.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
-            reqpayment.Headers.Add("X-B3-SpanId", xb3spanID);
-            reqpayment.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
-            reqpayment.Headers.Add("X-B3-TraceId", xb3traceid);
+            //      reqpayment.Headers.Add("X-B3-SpanId", xb3spanID);
+            //    reqpayment.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            //    reqpayment.Headers.Add("X-B3-TraceId", xb3traceid);
+            reqpayment.Headers.Add("x-b3-spanname", "CiCCheckout");
+            reqpayment.Headers.Add("x-b3-traceid", Guid.NewGuid().ToString());
+            reqpayment.Headers.Add("x-nike-visitid", "1");
+            reqpayment.Headers.Add("x-nike-visitorid", Guid.NewGuid().ToString());
             Stream paymentstream = reqpayment.GetRequestStream();
             paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
             paymentstream.Close();
