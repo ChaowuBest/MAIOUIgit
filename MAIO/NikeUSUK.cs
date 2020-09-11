@@ -61,7 +61,7 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status!="IDLE"&& Mainwindow.task[n].Sku==this.pid)
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status != "IDLE" && Mainwindow.task[n].Sku == this.pid)
                         {
                             if (ct.IsCancellationRequested)
                             {
@@ -70,7 +70,7 @@ namespace MAIO
                             }
                             tk.Status = "Monitoring Task";
                             monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("WaitingRestock")==false || Mainwindow.task[n].Status.Contains("Proxy Error") ==false )
+                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
                             {
                                 ismonitor = true;
                                 this.tk.Sku = Mainwindow.task[n].Sku;
@@ -121,12 +121,11 @@ namespace MAIO
                 {
                     if (giftcard == "")
                     {
-                        Task task =Task.Run(() => Submitcardinfo(Authorization, skuid, ct));
+                        Task task = Task.Run(() => Submitcardinfo(Authorization, skuid, ct));
                     }
                     else
                     {
                         Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
-                        task.Start();
                     }
                 }
                 catch (NullReferenceException)
@@ -261,7 +260,7 @@ namespace MAIO
                     Multiesize = size.Split("+");
                 }
                 var product = "";
-                if(multisize)
+                if (multisize)
                 {
                     size = size.Remove(size.Length - 1);
                 }
@@ -384,7 +383,7 @@ namespace MAIO
                     tk.Status = "Restarting";
                     goto retry;
                 }
-               }
+            }
         }
         protected string Login(JObject profile, CancellationToken ct)
         {
@@ -476,7 +475,7 @@ namespace MAIO
                             string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
                             string loginurl2 = null;
                             if (tk.Tasksite.Contains("US"))
-                            { 
+                            {
                                 loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                             }
                             else
@@ -1006,7 +1005,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status=USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
+            string status = USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
