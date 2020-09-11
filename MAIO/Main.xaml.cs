@@ -697,7 +697,7 @@ namespace MAIO
                         dic.Add(tk.Taskid, cts);
                         tnftask.Start();
                     }
-                    else if (tk.Tasksite == "ASOS")
+                    else if (tk.Tasksite == "ShoePalace")
                     {
                         ASOS.ASOS asos = new ASOS.ASOS();
                         asos.link = tk.Sku;
@@ -715,6 +715,7 @@ namespace MAIO
                         dic.Add(tk.Taskid, cts);
                         asostask.Start();
                     }
+
                     else if (tk.Tasksite == "JDUS")
                     {
                         JDUS.JDUS jdus = new JDUS.JDUS();
