@@ -117,12 +117,11 @@ namespace MAIO
                 {
                     if (giftcard == "")
                     {
-                        Task task = new Task(() => Submitcardinfo(Authorization, skuid, ct));
-                        task.Start();
+                        Task task = Task.Run(() => Submitcardinfo(Authorization, skuid, ct));
                     }
                     else
                     {
-                        Task task = new Task(() => subimitgiftcard(Authorization, skuid, ct));
+                        Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
                         task.Start();
                     }
                 }
