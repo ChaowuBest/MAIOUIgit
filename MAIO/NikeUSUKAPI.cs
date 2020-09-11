@@ -418,7 +418,21 @@ namespace MAIO
                     goto retry;
                 }
             }
-            JObject jo = JObject.Parse(token);
+            JObject jo = null;
+            try
+            {
+                jo = JObject.Parse(token);
+            }
+            catch (ArgumentNullException)
+            {
+                returnstatus.Remove(tk.Taskid);
+                Main.autorestock(tk);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
+            }
             jo.ToString();
             string Authorization = "Bearer " + jo["access_token"].ToString();
             if (ct.IsCancellationRequested)
