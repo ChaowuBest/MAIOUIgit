@@ -231,7 +231,6 @@ namespace MAIO
                     process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8;
                     process.StartInfo.UseShellExecute = true;
                     process.Start();
-                    process.Start();
                 }
                 catch
                 {
@@ -247,7 +246,6 @@ namespace MAIO
                     process.StartInfo.FileName = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
                     process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8;
                     process.StartInfo.UseShellExecute = true;
-                    process.Start();
                     process.Start();
                 }
                 FleckLog.Level = LogLevel.Debug;
