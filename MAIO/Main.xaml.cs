@@ -113,11 +113,37 @@ namespace MAIO
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
             try
             {
-                Process.Start("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                string argument1 = "--user-data-dir=\"" + path + "\"";
+                string argument2 = "--no-default-browser-check";
+                string argument3 = "--no-first-run";
+                string argument4 = "--disable-default-apps";
+                string argument5 = "--autoplay-policy=no-user-gesture-required";
+                string argument6 = "--enable-automation";
+                string argument7 = "--disable-infobars";
+                string argument8 = "--load-extension=\"" + ChromePath + "\"";
+                Process process = new Process();
+                process.StartInfo.FileName = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+                process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8;
+                process.StartInfo.UseShellExecute = true;
+                process.Start();
+                process.Start();
             }
             catch
             {
-                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
+                string argument1 = "--user-data-dir=\"" + path + "\"";
+                string argument2 = "--no-default-browser-check";
+                string argument3 = "--no-first-run";
+                string argument4 = "--disable-default-apps";
+                string argument5 = "--autoplay-policy=no-user-gesture-required";
+                string argument6 = "--enable-automation";
+                string argument7 = "--disable-infobars";
+                string argument8 = "--load-extension=\"" + ChromePath + "\"";
+                Process process = new Process();
+                process.StartInfo.FileName = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+                process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8;
+                process.StartInfo.UseShellExecute = true;
+                process.Start();
+                process.Start();
             }
             FleckLog.Level = LogLevel.Debug;
             new WebSocketServer("ws://127.0.0.1:64525", true).Start(delegate (IWebSocketConnection socket)
