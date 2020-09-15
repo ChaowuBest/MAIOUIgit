@@ -187,6 +187,9 @@ namespace MAIO
                 B: JObject sValue = null;
                     try
                     {
+                        Random ra = new Random();
+                        int sleep = ra.Next(0,3);
+                        Thread.Sleep(sleep);
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -221,15 +224,18 @@ namespace MAIO
                         }
                         else
                         {
+                            Thread.Sleep(sleep);
                             goto B;
                         }
                     }
                     catch (NullReferenceException)
                     {
+                        Thread.Sleep(2);
                         goto B;
                     }
                     catch (OperationCanceledException)
                     {
+                        Thread.Sleep(2);
                         return "";
                     }
                     if (fordidden)
@@ -1190,6 +1196,9 @@ namespace MAIO
                 B: JObject sValue = null;
                     try
                     {
+                        Random ra = new Random();
+                        int sleep = ra.Next(0, 3);
+                        Thread.Sleep(sleep);
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -1231,15 +1240,18 @@ namespace MAIO
                         }
                         else
                         {
+                            Thread.Sleep(sleep);
                             goto B;
                         }
                     }
                     catch (NullReferenceException)
                     {
+                        Thread.Sleep(2);
                         goto B;
                     }
                     catch (OperationCanceledException)
                     {
+                        Thread.Sleep(2);
                         return "";
                     }
                     if (fordidden)

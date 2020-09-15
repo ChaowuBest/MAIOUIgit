@@ -175,6 +175,9 @@ namespace MAIO
                 B: JObject sValue = null;
                     try
                     {
+                        Random ra = new Random();
+                        int sleep = ra.Next(0, 3);
+                        Thread.Sleep(sleep);
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -205,54 +208,24 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-
-
                         }
                         else
                         {
+                            Thread.Sleep(sleep);
                             goto B;
                         }
                     }
                     catch (NullReferenceException)
                     {
+                        Thread.Sleep(2);
                         goto B;
                     }
                     catch (OperationCanceledException)
                     {
+                        Thread.Sleep(2);
                         return;
                     }
                     #region
-                    //   try
-                    //   {
-                    /*allSockets[0].OnMessage = message =>
-                     {
-                         if (message.IndexOf("response") != -1)
-                         {
-                             if (ct.IsCancellationRequested)
-                             {
-                                 tk.Status = "IDLE";
-                                 ct.ThrowIfCancellationRequested();
-                             }
-                             if (message.Contains("\"status\":202"))
-                             {
-                                 tk.Status = "Submit Order";
-                             }
-                             else if (message.Contains("Denied") == false)
-                             {
-                                 tk.Status = "Forbidden";
-                                 fordidden = true;
-                             }
-                             else if (message.Contains("Access Denied") == true || message.Contains("fetch"))
-                             {
-                                 tk.Status = "Forbidden";
-                                 fordidden = true;
-                             }
-                         }
-                     };*/
-                    //   }
-                    //   catch (Exception)
-                    //   {
-                    //   }
                     #endregion
                     if (fordidden)
                     {

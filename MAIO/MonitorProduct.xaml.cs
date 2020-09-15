@@ -100,10 +100,6 @@ namespace MAIO
             }
             else
             {
-               // foreach (var i in dic)
-             //   {
-              //      i.Value.Cancel();
-             //   }
 
             }
         }
@@ -136,15 +132,23 @@ namespace MAIO
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-            string taskid = Guid.NewGuid().ToString();
-            int row = monitorproduct.SelectedIndex;
-            Main.Monitor tk;
-            tk = Mainwindow.Advancemonitortask.ElementAt(row);
-            string task = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + tk.Region + "\",\"Sku\":\"" + tk.Sku + "\"," +
-             "\"Size\":\"" + tk.Size.Replace("\r", "").Replace("\n", "") + "\",\"Profile\":\"" + tk.Profile + "\",\"Proxies\":\"Default\"," +
-            "\"Status\":\"IDLE\",\"giftcard\":\"" + tk.giftcard + "\",\"Code\":\"" + tk.code.Replace("\r", "").Replace("\n", "") + "\",\"Quantity\":\"" + tk.Quantity + "\",\"monitortask\":\"False\",\"AdvanceMonitor\":\"False\"}]";
-            Mainwindow.tasklist.Add(taskid, task.Replace("[", "").Replace("]", ""));
-            Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = tk.Region, Sku = tk.Sku, Size = tk.Size.Replace("\r", "").Replace("\n", ""), Profile =tk.Profile, Proxies = "Default", Status = "IDLE", Quantity =tk.Quantity, monitortask = "False",Account=tk.Account});
+            try
+            {
+                string taskid = Guid.NewGuid().ToString();
+                int row = monitorproduct.SelectedIndex;
+                Main.Monitor tk;
+                tk = Mainwindow.Advancemonitortask.ElementAt(row);
+                string task = "[{\"Taskid\":\"" + taskid + "\",\"Tasksite\":\"" + tk.Region + "\",\"Sku\":\"" + tk.Sku + "\"," +
+                 "\"Size\":\"" + tk.Size.Replace("\r", "").Replace("\n", "") + "\",\"Profile\":\"" + tk.Profile + "\",\"Proxies\":\"Default\"," +
+                "\"Status\":\"IDLE\",\"giftcard\":\"" + tk.giftcard + "\",\"Code\":\"" + tk.code.Replace("\r", "").Replace("\n", "") + "\",\"Quantity\":\"" + tk.Quantity + "\",\"monitortask\":\"False\",\"AdvanceMonitor\":\"False\"}]";
+                Mainwindow.tasklist.Add(taskid, task.Replace("[", "").Replace("]", ""));
+                Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = tk.Region, Sku = tk.Sku, Size = tk.Size.Replace("\r", "").Replace("\n", ""), Profile = tk.Profile, Proxies = "Default", Status = "IDLE", Quantity = tk.Quantity, monitortask = "False", Account = tk.Account });
+            }
+            catch
+            {
+                MessageBox.Show("Missing Information");
+            }
         }
+
     }
 }
