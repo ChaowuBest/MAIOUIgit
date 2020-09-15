@@ -40,38 +40,16 @@ namespace MAIO
         int failedlogin = 0;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
-            Thread.Sleep(1);
+           Thread.Sleep(0);
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
-            WebProxy wp = new WebProxy();
             string SourceCode = "";
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            try
-            {
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                wp = default;
-            }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = wp;
+            request.Proxy = getproxy();
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
@@ -90,7 +68,7 @@ namespace MAIO
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
+                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                 }
                 response.Close();
                 readStream.Close();
@@ -102,7 +80,7 @@ namespace MAIO
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
+                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                 }
                 tk.Status = "Get Size Error";
                 tk.Status = "Change Proxy";
@@ -167,7 +145,7 @@ namespace MAIO
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
+                         sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                     }
                     allSockets[0].Send(json);
                     bool fordidden = false;
@@ -185,7 +163,7 @@ namespace MAIO
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                             else if (sValue.ToString().Contains("Failed to fetch"))
                             {
@@ -237,7 +215,7 @@ namespace MAIO
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                         }
                         Thread.Sleep(1500);
@@ -255,39 +233,14 @@ namespace MAIO
             }
             else
             {
-                Thread.Sleep(1);
+                Thread.Sleep(0);
          retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
-                WebProxy wp = new WebProxy();
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                try
-                {
-                    string proxyg = Mainwindow.proxypool[random].ToString();
-                    string[] proxy = proxyg.Split(":");
-                    if (proxy.Length == 2)
-                    {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                    }
-                    else if (proxy.Length == 4)
-                    {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                    }
-                }
-                catch
-                {
-                    wp = default;
-                }
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.Proxy = wp;
+                req.Proxy = getproxy();
                 byte[] contentByte = Encoding.UTF8.GetBytes(logininfo);
                 req.Method = "POST";
-                req.Headers.Add("Host", "unite.nike.com");
+                req.Headers.Add("Server-Host", "unite.nike.com:443");
                 req.ContentLength = contentByte.Length;
                 req.Headers.Add("Accept", "*/*");
                 req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
@@ -318,7 +271,7 @@ namespace MAIO
                             C: if (ct.IsCancellationRequested)
                                 {
                                     tk.Status = "IDLE";
-                                    ct.ThrowIfCancellationRequested();
+                                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                                 }
                                 tk.Status = "No Cookie";
                                 goto C;
@@ -352,7 +305,7 @@ namespace MAIO
                                 if (ct.IsCancellationRequested)
                                 {
                                     tk.Status = "IDLE";
-                                    ct.ThrowIfCancellationRequested();
+                                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                                 }
                                 tk.Status = "No Cookie";
                                 Mainwindow.iscookielistnull = true;
@@ -402,10 +355,6 @@ namespace MAIO
                     {
                         tk.Status = "Login Failed";
                     }
-                    HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
-                    Stream tokenStream = respgethtml.GetResponseStream();
-                    StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
-                    var chao = readhtmlStream.ReadToEnd();
 
                     Thread.Sleep(1000);
                     goto retry;
@@ -419,11 +368,12 @@ namespace MAIO
             catch (ArgumentNullException)
             {
                 returnstatus.Remove(tk.Taskid);
+                sharesku.Remove(tk);
                 Main.autorestock(tk);
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
+                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                 }
             }
             jo.ToString();
@@ -431,7 +381,7 @@ namespace MAIO
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
             Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]", account));
             task1.Start();
@@ -493,39 +443,17 @@ namespace MAIO
         }
         public double Postcardinfo(string url, string cardinfo, string Authorization, string cardguid, Main.taskset tk, CancellationToken ct)
         {
-            Thread.Sleep(1);
+           Thread.Sleep(0);
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            WebProxy wp = new WebProxy();
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
             double balance = 0;
             byte[] contentcardinfo = Encoding.UTF8.GetBytes(cardinfo);
             HttpWebRequest reqcard = (HttpWebRequest)WebRequest.Create(url);
             reqcard.Method = "POST";
-            reqcard.Proxy = wp;
+            reqcard.Proxy = getproxy();
             reqcard.ContentType = "application/json";
             reqcard.Accept = "*/*";
             reqcard.Headers.Add("Accept-Encoding", "gzip, deflate");
@@ -568,39 +496,18 @@ namespace MAIO
             return balance;
 
         }
-        public void CheckoutPreview(string url, string Authorization, string checkoutpayload, string GID, Main.taskset tk, CancellationToken ct)
+        public void CheckoutPreview(string url, string Authorization, string checkoutpayload, string GID, Main.taskset tk, CancellationToken ct,string us,string pw)
         {
-
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
-            Thread.Sleep(1);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
+            Thread.Sleep(0);
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest reqpayment = (HttpWebRequest)WebRequest.Create(url);
             reqpayment.Method = "PUT";
-            reqpayment.Proxy = wp;
+            reqpayment.Proxy = getproxy();
             reqpayment.ContentType = "application/json; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(checkoutpayload);
             reqpayment.Accept = "application/json";
@@ -608,7 +515,7 @@ namespace MAIO
             reqpayment.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqpayment.Headers.Add("Authorization", Authorization);
             reqpayment.Headers.Add("appid", "com.nike.commerce.snkrs.web");
-            reqpayment.Headers.Add("Cookie", "");
+         //   reqpayment.Headers.Add("Cookie", Mainwindow.lines[4].Replace(";", "; "));
             reqpayment.ContentLength = contentpaymentinfo.Length;
             reqpayment.Referer = "https://www.nike.com/us/en/checkout";
             reqpayment.Headers.Add("Origin", "https://www.nike.com");
@@ -650,17 +557,15 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+               HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                 tk.Status = "SubmitShipping error";
                 Thread.Sleep(1500);
                 failedsubshipp++;
                 if (failedsubshipp > 20)
                 {
+                    sharesku.Remove(tk);
                     Main.autorestock(tk);
                 }
-                Stream resppaymentStream = resppayment.GetResponseStream();
-                StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
-                paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
                 goto B;
             }
 
@@ -671,34 +576,13 @@ namespace MAIO
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
-            Thread.Sleep(1);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
+            Thread.Sleep(0);
             string total = "";
             HttpWebRequest reqcheckstatus = (HttpWebRequest)WebRequest.Create(url);
             reqcheckstatus.Method = "GET";
-            reqcheckstatus.Proxy = wp;
+            reqcheckstatus.Proxy = getproxy();
             reqcheckstatus.ContentType = "application/json; charset=UTF-8";
             reqcheckstatus.Accept = "application/json";
             reqcheckstatus.Headers.Add("Accept-Encoding", "gzip, deflate");
@@ -735,9 +619,20 @@ namespace MAIO
                     if (check.Contains("Non buyable product(s)"))
                     {
                         tk.Status = "Non buyable product(s)";
+                        sharesku.Remove(tk);
                         Main.autorestock(tk);
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                             sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                        }
                     }
                     total = jo["response"]["totals"]["total"].ToString();
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                         sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                    }
                     if (isdiscount)
                     {
                         var discount = jo["response"]["promotionCodes"].ToString();
@@ -801,34 +696,12 @@ namespace MAIO
         retry: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
-            Thread.Sleep(1);
-            WebProxy wp = new WebProxy();
+            Thread.Sleep(0);
             Task task = Task.Run(() => getcookie(Config.hwid));
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
             HttpWebRequest reqprocess = (HttpWebRequest)WebRequest.Create(url);
-            reqprocess.Proxy = wp;
+            reqprocess.Proxy = getproxy();
             reqprocess.Accept = "application/json";
             reqprocess.Method = "POST";
             reqprocess.ContentType = "application/json; charset=UTF-8";
@@ -878,33 +751,11 @@ namespace MAIO
         C: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
             HttpWebRequest reqjob = (HttpWebRequest)WebRequest.Create(url);
-            reqjob.Proxy = wp;
+            reqjob.Proxy = getproxy();
             reqjob.Accept = "application/json";
             reqjob.Method = "GET";
             reqjob.ContentType = "application/json; charset=UTF-8";
@@ -958,7 +809,7 @@ namespace MAIO
         D: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
             string[] sendcookie = null;
             if (Config.UseAdvancemode != "True")
@@ -966,36 +817,13 @@ namespace MAIO
             E: if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
+                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                 }
-                Thread.Sleep(1);
-                WebProxy wp = new WebProxy();
-                try
-                {
-                    int random = ran.Next(0, Mainwindow.proxypool.Count);
-                    string proxyg = Mainwindow.proxypool[random].ToString();
-                    string[] proxy = proxyg.Split(":");
-
-                    if (proxy.Length == 2)
-                    {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                    }
-                    else if (proxy.Length == 4)
-                    {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                    }
-                }
-                catch
-                {
-                    wp = default;
-                }
-                string getstatus = "https://api.nike.com/buy/checkouts/v2/" + GID;
+                Thread.Sleep(0);
                 ServicePointManager.ServerCertificateValidationCallback = ((object param0, X509Certificate param1, X509Chain param2, SslPolicyErrors param3) => true);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest reqgetstatus = (HttpWebRequest)WebRequest.Create(url);
-                reqgetstatus.Proxy = wp;
+                reqgetstatus.Proxy = getproxy();
                 reqgetstatus.Method = "PUT";
                 reqgetstatus.Accept = "application/json";
                 reqgetstatus.ContentType = "application/json; charset=UTF-8";
@@ -1017,7 +845,7 @@ namespace MAIO
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                             tk.Status = "No Cookie";
                             Mainwindow.iscookielistnull = true;
@@ -1052,7 +880,7 @@ namespace MAIO
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                             Mainwindow.iscookielistnull = true;
                             tk.Status = "No Cookie";
@@ -1106,6 +934,7 @@ namespace MAIO
                     failedretry++;
                     if (failedretry > 20)
                     {
+                        sharesku.Remove(tk);
                         Main.autorestock(tk);
                     }
                     tk.Status = "Processing failed";
@@ -1153,7 +982,7 @@ namespace MAIO
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                             Mainwindow.iscookielistnull = true;
                             tk.Status = "No Cookie";
@@ -1203,7 +1032,7 @@ namespace MAIO
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                             if (sValue.ToString().Contains("Failed to fetch"))
                             {
@@ -1250,11 +1079,12 @@ namespace MAIO
                         failedretry++;
                         if (failedretry > 20)
                         {
+                            sharesku.Remove(tk);
                             Main.autorestock(tk);
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
+                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                             }
                         }
                         Thread.Sleep(1500);
@@ -1276,7 +1106,7 @@ namespace MAIO
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
+                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                 }
                 tk.Status = "Processing";
                 Thread.Sleep(1);
@@ -1347,11 +1177,12 @@ namespace MAIO
                 }
                 if ((status.Contains("COMPLETED") == true) && (status.Contains("error")))
                 {
+                    sharesku.Remove(tk);
                     Main.autorestock(tk);
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
+                         sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
                     }
                 }
                 if (status.Contains("IN_PROGRESS") == true)
@@ -1377,37 +1208,16 @@ namespace MAIO
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
+                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
             }
-            Thread.Sleep(1);
+            Thread.Sleep(0);
             string traceid = Guid.NewGuid().ToString();
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";
             string[] group = new string[2];
             int random = ran.Next(0, Mainwindow.proxypool.Count);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = wp;
+            request.Proxy = getproxy();
             request.Method = "POST";
             request.Host = "api.nike.com";
             request.Accept = "*/*";
@@ -1454,7 +1264,7 @@ namespace MAIO
                 JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
                 for (int i = 0; i < ja.Count; i++)
                 {
-                    Thread.Sleep(1);
+                    Thread.Sleep(0);
                     group[1] = jo["data"]["skus"][0]["product"]["id"].ToString();
                     if (randomsize)
                     {
@@ -1522,9 +1332,9 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                Stream resppaymentStream = resppayment.GetResponseStream();
+              /*  Stream resppaymentStream = resppayment.GetResponseStream();
                 StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
-                string paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
+                string paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();*/
                 tk.Status = "Proxy Error";
                 goto A;
             }
@@ -1546,7 +1356,7 @@ namespace MAIO
         {
             try
             {
-                await Task.Delay(1);
+                await Task.Delay(0);
                 var binding = new BasicHttpBinding();
                 var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
                 var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
@@ -1558,6 +1368,31 @@ namespace MAIO
             {
 
             }
+        }
+        public WebProxy getproxy()
+        {
+            WebProxy wp = new WebProxy();
+            try
+            {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
+            }
+            catch
+            {
+                wp = default;
+            }
+            return wp;
         }
     }
 }
