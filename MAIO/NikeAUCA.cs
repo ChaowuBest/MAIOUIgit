@@ -404,7 +404,7 @@ namespace MAIO
             }
 
             string payinfo = payLoad.ToString();
-            AUCAAPI.PutMethod(url, payinfo, tk, ct, cookie);
+            AUCAAPI.PutMethod(url, payinfo, tk, ct, cookie,GID);
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
@@ -413,6 +413,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            string paymenturl = null;
             Thread.Sleep(1);
             string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
             string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
@@ -422,7 +423,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string paymenturl = null;
+
             paymenturl = jo["response"]["redirectUrl"].ToString();
             tk.Status = "Success";
             if (ct.IsCancellationRequested)
@@ -444,6 +445,7 @@ namespace MAIO
 
                 }
             }
+
             else
             {
                 ProcessNotification(false, Config.webhook, paymenturl);

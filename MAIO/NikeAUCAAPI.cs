@@ -106,7 +106,7 @@ namespace MAIO
             }
             return SourceCode;
         }
-        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string ccookie)
+        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string ccookie,string GID)
         {
             if (Config.UseAdvancemode == "True")
             {
@@ -198,6 +198,9 @@ namespace MAIO
                 B: JObject sValue = null;
                     try
                     {
+                        Random ra = new Random();
+                        int sleep = ra.Next(0, 3);
+                        Thread.Sleep(sleep);
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -211,10 +214,10 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-                            if (sValue["status"].ToString() == "202")
+                            else if (sValue["status"].ToString() == "202")
                             {
                                 tk.Status = "Submit Order";
-                                returnstatus.Remove(tk.Taskid);
+                                returnstatus.Remove(tk.Taskid);                               
                             }
                             else if (sValue["status"].ToString() == "403")
                             {
@@ -228,20 +231,21 @@ namespace MAIO
                                 fordidden = true;
                                 returnstatus.Remove(tk.Taskid);
                             }
-
-
                         }
                         else
                         {
+                            Thread.Sleep(2);
                             goto B;
                         }
                     }
                     catch (NullReferenceException)
                     {
+                        Thread.Sleep(2);
                         goto B;
                     }
                     catch (OperationCanceledException)
                     {
+                        Thread.Sleep(2);
                         return;
                     }
                     if (fordidden)
@@ -293,6 +297,7 @@ namespace MAIO
                 {
                     wp = default;
                 }
+         //   http://127.0.0.1:1234/buy/partner_cart_preorder/v1/"+GID
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "PUT";
                 request.Proxy = wp;
@@ -302,7 +307,8 @@ namespace MAIO
                 request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
-                request.Headers.Add("Root-Domain", "nike.com");
+              //  request.Headers.Add("Server-Host", "api.nike.com:443");
+            //    request.Headers.Add("Proxy-Address", "www.nike.com:443");
             C: if (Mainwindow.iscookielistnull)
                 {
                     Thread.Sleep(1);
@@ -504,7 +510,6 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
                 Stream receiveStream = response.GetResponseStream();
                 StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);

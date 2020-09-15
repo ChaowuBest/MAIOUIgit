@@ -171,9 +171,15 @@ namespace MAIO
                     }
                     allSockets[0].Send(json);
                     bool fordidden = false;
-                 B: JObject sValue = null;
+                    int i = 0;
+                B: JObject sValue = null;
                     try
                     {
+                        Random ra = new Random();
+                        int sleep = ra.Next(0,3);
+                        Thread.Sleep(sleep);
+                        i++;
+                        tk.Status = i.ToString();
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -208,15 +214,18 @@ namespace MAIO
                         }
                         else
                         {
+                            Thread.Sleep(sleep);
                             goto B;
                         }
                     }
                     catch (NullReferenceException)
                     {
+                        Thread.Sleep(2);
                         goto B;
                     }
                     catch (OperationCanceledException)
                     {
+                        Thread.Sleep(2);
                         return "";
                     }
                     if (fordidden)
@@ -547,19 +556,12 @@ namespace MAIO
                     string bal = jo["balance"].ToString();
                     balance = Convert.ToDouble(bal);
                 }
-                tk.Status = "Submit Card Success";
+
             }
             catch (WebException ex)
             {
-                if (ex.Message.Contains("429"))
-                {
-                    HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
-                    Stream processtream = processpayment.GetResponseStream();
-                    StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
-                    string processcode = readprocessstream.ReadToEnd();
-                    tk.Status = processcode;
-                }
-                tk.Status = "Submit Card failed";
+                HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
+                tk.Status = "Submit Card"+ processpayment.StatusCode;
                 goto B;
             }
 
@@ -753,7 +755,6 @@ namespace MAIO
                     Stream respcheckstatusstream = respcheckstatus.GetResponseStream();
                     StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
                     check = readcheckstatus.ReadToEnd();
-                    //   MessageBox.Show(check);
                     if (check.Contains("IN_PROGRESS"))
                     {
                         Thread.Sleep(1000);
@@ -1191,9 +1192,12 @@ namespace MAIO
                     Main.allSockets[0].Send(json);
                     bool fordidden = false;
                     tk.Status = "Submit Payment";
-                B: JObject sValue = null;
+                 B: JObject sValue = null;
                     try
                     {
+                        Random ra = new Random();
+                        int sleep = ra.Next(0, 3);
+                        Thread.Sleep(sleep);
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -1227,15 +1231,18 @@ namespace MAIO
                         }
                         else
                         {
+                            Thread.Sleep(2);
                             goto B;
                         }
                     }
                     catch (NullReferenceException)
                     {
+                        Thread.Sleep(2);
                         goto B;
                     }
                     catch (OperationCanceledException)
                     {
+                        Thread.Sleep(2);
                         return "";
                     }
                     if (fordidden)

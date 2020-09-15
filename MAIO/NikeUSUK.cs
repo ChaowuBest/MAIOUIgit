@@ -106,6 +106,7 @@ namespace MAIO
                 }
             B: JObject joprofile = JObject.Parse(profile);
                 string Authorization = "";
+                
                 try
                 {
                     Authorization = Login(joprofile, ct);
@@ -173,8 +174,6 @@ namespace MAIO
             {
                 return;
             }
-
-
         }
         protected static string GenerateRandomnum(int length)
         {
