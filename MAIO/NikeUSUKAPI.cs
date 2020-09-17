@@ -188,7 +188,7 @@ namespace MAIO
                     try
                     {
                         Random ra = new Random();
-                        int sleep = ra.Next(0,3);
+                        int sleep = ra.Next(0, 3);
                         Thread.Sleep(sleep);
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
@@ -260,7 +260,7 @@ namespace MAIO
                     return "";
 
                 }
-                catch(NullReferenceException)
+                catch (NullReferenceException)
                 {
                     goto D;
                 }
@@ -590,7 +590,6 @@ namespace MAIO
         }
         public void CheckoutPreview(string url, string Authorization, string checkoutpayload, string GID, Main.taskset tk, CancellationToken ct)
         {
-
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -626,7 +625,7 @@ namespace MAIO
             reqpayment.Accept = "application/json";
             reqpayment.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqpayment.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-                 reqpayment.Headers.Add("Authorization", Authorization);
+            reqpayment.Headers.Add("Authorization", Authorization);
             reqpayment.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
             reqpayment.ContentLength = contentpaymentinfo.Length;
             reqpayment.Referer = "https://www.nike.com/";
@@ -636,13 +635,9 @@ namespace MAIO
             reqpayment.Headers.Add("Sec-Fetch-Mode", "cors");
             reqpayment.Headers.Add("Sec-Fetch-Site", "same-site");
             reqpayment.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
-                  reqpayment.Headers.Add("X-B3-SpanId", xb3spanID);
-                reqpayment.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
-                reqpayment.Headers.Add("X-B3-TraceId", xb3traceid);
-         //   reqpayment.Headers.Add("x-b3-spanname", "CiCCheckout");
-         //   reqpayment.Headers.Add("x-b3-traceid", Guid.NewGuid().ToString());
-          //  reqpayment.Headers.Add("x-nike-visitid", "1");
-          //  reqpayment.Headers.Add("x-nike-visitorid", Guid.NewGuid().ToString());
+            reqpayment.Headers.Add("X-B3-SpanId", xb3spanID);
+            reqpayment.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
+            reqpayment.Headers.Add("X-B3-TraceId", xb3traceid);
             Stream paymentstream = reqpayment.GetRequestStream();
             paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
             paymentstream.Close();
@@ -1031,72 +1026,34 @@ namespace MAIO
                 }
                 else
                 {
-                    if ((Config.cjevent != "") && (Config.cid != ""))
+                reloadcookie: Random ra = new Random();
+                    int sleeptime = ra.Next(0, 100);
+                    Thread.Sleep(sleeptime);
+                C: if (Mainwindow.lines.Count == 0)
                     {
-                    reloadcookie: Random ra = new Random();
-                        int sleeptime = ra.Next(0, 100);
-                        Thread.Sleep(sleeptime);
-                    C: if (Mainwindow.lines.Count == 0)
+                        if (ct.IsCancellationRequested)
                         {
-                            if (ct.IsCancellationRequested)
-                            {
-                                tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
-                            }
-                            tk.Status = "No Cookie";
-                            Mainwindow.iscookielistnull = true;
-                            goto C;
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
                         }
-                        else
-                        {
-                            int cookie = ra.Next(0, Mainwindow.lines.Count);
-                            try
-                            {
-                                Main.updatelable(Mainwindow.lines[cookie], false);
-                                reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; nike_cid=" + Config.cid + "; cid=" + Config.cid + "%7C" + Config.cjevent + "");
-                                Mainwindow.lines.RemoveAt(cookie);
-                                if (Mainwindow.lines.Count == 0)
-                                {
-                                    Mainwindow.iscookielistnull = true;
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                goto reloadcookie;
-                            }
-                        }
+                        Mainwindow.iscookielistnull = true;
+                        tk.Status = "No Cookie";
+                        goto C;
+
                     }
                     else
                     {
-                    reloadcookie: Random ra = new Random();
-                        int sleeptime = ra.Next(0, 100);
-                        Thread.Sleep(sleeptime);
-                    C: if (Mainwindow.lines.Count == 0)
+                        int cookie = ra.Next(0, Mainwindow.lines.Count);
+                        try
                         {
-                            if (ct.IsCancellationRequested)
-                            {
-                                tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
-                            }
-                            Mainwindow.iscookielistnull = true;
-                            tk.Status = "No Cookie";
-                            goto C;
+                            reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
+                            Main.updatelable(Mainwindow.lines[cookie], false);
+                            Mainwindow.lines.RemoveAt(cookie);
 
                         }
-                        else
+                        catch (Exception)
                         {
-                            int cookie = ra.Next(0, Mainwindow.lines.Count);
-                            try
-                            {
-                                reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
-                                Main.updatelable(Mainwindow.lines[cookie], false);
-                                Mainwindow.lines.RemoveAt(cookie);
-
-                            }
-                            catch (Exception)
-                            {
-                                goto reloadcookie;
-                            }
+                            goto reloadcookie;
                         }
                     }
                 }
@@ -1146,7 +1103,7 @@ namespace MAIO
                 }
                 else
                 {
-      reloadcookie: Random ra = new Random();
+                reloadcookie: Random ra = new Random();
                     Thread.Sleep(1);
                 C: if (Mainwindow.lines.Count == 0)
                     {
