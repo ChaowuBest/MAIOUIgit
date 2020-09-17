@@ -207,11 +207,11 @@ namespace MAIO
         A: if (dc != null && dc.dic.Count != 0)
             {
                 allsize = dc.dic;
-                for (int i = 0; i < dc.dic.Count; i++)
+             /*   for (int i = 0; i < dc.dic.Count; i++)
                 {
                     KeyValuePair<string, string> kv = dc.dic.ElementAt(i);
                     skuidlist.Add(kv.Value);
-                }
+                }*/
                 string[] Multiesize = null;
                 if (size.Contains("+"))
                 {
@@ -260,8 +260,14 @@ namespace MAIO
                     Thread.Sleep(1);
                     if (multisize)
                     {
-                        skuid = dc.dic[Multiesize[i]];
+                        for (int n = 0; n < Multiesize.Length; n++)
+                        {
+                            skuid = dc.dic[Multiesize[n]];
+                            skuidlist.Add(skuid);
+                        }
                         break;
+                       // skuid = dc.dic[Multiesize[i]];
+                      //  skuidlist.Add(skuid);
                     }
                     else if (multisize == false && randomsize == false)
                     {
