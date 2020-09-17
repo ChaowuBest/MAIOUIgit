@@ -82,14 +82,14 @@ namespace MAIO
             {
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
-            }     
-            //Task task5 = Task.Run(()=>check());
-         //   Task task6 = Task.Run(()=>checkusemonitor());
+            }
+            Process.Start(Environment.CurrentDirectory + "\\" + "Checkouthelper.exe");
+            Task task6 = Task.Run(() => checkusemonitor());
         }
         bool alreadystartbrowser = false;
-        public void checkusemonitor() 
+        public void checkusemonitor()
         {
-          A: if (Config.UseAdvancemode == "True")
+        A: if (Config.UseAdvancemode == "True")
             {
                 alreadystartbrowser = true;
                 if (alreadystartbrowser)
@@ -99,11 +99,11 @@ namespace MAIO
             }
             if (alreadystartbrowser != true)
             {
-                Thread.Sleep(0);
+                Thread.Sleep(1);
                 goto A;
             }
             else
-            {            
+            {
             }
 
         }
@@ -158,7 +158,7 @@ namespace MAIO
                   };
                   socket.OnMessage = delegate (string message)// 接收客户端发送过来的信息
                   {
-                     
+
                       if (message.IndexOf("updatetab") != -1)
                       {
                           if (i == 0)
@@ -166,7 +166,7 @@ namespace MAIO
                               allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
                               i++;
                           }
-                        
+
                           return;
                       }
                       if (message.IndexOf("response") != -1)
@@ -178,11 +178,11 @@ namespace MAIO
                           }
                           catch
                           {
-                              
+
                           }
                       }
-             
-                   
+
+
                   };
               });
         }
@@ -535,7 +535,7 @@ namespace MAIO
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-             
+
             string taskid = Guid.NewGuid().ToString();
             int row = datagrid.SelectedIndex;
             taskset tk;
@@ -578,7 +578,7 @@ namespace MAIO
                     }
                     else if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
                     {
-                       
+
                         if (Mainwindow.tasklist[tk.Taskid] != "")
                         {
                             JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
@@ -632,7 +632,11 @@ namespace MAIO
                                         if ((kv.Key.Tasksite == tk.Tasksite) && (kv.Key.Sku == tk.Sku))
                                         {
                                             newsku = true;
-                                            sharesku.Add(tk, kv.Value);
+                                            try
+                                            {
+                                                sharesku.Add(tk, kv.Value);
+                                            }
+                                            catch { }
                                             if (kv.Value != null)
                                             {
                                                 NSK.dc = kv.Value;
@@ -643,7 +647,11 @@ namespace MAIO
                                     if (newsku == false)
                                     {
                                         var dc = new Dic();
-                                        sharesku.Add(tk, dc);
+                                        try
+                                        {
+                                            sharesku.Add(tk, dc);
+                                        }
+                                        catch { }
                                         NSK.dc = dc;
                                     }
                                 }
@@ -653,7 +661,7 @@ namespace MAIO
                                     sharesku.Add(tk, dc);
                                     NSK.dc = dc;
                                 }
-                              
+
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
                                 NSK.size = tk.Size;
@@ -889,12 +897,12 @@ namespace MAIO
                     Midtransfer.tk = content;
                     for (int i = 0; i < Mainwindow.task.Count; i++)
                     {
-                        if (Mainwindow.task[i].monitortask == "True"&&Mainwindow.task[i].Taskid==content.Taskid)
+                        if (Mainwindow.task[i].monitortask == "True" && Mainwindow.task[i].Taskid == content.Taskid)
                         {
                             Midtransfer.monitor = true;
                             break;
                         }
-                        else if(Mainwindow.task[i].Taskid == content.Taskid&&Mainwindow.task[i].monitortask == "False")
+                        else if (Mainwindow.task[i].Taskid == content.Taskid && Mainwindow.task[i].monitortask == "False")
                         {
                             Midtransfer.monitor = false;
                             break;
@@ -914,11 +922,11 @@ namespace MAIO
         }
         private async void startall_Click(object sender, RoutedEventArgs e)
         {
-            int s=Mainwindow.task.Count / 10;
+            int s = Mainwindow.task.Count / 10;
             int y = Mainwindow.task.Count % 10;
             int n = 0;
             int z = 10;
-          A: for (; n < z; n++)
+        A: for (; n < z; n++)
             {
                 await Task.Delay(220);
                 new Task(delegate ()
@@ -940,7 +948,7 @@ namespace MAIO
                     break;
                 }
             }
-            if (s>0)
+            if (s > 0)
             {
                 s -= 1;
                 z += 10;
@@ -1036,7 +1044,11 @@ namespace MAIO
                                         KeyValuePair<taskset, Dic> kv = sharesku.ElementAt(i);
                                         if (kv.Key.Tasksite == tk.Tasksite && kv.Key.Sku == tk.Sku)
                                         {
-                                            sharesku.Add(tk, kv.Value);
+                                            try
+                                            {
+                                                sharesku.Add(tk, kv.Value);
+                                            }
+                                            catch { }
                                             NSK.dc = kv.Value;
                                             break;
                                         }
@@ -1045,7 +1057,11 @@ namespace MAIO
                                 else
                                 {
                                     var dc = new Dic();
-                                    sharesku.Add(tk, dc);
+                                    try
+                                    {
+                                        sharesku.Add(tk, dc);
+                                    }
+                                    catch { }
                                     NSK.dc = dc;
                                 }
                                 NSK.monitortask = monitortask;
@@ -1297,6 +1313,45 @@ namespace MAIO
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
+                                if (sharesku.Count != 0)
+                                {
+                                    bool newsku = false;
+                                    for (int i = 0; i < sharesku.Count; i++)
+                                    {
+                                        Thread.Sleep(1);
+                                        KeyValuePair<taskset, Dic> kv = sharesku.ElementAt(i);
+                                        if ((kv.Key.Tasksite == tk.Tasksite) && (kv.Key.Sku == tk.Sku))
+                                        {
+                                            newsku = true;
+                                            try
+                                            {
+                                                sharesku.Add(tk, kv.Value);
+                                            }
+                                            catch { }
+                                            if (kv.Value != null)
+                                            {
+                                                NSK.dc = kv.Value;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    if (newsku == false)
+                                    {
+                                        var dc = new Dic();
+                                        try
+                                        {
+                                            sharesku.Add(tk, dc);
+                                        }
+                                        catch { }
+                                        NSK.dc = dc;
+                                    }
+                                }
+                                else
+                                {
+                                    var dc = new Dic();
+                                    sharesku.Add(tk, dc);
+                                    NSK.dc = dc;
+                                }
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
                                 NSK.size = tk.Size;

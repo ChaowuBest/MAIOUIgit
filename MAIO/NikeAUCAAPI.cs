@@ -106,72 +106,61 @@ namespace MAIO
             }
             return SourceCode;
         }
-        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string ccookie,string GID)
+        public void PutMethod(string url, string payinfo, Main.taskset tk, CancellationToken ct, string GID)
         {
+            string[] sendcookie = null;
             if (Config.UseAdvancemode == "True")
             {
             C: Thread.Sleep(1);
-                string[] sendcookie = null;
-                if (ccookie != "")
+
+                if (Mainwindow.iscookielistnull)
                 {
-                    sendcookie = ccookie.Split(";");
-                    if (failedretry != 0)
+                    try
                     {
-                        try
-                        {
-                            var binding = new BasicHttpBinding();
-                            var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                            var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                            var callClient = factory.CreateChannel();
-                            JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                            sendcookie = result["cookie"].ToString().Split(";");
-                        }
-                        catch
-                        {
-                            ccookie = "";
-                            goto C;
-                        }
+                        Thread.Sleep(1);
+                        var binding = new BasicHttpBinding();
+                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                        var callClient = factory.CreateChannel();
+                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                        sendcookie = result["cookie"].ToString().Split(";");
+                    }
+                    catch
+                    {
+                        goto C;
+                    }
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
                     }
                 }
                 else
                 {
-                    if (Mainwindow.iscookielistnull)
+                    Thread.Sleep(1);
+                    if (ct.IsCancellationRequested)
                     {
-                        Thread.Sleep(1);
-                        if (ct.IsCancellationRequested)
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    Random ra = new Random();
+                    int cookie = ra.Next(0, Mainwindow.lines.Count);
+                    try
+                    {
+                        Main.updatelable(Mainwindow.lines[cookie], false);
+                        sendcookie = Mainwindow.lines[cookie].Split(";");
+                        Mainwindow.lines.RemoveAt(cookie);
+                        if (Mainwindow.lines.Count == 0)
                         {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
+                            Mainwindow.iscookielistnull = true;
                         }
-                        tk.Status = "No Cookie";
+                    }
+                    catch (Exception)
+                    {
                         goto C;
                     }
-                    else
-                    {
-                        Thread.Sleep(1);
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        Random ra = new Random();
-                        int cookie = ra.Next(0, Mainwindow.lines.Count);
-                        try
-                        {
-                            Main.updatelable(Mainwindow.lines[cookie], false);
-                            sendcookie = Mainwindow.lines[cookie].Split(";");
-                            Mainwindow.lines.RemoveAt(cookie);
-                            if (Mainwindow.lines.Count == 0)
-                            {
-                                Mainwindow.iscookielistnull = true;
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            goto C;
-                        }
-                    }
-               }
+                }
+
                 string proxy = "";
                 try
                 {
@@ -217,7 +206,7 @@ namespace MAIO
                             else if (sValue["status"].ToString() == "202")
                             {
                                 tk.Status = "Submit Order";
-                                returnstatus.Remove(tk.Taskid);                               
+                                returnstatus.Remove(tk.Taskid);
                             }
                             else if (sValue["status"].ToString() == "403")
                             {
@@ -277,48 +266,50 @@ namespace MAIO
                 }
                 Thread.Sleep(1);
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
-                WebProxy wp = new WebProxy();
+                string proxyaddress = null;
                 try
                 {
                     string proxyg = Mainwindow.proxypool[random].ToString();
                     string[] proxy = proxyg.Split(":");
                     if (proxy.Length == 2)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
 
                     }
                     else if (proxy.Length == 4)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                        proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
                     }
                 }
                 catch
                 {
-                    wp = default;
+                    proxyaddress = "";
                 }
-         //   http://127.0.0.1:1234/buy/partner_cart_preorder/v1/"+GID
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:1234/buy/partner_cart_preorder/v1/" + GID);
                 request.Method = "PUT";
-                request.Proxy = wp;
                 request.ContentType = "application/json; charset=UTF-8";
                 byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(payinfo);
                 request.Accept = "application/json";
                 request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
-              //  request.Headers.Add("Server-Host", "api.nike.com:443");
-            //    request.Headers.Add("Proxy-Address", "www.nike.com:443");
+                request.Headers.Add("Server-Host", "api.nike.com:443");
+                request.Headers.Add("Proxy-Address", proxyaddress);
             C: if (Mainwindow.iscookielistnull)
                 {
-                    Thread.Sleep(1);
-                    if (ct.IsCancellationRequested)
+                    try
                     {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
+                        var binding = new BasicHttpBinding();
+                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                        var callClient = factory.CreateChannel();
+                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                        request.Headers.Add("Cookie", result["cookie"].ToString());
                     }
-                    tk.Status = "No Cookie";
-                    goto C;
+                    catch
+                    {
+                        Thread.Sleep(1);
+                        goto C;
+                    }
                 }
                 else
                 {

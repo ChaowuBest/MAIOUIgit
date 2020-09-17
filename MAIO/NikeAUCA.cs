@@ -101,21 +101,21 @@ namespace MAIO
         B:
             try
             {
-                if (Config.UseAdvancemode == "True")
-                {
-                    if (cookie != "")
-                    {
-                        Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                    }
-                    else
-                    {
-                        goto B;
-                    }
-                }
-                else
-                {
-                    Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
-                }
+            //    if (Config.UseAdvancemode == "True")
+             //   {
+                //    if (cookie != "")
+               //     {
+                      //  Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                //    }
+               //     else
+               //     {
+                 //       goto B;
+                //    }
+              //  }
+             //   else
+             //   {
+                    Checkout(joprofile.ToString(), skuid, priceid, msrp, ct);
+            //    }
 
             }
             catch (NullReferenceException)
@@ -316,10 +316,10 @@ namespace MAIO
                                 tk.Status = "IDLE";
                                 ct.ThrowIfCancellationRequested();
                             }
-                            if (Config.UseAdvancemode == "True")
+                           /* if (Config.UseAdvancemode == "True")
                             {
                                 Task task2 = Task.Run(() => getcookie(Config.hwid));
-                            }
+                            }*/
                             if (group[0] != null)
                             {
                                 skuid = group[0];
@@ -341,7 +341,7 @@ namespace MAIO
                 }
             }
         }
-        public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct, string cookie)
+        public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
         {
             Thread.Sleep(1);
             string currency = null;
@@ -404,7 +404,7 @@ namespace MAIO
             }
 
             string payinfo = payLoad.ToString();
-            AUCAAPI.PutMethod(url, payinfo, tk, ct, cookie,GID);
+            AUCAAPI.PutMethod(url, payinfo, tk, ct,GID);
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
