@@ -29,7 +29,68 @@
                     <ImageBrush/>
                 </Label.BorderBrush>
             </Label>
-            <StackPanel Height="604" Width="328" Margin="-639.5,-776,0,0" Background="#FF2C3040"/>
+            <StackPanel Height="604" Width="227" Margin="-831,-776,0,0" Background="#FF2C3040"/>
+            <DataGrid Height="604" Width="810" Margin="248,-776,0,0"  GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column"  x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"  Background="#FF2C3040">
+                <DataGrid.Resources>
+                    <Style x:Key="DataGridTextCenterColumnStyle" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="MinWidth" Value="85"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#FF63B9D5"/>
+                                <Setter Property="Foreground" Value="#FFF8F2F2"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Background" Value="#FF2C3040"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Background" Value="#FF243B55"/>
+                        <Setter Property="Height"  Value="32" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Sku" Binding="{Binding Sku}"  Width="110" FontSize="16"  CellStyle="{StaticResource DataGridTextCenterColumnStyle}" FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF" />
+                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="110" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                    <DataGridTextColumn Header="Profile" Binding="{Binding Profile}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="110" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                    <DataGridTextColumn Header="Proxies" Binding="{Binding Proxies}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="110" FontSize="16"  FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="250" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="#FFFFFF"/>
+                    <DataGridTemplateColumn  Header="Action" Width="140" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,0,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" >
+                                    </Button>
+                                    <Button x:Name="start" Height="20" Width="20" Margin="-170,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial"  >
+                                        <Button.Background>
+                                            <ImageBrush ImageSource="/play.png"/>
+                                        </Button.Background>
+                                    </Button>
+                                    <Button x:Name="stop" Height="20" Width="20" Margin="-90,0,0,0"  BorderBrush="{x:Null}"  Foreground="#FFD44444" >
+                                        <Button.Background>
+                                            <ImageBrush ImageSource="/stop.png"/>
+                                        </Button.Background>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="TaskID" Binding="{Binding TaskID}" Visibility="Collapsed" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="140" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </UserControl>
