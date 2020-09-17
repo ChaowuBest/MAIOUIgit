@@ -82,8 +82,8 @@ namespace MAIO
                 Task task2 = new Task(() => clearcookie());
                 task2.Start();
             }
-          
-           // Task task5 = Task.Run(()=>check());
+
+            Process.Start(Environment.CurrentDirectory + "\\" + "Checkouthelper.exe");
             Task task6 = Task.Run(()=>checkusemonitor());
         }
         bool alreadystartbrowser = false;
