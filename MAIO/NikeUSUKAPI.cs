@@ -269,38 +269,35 @@ namespace MAIO
             {
                 Thread.Sleep(1);
             retry: int random = ran.Next(0, Mainwindow.proxypool.Count);
-                WebProxy wp = new WebProxy();
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
+                string proxyaddress = null;
                 try
                 {
                     string proxyg = Mainwindow.proxypool[random].ToString();
                     string[] proxy = proxyg.Split(":");
-
                     if (proxy.Length == 2)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
+                        proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
                     }
                     else if (proxy.Length == 4)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                        proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
                     }
                 }
                 catch
                 {
-                    wp = default;
+                    proxyaddress = "";
                 }
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
-                req.Proxy = wp;
                 byte[] contentByte = Encoding.UTF8.GetBytes(logininfo);
                 req.Method = "POST";
-                req.Headers.Add("Host", "unite.nike.com");
+                req.Headers.Add("Server-Host", "unite.nike.com:443");
+                req.Headers.Add("Proxy-Address", proxyaddress);
                 req.ContentLength = contentByte.Length;
                 req.Accept = "*/*";
                 req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
@@ -596,30 +593,29 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-            WebProxy wp = new WebProxy();
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
+            string proxyaddress = null;
             try
             {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
                 string proxyg = Mainwindow.proxypool[random].ToString();
                 string[] proxy = proxyg.Split(":");
                 if (proxy.Length == 2)
                 {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
+                    proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
                 }
                 else if (proxy.Length == 4)
                 {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                    proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
                 }
             }
             catch
             {
-                wp = default;
+                proxyaddress = "";
             }
             HttpWebRequest reqpayment = (HttpWebRequest)WebRequest.Create(url);
             reqpayment.Method = "PUT";
-            reqpayment.Proxy = wp;
+            reqpayment.Headers.Add("Server-Host", "api.nike.com:443");
+            reqpayment.Headers.Add("Proxy-Address", proxyaddress);
             reqpayment.ContentType = "application/json; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(checkoutpayload);
             reqpayment.Accept = "application/json";
@@ -630,7 +626,6 @@ namespace MAIO
             reqpayment.ContentLength = contentpaymentinfo.Length;
             reqpayment.Referer = "https://www.nike.com/";
             reqpayment.Headers.Add("Origin", "https://www.nike.com");
-            reqpayment.Headers.Add("Cookie", Mainwindow.lines[0]);
             reqpayment.Headers.Add("Sec-Fetch-Dest", "empty");
             reqpayment.Headers.Add("Sec-Fetch-Mode", "cors");
             reqpayment.Headers.Add("Sec-Fetch-Site", "same-site");
@@ -988,35 +983,31 @@ namespace MAIO
                     ct.ThrowIfCancellationRequested();
                 }
                 Thread.Sleep(1);
-                WebProxy wp = new WebProxy();
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyaddress = null;
                 try
                 {
-                    int random = ran.Next(0, Mainwindow.proxypool.Count);
                     string proxyg = Mainwindow.proxypool[random].ToString();
                     string[] proxy = proxyg.Split(":");
-
                     if (proxy.Length == 2)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
+                        proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
                     }
                     else if (proxy.Length == 4)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                        proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
                     }
                 }
                 catch
                 {
-                    wp = default;
+                    proxyaddress = "";
                 }
-                string getstatus = "https://api.nike.com/buy/checkouts/v2/" + GID;
                 ServicePointManager.ServerCertificateValidationCallback = ((object param0, X509Certificate param1, X509Chain param2, SslPolicyErrors param3) => true);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest reqgetstatus = (HttpWebRequest)WebRequest.Create(url);
-                reqgetstatus.Proxy = wp;
                 reqgetstatus.Method = "PUT";
-                reqgetstatus.Accept = "application/json";
+                reqgetstatus.Headers.Add("Server-Host", "api.nike.com:443");
+                reqgetstatus.Headers.Add("Proxy-Address", proxyaddress);
                 reqgetstatus.ContentType = "application/json; charset=UTF-8";
                 byte[] paymenttokeninfo = Encoding.UTF8.GetBytes(payload);
                 reqgetstatus.Headers.Add("Authorization", Authorization);
@@ -1063,7 +1054,6 @@ namespace MAIO
                 reqgetstatus.Headers.Add("appid", "com.nike.commerce.snkrs.web");
                 reqgetstatus.Headers.Add("Origin", "https://www.nike.com");
                 reqgetstatus.ContentLength = paymenttokeninfo.Length;
-                reqgetstatus.Host = "api.nike.com";
                 reqgetstatus.Headers.Add("Sec-Fetch-Dest", "empty");
                 reqgetstatus.Headers.Add("Sec-Fetch-Mode", "cors");
                 reqgetstatus.Headers.Add("Sec-Fetch-Site", "same-site");

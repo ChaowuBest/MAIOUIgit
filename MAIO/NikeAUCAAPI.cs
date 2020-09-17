@@ -257,36 +257,34 @@ namespace MAIO
                 }
                 Thread.Sleep(1);
                 int random = ran.Next(0, Mainwindow.proxypool.Count);
-                WebProxy wp = new WebProxy();
+                string proxyaddress = null;
                 try
                 {
                     string proxyg = Mainwindow.proxypool[random].ToString();
                     string[] proxy = proxyg.Split(":");
                     if (proxy.Length == 2)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
+                        proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
                     }
                     else if (proxy.Length == 4)
                     {
-                        wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                        wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                        proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
                     }
                 }
                 catch
                 {
-                    wp = default;
+                    proxyaddress = "";
                 }
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "PUT";
-                request.Proxy = wp;
+                request.Headers.Add("Server-Host", "api.nike.com:443");
+                request.Headers.Add("Proxy-Address", proxyaddress);
                 request.ContentType = "application/json; charset=UTF-8";
                 byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(payinfo);
                 request.Accept = "application/json";
                 request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
-                request.Headers.Add("Root-Domain", "nike.com");
             C: if (Mainwindow.iscookielistnull)
                 {
                     if (ct.IsCancellationRequested)
