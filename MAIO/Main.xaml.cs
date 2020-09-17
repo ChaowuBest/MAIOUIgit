@@ -35,7 +35,7 @@ namespace MAIO
     public partial class Main : UserControl
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
-        public static Dictionary<string, string> randomdic = new Dictionary<string, string>();
+        public static Dictionary<string, int> randomdic = new Dictionary<string, int>();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
@@ -605,23 +605,23 @@ namespace MAIO
                                     ArrayList ar = new ArrayList();
                                     foreach (var i in jo)
                                     {
+                                        Thread.Sleep(1);
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
-                                    }
-                                A: Random ranaccount = new Random();
-                                    int randomaccount = ranaccount.Next(0, ar.Count);
-                                    if (randomdic.Count == ar.Count)
-                                    {
-                                        randomdic.Clear();
                                     }
                                     try
                                     {
-                                        randomdic.Add(ar[randomaccount].ToString(), "1");
+                                        randomdic.Add(tk.Account, 0);
+                                        if (ar.Count == randomdic[tk.Account])
+                                        {
+                                            randomdic.Remove(tk.Account);
+                                        }
+                                        account = ar[0].ToString().Split(",");
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
-                                        goto A;
+                                        account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
                                     }
-                                    account = ar[randomaccount].ToString().Split(",");
                                 }
                                 else
                                 {
@@ -981,23 +981,23 @@ namespace MAIO
                                     ArrayList ar = new ArrayList();
                                     foreach (var i in jo)
                                     {
+                                        Thread.Sleep(1);
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
-                                    }
-                                A: Random ranaccount = new Random();
-                                    int randomaccount = ranaccount.Next(0, ar.Count);
-                                    if (randomdic.Count == ar.Count)
-                                    {
-                                        randomdic.Clear();
                                     }
                                     try
                                     {
-                                        randomdic.Add(ar[randomaccount].ToString(), "1");
+                                        randomdic.Add(tk.Account, 0);
+                                        if (ar.Count == randomdic[tk.Account])
+                                        {
+                                            randomdic.Remove(tk.Account);
+                                        }
+                                        account = ar[0].ToString().Split(",");
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
-                                        goto A;
+                                        account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
                                     }
-                                    account = ar[randomaccount].ToString().Split(",");
                                 }
                                 else
                                 {
@@ -1242,11 +1242,23 @@ namespace MAIO
                                     ArrayList ar = new ArrayList();
                                     foreach (var i in jo)
                                     {
+                                        Thread.Sleep(1);
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
                                     }
-                                    Random ranaccount = new Random();
-                                    int randomaccount = ranaccount.Next(0, ar.Count);
-                                    account = ar[randomaccount].ToString().Split(",");
+                                    try
+                                    {
+                                        randomdic.Add(tk.Account, 0);
+                                        if (ar.Count == randomdic[tk.Account])
+                                        {
+                                            randomdic.Remove(tk.Account);
+                                        }
+                                        account = ar[0].ToString().Split(",");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                    }
                                 }
                                 else
                                 {
