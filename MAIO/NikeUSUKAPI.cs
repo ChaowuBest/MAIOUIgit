@@ -475,7 +475,8 @@ namespace MAIO
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk);
+                ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(0);
             int random = ran.Next(0, Mainwindow.proxypool.Count);
