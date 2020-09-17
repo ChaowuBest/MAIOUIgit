@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -51,136 +52,137 @@ namespace MAIO
         bool multisize = false;
         public void StartTask(CancellationToken ct)
         {
-            bool monitortask = false;
-            bool ismonitor = false;
-            try
-            {
-                if (ct.IsCancellationRequested)
+                bool monitortask = false;
+                bool ismonitor = false;
+                try
                 {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                    sharesku.Remove(tk);
-                }
-                if (tk.monitortask != "True")
-                {
-                D: for (int n = 0; n < Mainwindow.task.Count; n++)
+                    if (ct.IsCancellationRequested)
                     {
-                        Thread.Sleep(0);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status != "IDLE" && Mainwindow.task[n].Sku == this.pid)
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                        sharesku.Remove(tk);
+                    }
+                    if (tk.monitortask != "True")
+                    {
+                    D: for (int n = 0; n < Mainwindow.task.Count; n++)
                         {
-                            if (ct.IsCancellationRequested)
+                            Thread.Sleep(0);
+                            if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status != "IDLE" && Mainwindow.task[n].Sku == this.pid)
                             {
-                                tk.Status = "IDLE";
-                                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
-                            }
-                            tk.Status = "Monitoring Task";
-                            monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
-                            {
-                                ismonitor = true;
-                                this.tk.Sku = Mainwindow.task[n].Sku;
-                                this.pid = this.tk.Sku;
-                                break;
+                                if (ct.IsCancellationRequested)
+                                {
+                                    tk.Status = "IDLE";
+                                    sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
+                                }
+                                tk.Status = "Monitoring Task";
+                                monitortask = true;
+                                if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
+                                {
+                                    ismonitor = true;
+                                    this.tk.Sku = Mainwindow.task[n].Sku;
+                                    this.pid = this.tk.Sku;
+                                    break;
+                                }
                             }
                         }
-                    }
                     if (monitortask && ismonitor == false)
+                        {
+                            goto D;
+                        }
+                        else
+                        {
+                            Thread.Sleep(0);
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                }
+            A:
+                try
+                {
+                    try
+                    {
+                        quantity = int.Parse(tk.Quantity);
+                        GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
+                    }
+                    catch (NullReferenceException)
+                    {
+                        goto A;
+                    }
+                B: JObject joprofile = JObject.Parse(profile);
+                    string Authorization = "";
+
+                    try
+                    {
+                        Authorization = Login(joprofile, ct);
+                    }
+                    catch (NullReferenceException)
+                    {
+                        tk.Status = "Login Error";
+                        tk.Status = "Retrying";
+                        goto B;
+                    }
+                C:
+                    try
+                    {
+                        if (giftcard == "")
+                        {
+                            Task task = Task.Run(() => Submitcardinfo(Authorization, skuid, ct));
+                        }
+                        else
+                        {
+                            Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
+                        }
+                    }
+                    catch (NullReferenceException)
+                    {
+                        goto C;
+                    }
+                D:
+                    try
+                    {
+                        Checkoutpreview(Authorization, skuid, joprofile, ct);
+                    }
+                    catch (NullReferenceException)
                     {
                         goto D;
                     }
-                    else
+                E:
+                    try
                     {
-                        Thread.Sleep(0);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        A:
-            try
-            {
-                try
-                {
-                    quantity = int.Parse(tk.Quantity);
-                    GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
-                }
-                catch (NullReferenceException)
-                {
-                    goto A;
-                }
-            B: JObject joprofile = JObject.Parse(profile);
-                string Authorization = "";
+                        CheckoutpreviewStatus(Authorization, skuid, ct);
 
-                try
-                {
-                    Authorization = Login(joprofile, ct);
-                }
-                catch (NullReferenceException)
-                {
-                    tk.Status = "Login Error";
-                    tk.Status = "Retrying";
-                    goto B;
-                }
-            C:
-                try
-                {
-                    if (giftcard == "")
-                    {
-                        Task task = Task.Run(() => Submitcardinfo(Authorization, skuid, ct));
                     }
-                    else
+                    catch (NullReferenceException ex)
                     {
-                        Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
+                        goto E;
                     }
-                }
-                catch (NullReferenceException)
-                {
-                    goto C;
-                }
-            D:
-                try
-                {
-                    Checkoutpreview(Authorization, skuid, joprofile, ct);
-                }
-                catch (NullReferenceException)
-                {
-                    goto D;
-                }
-            E:
-                try
-                {
-                    CheckoutpreviewStatus(Authorization, skuid, ct);
 
-                }
-                catch (NullReferenceException ex)
-                {
-                    goto E;
-                }
-
-                try
-                {
-                F: if (subcard)
+                    try
                     {
-                        string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
-                        PreviewJob(id, Authorization, skuid, ct);
-                        paymenttoken(Authorization, id, skuid, joprofile, ct);
+                    F: if (subcard)
+                        {
+                            string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
+                            PreviewJob(id, Authorization, skuid, ct);
+                            paymenttoken(Authorization, id, skuid, joprofile, ct);
+                        }
+                        else
+                        {
+                            Thread.Sleep(1);
+                            goto F;
+                        }
                     }
-                    else
+                    catch (NullReferenceException)
                     {
-                        Thread.Sleep(1);
-                        goto F;
                     }
                 }
-                catch (NullReferenceException)
+                catch (OperationCanceledException)
                 {
+                    sharesku.Remove(tk);
+                    return;
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                sharesku.Remove(tk);
-                return;
-            }
+            
         }
         protected static string GenerateRandomnum(int length)
         {
@@ -204,212 +206,216 @@ namespace MAIO
         }
         protected void GetSKUID(string country, string pid, CancellationToken ct)
         {
-        A: if (dc != null && dc.dic.Count != 0)
+        A: try
             {
-                allsize = dc.dic;
-             /*   for (int i = 0; i < dc.dic.Count; i++)
+            if (dc != null && dc.dic.Count != 0)
                 {
-                    KeyValuePair<string, string> kv = dc.dic.ElementAt(i);
-                    skuidlist.Add(kv.Value);
-                }*/
-                string[] Multiesize = null;
-                if (size.Contains("+"))
-                {
-                    multisize = true;
-                    Multiesize = size.Split("+");
-                }
-                if (size.Contains("-"))
-                {
-                    bool Gssize = false;
-                    multisize = true;
-                    if (size.Contains("Y"))
+                    allsize = dc.dic;
+                    string[] Multiesize = null;
+                    if (size.Contains("+"))
                     {
-                        size = size.Replace("Y", "");
-                        Gssize = true;
+                        multisize = true;
+                        Multiesize = size.Split("+");
                     }
-                    string[] Multiplesize = size.Split("-");
-                    size = "";
-                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                    if (size.Contains("-"))
                     {
-                        Thread.Sleep(1);
+                        bool Gssize = false;
+                        multisize = true;
+                        if (size.Contains("Y"))
+                        {
+                            size = size.Replace("Y", "");
+                            Gssize = true;
+                        }
+                        string[] Multiplesize = size.Split("-");
+                        size = "";
+                        for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                        {
+                            Thread.Sleep(1);
+                            if (Gssize)
+                            {
+                                size += i + "Y+";
+                            }
+                            else
+                            {
+                                size += i.ToString() + "+";
+                            }
+                        }
                         if (Gssize)
                         {
-                            size += i + "Y+";
+                            size += "Y";
                         }
-                        else
-                        {
-                            size += i.ToString() + "+";
-                        }
+                        Multiesize = size.Split("+");
                     }
-                    if (Gssize)
-                    {
-                        size += "Y";
-                    }
-                    Multiesize = size.Split("+");
-                }
-                if (multisize)
-                {
-                    size = size.Remove(size.Length - 1);
-                }
-                limit = dc.limit;
-                imageurl = dc.imageurl;
-                productID = dc.productID;
-                msrp = dc.msrp;
-                for (int i = 0; i < dc.dic.Count; i++)
-                {
-                    Thread.Sleep(1);
                     if (multisize)
                     {
-                        for (int n = 0; n < Multiesize.Length; n++)
-                        {
-                            skuid = dc.dic[Multiesize[n]];
-                            skuidlist.Add(skuid);
-                        }
-                        break;
-                       // skuid = dc.dic[Multiesize[i]];
-                      //  skuidlist.Add(skuid);
+                        size = size.Remove(size.Length - 1);
                     }
-                    else if (multisize == false && randomsize == false)
+                    limit = dc.limit;
+                    imageurl = dc.imageurl;
+                    productID = dc.productID;
+                    msrp = dc.msrp;
+                    for (int i = 0; i < dc.dic.Count; i++)
                     {
-                        try
+                        Thread.Sleep(1);
+                        if (multisize)
                         {
-                            skuid = dc.dic[size.ToString()];
+                            for (int n = 0; n < Multiesize.Length; n++)
+                            {
+                                if (Multiesize[n] != "")
+                                {
+                                    skuid = dc.dic[Multiesize[n]];
+                                    skuidlist.Add(skuid);
+                                }
+                            }
+                            break;
                         }
-                        catch
+                        else if (multisize == false && randomsize == false)
                         {
-                            tk.Status = "Restarting";
-                            goto A;
+                            try
+                            {
+                                skuid = dc.dic[size.ToString()];
+                            }
+                            catch
+                            {
+                                tk.Status = "Restarting";
+                                goto A;
+                            }
                         }
                     }
-                }
-                if (randomsize)
-                {
-                    Random ra = new Random();
-                    skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
-                }
-            }
-            else
-            {
-                Thread.Sleep(1);
-            retry: string url = "";
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
-                }
-                if (country.Contains("UK"))
-                {
-                    url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(GB)&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
+                    if (randomsize)
+                    {
+                        Random ra = new Random();
+                        for (int i = 0; i < dc.dic.Count; i++)
+                        {
+                            KeyValuePair<string, string> kv = dc.dic.ElementAt(i);
+                            skuidlist.Add(kv.Value);
+                        }
+                        int end = ra.Next(0, dc.dic.Count);
+                        skuid = skuidlist[end].ToString();
+                    }
                 }
                 else
                 {
-                    url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(US)&filter=language(en)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
-                }
-                bool sizefind = false;
-                string sourcecode = USUKAPI.GetHtmlsource(url, tk, ct);
-                JObject jo = JObject.Parse(sourcecode);
-                Thread.Sleep(1);
-                JArray ja = (JArray)JsonConvert.DeserializeObject(jo["objects"].ToString());
-                string[] Multiesize = null;
-                if (size.Contains("+"))
-                {
-                    multisize = true;
-                    Multiesize = size.Split("+");
-                }
-                if (size.Contains("-"))
-                {
-                    bool Gssize = false;
-                    multisize = true;
-                    if (size.Contains("Y"))
+                    Thread.Sleep(1);
+                retry: string url = "";
+                    if (ct.IsCancellationRequested)
                     {
-                        size = size.Replace("Y", "");
-                        Gssize = true;
+                        tk.Status = "IDLE";
+                        sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
                     }
-                    string[] Multiplesize = size.Split("-");
-                    size = "";
-                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                    if (country.Contains("UK"))
                     {
-                        Thread.Sleep(1);
+                        url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(GB)&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
+                    }
+                    else
+                    {
+                        url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(US)&filter=language(en)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
+                    }
+                    bool sizefind = false;
+                    string sourcecode = USUKAPI.GetHtmlsource(url, tk, ct);
+                    JObject jo = JObject.Parse(sourcecode);
+                    Thread.Sleep(1);
+                    JArray ja = (JArray)JsonConvert.DeserializeObject(jo["objects"].ToString());
+                    string[] Multiesize = null;
+                    if (size.Contains("+"))
+                    {
+                        multisize = true;
+                        Multiesize = size.Split("+");
+                    }
+                    if (size.Contains("-"))
+                    {
+                        bool Gssize = false;
+                        multisize = true;
+                        if (size.Contains("Y"))
+                        {
+                            size = size.Replace("Y", "");
+                            Gssize = true;
+                        }
+                        string[] Multiplesize = size.Split("-");
+                        size = "";
+                        for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                        {
+                            Thread.Sleep(1);
+                            if (Gssize)
+                            {
+                                size += i + "Y+";
+                            }
+                            else
+                            {
+                                size += i.ToString() + "+";
+                            }
+                        }
                         if (Gssize)
                         {
-                            size += i + "Y+";
+                            size += "Y";
+                        }
+                        Multiesize = size.Split("+");
+                    }
+                    var product = "";
+                    if (multisize)
+                    {
+                        size = size.Remove(size.Length - 1);
+                    }
+                    JArray jar = null;
+                    try
+                    {
+                        jar = (JArray)JsonConvert.DeserializeObject(ja[0]["productInfo"].ToString());
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        tk.Status = "Monitoring";
+                        if (Config.delay == "")
+                        {
+                            Thread.Sleep(1);
                         }
                         else
                         {
-                            size += i.ToString() + "+";
+                            Thread.Sleep(int.Parse(Config.delay));
                         }
-                    }
-                    if (Gssize)
-                    {
-                        size += "Y";
-                    }
-                    Multiesize = size.Split("+");
-                }
-                var product = "";
-                if (multisize)
-                {
-                    size = size.Remove(size.Length - 1);
-                }
-                JArray jar = null;
-                try
-                {
-                    jar = (JArray)JsonConvert.DeserializeObject(ja[0]["productInfo"].ToString());
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    tk.Status = "Monitoring";
-                    if (Config.delay == "")
-                    {
-                        Thread.Sleep(1);
-                    }
-                    else
-                    {
-                        Thread.Sleep(int.Parse(Config.delay));
-                    }
-                    goto retry;
-                }
-                try
-                {
-                    JObject j = JObject.Parse(jar[0].ToString());
-                    string skuids = j["skus"].ToString();
-                    if (tk.Tasksite == "NikeUS")
-                    {
-                        msrp = j["merchPrice"]["msrp"].ToString();
-                        dc.msrp = msrp;
-                    }
-                    else
-                    {
-                        msrp = j["merchPrice"]["fullPrice"].ToString();
-                        dc.msrp = msrp;
+                        goto retry;
                     }
                     try
                     {
-                        imageurl = j["imageUrls"]["productImageUrl"].ToString();
-                        dc.imageurl = imageurl;
-                    }
-                    catch
-                    {
-                    }
-                    limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
-                    dc.limit = limit;
-                    JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
-                    string availableSkus = j["availableSkus"].ToString();
-                    JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
-                    
-                    for (int i = 0; i < jsku.Count; i++)
-                    {
-                        Thread.Sleep(1);
-                        allsize.Add(jsku[i]["nikeSize"].ToString(), jsku[i]["id"].ToString());
-                       
-                        if (randomsize)
+                        JObject j = JObject.Parse(jar[0].ToString());
+                        string skuids = j["skus"].ToString();
+                        if (tk.Tasksite == "NikeUS")
                         {
-                            skuidlist.Add(jsku[i]["id"].ToString());
-                            productID = jsku[i]["productId"].ToString();
-                            dc.productID = productID;
-                            sizefind = true;
+                            msrp = j["merchPrice"]["msrp"].ToString();
+                            dc.msrp = msrp;
                         }
-                        else if (multisize)
+                        else
                         {
+                            msrp = j["merchPrice"]["fullPrice"].ToString();
+                            dc.msrp = msrp;
+                        }
+                        try
+                        {
+                            imageurl = j["imageUrls"]["productImageUrl"].ToString();
+                            dc.imageurl = imageurl;
+                        }
+                        catch
+                        {
+                        }
+                        limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
+                        dc.limit = limit;
+                        JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
+                        string availableSkus = j["availableSkus"].ToString();
+                        JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
+
+                        for (int i = 0; i < jsku.Count; i++)
+                        {
+                            Thread.Sleep(1);
+                            allsize.Add(jsku[i]["nikeSize"].ToString(), jsku[i]["id"].ToString());
+
+                            if (randomsize)
+                            {
+                                skuidlist.Add(jsku[i]["id"].ToString());
+                                productID = jsku[i]["productId"].ToString();
+                                dc.productID = productID;
+                                sizefind = true;
+                            }
+                            else if (multisize)
+                            {
                                 for (int n = 0; n < Multiesize.Length; n++)
                                 {
                                     if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
@@ -421,64 +427,69 @@ namespace MAIO
                                         dc.productID = productID;
                                     }
                                 }
-                        }
-                        else
-                        {
-                            if (size.ToString() == jsku[i]["nikeSize"].ToString())
+                            }
+                            else
                             {
-                                skuid = jsku[i]["id"].ToString();
-                                productID = jsku[i]["productId"].ToString();
-                                dc.productID = productID;
-                                break;
+                                if (size.ToString() == jsku[i]["nikeSize"].ToString())
+                                {
+                                    skuid = jsku[i]["id"].ToString();
+                                    productID = jsku[i]["productId"].ToString();
+                                    dc.productID = productID;
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (dc.dic.Count == 0)
-                    {
-                        dc.dic = allsize;
+                        if (dc.dic.Count == 0)
+                        {
+                            dc.dic = allsize;
+                        }
+                        if (sizefind)
+                        {
+                            Random ra = new Random();
+                            skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
+                        }
                     }
-                    if (sizefind)
+                    catch (NullReferenceException ex)
                     {
-                        Random ra = new Random();
-                        skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
-                    }
-                }
-                catch (NullReferenceException ex)
-                {
 
-                    tk.Status = "Size Error";
-                    goto retry;
+                        tk.Status = "Size Error";
+                        goto retry;
+                    }
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                        sharesku.Remove(tk);
+                    }
+                    if (skuid == "")
+                    {
+                        tk.Status = "Size Not available";
+                        tk.Status = "Restarting";
+                        goto retry;
+                    }
                 }
-                if (ct.IsCancellationRequested)
+                for (int n = 0; n < allsize.Count; n++)
                 {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                    sharesku.Remove(tk);
-                }
-                if (skuid == "")
-                {
-                    tk.Status = "Size Not available";
-                    tk.Status = "Restarting";
-                    goto retry;
-                }
-            }
-            for (int n = 0; n < allsize.Count; n++)
-            {
-                KeyValuePair<string, string> kv = allsize.ElementAt(n);
-                Thread.Sleep(1);
-                if (skuid == kv.Value)
-                {
-                    if (Config.Usemonitor == "True")
+                    KeyValuePair<string, string> kv = allsize.ElementAt(n);
+                    Thread.Sleep(1);
+                    if (skuid == kv.Value)
                     {
                         if (Config.Usemonitor == "True")
                         {
-                            string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                            string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                            string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, false, multisize, skuidlist);
-                            if (group[0] != null)
+                            if (Config.Usemonitor == "True")
                             {
-                                skuid = group[0];
+                                string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                                string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                                string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, false, multisize, skuidlist);
+                                if (group[0] != null)
+                                {
+                                    skuid = group[0];
+                                }
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                         else
@@ -486,12 +497,14 @@ namespace MAIO
                             break;
                         }
                     }
-                    else
-                    {
-                        break;
-                    }
                 }
             }
+            catch(Exception ex)
+            {
+                Thread.Sleep(1);
+                goto A;
+            }
+            
         }
         protected string Login(JObject profile, CancellationToken ct)
         {
@@ -548,8 +561,8 @@ namespace MAIO
                         string loginurl = null;
                         if (tk.Tasksite.Contains("UK"))
                         {
-                         //   loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
-                            loginurl ="http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID; ;                      
+                            //   loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID; ;
                         }
                         else
                         {
@@ -576,7 +589,7 @@ namespace MAIO
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
-                             sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                            sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
                         }
                         if (token != "")
                         {
@@ -666,13 +679,13 @@ namespace MAIO
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             USUKAPI.Postcardinfo(cardurl, cardinfo, Authorization, cardguid, tk, ct);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             subcard = true;
         }
@@ -787,7 +800,7 @@ namespace MAIO
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             USUKAPI.CheckoutPreview(checkoutsessionurl, Authorization, checkoutpayload, GID, tk, ct, username, password);
         }
@@ -803,14 +816,14 @@ namespace MAIO
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             msrp = USUKAPI.CheckoutPreviewStatus(url, Authorization, isdiscount, tk, ct, profile, pid, size, code, giftcard, username, password, randomsize, productID, skuid);
 
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
         }
         protected void subimitgiftcard(string Authorization, string skuid, CancellationToken ct)
@@ -834,36 +847,36 @@ namespace MAIO
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
-                for (int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
+            {
+                KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
+                string cardurl2 = "https://api.nike.com/payment/giftcard_balance/v1";
+                string currency = null;
+                if (tk.Tasksite.Contains("UK"))
                 {
-                    KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
-                    string cardurl2 = "https://api.nike.com/payment/giftcard_balance/v1";
-                    string currency = null;
-                    if (tk.Tasksite.Contains("UK"))
-                    {
-                        currency = "GBP";
-                    }
-                    else
-                    {
-                        currency = "USD";
-                    }
-                    string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
-                    balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, cardguid, tk, ct);
-                    double msrpdouble = Convert.ToDouble(msrp);
-                    if (balance > msrpdouble)
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
-                        }
-                        index = i;
-                        break;
-                    }
+                    currency = "GBP";
                 }
-                subcard = true;
+                else
+                {
+                    currency = "USD";
+                }
+                string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
+                balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, cardguid, tk, ct);
+                double msrpdouble = Convert.ToDouble(msrp);
+                if (balance > msrpdouble)
+                {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
+                    }
+                    index = i;
+                    break;
+                }
+            }
+            subcard = true;
         }
         ArrayList giftcardadd = new ArrayList();
         protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
@@ -878,7 +891,7 @@ namespace MAIO
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             if (jo["Country"].ToString() == "GB")
             {
@@ -997,7 +1010,7 @@ new JObject(
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             string id = USUKAPI.payment(paymenturl, Authorization, paymentinfo, tk, ct);
             return id;
@@ -1009,14 +1022,14 @@ new JObject(
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             USUKAPI.paymentjob(url, Authorization, ct, tk);
         }
         protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct)
         {
             Thread.Sleep(0);
-           // string url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+            // string url = "https://api.nike.com/buy/checkouts/v2/" + GID;
             string url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
             string country = "";
             string currency = "";
@@ -1113,13 +1126,13 @@ new JProperty("shippingAddress",
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             string status = USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                 sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
             }
             if (status.Contains("error") == true)
             {
@@ -1136,7 +1149,7 @@ new JProperty("shippingAddress",
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                    sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
                 }
             }
             else
@@ -1152,7 +1165,7 @@ new JProperty("shippingAddress",
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
-                     sharesku.Remove(tk);ct.ThrowIfCancellationRequested();
+                    sharesku.Remove(tk); ct.ThrowIfCancellationRequested();
                 }
                 if (status.Contains("error") == false)
                 {
@@ -1260,6 +1273,9 @@ new JProperty("shippingAddress",
             }
 
         }
+
+
+
 
     }
 }
