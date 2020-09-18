@@ -34,67 +34,60 @@ namespace MAIO
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static ObservableCollection<Group> Taskgroup = new ObservableCollection<Group>();
+        ObservableCollection<string> mb2 = new ObservableCollection<string>();
         public Main()
         {
             InitializeComponent();
-       /*     updatelable("123", true);
-            for (int i = 0; i < Mainwindow.tasklist.Count; i++)
+            #region
+            /*     updatelable("123", true);
+                 for (int i = 0; i < Mainwindow.tasklist.Count; i++)
+                 {
+                     KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
+                     JObject jo = JObject.Parse(kv.Value);
+                     if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor") == false)
+                     {
+                         string monitortask = "True";
+                         if (kv.Value.Contains("\"monitortask\": \"False\""))
+                         {
+                             monitortask = "False";
+                         }
+                         string account = null;
+                         if (kv.Value.Contains("Account"))
+                         {
+                             account = jo["Account"].ToString();
+                             if (account == "")
+                             {
+                                 account = null;
+                             }
+                         }
+                         else
+                         {
+                             account = null;
+                         }
+                         Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask, Account = account });
+                     }
+                 }
+                 datagrid.ItemsSource = Mainwindow.task;
+                 cookienum.Dispatcher.Invoke(new Action(
+                   delegate
+                 {
+                     cookienum.Content = Mainwindow.lines.Count;
+                 }));
+                 if (Config.autoclearcookie)
+                 {
+                     Task task2 = new Task(() => clearcookie());
+                     task2.Start();
+                 }*/
+            #endregion
+
+           // List<string> mb2 = new List<string>();
+            for (int i =0 ; i < 3; i++)
             {
-                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
-                JObject jo = JObject.Parse(kv.Value);
-                if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor") == false)
-                {
-                    string monitortask = "True";
-                    if (kv.Value.Contains("\"monitortask\": \"False\""))
-                    {
-                        monitortask = "False";
-                    }
-                    string account = null;
-                    if (kv.Value.Contains("Account"))
-                    {
-                        account = jo["Account"].ToString();
-                        if (account == "")
-                        {
-                            account = null;
-                        }
-                    }
-                    else
-                    {
-                        account = null;
-                    }
-                    Mainwindow.task.Add(new taskset { Tasksite = jo["Tasksite"].ToString(), Sku = jo["Sku"].ToString(), Size = jo["Size"].ToString(), Profile = jo["Profile"].ToString(), Proxies = jo["Proxies"].ToString(), Status = jo["Status"].ToString(), Taskid = jo["Taskid"].ToString(), Quantity = jo["Quantity"].ToString(), monitortask = monitortask, Account = account });
-                }
+                mb2.Add("Kith");
             }
-            datagrid.ItemsSource = Mainwindow.task;
-            cookienum.Dispatcher.Invoke(new Action(
-              delegate
-            {
-                cookienum.Content = Mainwindow.lines.Count;
-            }));
-            if (Config.autoclearcookie)
-            {
-                Task task2 = new Task(() => clearcookie());
-                task2.Start();
-            }*/
+            this.listBox.ItemsSource = mb2;
         }
-     /*   public void clearcookie()
-        {
-        A: foreach (var i in Mainwindow.cookiewtime.ToArray())
-            {
-                Thread.Sleep(500);
-                long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                var cookitime = ConvertStringToDateTime(i.Key.ToString());
-                var nowtime = ConvertStringToDateTime(timest.ToString());
-                var difference = nowtime - cookitime;
-                if (difference.Hours >= 1)
-                {
-                    Mainwindow.cookiewtime.Remove(long.Parse(i.Key.ToString()));
-                    Mainwindow.lines.Remove(i.Value);
-                    updatelable(i.Value, false);
-                }
-            }
-            goto A;
-        }*/
         private DateTime ConvertStringToDateTime(string timeStamp)
         {
             DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
@@ -1015,6 +1008,12 @@ namespace MAIO
 
                 }
             }
+        }
+
+        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var wu=listBox.SelectedIndex;
+            mb2.Add("Kith");
         }
     }
 }

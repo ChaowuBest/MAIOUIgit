@@ -29,7 +29,36 @@
                     <ImageBrush/>
                 </Label.BorderBrush>
             </Label>
-            <StackPanel Height="604" Width="227" Margin="-831,-776,0,0" Background="#FF2C3040"/>
+            <StackPanel Height="604" Width="227" Margin="-831,-776,0,0" Background="#FF2C3040" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="221" Content="Add new Group">
+                    <Button.Template>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                        <GradientStop Color="#FF43B8FF" Offset="0.0" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <UniformGrid Rows="1" Columns="2" Width="300" >
+                    <ListBox x:Name="listBox"  ItemsSource="{Binding}" SelectedIndex="0" Margin="10" MouseDoubleClick="listBox_MouseDoubleClick" FontFamily="PingFangSC-Semibold" >
+                    <ListBox.Style>
+                        <Style TargetType="{x:Type ListBox}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListBox.Style>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                            <ListBoxItem Content="{Binding}" HorizontalAlignment="Center" ></ListBoxItem>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                </UniformGrid>
+            </StackPanel>
             <DataGrid Height="604" Width="810" Margin="248,-776,0,0"  GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column"  x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"  Background="#FF2C3040">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
