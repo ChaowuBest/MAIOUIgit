@@ -1,9 +1,10 @@
-﻿<UserControl x:Class="MAIO.Main"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MAIO"
+             xmlns:hc="https://handyorg.github.io/handycontrol" x:Class="MAIO.Main"
              mc:Ignorable="d" Width="1080" Height="769">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -29,39 +30,21 @@
                     <ImageBrush/>
                 </Label.BorderBrush>
             </Label>
-            <StackPanel Height="604" Width="227" Margin="-831,-776,0,0" Background="#FF2C3040" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="221" Content="Add new Group">
-                    <Button.Template>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
-                                <Border.Background>
-                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                        <GradientStop Color="#FF43B8FF" Offset="0.0" />
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-                <UniformGrid Rows="1" Columns="2" Width="300" >
-                    <ListBox x:Name="listBox"  ItemsSource="{Binding}" SelectedIndex="0" Margin="10" MouseDoubleClick="listBox_MouseDoubleClick" FontFamily="PingFangSC-Semibold" >
-                    <ListBox.Style>
-                        <Style TargetType="{x:Type ListBox}">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </ListBox.Style>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                            <ListBoxItem Content="{Binding}" HorizontalAlignment="Center" ></ListBoxItem>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                </UniformGrid>
-            </StackPanel>
-            <DataGrid Height="604" Width="810" Margin="248,-776,0,0"  GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column"  x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"  Background="#FF2C3040">
+            <ListBox x:Name="listBox"  ItemsSource="{Binding}" SelectedIndex="0" Margin="-824,-646,10,10" MouseDoubleClick="listBox_MouseDoubleClick" FontFamily="PingFangSC-Semibold" Width="206" Height="604" Background="#FF2C3040" Foreground="White" FontSize="14" >
+                <ListBox.Style>
+                    <Style TargetType="{x:Type ListBox}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.Style>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ListBoxItem Content="{Binding}" HorizontalAlignment="Center" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <DataGrid Height="604" Width="810" Margin="230,-656,0,0"  GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column"  x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"  Background="#FF2C3040">
                 <DataGrid.Resources>
-                    <Style x:Key="DataGridTextCenterColumnStyle" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
+                    <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     </Style>
                 </DataGrid.Resources>
@@ -101,8 +84,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,0,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" >
-                                    </Button>
+                                    <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,0,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" />
                                     <Button x:Name="start" Height="20" Width="20" Margin="-170,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial"  >
                                         <Button.Background>
                                             <ImageBrush ImageSource="/play.png"/>
@@ -120,6 +102,24 @@
                     <DataGridTextColumn Header="TaskID" Binding="{Binding TaskID}" Visibility="Collapsed" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="140" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                 </DataGrid.Columns>
             </DataGrid>
+            <Label Content="Task Groups" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" Height="34" Width="206" FontWeight="Bold" Margin="-834,-1325,0,0">
+                <Label.BorderBrush>
+                    <ImageBrush/>
+                </Label.BorderBrush>
+                <Label.Background>
+                    <ImageBrush/>
+                </Label.Background>
+            </Label>
+            <Label Content="Task Num" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" Height="34" Width="176" FontWeight="Bold" Margin="-506.5,-1325,0,0">
+                <Label.BorderBrush>
+                    <ImageBrush/>
+                </Label.BorderBrush>
+                <Label.Background>
+                    <ImageBrush/>
+                </Label.Background>
+            </Label>
+            <Button Height="26" Width="26" Padding="6"  Style="{StaticResource ButtonPrimary}"
+                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}"  Margin="-307,-1325,0,0"/>
         </StackPanel>
     </Grid>
 </UserControl>
