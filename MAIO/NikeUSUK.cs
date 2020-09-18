@@ -117,7 +117,7 @@ namespace MAIO
                     {
                         Authorization = Login(joprofile, ct);
                     }
-                    catch (NullReferenceException)
+                    catch (NullReferenceException ex)
                     {
                         tk.Status = "Login Error";
                         tk.Status = "Retrying";
@@ -561,7 +561,6 @@ namespace MAIO
                         string loginurl = null;
                         if (tk.Tasksite.Contains("UK"))
                         {
-                            //   loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
                             loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID; ;
                         }
                         else

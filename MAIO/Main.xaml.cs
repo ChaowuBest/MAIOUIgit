@@ -611,9 +611,16 @@ namespace MAIO
                                         account = ar[0].ToString().Split(",");
                                     }
                                     catch(Exception ex)
-                                    {             
-                                        account = ar[randomdic[tk.Account]].ToString().Split(",");
-                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;       
+                                    {
+                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                        if ( randomdic[tk.Account]>= ar.Count)
+                                        {
+                                            account = ar[ar.Count - 1].ToString().Split(",");
+                                        }
+                                        else
+                                        {
+                                            account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        } 
                                     }
                                     
                                 }
@@ -1027,8 +1034,15 @@ namespace MAIO
                                     }
                                     catch (Exception ex)
                                     {
-                                        account = ar[randomdic[tk.Account]].ToString().Split(",");
                                         randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                        if (randomdic[tk.Account] >= ar.Count)
+                                        {
+                                            account = ar[ar.Count - 1].ToString().Split(",");
+                                        }
+                                        else
+                                        {
+                                            account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        }
                                     }
                                 }
                                 else
@@ -1316,8 +1330,15 @@ namespace MAIO
                                     }
                                     catch (Exception ex)
                                     {
-                                        account = ar[randomdic[tk.Account]].ToString().Split(",");
                                         randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                        if (randomdic[tk.Account] >= ar.Count)
+                                        {
+                                            account = ar[ar.Count - 1].ToString().Split(",");
+                                        }
+                                        else
+                                        {
+                                            account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        }
                                     }
                                 }
                                 else

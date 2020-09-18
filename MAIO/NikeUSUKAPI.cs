@@ -49,6 +49,7 @@ namespace MAIO
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = getproxy();
+            request.Timeout = 5000;
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
             try
             {
@@ -317,17 +318,39 @@ namespace MAIO
                 }
                 catch (WebException ex)
                 {
-                    if (ex.Message.Contains("Email"))
+                    HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
+                    Stream processtream = processpayment.GetResponseStream();
+                    StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                    string  processcode = readprocessstream.ReadToEnd();
+                    if (processcode.Contains("incorrectly"))
                     {
                         tk.Status = "Wrong Password";
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                            sharesku.Remove(tk);
+                        }
                     }
                     else if (ex.Message.Contains("401"))
                     {
                         tk.Status = "Refrestoken Error";
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                            sharesku.Remove(tk);
+                        }
                     }
                     else
                     {
                         tk.Status = "Login Failed";
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                            sharesku.Remove(tk);
+                        }
                     }
 
                     Thread.Sleep(1000);
@@ -730,9 +753,9 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
-                Stream processtream = processpayment.GetResponseStream();
+              /*  Stream processtream = processpayment.GetResponseStream();
                 StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
-                processcode = readprocessstream.ReadToEnd();
+                processcode = readprocessstream.ReadToEnd();*/
                 tk.Status = "SubmitBilling error";
                 goto retry;
             }
