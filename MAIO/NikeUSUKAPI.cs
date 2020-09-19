@@ -1335,9 +1335,6 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                /*  Stream resppaymentStream = resppayment.GetResponseStream();
-                  StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
-                  string paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();*/
                 tk.Status = "Proxy Error";
                 goto A;
             }
