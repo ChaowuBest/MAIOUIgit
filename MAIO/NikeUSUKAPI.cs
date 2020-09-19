@@ -1259,7 +1259,7 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
-                if (SourceCode.Contains("Product not found"))
+                if (SourceCode.Contains("Product not found") || SourceCode.Contains("errors"))
                 {
                     goto A;
                 }
