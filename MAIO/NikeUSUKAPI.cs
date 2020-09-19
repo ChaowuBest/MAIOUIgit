@@ -412,10 +412,10 @@ namespace MAIO
                     {
                         tk.Status = "Login Failed";
                     }
-                    HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
+                  /*  HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
                     Stream tokenStream = respgethtml.GetResponseStream();
                     StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
-                    var chao = readhtmlStream.ReadToEnd();
+                    var chao = readhtmlStream.ReadToEnd();*/
 
                     Thread.Sleep(1000);
                     goto retry;
@@ -1403,7 +1403,7 @@ namespace MAIO
                     readStream = new StreamReader(receiveStream, Encoding.UTF8);
                 }
                 SourceCode = readStream.ReadToEnd();
-                if (SourceCode.Contains("Product not found"))
+                if (SourceCode.Contains("Product not found")|| SourceCode.Contains("errors"))
                 {
                     goto A;
                 }

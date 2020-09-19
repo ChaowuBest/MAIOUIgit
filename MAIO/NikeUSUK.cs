@@ -107,7 +107,7 @@ namespace MAIO
                     Authorization = Login(joprofile, ct);
                 }
                 catch (NullReferenceException)
-                {
+                {               
                     tk.Status = "Login Error";
                     tk.Status = "Retrying";
                     goto B;
@@ -124,7 +124,7 @@ namespace MAIO
                         Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
                     }
                 }
-                catch (NullReferenceException ex)
+                catch (NullReferenceException)
                 {
                     goto C;
                 }
