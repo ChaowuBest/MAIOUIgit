@@ -122,10 +122,9 @@ namespace MAIO
                     else
                     {
                         Task task = Task.Run(() => subimitgiftcard(Authorization, skuid, ct));
-                        task.Start();
                     }
                 }
-                catch (NullReferenceException)
+                catch (NullReferenceException ex)
                 {
                     goto C;
                 }

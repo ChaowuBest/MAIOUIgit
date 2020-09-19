@@ -1337,17 +1337,6 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-            /* if (advancemode)
-             {
-                 long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                 var cookitime = ConvertStringToDateTime(time.ToString());
-                 var nowtime = ConvertStringToDateTime(timest.ToString());
-                 var difference = nowtime - cookitime;
-                 if (difference.Hours >= 1)
-                 {
-                     Main.autorestock(tk);
-                 }
-             }*/
             string traceid = Guid.NewGuid().ToString();
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";
