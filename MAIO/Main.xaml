@@ -42,24 +42,12 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <DataGrid Height="604" Width="810" Margin="230,-656,0,0"  GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column"  x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"  Background="#FF2C3040">
+            <DataGrid Height="604" Width="810" Margin="230,-656,0,0"  GridLinesVisibility="None"  AutoGenerateColumns="False"  ItemsSource="{Binding}" BorderThickness="0" HeadersVisibility="Column"  x:Name="datagrid" FontFamily="PingFangSC-Semibold" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True"  Background="#FF252935" LostFocus="datagrid_LostFocus">
                 <DataGrid.Resources>
                     <Style x:Key="DataGridTextCenterColumnStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DataGridCellStyle}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                     </Style>
                 </DataGrid.Resources>
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="MinWidth" Value="85"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#FF63B9D5"/>
-                                <Setter Property="Foreground" Value="#FFF8F2F2"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.CellStyle>
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -68,10 +56,9 @@
                     </Style>
                 </DataGrid.ColumnHeaderStyle>
                 <DataGrid.RowStyle>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="Background" Value="#FF243B55"/>
-                        <Setter Property="Height"  Value="32" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
+                    <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource DataGridRowStyle}">
+                        <Setter Property="Background" Value="#FF2C3040"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
@@ -83,14 +70,14 @@
                     <DataGridTemplateColumn  Header="Action" Width="140" >
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,0,0,0" Background="{x:Null}"  BorderBrush="{x:Null}"  Content="X" Foreground="#FFD44444" FontFamily="Microsoft YaHei UI" />
-                                    <Button x:Name="start" Height="20" Width="20" Margin="-170,0,0,0" BorderBrush="{x:Null}" Foreground="#FFD44444" FontFamily="Arial"  >
+                                <StackPanel Orientation="Horizontal" >
+                                    <Button x:Name="BtnDelete" Height="20" Width="20" Margin="70,0,0,0"   BorderBrush="{x:Null}"  Content="X" FontFamily="Microsoft YaHei UI" />
+                                    <Button x:Name="start" Height="20" Width="20" Margin="-170,0,0,0" BorderBrush="{x:Null}" FontFamily="Arial"  >
                                         <Button.Background>
-                                            <ImageBrush ImageSource="/play.png"/>
+                                            <ImageBrush ImageSource="pack://application:,,,/MAIO;component/play.png"/>
                                         </Button.Background>
                                     </Button>
-                                    <Button x:Name="stop" Height="20" Width="20" Margin="-90,0,0,0"  BorderBrush="{x:Null}"  Foreground="#FFD44444" >
+                                    <Button x:Name="stop" Height="20" Width="20" Margin="-90,0,0,0"  BorderBrush="{x:Null}"   >
                                         <Button.Background>
                                             <ImageBrush ImageSource="/stop.png"/>
                                         </Button.Background>
@@ -99,7 +86,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="TaskID" Binding="{Binding TaskID}" Visibility="Collapsed" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="140" FontSize="16" FontFamily="Arial" Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    <DataGridTextColumn Header="TaskID" Binding="{Binding TaskID}" Visibility="Collapsed" CellStyle="{StaticResource DataGridTextCenterColumnStyle}" Width="140" FontSize="16" FontFamily="Arial" Foreground="#FFFFFF"/>
                 </DataGrid.Columns>
             </DataGrid>
             <Label Content="Task Groups" FontSize="16" FontFamily="PingFangSC-Semibold" Foreground="White" Height="34" Width="206" FontWeight="Bold" Margin="-834,-1325,0,0">
@@ -119,7 +106,49 @@
                 </Label.Background>
             </Label>
             <Button Height="26" Width="26" Padding="6"  Style="{StaticResource ButtonPrimary}"
-                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}"  Margin="-307,-1325,0,0"/>
+                Background="{DynamicResource PrimaryBrush}"  hc:IconElement.Geometry="{StaticResource AddGeometry}" hc:BorderElement.CornerRadius="24" Foreground="{DynamicResource TextIconBrush}"  Margin="-307,-1325,0,0" Click="Button_Click_2"/>
+            <Button Cursor="Hand" x:Name="button1_Copy1" Opacity="1" Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="108" Content="Start All" Margin="380,-1325,0,0">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FF43B8FF" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Cursor="Hand" x:Name="button1_Copy" Opacity="1" Foreground="White" Background="#FFFF5439" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="108" Content="Stop All" Margin="656,-1325,0,0">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FFFF5439" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Cursor="Hand" x:Name="button1_Copy2" Opacity="1" Foreground="White" Background="#FFFF5439" FontFamily="PingFangSC-Semibold" FontSize="14" RenderTransformOrigin="0.13,0.444" Height="45" Width="108" Content="Del All" Margin="932,-1325,0,0">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background" CornerRadius="5,5,5,5" Height="33">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FFFF5439" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

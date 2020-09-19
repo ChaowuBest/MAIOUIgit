@@ -80,8 +80,7 @@ namespace MAIO
                      task2.Start();
                  }*/
             #endregion
-
-           // List<string> mb2 = new List<string>();
+            datagrid.ItemsSource = Mainwindow.task;
             for (int i =0 ; i < 3; i++)
             {
                 mb2.Add("Kith");
@@ -1014,6 +1013,18 @@ namespace MAIO
         {
             var wu=listBox.SelectedIndex;
             mb2.Add("Kith");
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Midtransfer.edit = false;
+            NewTask nt = new NewTask();
+            nt.getTextHandler = Ctask;
+            nt.Show();
+        }
+
+        private void datagrid_LostFocus(object sender, RoutedEventArgs e)
+        {
         }
     }
 }
