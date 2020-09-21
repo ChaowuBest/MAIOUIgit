@@ -61,7 +61,7 @@ namespace MAIO
                 D: for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status!="IDLE"&& Mainwindow.task[n].Sku==this.pid)
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status != "IDLE" && Mainwindow.task[n].Sku == this.pid)
                         {
                             if (ct.IsCancellationRequested)
                             {
@@ -70,7 +70,7 @@ namespace MAIO
                             }
                             tk.Status = "Monitoring Task";
                             monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("WaitingRestock")==false || Mainwindow.task[n].Status.Contains("Proxy Error") ==false )
+                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
                             {
                                 ismonitor = true;
                                 this.tk.Sku = Mainwindow.task[n].Sku;
@@ -107,7 +107,7 @@ namespace MAIO
                     Authorization = Login(joprofile, ct);
                 }
                 catch (NullReferenceException)
-                {               
+                {
                     tk.Status = "Login Error";
                     tk.Status = "Retrying";
                     goto B;
@@ -256,8 +256,8 @@ namespace MAIO
                     Multiesize = size.Split("+");
                 }
                 var product = "";
-                if(multisize)
-               {
+                if (multisize)
+                {
                     size = size.Remove(size.Length - 1);
                 }
                 try
@@ -380,7 +380,7 @@ namespace MAIO
                     tk.Status = "Restarting";
                     goto retry;
                 }
-               }
+            }
         }
         protected string Login(JObject profile, CancellationToken ct)
         {
@@ -437,11 +437,25 @@ namespace MAIO
                         string loginurl = null;
                         if (tk.Tasksite.Contains("UK"))
                         {
-                            loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            if (Config.UseAdvancemode == "True")
+                            {
+                                loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            }
+                            else
+                            {
+                                loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            }
                         }
                         else
                         {
-                            loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            if (Config.UseAdvancemode == "True")
+                            {
+                                loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            }
+                            else
+                            {
+                                loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                            }
                         }
                         string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                         Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
@@ -472,12 +486,27 @@ namespace MAIO
                             string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
                             string loginurl2 = null;
                             if (tk.Tasksite.Contains("US"))
-                            { 
-                                loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                            {
+                                if (Config.UseAdvancemode == "True")
+                                {
+                                    loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                                }
+                                else
+                                {
+                                    loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                                }
+
                             }
                             else
                             {
-                                loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                                if (Config.UseAdvancemode == "True")
+                                {
+                                    loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                                }
+                                else
+                                {
+                                    loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                                }
                             }
                             Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
                         }
@@ -487,11 +516,26 @@ namespace MAIO
                             string loginurl = null;
                             if (tk.Tasksite.Contains("UK"))
                             {
-                                loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                                if (Config.UseAdvancemode == "True")
+                                {
+                                    loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                                }
+                                else
+                                {
+                                    loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                                }
                             }
                             else
                             {
-                                loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                                if (Config.UseAdvancemode == "True")
+                                {
+                                    loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                                }
+                                else
+                                {
+                                    loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                                }
+
                             }
                             string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                             Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
@@ -508,7 +552,16 @@ namespace MAIO
             else
             {
                 bool isrefresh = false;
-                string loginurl = "http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                string loginurl = null;
+                if (Config.UseAdvancemode == "True")
+                {
+                    loginurl="https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                }
+                else
+                {
+                    loginurl="http://127.0.0.1:1234/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+                }
+                 
                 string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                 Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
             }
@@ -568,7 +621,9 @@ namespace MAIO
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
             Thread.Sleep(1);
-            string checkoutsessionurl = "http://127.0.0.1:1234/buy/checkout_previews/v2/" + GID;
+          string  url = "http://127.0.0.1:1234/buy/checkout_previews/v2/" + GID;
+            
+           
             string country = "";
             string currency = "";
             string locale = "";
@@ -666,7 +721,7 @@ namespace MAIO
             string checkoutpayload = "";
             try
             {
-               // string paytest = "{\"request\":{\"email\":\"wu1553992118@gmail.com\",\"country\":\"US\",\"currency\":\"USD\",\"locale\":\"en_US\",\"channel\":\"NIKECOM\",\"items\":[{\"id\":\"83de19f9-cad2-408a-a4cc-7220302e7bed\",\"skuId\":\"872dd437-5ac9-58de-89da-18bc6382c9aa\",\"productId\":\"d7ac9309-ab47-551c-a880-9d0c394231ff\",\"itemCosts\":{\"priceInfo\":{\"taxTotal\":0,\"price\":130,\"discount\":0,\"valueAddedServices\":0,\"total\":130,\"priceId\":\"ee998c37-1b58-5164-b24e-502f654f1e69\",\"priceSnapshotId\":\"e0792117-25d1-4312-8085-648244a955fa\"},\"taxes\":[{\"type\":\"SALESTAX\",\"rate\":0,\"total\":0}],\"promotionDiscounts\":[]},\"quantity\":1,\"fulfillmentDetails\":{\"type\":\"SHIP\",\"getBy\":{\"maxDate\":{\"dateTime\":\"2020-09-16T20:38:17.413Z\",\"timezone\":\"America/Indiana/Indianapolis\",\"precision\":\"DAY\"}},\"location\":{\"postalAddress\":{\"country\":\"US\",\"address1\":\"225 raritan ave\",\"postalCode\":\"08904\",\"city\":\"Highland park\",\"state\":\"NJ\"},\"type\":\"address/shipping\"}},\"valueAddedServices\":[],\"recipient\":{\"firstName\":\"chao\",\"lastName\":\"SSEPJT\"},\"contactInfo\":{\"phoneNumber\":\"4439869527\",\"email\":\"wu1553992118@gmail.com\"}}],\"promotionCodes\":[]}}";
+                // string paytest = "{\"request\":{\"email\":\"wu1553992118@gmail.com\",\"country\":\"US\",\"currency\":\"USD\",\"locale\":\"en_US\",\"channel\":\"NIKECOM\",\"items\":[{\"id\":\"83de19f9-cad2-408a-a4cc-7220302e7bed\",\"skuId\":\"872dd437-5ac9-58de-89da-18bc6382c9aa\",\"productId\":\"d7ac9309-ab47-551c-a880-9d0c394231ff\",\"itemCosts\":{\"priceInfo\":{\"taxTotal\":0,\"price\":130,\"discount\":0,\"valueAddedServices\":0,\"total\":130,\"priceId\":\"ee998c37-1b58-5164-b24e-502f654f1e69\",\"priceSnapshotId\":\"e0792117-25d1-4312-8085-648244a955fa\"},\"taxes\":[{\"type\":\"SALESTAX\",\"rate\":0,\"total\":0}],\"promotionDiscounts\":[]},\"quantity\":1,\"fulfillmentDetails\":{\"type\":\"SHIP\",\"getBy\":{\"maxDate\":{\"dateTime\":\"2020-09-16T20:38:17.413Z\",\"timezone\":\"America/Indiana/Indianapolis\",\"precision\":\"DAY\"}},\"location\":{\"postalAddress\":{\"country\":\"US\",\"address1\":\"225 raritan ave\",\"postalCode\":\"08904\",\"city\":\"Highland park\",\"state\":\"NJ\"},\"type\":\"address/shipping\"}},\"valueAddedServices\":[],\"recipient\":{\"firstName\":\"chao\",\"lastName\":\"SSEPJT\"},\"contactInfo\":{\"phoneNumber\":\"4439869527\",\"email\":\"wu1553992118@gmail.com\"}}],\"promotionCodes\":[]}}";
                 checkoutpayload = payLoad.ToString();
             }
             catch (Exception)
@@ -679,7 +734,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            USUKAPI.CheckoutPreview(checkoutsessionurl, Authorization, checkoutpayload, GID, tk, ct);
+            USUKAPI.CheckoutPreview(url, Authorization, checkoutpayload, GID, tk, ct);
         }
         protected void CheckoutpreviewStatus(string Authorization, string skuid, CancellationToken ct)
         {
@@ -729,7 +784,7 @@ namespace MAIO
             for (int i = 0; i < count; i++)
             {
                 KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
-                string cardurl2 = "https://api.nike.com/payment/giftcard_balance/v1";
+                string cardurl2 = "http://127.0.0.1:1234/payment/giftcard_balance/v1";
                 string currency = null;
                 if (tk.Tasksite.Contains("UK"))
                 {
@@ -906,7 +961,15 @@ new JObject(
         protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct)
         {
             Thread.Sleep(1);
-            string url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
+            string url = null;
+            if (Config.UseAdvancemode == "True")
+            {
+                url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
+            }
+            else
+            {
+                url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+            }
             string country = "";
             string currency = "";
             string locale = "";
@@ -1004,7 +1067,7 @@ new JProperty("shippingAddress",
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status=USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
+            string status = USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";

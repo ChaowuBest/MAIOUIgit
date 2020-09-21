@@ -504,40 +504,34 @@ namespace MAIO
         public double Postcardinfo(string url, string cardinfo, string Authorization, string cardguid, Main.taskset tk, CancellationToken ct)
         {
             Thread.Sleep(1);
-        B: if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            WebProxy wp = new WebProxy();
+        B: Thread.Sleep(1);
+            int random = ran.Next(0, Mainwindow.proxypool.Count);
+            string proxyaddress = null;
             try
             {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
                 string proxyg = Mainwindow.proxypool[random].ToString();
                 string[] proxy = proxyg.Split(":");
-
                 if (proxy.Length == 2)
                 {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
+                    proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
                 }
                 else if (proxy.Length == 4)
                 {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                    proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
                 }
             }
             catch
             {
-                wp = default;
+                proxyaddress = "";
             }
             double balance = 0;
             byte[] contentcardinfo = Encoding.UTF8.GetBytes(cardinfo);
             HttpWebRequest reqcard = (HttpWebRequest)WebRequest.Create(url);
             reqcard.Method = "POST";
-            reqcard.Proxy = wp;
             reqcard.ContentType = "application/json";
             reqcard.Accept = "*/*";
+            reqcard.Headers.Add("Server-Host", "api.nike.com:443");
+            reqcard.Headers.Add("Proxy-Address", proxyaddress);
             reqcard.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqcard.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqcard.Headers.Add("Authorization", Authorization);
@@ -550,6 +544,7 @@ namespace MAIO
             reqcard.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             reqcard.Headers.Add("X-B3-TraceId", xb3traceid);
             reqcard.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            reqcard.Timeout = 5000;
             Stream cardstream = reqcard.GetRequestStream();
             cardstream.Write(contentcardinfo, 0, contentcardinfo.Length);
             cardstream.Close();
@@ -578,7 +573,11 @@ namespace MAIO
                     string processcode = readprocessstream.ReadToEnd();
                     tk.Status = processcode;
                 }
-                tk.Status = "Submit Card failed";
+                else
+                {
+                    tk.Status = "Submit Card failed";
+                }
+             
                 goto B;
             }
 
@@ -1038,6 +1037,8 @@ namespace MAIO
                         try
                         {
                             reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
+                          //  reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; "));
+                             //MessageBox.Show(Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 
@@ -1057,7 +1058,7 @@ namespace MAIO
                 reqgetstatus.Headers.Add("Sec-Fetch-Dest", "empty");
                 reqgetstatus.Headers.Add("Sec-Fetch-Mode", "cors");
                 reqgetstatus.Headers.Add("Sec-Fetch-Site", "same-site");
-                reqgetstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+                reqgetstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36";
                 reqgetstatus.Headers.Add("X-B3-SpanId", xb3spanID);
                 reqgetstatus.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
                 reqgetstatus.Headers.Add("X-B3-TraceId", xb3traceid);
@@ -1405,6 +1406,7 @@ namespace MAIO
                 SourceCode = readStream.ReadToEnd();
                 if (SourceCode.Contains("Product not found")|| SourceCode.Contains("errors"))
                 {
+                    tk.Status = "Check Stock Error";
                     goto A;
                 }
                 JObject jo = JObject.Parse(SourceCode);
