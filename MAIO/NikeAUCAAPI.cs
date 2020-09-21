@@ -241,6 +241,10 @@ namespace MAIO
                 Thread.Sleep(1500);
                 goto B;
             }
+            catch (Exception)
+            {
+                
+            }
         }
         public string GetMethod(string url, string iamgeurl, Main.taskset tk, CancellationToken ct)
         {
@@ -293,6 +297,7 @@ namespace MAIO
             request.Headers.Add("x-b3-traceid", xb3traceid);
             request.Headers.Add("x-nike-visitid", "1");
             request.Headers.Add("x-nike-visitorid", xnikevisitorid);
+            request.Timeout = 5000;
             string sourcecode = "";
             try
             {
@@ -350,7 +355,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
-                tk.Status = response.StatusCode.ToString();
+                tk.Status = "Processing" +response.StatusCode.ToString();
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
