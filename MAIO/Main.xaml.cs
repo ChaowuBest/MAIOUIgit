@@ -36,7 +36,6 @@ namespace MAIO
     {
         public static Dictionary<string, CancellationTokenSource> dic = new Dictionary<string, CancellationTokenSource>();
         public static Dictionary<string, int> randomdic = new Dictionary<string, int>();
-        public static Dictionary<Main.taskset, Dic> sharesku = new Dictionary<Main.taskset, Dic>();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
@@ -84,108 +83,8 @@ namespace MAIO
                 task2.Start();
             }
             Process.Start(Environment.CurrentDirectory + "\\" + "Checkouthelper.exe");
-            Task task6 = Task.Run(() => checkusemonitor());
         }
         bool alreadystartbrowser = false;
-        public void checkusemonitor()
-        {
-        A: if (Config.UseAdvancemode == "True")
-            {
-                alreadystartbrowser = true;
-                if (alreadystartbrowser)
-                {
-                    Task task4 = Task.Run(() => openbrowser());
-                }
-            }
-            if (alreadystartbrowser != true)
-            {
-                Thread.Sleep(1);
-                goto A;
-            }
-            else
-            {
-            }
-
-        }
-        public static void openbrowser()
-        {
-            string ChromePath = Environment.CurrentDirectory + "\\" + "checkouthelp";
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
-            try
-            {
-                Process.Start("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
-                string argument1 = "--user-data-dir=\"" + path + "\"";
-                string argument2 = "--no-default-browser-check";
-                string argument3 = "--no-first-run";
-                string argument4 = "--disable-default-apps";
-                string argument5 = "--autoplay-policy=no-user-gesture-required";
-                string argument6 = "--enable-automation";
-                string argument7 = "--disable-infobars";
-                string argument8 = "--load-extension=\"" + ChromePath + "\"";
-                Process process = new Process();
-                process.StartInfo.FileName = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-                process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8;
-                process.StartInfo.UseShellExecute = true;
-                process.Start();
-            }
-            catch
-            {
-                string argument1 = "--user-data-dir=\"" + path + "\"";
-                string argument2 = "--no-default-browser-check";
-                string argument3 = "--no-first-run";
-                string argument4 = "--disable-default-apps";
-                string argument5 = "--autoplay-policy=no-user-gesture-required";
-                string argument6 = "--enable-automation";
-                string argument7 = "--disable-infobars";
-                string argument8 = "--load-extension=\"" + ChromePath + "\"";
-                Process process = new Process();
-                process.StartInfo.FileName = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
-                process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8;
-                process.StartInfo.UseShellExecute = true;
-                process.Start();
-            }
-            FleckLog.Level = LogLevel.Debug;
-            new WebSocketServer("ws://127.0.0.1:64525", true).Start(delegate (IWebSocketConnection socket)
-              {
-                  socket.OnOpen = delegate ()
-                  {
-                      allSockets.Add(socket);
-                  };
-                  socket.OnClose = delegate ()
-                  {
-                      allSockets.Remove(socket);
-                      openbrowser();
-                  };
-                  socket.OnMessage = delegate (string message)// 接收客户端发送过来的信息
-                  {
-
-                      if (message.IndexOf("updatetab") != -1)
-                      {
-                          if (i == 0)
-                          {
-                              allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
-                              i++;
-                          }
-
-                          return;
-                      }
-                      if (message.IndexOf("response") != -1)
-                      {
-                          try
-                          {
-                              JObject jo = JObject.Parse(message);
-                              returnstatus.Add(jo["id"].ToString(), jo);
-                          }
-                          catch
-                          {
-
-                          }
-                      }
-
-
-                  };
-              });
-        }
         public void check()
         {
         A:
@@ -610,7 +509,7 @@ namespace MAIO
                                         }
                                         account = ar[0].ToString().Split(",");
                                     }
-                                    catch(Exception ex)
+                                    catch(Exception)
                                     {
                                         randomdic[tk.Account] = randomdic[tk.Account] + 1;
                                         if ( randomdic[tk.Account]>= ar.Count)
@@ -629,46 +528,6 @@ namespace MAIO
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
-                                if (sharesku.Count != 0)
-                                {
-                                    bool newsku = false;
-                                    for (int i = 0; i < sharesku.Count; i++)
-                                    {
-                                        Thread.Sleep(1);
-                                        KeyValuePair<taskset, Dic> kv = sharesku.ElementAt(i);
-                                        if ((kv.Key.Tasksite == tk.Tasksite) && (kv.Key.Sku == tk.Sku))
-                                        {
-                                            newsku = true;
-                                            try
-                                            {
-                                                sharesku.Add(tk, kv.Value);
-                                            }
-                                            catch { }
-                                            if (kv.Value != null)
-                                            {
-                                                NSK.dc = kv.Value;
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    if (newsku == false)
-                                    {
-                                        var dc = new Dic();
-                                        try
-                                        {
-                                            sharesku.Add(tk, dc);
-                                        }
-                                        catch { }
-                                        NSK.dc = dc;
-                                    }
-                                }
-                                else
-                                {
-                                    var dc = new Dic();
-                                    sharesku.Add(tk, dc);
-                                    NSK.dc = dc;
-                                }
-
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
                                 NSK.size = tk.Size;
@@ -685,7 +544,7 @@ namespace MAIO
                                 }
                                 var cts = new CancellationTokenSource();
                                 var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                Task task2 = new Task(() => { NSK.StartTask(ct,cts); }, ct);
                                 dic.Add(tk.Taskid, cts);
                                 task2.Start();
                             }
@@ -799,7 +658,7 @@ namespace MAIO
                         jdustask.Start();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     tk.Status = "Task Error";
                 }
@@ -1050,34 +909,7 @@ namespace MAIO
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
-                                if (sharesku.Count != 0)
-                                {
-                                    for (int i = 0; i < sharesku.Count; i++)
-                                    {
-                                        Thread.Sleep(1);
-                                        KeyValuePair<taskset, Dic> kv = sharesku.ElementAt(i);
-                                        if (kv.Key.Tasksite == tk.Tasksite && kv.Key.Sku == tk.Sku)
-                                        {
-                                            try
-                                            {
-                                                sharesku.Add(tk, kv.Value);
-                                            }
-                                            catch { }
-                                            NSK.dc = kv.Value;
-                                            break;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    var dc = new Dic();
-                                    try
-                                    {
-                                        sharesku.Add(tk, dc);
-                                    }
-                                    catch { }
-                                    NSK.dc = dc;
-                                }
+                             
                                 NSK.monitortask = monitortask;
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
@@ -1094,7 +926,7 @@ namespace MAIO
                                 }
                                 var cts = new CancellationTokenSource();
                                 var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                Task task2 = new Task(() => { NSK.StartTask(ct,cts); }, ct);
                                 dic.Add(tk.Taskid, cts);
                                 task2.Start();
                             }
@@ -1346,45 +1178,7 @@ namespace MAIO
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
-                                if (sharesku.Count != 0)
-                                {
-                                    bool newsku = false;
-                                    for (int i = 0; i < sharesku.Count; i++)
-                                    {
-                                        Thread.Sleep(1);
-                                        KeyValuePair<taskset, Dic> kv = sharesku.ElementAt(i);
-                                        if ((kv.Key.Tasksite == tk.Tasksite) && (kv.Key.Sku == tk.Sku))
-                                        {
-                                            newsku = true;
-                                            try
-                                            {
-                                                sharesku.Add(tk, kv.Value);
-                                            }
-                                            catch { }
-                                            if (kv.Value != null)
-                                            {
-                                                NSK.dc = kv.Value;
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    if (newsku == false)
-                                    {
-                                        var dc = new Dic();
-                                        try
-                                        {
-                                            sharesku.Add(tk, dc);
-                                        }
-                                        catch { }
-                                        NSK.dc = dc;
-                                    }
-                                }
-                                else
-                                {
-                                    var dc = new Dic();
-                                    sharesku.Add(tk, dc);
-                                    NSK.dc = dc;
-                                }
+                              
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
                                 NSK.size = tk.Size;
@@ -1401,7 +1195,7 @@ namespace MAIO
                                 }
                                 var cts = new CancellationTokenSource();
                                 var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct); }, ct);
+                                Task task2 = new Task(() => { NSK.StartTask(ct,cts); }, ct);
                                 dic.Add(tk.Taskid, cts);
                                 task2.Start();
                             }
@@ -1411,7 +1205,7 @@ namespace MAIO
                             }
 
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
 
                             tk.Status = "No Account";
