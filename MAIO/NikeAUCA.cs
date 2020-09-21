@@ -356,7 +356,16 @@ namespace MAIO
             {
                 Quantity = limit;
             }
-            string url = "http://127.0.0.1:1234/buy/partner_cart_preorder/v1/" + GID;
+            string url = null;
+            if (Config.UseAdvancemode == "True")
+            {
+                url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
+            }
+            else
+            {
+                 url = "http://127.0.0.1:1234/buy/partner_cart_preorder/v1/" + GID;
+            }
+           
             JObject payLoad = new JObject(
                 new JProperty("country", tk.Tasksite.Replace("Nike", "")),
                 new JProperty("language", "en-GB"),
