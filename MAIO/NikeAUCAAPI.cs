@@ -377,6 +377,10 @@ namespace MAIO
                     Thread.Sleep(1500);
                     goto B;
                 }
+                catch
+                {
+                    
+                }
             }
         }
         public string GetMethod(string url, string iamgeurl, Main.taskset tk, CancellationToken ct)
