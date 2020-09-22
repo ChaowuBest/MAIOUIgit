@@ -622,8 +622,8 @@ namespace MAIO
         {
             Thread.Sleep(1);
           string  url = "http://127.0.0.1:1234/buy/checkout_previews/v2/" + GID;
-            
-           
+
+            GID = Guid.NewGuid().ToString();
             string country = "";
             string currency = "";
             string locale = "";
