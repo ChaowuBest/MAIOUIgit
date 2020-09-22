@@ -964,11 +964,12 @@ new JObject(
             string url = null;
             if (Config.UseAdvancemode == "True")
             {
-                url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
+                url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+                
             }
             else
             {
-                url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+                url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
             }
             string country = "";
             string currency = "";
