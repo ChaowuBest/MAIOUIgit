@@ -592,6 +592,7 @@ namespace MAIO
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
             Thread.Sleep(0);
+            GID = Guid.NewGuid().ToString();
             string checkoutsessionurl = "http://127.0.0.1:1234/buy/checkout_previews/v2/" + GID;
             string country = "";
             string currency = "";

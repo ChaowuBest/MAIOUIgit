@@ -389,6 +389,7 @@ namespace MAIO
             reqpayment.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqpayment.Headers.Add("Authorization", Authorization);
             reqpayment.Headers.Add("appid", "com.nike.commerce.snkrs.web");
+            reqpayment.Headers.Add("Upgrade-Insecure-Requests", "1");
             reqpayment.Headers.Add("Server-Host", "api.nike.com:443");
             reqpayment.Headers.Add("Proxy-Address", proxyaddress);
             reqpayment.ContentLength = contentpaymentinfo.Length;
