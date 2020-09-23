@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Windows.Navigation;
 
 namespace MAIO
@@ -1011,6 +1012,7 @@ namespace MAIO
         {
 
             Random ra = new Random();
+            Thread.Sleep(1);
             int i = ra.Next(0, fst.Length);
             return fst[i];
         }
