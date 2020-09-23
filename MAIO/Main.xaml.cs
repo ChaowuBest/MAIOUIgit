@@ -595,7 +595,7 @@ namespace MAIO
                         int random = ran.Next(0, Mainwindow.account.Count);
                         try
                         {
-                            string[] account = null;
+                       A:    string[] account = null;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -611,15 +611,16 @@ namespace MAIO
                                     try
                                     {
                                         randomdic.Add(tk.Account, 0);
-                                        if (ar.Count == randomdic[tk.Account])
-                                        {
-                                            randomdic.Remove(tk.Account);
-                                        }
                                         account = ar[0].ToString().Split(",");
                                     }
                                     catch (Exception ex)
                                     {
                                         randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                        if (ar.Count == randomdic[tk.Account])
+                                        {
+                                            randomdic.Remove(tk.Account);
+                                            goto A;
+                                        }
                                         if (randomdic[tk.Account] >= ar.Count)
                                         {
                                             account = ar[ar.Count - 1].ToString().Split(",");

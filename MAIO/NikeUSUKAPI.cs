@@ -728,7 +728,7 @@ namespace MAIO
             reqcheckstatus.Headers.Add("X-B3-TraceId", xb3traceid);
             try
             {
-                HttpWebResponse respcheckstatus = (HttpWebResponse)reqcheckstatus.GetResponse();
+               HttpWebResponse respcheckstatus = (HttpWebResponse)reqcheckstatus.GetResponse();
                 var wu = respcheckstatus.Headers["Set-Cookie"];
                 string cookiename = "ak_bmsc";
                 Regex rex3 = new Regex(@"(?<=" + cookiename + "=)([^;]+)");
@@ -1481,9 +1481,6 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                Stream resppaymentStream = resppayment.GetResponseStream();
-                StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
-                string paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();
                 tk.Status = "Proxy Error";
                 goto A;
             }
