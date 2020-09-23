@@ -46,8 +46,6 @@ namespace MAIO
         Dictionary<string, string> allsize = new Dictionary<string, string>();
         NikeUSUKAPI USUKAPI = new NikeUSUKAPI();
         ArrayList skuidlist = new ArrayList();
-        private static char[] constant = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-        private static char[] num = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
         bool multisize = false;
         public void StartTask(CancellationToken ct,CancellationTokenSource cts)
         {
@@ -192,26 +190,6 @@ namespace MAIO
                 return;
             }
 
-        }
-        protected static string GenerateRandomnum(int length)
-        {
-            string checkCode = string.Empty;
-            Random rd = new Random();
-            for (int i = 0; i < length; i++)
-            {
-                checkCode += num[rd.Next(10)].ToString();
-            }
-            return checkCode;
-        }
-        protected static string GenerateRandomString(int length)
-        {
-            string checkCode = string.Empty;
-            Random rd = new Random();
-            for (int i = 0; i < length; i++)
-            {
-                checkCode += constant[rd.Next(26)].ToString();
-            }
-            return checkCode;
         }
         protected void GetSKUID(string country, string pid, CancellationToken ct)
         {
@@ -411,25 +389,26 @@ namespace MAIO
         {
             string Authorization = "";
             Thread.Sleep(0);
+            autojig aj = new autojig();
             if (profile["Address1"].ToString().Contains("%char4%"))
             {
                 Regex regex = new Regex(@"%char4%");
-                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), GenerateRandomString(4));
+                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), aj.GenerateRandomString(4));
             }
             if (profile["Address1"].ToString().Contains("%num4%"))
             {
                 Regex regex = new Regex(@"%num4%");
-                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), GenerateRandomnum(4));
+                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), aj.GenerateRandomnum(4));
             }
             if (profile["Address2"].ToString().Contains("%char4%"))
             {
                 Regex regex = new Regex(@"%char4%");
-                profile["Address2"] = regex.Replace(profile["Address2"].ToString(), GenerateRandomString(4));
+                profile["Address2"] = regex.Replace(profile["Address2"].ToString(), aj.GenerateRandomString(4));
             }
             if (profile["Tel"].ToString().Contains("%num4%"))
             {
                 Regex regex = new Regex(@"%num4%");
-                profile["Tel"] = regex.Replace(profile["Tel"].ToString(), GenerateRandomnum(4));
+                profile["Tel"] = regex.Replace(profile["Tel"].ToString(), aj.GenerateRandomnum(4));
             }
             if (profile["FirstName"].ToString().Contains("%fname%"))
             {
@@ -448,7 +427,7 @@ namespace MAIO
             {
                 Regex regex = new Regex(@"random");
                 Firstname fs = new Firstname();
-                profile["EmailAddress"] = regex.Replace(profile["EmailAddress"].ToString(), GenerateRandomString(4));
+                profile["EmailAddress"] = regex.Replace(profile["EmailAddress"].ToString(), aj.GenerateRandomString(4));
             }
         A: if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
             {
