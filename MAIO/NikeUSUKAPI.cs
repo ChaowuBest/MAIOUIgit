@@ -211,7 +211,10 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                }
+                  /*  HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
+                    Stream tokenStream = respgethtml.GetResponseStream();
+                    StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
+                    var chao = readhtmlStream.ReadToEnd();*/
 
                 Thread.Sleep(1000);
                 goto retry;
