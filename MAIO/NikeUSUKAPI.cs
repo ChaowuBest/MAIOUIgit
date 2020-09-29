@@ -158,6 +158,7 @@ namespace MAIO
                         }
                     }
                 }
+             
                 string proxy = "";
                 try
                 {
@@ -1037,8 +1038,6 @@ namespace MAIO
                         try
                         {
                             reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
-                          //  reqgetstatus.Headers.Add("Cookie", Mainwindow.lines[cookie].Replace(";", "; "));
-                             //MessageBox.Show(Mainwindow.lines[cookie].Replace(";", "; ") + "; " + akbmsz);
                             Main.updatelable(Mainwindow.lines[cookie], false);
                             Mainwindow.lines.RemoveAt(cookie);
 
@@ -1497,23 +1496,6 @@ namespace MAIO
             long lTime = long.Parse(timeStamp + "0000");
             TimeSpan toNow = new TimeSpan(lTime);
             return dtStart.Add(toNow);
-        }
-        public async void getcookie(string hwid)
-        {
-            try
-            {
-                await Task.Delay(1);
-                var binding = new BasicHttpBinding();
-                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                var callClient = factory.CreateChannel();
-                JObject result = JObject.Parse(callClient.getcookieAsync(hwid).Result);
-                servercookie = result["cookie"].ToString();
-            }
-            catch
-            {
-
-            }
         }
     }
 }
