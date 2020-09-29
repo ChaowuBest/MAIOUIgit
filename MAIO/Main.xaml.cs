@@ -886,10 +886,6 @@ namespace MAIO
                                     try
                                     {
                                         randomdic.Add(tk.Account, 0);
-                                        if (ar.Count == randomdic[tk.Account])
-                                        {
-                                            randomdic.Remove(tk.Account);
-                                        }
                                         account = ar[0].ToString().Split(",");
                                     }
                                     catch (Exception ex)
