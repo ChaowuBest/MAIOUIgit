@@ -338,13 +338,12 @@ namespace MAIO
                     string bal = jo["balance"].ToString();
                     balance = Convert.ToDouble(bal);
                 }
-
             }
             catch (WebException ex)
             {
                 HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
                 tk.Status = "Submit Card  " + processpayment.StatusCode;
-                goto B;
+             //   goto B;
             }
 
             return balance;
