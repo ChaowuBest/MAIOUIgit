@@ -211,40 +211,37 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                  /*  HttpWebResponse respgethtml = (HttpWebResponse)ex.Response;
-                    Stream tokenStream = respgethtml.GetResponseStream();
-                    StreamReader readhtmlStream = new StreamReader(tokenStream, Encoding.UTF8);
-                    var chao = readhtmlStream.ReadToEnd();*/
-
-                Thread.Sleep(1000);
-                goto retry;
+                    Thread.Sleep(1000);
+                    goto retry;
+                }
             }
-
-            JObject jo = null;
-            try
-            {
-                jo = JObject.Parse(token);
-            }
-            catch (ArgumentNullException)
-            {
-                returnstatus.Remove(tk.Taskid);
-                Main.autorestock(tk);
+                JObject jo = null;
+                try
+                {
+                    jo = JObject.Parse(token);
+                }
+                catch (ArgumentNullException)
+                {
+                    returnstatus.Remove(tk.Taskid);
+                    Main.autorestock(tk);
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                }
+                jo.ToString();
+                string Authorization = "Bearer " + jo["access_token"].ToString();
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
-            }
-            jo.ToString();
-            string Authorization = "Bearer " + jo["access_token"].ToString();
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]", account));
-            task1.Start();
-            return Authorization;
+                Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]", account));
+                task1.Start();
+                return Authorization;
+            
+           
         }
         public void writerefreshtoken(string token, string account)
         {
@@ -611,9 +608,6 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
-                /*  Stream processtream = processpayment.GetResponseStream();
-                  StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
-                  processcode = readprocessstream.ReadToEnd();*/
                 tk.Status = "SubmitBilling error";
                 goto retry;
             }
