@@ -239,9 +239,7 @@ namespace MAIO
                 }
                 Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]", account));
                 task1.Start();
-                return Authorization;
-            
-           
+                return Authorization;        
         }
         public void writerefreshtoken(string token, string account)
         {
@@ -345,7 +343,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
-                tk.Status = "Submit Card" + processpayment.StatusCode;
+                tk.Status = "Submit Card  " + processpayment.StatusCode;
                 goto B;
             }
 

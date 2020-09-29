@@ -355,7 +355,7 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse response = (HttpWebResponse)ex.Response;
-                tk.Status = "Processing" +response.StatusCode.ToString();
+                tk.Status = "Processing  " +response.StatusCode.ToString();
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";

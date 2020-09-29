@@ -1151,10 +1151,6 @@ new JProperty("shippingAddress",
             }
 
         }
-
-
-
-
     }
 }
 
