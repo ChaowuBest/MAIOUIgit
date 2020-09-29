@@ -101,10 +101,24 @@ namespace MAIO
         B:
             try
             {
-                Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                if (Config.UseAdvancemode == "True")
+                {
+                    if (cookie != "")
+                    {
+                        Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                    }
+                    else
+                    {
+                        goto B;
+                    }
+                }
+                else
+                {
+                    Checkout(joprofile.ToString(), skuid, priceid, msrp, ct, cookie);
+                }
 
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
                 goto B;
             }
@@ -121,8 +135,14 @@ namespace MAIO
             try
             {
                 Processorder(profile, ct, cts);
+                cts.Cancel();
+                Main.dic.Remove(tk.Taskid);
+                if (ct.IsCancellationRequested)
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
             }
-            catch (NullReferenceException)
+            catch (NullReferenceException ex)
             {
                 goto C;
             }
@@ -304,7 +324,7 @@ namespace MAIO
                             }
                             if (Config.UseAdvancemode == "True")
                             {
-                                //  Task task2 = Task.Run(() => getcookie(Config.hwid));
+                                Task task2 = Task.Run(() => getcookie(Config.hwid));
                             }
                             if (group[0] != null)
                             {
@@ -327,7 +347,7 @@ namespace MAIO
                 }
             }
         }
-        public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct, string cookie)
+        public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
         {
             Thread.Sleep(1);
             string currency = null;
@@ -399,51 +419,54 @@ namespace MAIO
             }
 
             string payinfo = payLoad.ToString();
-            AUCAAPI.PutMethod(url, payinfo, tk, ct, cookie);
+            AUCAAPI.PutMethod(url, payinfo, tk, ct, GID);
         }
         public void Processorder(string profile, CancellationToken ct, CancellationTokenSource cts)
         {
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            Thread.Sleep(1);
-            string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
-            string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
-            JObject jo = JObject.Parse(sourcecode);
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            string paymenturl = null;
-            paymenturl = jo["response"]["redirectUrl"].ToString();
-            tk.Status = "Success";
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            string webhook2 = "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt";
-            if (Config.webhook == "")
-            {
-                tk.Status = paymenturl;
-                try
+                if (ct.IsCancellationRequested)
                 {
-                    ProcessNotification(true, webhook2, "");
-                    Thread.Sleep(500000);
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
                 }
-                catch
+                string paymenturl = null;
+                Thread.Sleep(1);
+                string url = "https://api.nike.com/buy/partner_cart_preorder/v1/" + GID;
+                string sourcecode = AUCAAPI.GetMethod(url, imageurl, tk, ct);
+                JObject jo = JObject.Parse(sourcecode);
+                if (ct.IsCancellationRequested)
                 {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
 
+                paymenturl = jo["response"]["redirectUrl"].ToString();
+                tk.Status = "Success";
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
                 }
-            }
-            else
-            {
-                ProcessNotification(false, Config.webhook, paymenturl);
-                ProcessNotification(true, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", "");
-            }
+                string webhook2 = "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt";
+                if (Config.webhook == "")
+                {
+                    tk.Status = paymenturl;
+                    try
+                    {
+                        ProcessNotification(true, webhook2, "");
+                        Thread.Sleep(500000);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                else
+                {
+                    ProcessNotification(false, Config.webhook, paymenturl);
+                    ProcessNotification(true, "https://discordapp.com/api/webhooks/517871792677847050/qry12HP2IqJQb2sAfSNBmpUmFPOdPsVXUYY2_yhDgckgznpeVtRpNbwvO1Oma6nMGeK9", "");
+                }
+            
         }
         public void ProcessNotification(bool publicsuccess, string webhookurl, string paymenturl)
         {

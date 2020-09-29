@@ -134,7 +134,6 @@ namespace MAIO
                             Config.UseAdvancemode = "";
                             Config.autoclearcookie = false;
                             Close();
-
                             MD.Show();
                         }
                         else
