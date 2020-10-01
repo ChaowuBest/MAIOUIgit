@@ -471,6 +471,10 @@ namespace MAIO
             {
                 Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
                 Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7], Account = st[9] });
+                //if (st[7] == "True")
+             //   {
+               //     datagrid.Foreground = Brushes.Yellow;
+               // }      
             }
             taskwrite(profile);
         }

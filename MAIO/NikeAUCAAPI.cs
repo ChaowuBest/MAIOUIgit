@@ -110,6 +110,11 @@ namespace MAIO
                 string[] sendcookie = null;
                 if (Mainwindow.iscookielistnull|| Mainwindow.lines.Count==0)
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     try
                     {
                         var binding = new BasicHttpBinding();
@@ -499,10 +504,17 @@ namespace MAIO
         }
         public string[] Monitoring(string url, taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool multisize, ArrayList skulist)
         {
+           DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
+            }
+            DateTime dttwo = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+            TimeSpan ts = dttwo - dtone;
+            if (ts.TotalMinutes >= 50)
+            {
+                Main.autorestock(tk);
             }
             Thread.Sleep(1);
             string traceid = Guid.NewGuid().ToString();
@@ -645,6 +657,27 @@ namespace MAIO
             }
             if (group[0] == null)
             {
+                if (tk.monitortask == "True")
+                {
+                    share_dog[tk.Tasksite + tk.Sku] = false;
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    goto A;
+                }
+                goto A;
+            }
+            if (tk.monitortask == "True")
+            {
+                tk.Status = "Get Stock";
+                share_dog[tk.Tasksite + tk.Sku] = true;
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 goto A;
             }
             return group;

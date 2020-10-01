@@ -97,6 +97,11 @@ namespace MAIO
             if (Config.UseAdvancemode == "True")
             {
             C: string[] sendcookie = new string[2];
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
                     try
@@ -111,6 +116,7 @@ namespace MAIO
                     catch
                     {
                         Thread.Sleep(1);
+
                         tk.Status = "Get Cookie Error";
                         goto C;
                     }
@@ -290,6 +296,11 @@ namespace MAIO
                         catch
                         {
                             Thread.Sleep(1);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                             tk.Status = "Get Cookie Error";
                             goto reloadcookie;
                         }
@@ -516,6 +527,11 @@ namespace MAIO
             request.Headers.Add("appid", "com.nike.commerce.snkrs.web");
         C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
             {
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
                 try
                 {
                     var binding = new BasicHttpBinding();
@@ -578,7 +594,7 @@ namespace MAIO
                         if (jo["error"]["message"].ToString().Contains("Non buyable product(s)"))
                         {
                             tk.Status = "Non buyable product(s)";
-                            goto B;
+                            autorestock(tk);
                         }
                     }
                 }
@@ -869,6 +885,11 @@ namespace MAIO
                 request.Headers.Add("Authorization", Authorization);
             C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     try
                     {
                         var binding = new BasicHttpBinding();
@@ -943,6 +964,11 @@ namespace MAIO
             {
                 if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     try
                     {
                         var binding = new BasicHttpBinding();
@@ -1142,10 +1168,17 @@ namespace MAIO
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool multisize, ArrayList skulist)
         {
+            DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
+            }
+            DateTime dttwo = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+            TimeSpan ts = dttwo - dtone;
+            if (ts.TotalMinutes >= 50)
+            {
+                Main.autorestock(tk);
             }
             Thread.Sleep(1);
             string traceid = Guid.NewGuid().ToString();
@@ -1257,7 +1290,6 @@ namespace MAIO
             }
             catch (WebException)
             {
-                //   HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                 tk.Status = "Proxy Error";
                 goto A;
             }

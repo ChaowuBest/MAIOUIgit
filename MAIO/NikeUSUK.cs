@@ -49,7 +49,6 @@ namespace MAIO
         bool multisize = false;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-            // bool monitortask = false;
             bool ismonitor = false;
             try
             {
@@ -60,44 +59,6 @@ namespace MAIO
                 }
                 if (tk.monitortask != "True")
                 {
-                    #region
-                    /*     D: for (int n = 0; n < Mainwindow.task.Count; n++)
-                             {
-                                 Thread.Sleep(1);
-                                 if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
-                                 {
-                                     if (ct.IsCancellationRequested)
-                                     {
-                                         tk.Status = "IDLE";
-                                         ct.ThrowIfCancellationRequested();
-                                     }
-                                     tk.Status = "Monitoring Task";
-                                     // Main.share_dog.Add(this.tk.);
-
-                                     monitortask = true;
-                                     if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
-                                     {
-                                         ismonitor = true;
-                                         this.tk.Sku = Mainwindow.task[n].Sku;
-                                         this.pid = this.tk.Sku;
-                                         break;
-                                     }
-                                 }
-                             }
-                             if (monitortask && ismonitor == false)
-                             {
-                                 if (ct.IsCancellationRequested)
-                                 {
-                                     tk.Status = "IDLE";
-                                     ct.ThrowIfCancellationRequested();
-                                 }
-                                 goto D;
-                             }
-                             else
-                             {
-                                 Thread.Sleep(0);
-                             }*/
-                    #endregion
                     for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
@@ -176,6 +137,16 @@ namespace MAIO
                 try
                 {
                     Authorization = Login(joprofile, ct);
+                    if (Config.Usemonitor == "True")
+                    {
+                        string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                        string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                        string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
+                        if (group[0] != null)
+                        {
+                            skuid = group[0];
+                        }
+                    }
                 }
                 catch (NullReferenceException ex)
                 {
@@ -404,45 +375,12 @@ namespace MAIO
                     tk.Status = "Size Not available";
                     goto retry;
                 }
-                for (int n = 0; n < allsize.Count; n++)
-                {
-                    KeyValuePair<string, string> kv = allsize.ElementAt(n);
-                    Thread.Sleep(1);
-                    if (skuid == kv.Value)
-                    {
-                        if (Config.Usemonitor == "True")
-                        {
-                            if (Config.Usemonitor == "True")
-                            {
-                                string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                                string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                                string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
-                                if (group[0] != null)
-                                {
-                                    skuid = group[0];
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
             }
             catch (NullReferenceException)
             {
                 Thread.Sleep(1);
                 goto A;
             }
-        /*    catch (OperationCanceledException)
-            {
-                return;
-            }*/
         }
         protected string Login(JObject profile, CancellationToken ct)
         {

@@ -42,7 +42,6 @@ namespace MAIO
         JObject joprofile = null;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-            bool monitortask = false;
             bool ismonitor = false;
             try
             {
@@ -53,7 +52,7 @@ namespace MAIO
                 }
                 if (tk.monitortask != "True")
                 {
-                D: for (int n = 0; n < Mainwindow.task.Count; n++)
+                    for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
                         if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
@@ -63,26 +62,56 @@ namespace MAIO
                                 tk.Status = "IDLE";
                                 ct.ThrowIfCancellationRequested();
                             }
-                            tk.Status = "Monitoring Task";
-                            monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
-                            {
-                                ismonitor = true;
-                                this.tk.Sku = Mainwindow.task[n].Sku;
-                                this.pid = this.tk.Sku;
-                                break;
-                            }
+                            ismonitor = true;
+                            break;
                         }
                     }
-                    if (monitortask && ismonitor == false)
+                G: if (ismonitor)
                     {
-                        goto D;
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        try
+                        {
+                            if (share_dog[this.tk.Tasksite + this.tk.Sku] == false)
+                            {
+                                tk.Status = "Monitoring Task";
+                                Thread.Sleep(1);
+                                goto G;
+                            }
+                        }
+                        catch
+                        {
+                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                            goto G;
+                        }
+
+                    }
+                }
+                else
+                {
+                    bool svalue;
+                    if (share_dog.TryGetValue(this.tk.Tasksite + this.tk.Sku, out svalue) == false)
+                    {
+                        try
+                        {
+                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                        }
+                        catch
+                        {
+                            Main.share_dog[this.tk.Tasksite + this.tk.Sku] = false;
+                        }
                     }
                 }
             }
-            catch
+            catch (OperationCanceledException)
             {
-
+                return;
+            }
+            catch (Exception)
+            {
             }
         A: joprofile = JObject.Parse(profile);
             try
@@ -284,44 +313,22 @@ namespace MAIO
                 Random ra = new Random();
                 skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
             }
-            for (int n = 0; n < jas.Count; n++)
-            {
-                if (skuid == jas[n]["id"].ToString())
-                {
-                    if (Config.Usemonitor == "True")
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                        string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                        string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        if (group[0] != null)
-                        {
-                            skuid = group[0];
-                        }
-                        productid = group[1];
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
             if (skuid == "")
             {
                 tk.Status = "Size Not Available";
                 Thread.Sleep(int.Parse(Config.delay));
                 goto Retry;
             }
-
+            if (Config.Usemonitor == "True")
+            {
+                string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
+                if (group[0] != null)
+                {
+                    skuid = group[0];
+                }
+            }
         }
         public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
         {
