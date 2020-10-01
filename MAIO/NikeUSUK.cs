@@ -46,11 +46,10 @@ namespace MAIO
         Dictionary<string, string> allsize = new Dictionary<string, string>();
         NikeUSUKAPI USUKAPI = new NikeUSUKAPI();
         ArrayList skuidlist = new ArrayList();
-        private static char[] constant = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-        private static char[] num = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-        public void StartTask(CancellationToken ct)
+        bool multisize = false;
+        public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-            bool monitortask = false;
+            // bool monitortask = false;
             bool ismonitor = false;
             try
             {
@@ -61,41 +60,101 @@ namespace MAIO
                 }
                 if (tk.monitortask != "True")
                 {
-                D: for (int n = 0; n < Mainwindow.task.Count; n++)
+                    #region
+                    /*     D: for (int n = 0; n < Mainwindow.task.Count; n++)
+                             {
+                                 Thread.Sleep(1);
+                                 if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                                 {
+                                     if (ct.IsCancellationRequested)
+                                     {
+                                         tk.Status = "IDLE";
+                                         ct.ThrowIfCancellationRequested();
+                                     }
+                                     tk.Status = "Monitoring Task";
+                                     // Main.share_dog.Add(this.tk.);
+
+                                     monitortask = true;
+                                     if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
+                                     {
+                                         ismonitor = true;
+                                         this.tk.Sku = Mainwindow.task[n].Sku;
+                                         this.pid = this.tk.Sku;
+                                         break;
+                                     }
+                                 }
+                             }
+                             if (monitortask && ismonitor == false)
+                             {
+                                 if (ct.IsCancellationRequested)
+                                 {
+                                     tk.Status = "IDLE";
+                                     ct.ThrowIfCancellationRequested();
+                                 }
+                                 goto D;
+                             }
+                             else
+                             {
+                                 Thread.Sleep(0);
+                             }*/
+                    #endregion
+                    for (int n = 0; n < Mainwindow.task.Count; n++)
                     {
                         Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Status != "IDLE" && Mainwindow.task[n].Sku == this.pid)
+                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
                         {
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
                                 ct.ThrowIfCancellationRequested();
                             }
-                            tk.Status = "Monitoring Task";
-                            monitortask = true;
-                            if (Mainwindow.task[n].Status.Contains("WaitingRestock") == false || Mainwindow.task[n].Status.Contains("Proxy Error") == false)
-                            {
-                                ismonitor = true;
-                                this.tk.Sku = Mainwindow.task[n].Sku;
-                                this.pid = this.tk.Sku;
-                                break;
-                            }
+                            ismonitor = true;
+                            break;
                         }
                     }
-                    if (monitortask && ismonitor == false)
+                G: if (ismonitor)
                     {
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
                             ct.ThrowIfCancellationRequested();
                         }
-                        goto D;
-                    }
-                    else
-                    {
-                        Thread.Sleep(0);
+                        try
+                        {
+                            if (share_dog[this.tk.Tasksite + this.tk.Sku] == false)
+                            {
+                                tk.Status = "Monitoring Task";
+                                Thread.Sleep(1);
+                                goto G;
+                            }
+                        }
+                        catch
+                        {
+                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                            goto G;
+                        }
+
                     }
                 }
+                else
+                {
+                    bool svalue;
+                    if (share_dog.TryGetValue(this.tk.Tasksite + this.tk.Sku, out svalue) == false)
+                    {
+                        try
+                        {
+                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                        }
+                        catch
+                        {
+                            Main.share_dog[this.tk.Tasksite + this.tk.Sku] = false;
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                return;
             }
             catch (Exception)
             {
@@ -128,13 +187,11 @@ namespace MAIO
                 {
                     if (giftcard == "")
                     {
-                        Task task = new Task(() => Submitcardinfo(Authorization, skuid, ct));
-                        task.Start();
+                        Task task = Task.Run(() => Submitcardinfo(Authorization, ct));
                     }
                     else
                     {
-                        Task task = new Task(() => subimitgiftcard(Authorization, skuid, ct));
-                        task.Start();
+                        Task task = Task.Run(() => subimitgiftcard(Authorization, ct));
                     }
                 }
                 catch (NullReferenceException)
@@ -166,12 +223,11 @@ namespace MAIO
                 F: if (subcard)
                     {
                         string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
-                        PreviewJob(id, Authorization, ct);
                         paymenttoken(Authorization, id, skuid, joprofile, ct);
-                       
                     }
                     else
                     {
+                        tk.Status = "Waiting for Submit Card";
                         Thread.Sleep(1);
                         goto F;
                     }
@@ -192,34 +248,11 @@ namespace MAIO
             }
 
         }
-        protected static string GenerateRandomnum(int length)
-        {
-            string checkCode = string.Empty;
-            Random rd = new Random();
-            for (int i = 0; i < length; i++)
-            {
-                checkCode += num[rd.Next(10)].ToString();
-            }
-            return checkCode;
-        }
-        protected static string GenerateRandomString(int length)
-        {
-            string checkCode = string.Empty;
-            Random rd = new Random();
-            for (int i = 0; i < length; i++)
-            {
-                checkCode += constant[rd.Next(26)].ToString();
-            }
-            return checkCode;
-        }
         protected void GetSKUID(string country, string pid, CancellationToken ct)
         {
-            Thread.Sleep(1);
-            if (skuid != "" && productID != "")
+        A: try
             {
-            }
-            else
-            {
+                Thread.Sleep(1);
             retry: string url = "";
                 if (ct.IsCancellationRequested)
                 {
@@ -274,9 +307,8 @@ namespace MAIO
                     }
                     Multiesize = size.Split("+");
                 }
-                var product = "";
-                if(multisize)
-               {
+                if (multisize)
+                {
                     size = size.Remove(size.Length - 1);
                 }
                 JArray jar = null;
@@ -356,33 +388,6 @@ namespace MAIO
                         Random ra = new Random();
                         skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
                     }
-                    for (int n = 0; n < jas.Count; n++)
-                    {
-                        if (skuid == jas[n]["id"].ToString())
-                        {
-                            if (Config.Usemonitor == "True")
-                            {
-                                if (Config.Usemonitor == "True")
-                                {
-                                    string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                                    string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
-                                    string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, false, multisize, skuidlist);
-                                    if (group[0] != null)
-                                    {
-                                        skuid = group[0];
-                                    }
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
                 }
                 catch (NullReferenceException)
                 {
@@ -397,15 +402,53 @@ namespace MAIO
                 if (skuid == "")
                 {
                     tk.Status = "Size Not available";
-                    tk.Status = "Restarting";
                     goto retry;
                 }
-               }
+                for (int n = 0; n < allsize.Count; n++)
+                {
+                    KeyValuePair<string, string> kv = allsize.ElementAt(n);
+                    Thread.Sleep(1);
+                    if (skuid == kv.Value)
+                    {
+                        if (Config.Usemonitor == "True")
+                        {
+                            if (Config.Usemonitor == "True")
+                            {
+                                string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                                string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                                string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
+                                if (group[0] != null)
+                                {
+                                    skuid = group[0];
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (NullReferenceException)
+            {
+                Thread.Sleep(1);
+                goto A;
+            }
+        /*    catch (OperationCanceledException)
+            {
+                return;
+            }*/
         }
         protected string Login(JObject profile, CancellationToken ct)
         {
             string Authorization = "";
             Thread.Sleep(1);
+            autojig aj = new autojig();
             if (profile["Address1"].ToString().Contains("%char4%"))
             {
                 Regex regex = new Regex(@"%char4%");
@@ -438,12 +481,29 @@ namespace MAIO
                 Firstname fs = new Firstname();
                 profile["LastName"] = regex.Replace(profile["LastName"].ToString(), fs.name());
             }
-            var chao = profile["EmailAddress"];
             if (profile["EmailAddress"].ToString().Contains("random"))
             {
                 Regex regex = new Regex(@"random");
                 Firstname fs = new Firstname();
                 profile["EmailAddress"] = regex.Replace(profile["EmailAddress"].ToString(), aj.GenerateRandomString(4));
+            }
+            string loginurl = null;
+            string locale = null;
+            if (tk.Tasksite == "NikeUK")
+            {
+                locale = "en_GB";
+            }
+            else
+            {
+                locale = "en_US";
+            }
+            if (Config.UseAdvancemode == "True")
+            {
+                loginurl = "https://unite.nike.com/login?appVersion=831&experienceVersion=831&uxid=com.nike.commerce.snkrs.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
+            }
+            else
+            {
+                loginurl = "http://127.0.0.1:1234/login?appVersion=831&experienceVersion=831&uxid=com.nike.commerce.snkrs.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
             }
         A: if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
             {
@@ -454,15 +514,6 @@ namespace MAIO
                     if (fi.Length == 0)
                     {
                         bool isrefresh = false;
-                        string loginurl = null;
-                        if (tk.Tasksite.Contains("UK"))
-                        {
-                            loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
-                        }
-                        else
-                        {
-                            loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
-                        }
                         string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                         Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
                     }
@@ -471,7 +522,16 @@ namespace MAIO
                         FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                         StreamReader sr = new StreamReader(fs1);
                         string read = sr.ReadToEnd();
-                        JArray ja = JArray.Parse(read);
+                        JArray ja = null;
+                        try
+                        {
+                            ja = JArray.Parse(read);
+                        }
+                        catch
+                        {
+                            tk.Status = "Check Refreshtoken File";
+                            Thread.Sleep(500000000);
+                        }
                         string token = "";
                         for (int i = 0; i < ja.Count; i++)
                         {
@@ -491,28 +551,20 @@ namespace MAIO
                             bool isrefresh2 = true;
                             string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
                             string loginurl2 = null;
-                            if (tk.Tasksite.Contains("US"))
-                            { 
-                                loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_US&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                            if (Config.UseAdvancemode != "True")
+                            {
+                                loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                             }
                             else
                             {
-                                loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
+                                loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                             }
+
                             Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
                         }
                         else
                         {
                             bool isrefresh = false;
-                            string loginurl = null;
-                            if (tk.Tasksite.Contains("UK"))
-                            {
-                                loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_GB&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
-                            }
-                            else
-                            {
-                                loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
-                            }
                             string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                             Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
                         }
@@ -528,7 +580,6 @@ namespace MAIO
             else
             {
                 bool isrefresh = false;
-                string loginurl = "https://unite.nike.com/login?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.snkrs.web&locale=en_US&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
                 string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
                 Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
             }
@@ -568,7 +619,7 @@ namespace MAIO
             }
             catch
             {
-                tk.Status = "Card Error";
+                tk.Status = "Card Input Error";
             }
             cardinfo = "{\"accountNumber\":\"" + jo["Cardnum"].ToString() + "\",\"cardType\":\"" + cardtype + "\",\"expirationMonth\":\"" + expir[0] + "\",\"expirationYear\":\"" + expir[1] + "\",\"creditCardInfoId\":\"" + cardguid + "\",\"cvNumber\":\"" + jo["Cvv"].ToString() + "\"}";
             if (ct.IsCancellationRequested)
@@ -576,7 +627,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            USUKAPI.Postcardinfo(cardurl, cardinfo, Authorization, cardguid, tk, ct);
+            USUKAPI.Postcardinfo(cardurl, cardinfo, Authorization, tk, ct, true);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -587,7 +638,8 @@ namespace MAIO
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
             Thread.Sleep(1);
-            string checkoutsessionurl = "https://api.nike.com/buy/checkout_previews/v2/" + GID;
+            GID = Guid.NewGuid().ToString();
+            string url = "https://api.nike.com/buy/checkout_previews/v2/" + GID;
             string country = "";
             string currency = "";
             string locale = "";
@@ -685,7 +737,6 @@ namespace MAIO
             string checkoutpayload = "";
             try
             {
-                // string paytest = "{\"request\":{\"email\":\"wu1553992118@gmail.com\",\"country\":\"US\",\"currency\":\"USD\",\"locale\":\"en_US\",\"channel\":\"NIKECOM\",\"items\":[{\"id\":\"83de19f9-cad2-408a-a4cc-7220302e7bed\",\"skuId\":\"872dd437-5ac9-58de-89da-18bc6382c9aa\",\"productId\":\"d7ac9309-ab47-551c-a880-9d0c394231ff\",\"itemCosts\":{\"priceInfo\":{\"taxTotal\":0,\"price\":130,\"discount\":0,\"valueAddedServices\":0,\"total\":130,\"priceId\":\"ee998c37-1b58-5164-b24e-502f654f1e69\",\"priceSnapshotId\":\"e0792117-25d1-4312-8085-648244a955fa\"},\"taxes\":[{\"type\":\"SALESTAX\",\"rate\":0,\"total\":0}],\"promotionDiscounts\":[]},\"quantity\":1,\"fulfillmentDetails\":{\"type\":\"SHIP\",\"getBy\":{\"maxDate\":{\"dateTime\":\"2020-09-16T20:38:17.413Z\",\"timezone\":\"America/Indiana/Indianapolis\",\"precision\":\"DAY\"}},\"location\":{\"postalAddress\":{\"country\":\"US\",\"address1\":\"225 raritan ave\",\"postalCode\":\"08904\",\"city\":\"Highland park\",\"state\":\"NJ\"},\"type\":\"address/shipping\"}},\"valueAddedServices\":[],\"recipient\":{\"firstName\":\"chao\",\"lastName\":\"SSEPJT\"},\"contactInfo\":{\"phoneNumber\":\"4439869527\",\"email\":\"wu1553992118@gmail.com\"}}],\"promotionCodes\":[]}}";
                 checkoutpayload = payLoad.ToString();
             }
             catch (Exception)
@@ -728,6 +779,7 @@ namespace MAIO
             int count = 0;
             double balance = 0;
             JObject jo = JObject.Parse(Mainwindow.giftcardlist[giftcard]);
+            double msrpdouble = 0;
             try
             {
                 foreach (var i in jo)
@@ -748,7 +800,7 @@ namespace MAIO
             for (int i = 0; i < count; i++)
             {
                 KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
-                string cardurl2 = "http://127.0.0.1:1234/payment/giftcard_balance/v1";
+                string cardurl2 = "https://api.nike.com/payment/giftcard_balance/v1";
                 string currency = null;
                 if (tk.Tasksite.Contains("UK"))
                 {
@@ -759,9 +811,8 @@ namespace MAIO
                     currency = "USD";
                 }
                 string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
-                balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, cardguid, tk, ct);
-                
-                double msrpdouble = Convert.ToDouble(msrp);
+                balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, tk, ct, false);
+                msrpdouble = Convert.ToDouble(msrp);
                 if (balance > msrpdouble)
                 {
                     if (ct.IsCancellationRequested)
@@ -773,6 +824,10 @@ namespace MAIO
                     break;
                 }
             }
+            if (balance < msrpdouble)
+            {
+                tk.Status = "Insufficient balance";
+            }
             subcard = true;
         }
         ArrayList giftcardadd = new ArrayList();
@@ -781,10 +836,10 @@ namespace MAIO
             Thread.Sleep(0);
             string paymenturl = "https://api.nike.com/payment/preview/v2/";
             JObject payinfo = null;
-            string country = "";
-            string currency = "";
-            string locale = "";
-            string shippingMethod = "";
+            string country = null;
+            string currency = null;
+            string locale = null;
+            string shippingMethod = null;
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -911,22 +966,20 @@ new JObject(
             }
             string id = USUKAPI.payment(paymenturl, Authorization, paymentinfo, tk, ct);
             return id;
-        }
-        protected void PreviewJob(string id, string Authorization, CancellationToken ct)
-        {
-            Thread.Sleep(0);
-            string url = "https://api.nike.com/payment/preview/v2/jobs/" + id;
-            if (ct.IsCancellationRequested)
-            {
-                tk.Status = "IDLE";
-                ct.ThrowIfCancellationRequested();
-            }
-            USUKAPI.paymentjob(url, Authorization, ct, tk);
+
         }
         protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct)
         {
             Thread.Sleep(1);
-            string url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+            string url = null;
+            if (Config.UseAdvancemode == "True")
+            {
+                url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+            }
+            else
+            {
+                url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
+            }
             string country = "";
             string currency = "";
             string locale = "";

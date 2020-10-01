@@ -22,11 +22,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.46
+    /// version 0.99.53
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.46";//everychange
+        public static string version = "0.99.53";//everychange
         public LoginWindow()
         {
             InitializeComponent();
@@ -35,7 +35,6 @@ namespace MAIO
         public void checkkey()
         {
            var ip = HttpGet("https://api.ipify.org", "utf-8");
-            //var ip = "";
             Config.ip = ip;
             string finger = null;
             try

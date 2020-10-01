@@ -1,5 +1,6 @@
 ﻿using Fleck;
 using MAIO.ASOS;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -39,6 +40,7 @@ namespace MAIO
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
+        public static Dictionary<string,bool> share_dog=new Dictionary<string,bool>(); 
         public static int i = 0;
         public Main()
         {
@@ -77,24 +79,32 @@ namespace MAIO
             {
                 cookienum.Content = Mainwindow.lines.Count;
             }));
-            if (Config.autoclearcookie)
-            {
-                Task task2 = new Task(() => clearcookie());
-                task2.Start();
-            }
-          
-           // Task task5 = Task.Run(()=>check());
-            Task task6 = Task.Run(()=>checkusemonitor());
+            Process.Start(Environment.CurrentDirectory + "\\" + "Checkouthelper.exe");
+            var cts = new CancellationTokenSource();
+            var ct = cts.Token;
+            Task task6 = Task.Run(() => checkusemonitor(ct,cts));
         }
         bool alreadystartbrowser = false;
-        public void checkusemonitor() 
+        public void checkusemonitor(CancellationToken ct, CancellationTokenSource cts)
         {
-          A: if (Config.UseAdvancemode == "True")
+        A: if (Config.UseAdvancemode == "True")
             {
                 alreadystartbrowser = true;
                 if (alreadystartbrowser)
                 {
-                    Task task4 = Task.Run(() => openbrowser());
+                    openbrowser();
+                    cts.Cancel();
+                    if (ct.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
                 }
             }
             Thread.Sleep(1);
@@ -102,23 +112,46 @@ namespace MAIO
             {
                 goto A;
             }
-            else
-            {            
-            }
 
+        }
+        public static string checkchrome()
+        {
+            try
+            {
+                string str = "chrome";
+                string empty = string.Empty;
+                string str2 = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\";
+                RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(str2 + str + ".exe", false);
+                object value = registryKey.GetValue(empty);
+                if (registryKey.GetValueKind(empty) == RegistryValueKind.String)
+                {
+                    return value.ToString();
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return null;
         }
         public static void openbrowser()
         {
             string ChromePath = Environment.CurrentDirectory + "\\" + "checkouthelp";
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "cookiedata" + "\\" + Guid.NewGuid().ToString();
-            try
-            {
-                Process.Start("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
-            }
-            catch
-            {
-                Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", "\"--load-extension=\"" + ChromePath + "\"\" \"--user-data-dir=\"" + path + "\"");
-            }
+            string argument1 = "--user-data-dir=\"" + path + "\"";
+            string argument2 = "--no-default-browser-check";
+            string argument3 = "--no-first-run";
+            string argument4 = "--disable-default-apps";
+            string argument5 = "--autoplay-policy=no-user-gesture-required";
+            string argument6 = "--enable-automation";
+            string argument7 = "--disable-infobars";
+            string argument8 = "--load-extension=\"" + ChromePath + "\"";
+            string argument9 = "--disable-web-security";
+            Process process = new Process();
+            process.StartInfo.FileName = checkchrome();
+            process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8+ " "+argument9;
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
             FleckLog.Level = LogLevel.Debug;
             new WebSocketServer("ws://127.0.0.1:64525", true).Start(delegate (IWebSocketConnection socket)
               {
@@ -133,7 +166,7 @@ namespace MAIO
                   };
                   socket.OnMessage = delegate (string message)// 接收客户端发送过来的信息
                   {
-                     
+
                       if (message.IndexOf("updatetab") != -1)
                       {
                           if (i == 0)
@@ -141,7 +174,7 @@ namespace MAIO
                               allSockets.ToList().ForEach(s => s.Send("{\n  \"type\": \"updatetab\",\n  \"proxy\": \"\"\n}"));
                               i++;
                           }
-                        
+
                           return;
                       }
                       if (message.IndexOf("response") != -1)
@@ -153,11 +186,11 @@ namespace MAIO
                           }
                           catch
                           {
-                              
+
                           }
                       }
-             
-                   
+
+
                   };
               });
         }
@@ -510,7 +543,6 @@ namespace MAIO
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-
             string taskid = Guid.NewGuid().ToString();
             int row = datagrid.SelectedIndex;
             taskset tk;
@@ -563,7 +595,7 @@ namespace MAIO
                         int random = ran.Next(0, Mainwindow.account.Count);
                         try
                         {
-                       A:    string[] account = null;
+                        A: string[] account = null;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -576,21 +608,28 @@ namespace MAIO
                                         Thread.Sleep(1);
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
                                     }
-                                A: Random ranaccount = new Random();
-                                    int randomaccount = ranaccount.Next(0, ar.Count);
-                                    if (randomdic.Count == ar.Count)
-                                    {
-                                        randomdic.Clear();
-                                    }
                                     try
                                     {
-                                        randomdic.Add(ar[randomaccount].ToString(), "1");
+                                        randomdic.Add(tk.Account, 0);
+                                        account = ar[0].ToString().Split(",");
                                     }
-                                    catch
+                                    catch (Exception)
                                     {
-                                        goto A;
+                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                        if (ar.Count == randomdic[tk.Account])
+                                        {
+                                            randomdic.Remove(tk.Account);
+                                            goto A;
+                                        }
+                                        if (randomdic[tk.Account] >= ar.Count)
+                                        {
+                                            account = ar[ar.Count - 1].ToString().Split(",");
+                                        }
+                                        else
+                                        {
+                                            account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        }
                                     }
-                                    account = ar[randomaccount].ToString().Split(",");
                                 }
                                 else
                                 {
@@ -613,7 +652,7 @@ namespace MAIO
                                 }
                                 var cts = new CancellationTokenSource();
                                 var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct,cts); }, ct);
+                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
                                 dic.Add(tk.Taskid, cts);
                                 task2.Start();
                             }
@@ -1119,7 +1158,7 @@ namespace MAIO
                         int random = ran.Next(0, Mainwindow.account.Count);
                         try
                         {
-                            string[] account = null;
+                        A: string[] account = null;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -1131,28 +1170,35 @@ namespace MAIO
                                     {
                                         ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
                                     }
-                                A: Random ranaccount = new Random();
-                                    int randomaccount = ranaccount.Next(0, ar.Count);
-                                    if (randomdic.Count == ar.Count)
-                                    {
-                                        randomdic.Clear();
-                                    }
                                     try
                                     {
-                                        randomdic.Add(ar[randomaccount].ToString(), "1");
+                                        randomdic.Add(tk.Account, 0);
+                                        account = ar[0].ToString().Split(",");
                                     }
-                                    catch
+                                    catch (Exception)
                                     {
-                                        goto A;
+                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                        if (ar.Count == randomdic[tk.Account])
+                                        {
+                                            randomdic.Remove(tk.Account);
+                                            goto A;
+                                        }
+                                        if (randomdic[tk.Account] >= ar.Count)
+                                        {
+                                            account = ar[ar.Count - 1].ToString().Split(",");
+                                        }
+                                        else
+                                        {
+                                            account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                        }
                                     }
-                                    account = ar[randomaccount].ToString().Split(",");
                                 }
                                 else
                                 {
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
-                             
+
                                 NSK.monitortask = monitortask;
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
@@ -1169,7 +1215,7 @@ namespace MAIO
                                 }
                                 var cts = new CancellationTokenSource();
                                 var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct,cts); }, ct);
+                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
                                 dic.Add(tk.Taskid, cts);
                                 task2.Start();
                             }
@@ -1381,7 +1427,7 @@ namespace MAIO
                         int random = ran.Next(0, Mainwindow.account.Count);
                         try
                         {
-                            string[] account = null;
+                        A: string[] account = null;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -1399,7 +1445,7 @@ namespace MAIO
                                         randomdic.Add(tk.Account, 0);
                                         account = ar[0].ToString().Split(",");
                                     }
-                                    catch (Exception ex)
+                                    catch (Exception)
                                     {
                                         randomdic[tk.Account] = randomdic[tk.Account] + 1;
                                         if (ar.Count == randomdic[tk.Account])
@@ -1422,7 +1468,7 @@ namespace MAIO
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
                                 NikeUSUK NSK = new NikeUSUK();
-                              
+
                                 NSK.giftcard = giftcard;
                                 NSK.pid = tk.Sku;
                                 NSK.size = tk.Size;
@@ -1439,7 +1485,7 @@ namespace MAIO
                                 }
                                 var cts = new CancellationTokenSource();
                                 var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct,cts); }, ct);
+                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
                                 dic.Add(tk.Taskid, cts);
                                 task2.Start();
                             }
