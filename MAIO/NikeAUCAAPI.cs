@@ -594,7 +594,6 @@ namespace MAIO
                     group[1] = jo["data"]["skus"][0]["product"]["id"].ToString();
                     if (randomsize)
                     {
-
                         if (ja[i]["availability"]["level"].ToString() != "OOS")
                         {
                             group[0] = ja[i]["id"].ToString();

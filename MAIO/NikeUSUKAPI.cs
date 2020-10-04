@@ -36,6 +36,9 @@ namespace MAIO
         public int failedretry = 0;
         public int failedlogin = 0;
         int failedsubshipp = 0;
+        string guesttraceid = Guid.NewGuid().ToString();
+        string guestvisitorid = Guid.NewGuid().ToString();
+        //public bool guest = false;
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
             Thread.Sleep(0);
@@ -467,14 +470,14 @@ namespace MAIO
             reqcard.Proxy = getproxy();
             reqcard.ContentType = "application/json";
             reqcard.Accept = "*/*";
-            reqcard.Headers.Add("Accept-Encoding", "gzip, deflate");
+            reqcard.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             reqcard.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            reqcard.Headers.Add("Authorization", Authorization);
             reqcard.ContentLength = contentcardinfo.Length;
             reqcard.Headers.Add("sec-fetch-dest", "empty");
             reqcard.Headers.Add("sec-fetch-mode", "cors");
             reqcard.Headers.Add("sec-fetch-site", "same-site");
-            reqcard.Headers.Add("appid", "com.nike.commerce.checkout.web");
+            reqcard.Headers.Add("appid", "com.nike.commerce.snkrs.web");
+            reqcard.Headers.Add("Authorization", Authorization);
             reqcard.Headers.Add("X-B3-SpanId", xb3spanID);
             reqcard.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             reqcard.Headers.Add("X-B3-TraceId", xb3traceid);
@@ -508,6 +511,142 @@ namespace MAIO
         }
         public void CheckoutPreview(string url, string Authorization, string checkoutpayload, string GID, Main.taskset tk, CancellationToken ct)
         {
+        #region
+        /* if (Config.UseAdvancemode == "True")
+         {
+             string[] sendcookie = new string[2];
+             if (ct.IsCancellationRequested)
+             {
+                 tk.Status = "IDLE";
+                 ct.ThrowIfCancellationRequested();
+             }
+             if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
+             {
+                 try
+                 {
+                     var binding = new BasicHttpBinding();
+                     var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                     var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                     var callClient = factory.CreateChannel();
+                     JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
+                     sendcookie = result["cookie"].ToString().Split(";");
+                 }
+                 catch
+                 {
+                     Thread.Sleep(1);
+
+                     tk.Status = "Get Cookie Error";
+                     //  goto C;
+                 }
+             }
+             else
+             {
+             C: Random ra = new Random();
+                 int cookie = ra.Next(0, Mainwindow.lines.Count);
+                 try
+                 {
+                     updatelable(Mainwindow.lines[cookie], false);
+                     sendcookie = Mainwindow.lines[cookie].Split(";");
+                     Mainwindow.lines.RemoveAt(cookie);
+                 }
+                 catch (Exception)
+                 {
+                     goto C;
+                 }
+             }
+             string proxy = "";
+             try
+             {
+                 int random = ran.Next(0, Mainwindow.proxypool.Count);
+                 proxy = Mainwindow.proxypool[random].ToString();
+             }
+             catch
+             {
+                 proxy = "";
+             }
+             try
+             {
+                 var chao = JsonConvert.SerializeObject(checkoutpayload).Replace("\"{", "{").Replace("}\"", "}");
+                 string json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json; charset=UTF-8\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-b3-spanname\":\"CiCCheckout\",\"x-b3-traceid\":\"" + Guid.NewGuid().ToString() + "\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + Guid.NewGuid().ToString() + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                 if (ct.IsCancellationRequested)
+                 {
+                     tk.Status = "IDLE";
+                     ct.ThrowIfCancellationRequested();
+                 }
+                 Main.allSockets[0].Send(json);
+             B: bool fordidden = false;
+                 JObject sValue = null;
+                 try
+                 {
+                     if (returnstatus.TryGetValue(tk.Taskid, out sValue))
+                     {
+                         if (ct.IsCancellationRequested)
+                         {
+                             tk.Status = "IDLE";
+                             ct.ThrowIfCancellationRequested();
+                         }
+                         else if (sValue.ToString().Contains("Failed to fetch"))
+                         {
+                             tk.Status = "Forbidden";
+                             fordidden = true;
+                             returnstatus.Remove(tk.Taskid);
+                         }
+                         else if (sValue["status"].ToString() == "200")
+                         {
+                             tk.Status = "Login Successful";
+                             // token = sValue["text"].ToString();
+                             returnstatus.Remove(tk.Taskid);
+                         }
+                         else if (sValue["status"].ToString() == "403")
+                         {
+                             tk.Status = "Forbidden";
+                             fordidden = true;
+                             returnstatus.Remove(tk.Taskid);
+                         }
+                         else if (sValue["status"].ToString() == "401")
+                         {
+                             tk.Status = "User/Pw Wrong";
+                             fordidden = true;
+                             returnstatus.Remove(tk.Taskid);
+                         }
+                     }
+                     else
+                     {
+                         Thread.Sleep(500);
+                         goto B;
+                     }
+                 }
+                 catch (NullReferenceException)
+                 {
+                     Thread.Sleep(500);
+                     goto B;
+                 }
+                 catch (OperationCanceledException)
+                 {
+                     // return "";
+                 }
+                 if (fordidden)
+                 {
+                     failedlogin++;
+                     if (failedlogin > 20)
+                     {
+                         Main.autorestock(tk);
+                         if (ct.IsCancellationRequested)
+                         {
+                             tk.Status = "IDLE";
+                             ct.ThrowIfCancellationRequested();
+                         }
+                     }
+                     Thread.Sleep(1500);
+                     // goto D;
+                 }
+             }
+             catch
+             {
+                 // goto D;
+             }
+         }*/
+        #endregion
         B: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -521,9 +660,8 @@ namespace MAIO
             request.ContentType = "application/json; charset=UTF-8";
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(checkoutpayload);
             request.Accept = "application/json";
-            request.Headers.Add("Accept-Encoding", "gzip, deflate");
-            request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            request.Headers.Add("Authorization", Authorization);
+            request.Headers.Add("accept-encoding", "gzip, deflate, br");
+            request.Headers.Add("accept-language", "zh-CN,zh;q=0.9");
             request.Headers.Add("appid", "com.nike.commerce.snkrs.web");
         C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
             {
@@ -564,15 +702,16 @@ namespace MAIO
                 }
             }
             request.ContentLength = contentpaymentinfo.Length;
-            request.Referer = "https://www.nike.com/";
+            request.Referer = "https://www.nike.com/checkout";
             request.Headers.Add("Origin", "https://www.nike.com");
-            request.Headers.Add("Sec-Fetch-Dest", "empty");
-            request.Headers.Add("Sec-Fetch-Mode", "cors");
-            request.Headers.Add("Sec-Fetch-Site", "same-site");
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            request.Headers.Add("sec-fetch-dest", "empty");
+            request.Headers.Add("sec-fetch-mode", "cors");
+            request.Headers.Add("sec-fetch-site", "same-site");
+            request.Headers.Add("Authorization", Authorization);
             request.Headers.Add("X-B3-SpanId", xb3spanID);
             request.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             request.Headers.Add("X-B3-TraceId", xb3traceid);
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
             Stream paymentstream = request.GetRequestStream();
             paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
             paymentstream.Close();
@@ -605,6 +744,9 @@ namespace MAIO
             catch (WebException ex)
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                Stream processtream = resppayment.GetResponseStream();
+                StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                string processcode = readprocessstream.ReadToEnd();
                 tk.Status = "Submit Shipping error";
                 Thread.Sleep(1500);
                 failedsubshipp++;
@@ -632,16 +774,17 @@ namespace MAIO
             reqcheckstatus.Accept = "application/json";
             reqcheckstatus.Headers.Add("Accept-Encoding", "gzip, deflate");
             reqcheckstatus.Headers.Add("Accept-Language", "en-US, en; q=0.9");
-            reqcheckstatus.Headers.Add("Authorization", Authorization);
             reqcheckstatus.Headers.Add("appid", "com.nike.commerce.snkrs.web");
             reqcheckstatus.Headers.Add("Origin", "https://www.nike.com");
             reqcheckstatus.Headers.Add("Sec-Fetch-Dest", "empty");
             reqcheckstatus.Headers.Add("Sec-Fetch-Mode", "cors");
             reqcheckstatus.Headers.Add("Sec-Fetch-Site", "same-site");
             reqcheckstatus.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            reqcheckstatus.Headers.Add("Authorization", Authorization);
             reqcheckstatus.Headers.Add("X-B3-SpanId", xb3spanID);
             reqcheckstatus.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             reqcheckstatus.Headers.Add("X-B3-TraceId", xb3traceid);
+
             try
             {
                 HttpWebResponse respcheckstatus = (HttpWebResponse)reqcheckstatus.GetResponse();
@@ -749,7 +892,6 @@ namespace MAIO
             reqprocess.Method = "POST";
             reqprocess.ContentType = "application/json; charset=UTF-8";
             byte[] processbyteinfo = Encoding.UTF8.GetBytes(paymentinfo);
-            reqprocess.Headers.Add("Authorization", Authorization);
             reqprocess.Headers.Add("Cookie", akbmsz);
             reqprocess.Headers.Add("appid", "com.nike.commerce.snkrs.web");
             reqprocess.Headers.Add("Accept-Encoding", "gzip, deflate");
@@ -760,6 +902,7 @@ namespace MAIO
             reqprocess.Headers.Add("Sec-Fetch-Mode", "cors");
             reqprocess.Headers.Add("Sec-Fetch-Site", "same-site");
             reqprocess.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+            reqprocess.Headers.Add("Authorization", Authorization);
             reqprocess.Headers.Add("X-B3-SpanId", xb3spanID);
             reqprocess.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
             reqprocess.Headers.Add("X-B3-TraceId", xb3traceid);
@@ -882,7 +1025,6 @@ namespace MAIO
                 request.Accept = "application/json";
                 request.ContentType = "application/json; charset=UTF-8";
                 byte[] paymenttokeninfo = Encoding.UTF8.GetBytes(payload);
-                request.Headers.Add("Authorization", Authorization);
             C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
                     if (ct.IsCancellationRequested)
@@ -934,6 +1076,7 @@ namespace MAIO
                 request.Headers.Add("Sec-Fetch-Mode", "cors");
                 request.Headers.Add("Sec-Fetch-Site", "same-site");
                 request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+                request.Headers.Add("Authorization", Authorization);
                 request.Headers.Add("X-B3-SpanId", xb3spanID);
                 request.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
                 request.Headers.Add("X-B3-TraceId", xb3traceid);
@@ -1104,7 +1247,6 @@ namespace MAIO
                 reqfinal.Method = "GET";
                 reqfinal.Accept = "application/json";
                 reqfinal.ContentType = "application/json; charset=UTF-8";
-                reqfinal.Headers.Add("authorization", Authorization);
                 reqfinal.Headers.Add("Accept-Encoding", "gzip, deflate");
                 reqfinal.Headers.Add("Accept-Language", "en-US, en; q=0.9");
                 reqfinal.Headers.Add("Origin", "https://www.nike.com");
@@ -1113,6 +1255,7 @@ namespace MAIO
                 reqfinal.Headers.Add("Sec-Fetch-Mode", "cors");
                 reqfinal.Headers.Add("Sec-Fetch-Site", "same-site");
                 reqfinal.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+                reqfinal.Headers.Add("Authorization", Authorization);
                 reqfinal.Headers.Add("X-B3-SpanId", xb3spanID);
                 reqfinal.Headers.Add("X-B3-ParentSpanId", xb3parentspanid);
                 reqfinal.Headers.Add("X-B3-TraceId", xb3traceid);

@@ -8,7 +8,9 @@ using System.Linq;
 using System.Net;
 using System.Runtime;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
+using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -22,6 +24,7 @@ namespace MAIO
     class NikeUSUK
     {
         public bool randomsize = false;
+     //   public bool guest = true;
         public bool monitortask = false;
         public string size = "";
         public string pid = "";
@@ -126,7 +129,7 @@ namespace MAIO
                 try
                 {
                     quantity = int.Parse(tk.Quantity);
-                    GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct);
+                    GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct,cts);
                 }
                 catch (NullReferenceException)
                 {
@@ -136,11 +139,26 @@ namespace MAIO
                 string Authorization = "";
                 try
                 {
-                    Authorization = Login(joprofile, ct);
+                //    if (guest == false)
+                   // {
+                        Authorization = Login(joprofile, ct);
+                  //  }
+                  //  else
+                 //   {
+                      //  USUKAPI.guest = true;
+                 //   }
                     if (Config.Usemonitor == "True")
                     {
                         string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                        string info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                        string info = null;
+                        if (tk.Tasksite == "NikuUK")
+                        {
+                             info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"GB\",\"language\":\"en-GB\",\"isSwoosh\":false}}";
+                        }
+                        else
+                        {
+                             info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"US\",\"language\":\"en-US\",\"isSwoosh\":false}}";
+                        }
                         string[] group = USUKAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
                         if (group[0] != null)
                         {
@@ -148,7 +166,7 @@ namespace MAIO
                         }
                     }
                 }
-                catch (NullReferenceException ex)
+                catch (NullReferenceException)
                 {
                     tk.Status = "Login Error";
                     goto B;
@@ -219,167 +237,313 @@ namespace MAIO
             }
 
         }
-        protected void GetSKUID(string country, string pid, CancellationToken ct)
+        protected void GetSKUID(string country, string pid, CancellationToken ct, CancellationTokenSource cts)
         {
-        A: try
+            string productdetail = null;
+            bool productdetailnull = false;
+            try
             {
-                Thread.Sleep(1);
-            retry: string url = "";
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
-                if (country.Contains("UK"))
+                var binding = new BasicHttpBinding();
+                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                var callClient = factory.CreateChannel();
+                JObject result = JObject.Parse(callClient.getproductAsync(Config.hwid, pid, tk.Tasksite).Result);
+                imageurl=result["Image"].ToString();
+                productID = result["ProductID"].ToString();
+                limit = int.Parse(result["limit"].ToString());
+                msrp = result["msrp"].ToString();
+                JObject jo=JObject.Parse(result["data"].ToString());
+                if (tk.Size.Contains("+") == false && tk.Size.Contains("-") == false && randomsize == false)
                 {
-                    url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(GB)&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
+                    foreach (var i in jo)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        if (i.Key == tk.Size)
+                        {
+                            skuid = i.Value.ToString();
+                            break;
+                        }
+                    }
+                }
+                else if (randomsize)
+                {
+                    foreach (var i in jo)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                       skuid = i.Value.ToString();
+                        skuidlist.Add(i.Value.ToString());
+                    }
                 }
                 else
                 {
-                    url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(US)&filter=language(en)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
-                }
-                bool sizefind = false;
-                string sourcecode = USUKAPI.GetHtmlsource(url, tk, ct);
-                JObject jo = JObject.Parse(sourcecode);
-                Thread.Sleep(1);
-                JArray ja = (JArray)JsonConvert.DeserializeObject(jo["objects"].ToString());
-                string[] Multiesize = null;
-                if (size.Contains("+"))
-                {
-                    multisize = true;
-                    Multiesize = size.Split("+");
-                }
-                if (size.Contains("-"))
-                {
-                    bool Gssize = false;
-                    multisize = true;
-                    if (size.Contains("Y"))
+                    string[] Multiesize = null;
+                    if (size.Contains("+"))
                     {
-                        size = size.Replace("Y", "");
-                        Gssize = true;
+                        multisize = true;
+                        Multiesize = size.Split("+");
                     }
-                    string[] Multiplesize = size.Split("-");
-                    size = "";
-                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                    if (size.Contains("-"))
                     {
-                        Thread.Sleep(1);
+                        bool Gssize = false;
+                        multisize = true;
+                        if (size.Contains("Y"))
+                        {
+                            size = size.Replace("Y", "");
+                            Gssize = true;
+                        }
+                        string[] Multiplesize = size.Split("-");
+                        size = "";
+                        for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                        {
+                            Thread.Sleep(1);
+                            if (Gssize)
+                            {
+                                size += i + "Y+";
+                            }
+                            else
+                            {
+                                size += i.ToString() + "+";
+                            }
+                        }
                         if (Gssize)
                         {
-                            size += i + "Y+";
+                            size += "Y";
+                        }
+                        Multiesize = size.Split("+");
+                    }
+                    if (multisize)
+                    {
+                        size = size.Remove(size.Length - 1);
+                    }
+                    for (int n = 0; n < Multiesize.Length; n++)
+                    {
+                        Thread.Sleep(1);
+                        foreach (var i in jo)
+                        {
+                            Thread.Sleep(1);
+                            if (Multiesize[n] == i.Key)
+                            {
+                                skuidlist.Add(i.Value);
+                               skuid = i.Value.ToString();
+                            }
+                        }
+                    }
+                }
+                if (skuid == ""&&skuidlist.Count==0)
+                {
+                    tk.Status = "Size Not available";
+                    cts.Cancel();
+                    Main.dic.Remove(tk.Taskid);
+                    if (ct.IsCancellationRequested)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                    }
+                }
+                tk.Status = "Get Size";
+            }
+            catch(ArgumentNullException ex)
+            {
+                if (ex.Message.Contains("Value cannot be null"))
+                {
+                    productdetailnull = true;
+                }
+                
+            }
+            if (productdetailnull)
+            {
+            A: try
+                {
+                    Thread.Sleep(1);
+                retry: string url = "";
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    if (country.Contains("UK"))
+                    {
+                        url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(GB)&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
+                    }
+                    else
+                    {
+                        url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(US)&filter=language(en)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + tk.Sku + ")";
+                    }
+                    bool sizefind = false;
+                    string sourcecode = USUKAPI.GetHtmlsource(url, tk, ct);
+                    JObject jo = JObject.Parse(sourcecode);
+                    Thread.Sleep(1);
+                    JArray ja = (JArray)JsonConvert.DeserializeObject(jo["objects"].ToString());
+                    string[] Multiesize = null;
+                    if (size.Contains("+"))
+                    {
+                        multisize = true;
+                        Multiesize = size.Split("+");
+                    }
+                    if (size.Contains("-"))
+                    {
+                        bool Gssize = false;
+                        multisize = true;
+                        if (size.Contains("Y"))
+                        {
+                            size = size.Replace("Y", "");
+                            Gssize = true;
+                        }
+                        string[] Multiplesize = size.Split("-");
+                        size = "";
+                        for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                        {
+                            Thread.Sleep(1);
+                            if (Gssize)
+                            {
+                                size += i + "Y+";
+                            }
+                            else
+                            {
+                                size += i.ToString() + "+";
+                            }
+                        }
+                        if (Gssize)
+                        {
+                            size += "Y";
+                        }
+                        Multiesize = size.Split("+");
+                    }
+                    if (multisize)
+                    {
+                        size = size.Remove(size.Length - 1);
+                    }
+                    JArray jar = null;
+                    try
+                    {
+                        jar = (JArray)JsonConvert.DeserializeObject(ja[0]["productInfo"].ToString());
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        tk.Status = "Monitoring";
+                        if (Config.delay == "")
+                        {
+                            Thread.Sleep(1);
                         }
                         else
                         {
-                            size += i.ToString() + "+";
+                            Thread.Sleep(int.Parse(Config.delay));
                         }
-                    }
-                    if (Gssize)
-                    {
-                        size += "Y";
-                    }
-                    Multiesize = size.Split("+");
-                }
-                if (multisize)
-                {
-                    size = size.Remove(size.Length - 1);
-                }
-                JArray jar = null;
-                try
-                {
-                    jar = (JArray)JsonConvert.DeserializeObject(ja[0]["productInfo"].ToString());
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    tk.Status = "Monitoring";
-                    if (Config.delay == "")
-                    {
-                        Thread.Sleep(1);
-                    }
-                    else
-                    {
-                        Thread.Sleep(int.Parse(Config.delay));
-                    }
-                    goto retry;
-                }
-                try
-                {
-                    JObject j = JObject.Parse(jar[0].ToString());
-                    if (tk.Tasksite == "NikeUS")
-                    {
-                        msrp = j["merchPrice"]["msrp"].ToString();
-                    }
-                    else
-                    {
-                        msrp = j["merchPrice"]["fullPrice"].ToString();
+                        goto retry;
                     }
                     try
                     {
-                        imageurl = j["imageUrls"]["productImageUrl"].ToString();
-                    }
-                    catch
-                    {
-                    }
-                    limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
-                    JArray jsku = (JArray)JsonConvert.DeserializeObject(j["skus"].ToString());
-                    string availableSkus = j["availableSkus"].ToString();
-                    JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
-                    for (int i = 0; i < jsku.Count; i++)
-                    {
-                        Thread.Sleep(1);
-                        allsize.Add(jsku[i]["nikeSize"].ToString(), jsku[i]["id"].ToString());
-                        if (randomsize)
+                        JObject j = JObject.Parse(jar[0].ToString());
+                        if (tk.Tasksite == "NikeUS")
                         {
-                            skuidlist.Add(jsku[i]["id"].ToString());
-                            productID = jsku[i]["productId"].ToString();
-                            sizefind = true;
+                            msrp = j["merchPrice"]["msrp"].ToString();
                         }
-                        else if (multisize)
+                        else
                         {
-                            for (int n = 0; n < Multiesize.Length; n++)
+                            msrp = j["merchPrice"]["fullPrice"].ToString();
+                        }
+                        try
+                        {
+                            imageurl = j["imageUrls"]["productImageUrl"].ToString();
+                        }
+                        catch
+                        {
+                        }
+                        limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
+                        JArray jsku = (JArray)JsonConvert.DeserializeObject(j["skus"].ToString());
+                        string availableSkus = j["availableSkus"].ToString();
+                        JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
+                        for (int i = 0; i < jsku.Count; i++)
+                        {
+                            Thread.Sleep(1);
+                            allsize.Add(jsku[i]["nikeSize"].ToString(), jsku[i]["id"].ToString());
+                            if (randomsize)
                             {
-                                if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
+                                skuidlist.Add(jsku[i]["id"].ToString());
+                                productID = jsku[i]["productId"].ToString();
+                                sizefind = true;
+                            }
+                            else if (multisize)
+                            {
+                                for (int n = 0; n < Multiesize.Length; n++)
+                                {
+                                    if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
+                                    {
+                                        skuid = jsku[i]["id"].ToString();
+                                        skuidlist.Add(jsku[i]["id"].ToString());
+                                        productID = jsku[i]["productId"].ToString();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (size.ToString() == jsku[i]["nikeSize"].ToString())
                                 {
                                     skuid = jsku[i]["id"].ToString();
-                                    skuidlist.Add(jsku[i]["id"].ToString());
                                     productID = jsku[i]["productId"].ToString();
                                 }
                             }
                         }
-                        else
+                        if (sizefind)
                         {
-                            if (size.ToString() == jsku[i]["nikeSize"].ToString())
-                            {
-                                skuid = jsku[i]["id"].ToString();
-                                productID = jsku[i]["productId"].ToString();
-                                break;
-                            }
+                            Random ra = new Random();
+                            skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
                         }
                     }
-                    if (sizefind)
+                    catch (NullReferenceException)
                     {
-                        Random ra = new Random();
-                        skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
+                        tk.Status = "Size Error";
+                        goto retry;
+                    }
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    if (skuid == "")
+                    {
+                        tk.Status = "Size Not available";
+                        goto retry;
                     }
                 }
                 catch (NullReferenceException)
                 {
-                    tk.Status = "Size Error";
-                    goto retry;
-                }
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                if (skuid == "")
-                {
-                    tk.Status = "Size Not available";
-                    goto retry;
+                    Thread.Sleep(1);
+                    goto A;
                 }
             }
-            catch (NullReferenceException)
+            try
             {
-                Thread.Sleep(1);
-                goto A;
+                if (productdetailnull)
+                {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    productdetail = "{\"data\":"+ JsonConvert.SerializeObject(allsize)+ ",\"Image\":\""+imageurl+ "\",\"ProductID\":\"" + productID + "\",\"limit\":\"" + limit + "\",\"msrp\":\"" + msrp + "\"}";             
+                    var binding = new BasicHttpBinding();
+                    var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                    var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                    var callClient = factory.CreateChannel();
+                    callClient.setproductAsync(pid, tk.Tasksite, productdetail);
+                }
+            }
+            catch
+            {
+                
             }
         }
         protected string Login(JObject profile, CancellationToken ct)
@@ -565,7 +729,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            USUKAPI.Postcardinfo(cardurl, cardinfo, Authorization, tk, ct, true);
+            USUKAPI.Postcardinfo(cardurl, cardinfo, Authorization, tk, ct, false);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -582,24 +746,35 @@ namespace MAIO
             string currency = "";
             string locale = "";
             string shippingMethod = "";
-            if (jo["Country"].ToString() == "GB")
+            if (tk.Tasksite == "NikeUK")
             {
                 country = "GB";
                 currency = "GBP";
                 locale = "en_GB";
                 shippingMethod = "GROUND_SERVICE";
             }
-            else if (jo["Country"].ToString() == "US")
+            else
             {
                 country = "US";
                 currency = "USD";
                 locale = "en_US";
                 shippingMethod = "STANDARD";
             }
+            if (limit == 0)
+            {
+                quantity=1;
+            }
             if (int.Parse(tk.Quantity) > limit)
             {
                 quantity = limit;
             }
+            var deviceid = RSAEncrypt(@"<RSAKeyValue><Modulus>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzH/CONIcy85/nCgL3ygl
+/+F2kXhqKu65sYtxPPR9Np1fxWQlI2+qCdT1aITKFEXA85cbEgwXNS3eLg7hxOsW
+x/ERUiUlciHdKLxSdqdaH6++8zMB3LZvg1Cw8vPapaaseSH3VmfdAxZkdJ50ULme
+aOgSTHxM7zHERl+ob5GRkIBw/md8BHW06qY2ah7RgAih5toPOEyxkPkPjLUaf4/Y
+eILHfagb2WPwUEQoWwICTblNibqPc/eZ6jI/WidCWfyrJABp/gZy94JAasMcwUZV
+RBaYLoaJUnL7DdhDlggT80s1C3IGCf5W6sBFNxiZbnNfBIIaIZ5CNGJQYPpkoat7
+MQIDAQAB</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>", Guid.NewGuid().ToString());
             JObject payLoad = null;
             payLoad = new JObject(
             new JProperty("request",
@@ -609,12 +784,14 @@ namespace MAIO
             new JProperty("email", jo["EmailAddress"].ToString()),
             new JProperty("locale", locale),
             new JProperty("channel", "SNKRS"),
+         //   new JProperty("clientInfo",
+          //  new JObject(new JProperty("deviceId", deviceid))),
             new JProperty("promotionCodes",
             new JArray()),
             new JProperty("items",
             new JArray(
                 new JObject(
-                new JProperty("id", productID),
+                new JProperty("id", Guid.NewGuid().ToString()),
                 new JProperty("skuId", skuid),
                 new JProperty("shippingMethod", shippingMethod),
                 new JProperty("quantity", quantity),
@@ -633,8 +810,20 @@ namespace MAIO
                    new JProperty("city", jo["City"].ToString()),
                    new JProperty("postalCode", jo["Zipcode"].ToString()),
                    new JProperty("state", jo["State"].ToString()),
+                    new JProperty("preferred", "true"),
                    new JProperty("country", country))))
                 )))));
+           // if (guest)
+           //{
+           /*     var deviceid = RSAEncrypt(@"<RSAKeyValue><Modulus>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzH/CONIcy85/nCgL3ygl
+/+F2kXhqKu65sYtxPPR9Np1fxWQlI2+qCdT1aITKFEXA85cbEgwXNS3eLg7hxOsW
+x/ERUiUlciHdKLxSdqdaH6++8zMB3LZvg1Cw8vPapaaseSH3VmfdAxZkdJ50ULme
+aOgSTHxM7zHERl+ob5GRkIBw/md8BHW06qY2ah7RgAih5toPOEyxkPkPjLUaf4/Y
+eILHfagb2WPwUEQoWwICTblNibqPc/eZ6jI/WidCWfyrJABp/gZy94JAasMcwUZV
+RBaYLoaJUnL7DdhDlggT80s1C3IGCf5W6sBFNxiZbnNfBIIaIZ5CNGJQYPpkoat7
+MQIDAQAB</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>", Guid.NewGuid().ToString());
+              //  payLoad["request"]["clientInfo"] = new JObject((new JProperty("deviceId", "app"))).ToString();*/
+         //   }
             if (code != "")
             {
                 payLoad = new JObject(
@@ -676,6 +865,7 @@ namespace MAIO
             try
             {
                 checkoutpayload = payLoad.ToString();
+                // checkoutpayload = "{\"request\":{\"email\":\"2349870@qq.com\",\"country\":\"US\",\"currency\":\"USD\",\"locale\":\"en_US\",\"channel\":\"NIKECOM\",\"clientInfo\":{\"deviceId\":\"0400Sxn08ffbICpX27u5rIezTIsnAW/Te4ST4+4NZ75caa4Fo80WPabrV2oZdECWH3DVLCaRqybNorm+f0liuQ0M3xbT1PiHsUIWe58kbzl74o0RgHJEs8LSJ/8VIB9dk8M5tAdpt7PBS67v4Q1jzmho6Nx1kPwlH0Xkc81wS5WFT/OyAp6KDBezzBMLaOr/G/iFkKXH/crZxXZtgtCEk6l8eRVlI8s09lJ/HhsoMvhsiGbWgIAggB0MtCEcfIr5IFzmlsrbDFytPmUoA2LsNSekYFy5VVAYyZJV4dOg+IO+SaWt3NficKcSGcGRXiVfvLjuiXPUmE4QEcfwTRo5ok9L7g==\"},\"items\":[{\"id\":\"7917b454-8d1a-4698-ba8c-ead58fc20ff7\",\"skuId\":\"107ed7bb-11b4-589f-a893-3460e3cbb562\",\"valueAddedServices\":[],\"shippingAddress\":{\"address1\":\"224 rar \",\"address2\":\"ave\",\"city\":\"hij\",\"state\":\"NJ\",\"country\":\"US\",\"postalCode\":\"08903\",\"email\":\"2349870@qq.com\",\"phoneNumber\":\"3340980924\",\"preferred\":true},\"recipient\":{\"firstName\":\"jame\",\"lastName\":\"jds\"},\"shippingMethod\":\"STANDARD\",\"quantity\":1,\"contactInfo\":{\"phoneNumber\":\"3340980924\",\"email\":\"2349870@qq.com\"}}],\"promotionCodes\":[],\"paymentToken\":null}}";
             }
             catch (Exception)
             {
@@ -749,7 +939,7 @@ namespace MAIO
                     currency = "USD";
                 }
                 string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
-                balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, tk, ct, false);
+                balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, tk, ct, true);
                 msrpdouble = Convert.ToDouble(msrp);
                 if (balance > msrpdouble)
                 {
@@ -783,14 +973,14 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            if (jo["Country"].ToString() == "GB")
+            if (tk.Tasksite == "NikeUK")
             {
                 country = "GB";
                 currency = "GBP";
                 locale = "en_GB";
                 shippingMethod = "GROUND_SERVICE";
             }
-            else if (jo["Country"].ToString() == "US")
+            else 
             {
                 country = "US";
                 currency = "USD";
@@ -1159,6 +1349,21 @@ new JProperty("shippingAddress",
                 goto Retry;
             }
 
+        }
+        /// <summary>
+        /// RSA加密
+        /// </summary>
+        /// <param name="publickey"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static string RSAEncrypt(string publickey, string content)
+        {
+            //publickey = @"<RSAKeyValue><Modulus>5m9m14XH3oqLJ8bNGw9e4rGpXpcktv9MSkHSVFVMjHbfv+SJ5v0ubqQxa5YjLN4vc49z7SVju8s0X4gZ6AzZTn06jzWOgyPRV54Q4I0DCYadWW4Ze3e+BOtwgVU1Og3qHKn8vygoj40J6U85Z/PTJu3hN1m75Zr195ju7g9v4Hk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+            byte[] cipherbytes;
+            rsa.FromXmlString(publickey);
+            cipherbytes = rsa.Encrypt(Encoding.UTF8.GetBytes(content), false);
+            return Convert.ToBase64String(cipherbytes);
         }
     }
 }

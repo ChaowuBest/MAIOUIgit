@@ -31,6 +31,14 @@ namespace ServiceReference2
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getcookie", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<string> getcookieAsync(string hwid);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/getproduct", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Threading.Tasks.Task<string> getproductAsync(string hwid, string sku, string region);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/setproduct", ReplyAction="*")]
+        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        System.Threading.Tasks.Task setproductAsync(string sku, string region, string product);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
@@ -94,6 +102,16 @@ namespace ServiceReference2
         public System.Threading.Tasks.Task<string> getcookieAsync(string hwid)
         {
             return base.Channel.getcookieAsync(hwid);
+        }
+        
+        public System.Threading.Tasks.Task<string> getproductAsync(string hwid, string sku, string region)
+        {
+            return base.Channel.getproductAsync(hwid, sku, region);
+        }
+        
+        public System.Threading.Tasks.Task setproductAsync(string sku, string region, string product)
+        {
+            return base.Channel.setproductAsync(sku, region, product);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

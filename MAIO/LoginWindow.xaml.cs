@@ -22,11 +22,11 @@ using System.Windows.Shapes;
 namespace MAIO
 {
     /// <summary>
-    /// version 0.99.53
+    /// version 0.99.61
     /// </summary>
     public partial class LoginWindow : Window
     {
-        public static string version = "0.99.53";//everychange
+        public static string version = "0.99.61";//everychange
         public LoginWindow()
         {
             InitializeComponent();

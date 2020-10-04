@@ -35,7 +35,7 @@ namespace MAIO
             Cid.Text = Config.cid;
             Cjevent.Text = Config.cjevent;
             discordwebhook.Text = Config.webhook;
-            autoclearcookie.IsChecked = Config.autoclearcookie;
+            //autoclearcookie.IsChecked = Config.autoclearcookie;
             delay2.Text = Config.delay;
             if (Config.Usemonitor.Contains("True"))
             {
@@ -105,7 +105,7 @@ namespace MAIO
                 Config.cjevent = Cjevent.Text;
                 Config.Usemonitor = Usemonitor.IsChecked.ToString();
                 Config.UseAdvancemode = useAdvancemode.IsChecked.ToString();
-                Config.autoclearcookie =(bool) autoclearcookie.IsChecked;
+             //   Config.autoclearcookie =(bool) autoclearcookie.IsChecked;
                 Random ra = new Random();
                 if (delay2.Text == "")
                 {
