@@ -173,23 +173,15 @@ namespace MAIO
         {
             string productdetail = null;
             bool productdetailnull = false;
-            try
+            string svalue = null;
+            if (localsize.TryGetValue(tk.Tasksite + pid, out svalue))
             {
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                var binding = new BasicHttpBinding();
-                var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                var callClient = factory.CreateChannel();
-                JObject result = JObject.Parse(callClient.getproductAsync(Config.hwid, pid, tk.Tasksite).Result);
-                imageurl = result["Image"].ToString();
-                productid = result["ProductID"].ToString();
-                msrp = result["msrp"].ToString();
-                limit = int.Parse(result["limit"].ToString());
-                JObject jo2 = JObject.Parse(result["data"].ToString());
+                JObject sva = JObject.Parse(svalue);
+                imageurl = sva["Image"].ToString();
+                productid = sva["ProductID"].ToString();
+                msrp = sva["msrp"].ToString();
+                limit = int.Parse(sva["limit"].ToString());
+                JObject jo2 = JObject.Parse(sva["data"].ToString());
                 if (tk.Size.Contains("+") == false && tk.Size.Contains("-") == false && randomsize == false)
                 {
                     foreach (var i in jo2)
@@ -286,168 +278,289 @@ namespace MAIO
                 }
                 tk.Status = "Get Size";
             }
-            catch (ArgumentNullException ex)
+            else
             {
-                if (ex.Message.Contains("Value cannot be null"))
-                {
-                    productdetailnull = true;
-                }
-
-            }
-            if (productdetailnull)
-            {
-                #region
-                Thread.Sleep(1);
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-            Retry: string url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + pid + ")";
-                string sourcecode = AUCAAPI.GetHtmlsource(url, tk, ct);
-                tk.Status = "Get Size";
-                JObject jo = JObject.Parse(sourcecode);
-                string obejects = jo["objects"].ToString();
-                JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                if (size.Contains("+"))
-                {
-                    multisize = true;
-                    Multiesize = size.Split("+");
-                }
-                if (size.Contains("-"))
-                {
-                    bool Gssize = false;
-                    multisize = true;
-                    if (size.Contains("Y"))
-                    {
-                        size = size.Replace("Y", "");
-                        Gssize = true;
-                    }
-                    string[] Multiplesize = size.Split("-");
-                    size = "";
-                    for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
-                    {
-                        if (Gssize)
-                        {
-                            size += i + "Y+";
-                        }
-                        else
-                        {
-                            size += i.ToString() + "+";
-                        }
-                    }
-                    if (Gssize)
-                    {
-                        size += "Y";
-                    }
-                    Multiesize = size.Split("+");
-                }
-                var product = "";
-                if (multisize)
-                {
-                    size = size.Remove(size.Length - 1);
-                }
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
                 try
-                {
-                    product = ja[0]["productInfo"].ToString();
-                    productid = ja[0]["publishedContent"]["properties"]["products"][0]["productId"].ToString();
-
-                }
-                catch (ArgumentOutOfRangeException)
                 {
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    tk.Status = "Monitoring";
-                    if (Config.delay == "")
+                    var binding = new BasicHttpBinding();
+                    var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
+                    var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
+                    var callClient = factory.CreateChannel();
+                    JObject result = JObject.Parse(callClient.getproductAsync(Config.hwid, pid, tk.Tasksite).Result);
+                    try
                     {
-                        Thread.Sleep(1);
+                        Main.localsize.Add(tk.Tasksite + pid, result.ToString());
                     }
-                    else if (Config.delay == null)
+                    catch { }
+                    imageurl = result["Image"].ToString();
+                    productid = result["ProductID"].ToString();
+                    msrp = result["msrp"].ToString();
+                    limit = int.Parse(result["limit"].ToString());
+                    JObject jo2 = JObject.Parse(result["data"].ToString());
+                    if (tk.Size.Contains("+") == false && tk.Size.Contains("-") == false && randomsize == false)
                     {
-                        Thread.Sleep(1);
-                    }
-                    else
-                    {
-                        Thread.Sleep(int.Parse(Config.delay));
-                    }
-                    goto Retry;
-                }
-                JArray jar = (JArray)JsonConvert.DeserializeObject(product);
-                JObject j = JObject.Parse(jar[0].ToString());
-                string skuids = j["skus"].ToString();
-                limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
-                try
-                {
-                    imageurl = j["imageUrls"]["productImageUrl"].ToString();
-                }
-                catch
-                {
-
-                }
-                priceid = j["merchPrice"]["snapshotId"].ToString();
-                msrp = j["merchPrice"]["fullPrice"].ToString();
-                JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
-                string availableSkus = j["availableSkus"].ToString();
-                JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
-                bool sizefind = false;
-                for (int i = 0; i < jsku.Count; i++)
-                {
-                    allsize.Add(jsku[i]["nikeSize"].ToString(), jsku[i]["id"].ToString());
-                    if (randomsize)
-                    {
-                        skuidlist.Add(jsku[i]["id"].ToString());
-                        sizefind = true;
-                    }
-                    else if (multisize)
-                    {
-                        for (int n = 0; n < Multiesize.Length; n++)
+                        foreach (var i in jo2)
                         {
-                            if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
+                            if (ct.IsCancellationRequested)
                             {
-                                skuid = jsku[i]["id"].ToString();
-                                skuidlist.Add(jsku[i]["id"].ToString());
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            if (i.Key == tk.Size)
+                            {
+                                skuid = i.Value.ToString();
+                                break;
                             }
                         }
                     }
-                    else
+                    else if (randomsize)
                     {
-                        if (size == jsku[i]["nikeSize"].ToString())
+                        foreach (var i in jo2)
                         {
-                            skuid = jsku[i]["id"].ToString();
-                            break;
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
+                            skuidlist.Add(i.Value.ToString());
+                            skuid = i.Value.ToString();
                         }
                     }
+                    else
+                    {
+                        string[] Multiesize = null;
+                        if (size.Contains("+"))
+                        {
+                            multisize = true;
+                            Multiesize = size.Split("+");
+                        }
+                        if (size.Contains("-"))
+                        {
+                            bool Gssize = false;
+                            multisize = true;
+                            if (size.Contains("Y"))
+                            {
+                                size = size.Replace("Y", "");
+                                Gssize = true;
+                            }
+                            string[] Multiplesize = size.Split("-");
+                            size = "";
+                            for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                            {
+                                Thread.Sleep(1);
+                                if (Gssize)
+                                {
+                                    size += i + "Y+";
+                                }
+                                else
+                                {
+                                    size += i.ToString() + "+";
+                                }
+                            }
+                            if (Gssize)
+                            {
+                                size += "Y";
+                            }
+                            Multiesize = size.Split("+");
+                        }
+                        if (multisize)
+                        {
+                            size = size.Remove(size.Length - 1);
+                        }
+                        for (int n = 0; n < Multiesize.Length; n++)
+                        {
+                            Thread.Sleep(1);
+                            foreach (var i in jo2)
+                            {
+                                Thread.Sleep(1);
+                                if (Multiesize[n] == i.Key)
+                                {
+                                    skuidlist.Add(i.Value);
+                                    skuid = i.Value.ToString();
+                                }
+                            }
+                        }
+                    }
+                    if (skuid == "" && skuidlist.Count == 0)
+                    {
+                        tk.Status = "Size Not available";
+                        cts.Cancel();
+                        Main.dic.Remove(tk.Taskid);
+                        if (ct.IsCancellationRequested)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                        }
+                    }
+                    tk.Status = "Get Size";
                 }
-                if (ct.IsCancellationRequested)
+                catch (ArgumentNullException ex)
                 {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
+                    if (ex.Message.Contains("Value cannot be null"))
+                    {
+                        productdetailnull = true;
+                    }
+
                 }
-                if (sizefind)
+                if (productdetailnull)
                 {
-                    Random ra = new Random();
-                    skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
+                    #region
+                    Thread.Sleep(1);
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                Retry: string url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + pid + ")";
+                    string sourcecode = AUCAAPI.GetHtmlsource(url, tk, ct);
+                    tk.Status = "Get Size";
+                    JObject jo = JObject.Parse(sourcecode);
+                    string obejects = jo["objects"].ToString();
+                    JArray ja = (JArray)JsonConvert.DeserializeObject(obejects);
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    if (size.Contains("+"))
+                    {
+                        multisize = true;
+                        Multiesize = size.Split("+");
+                    }
+                    if (size.Contains("-"))
+                    {
+                        bool Gssize = false;
+                        multisize = true;
+                        if (size.Contains("Y"))
+                        {
+                            size = size.Replace("Y", "");
+                            Gssize = true;
+                        }
+                        string[] Multiplesize = size.Split("-");
+                        size = "";
+                        for (double i = double.Parse(Multiplesize[0]); i <= double.Parse(Multiplesize[1]); i += 0.5)
+                        {
+                            if (Gssize)
+                            {
+                                size += i + "Y+";
+                            }
+                            else
+                            {
+                                size += i.ToString() + "+";
+                            }
+                        }
+                        if (Gssize)
+                        {
+                            size += "Y";
+                        }
+                        Multiesize = size.Split("+");
+                    }
+                    var product = "";
+                    if (multisize)
+                    {
+                        size = size.Remove(size.Length - 1);
+                    }
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    try
+                    {
+                        product = ja[0]["productInfo"].ToString();
+                        productid = ja[0]["publishedContent"]["properties"]["products"][0]["productId"].ToString();
+
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        tk.Status = "Monitoring";
+                        if (Config.delay == "")
+                        {
+                            Thread.Sleep(1);
+                        }
+                        else if (Config.delay == null)
+                        {
+                            Thread.Sleep(1);
+                        }
+                        else
+                        {
+                            Thread.Sleep(int.Parse(Config.delay));
+                        }
+                        goto Retry;
+                    }
+                    JArray jar = (JArray)JsonConvert.DeserializeObject(product);
+                    JObject j = JObject.Parse(jar[0].ToString());
+                    string skuids = j["skus"].ToString();
+                    limit = int.Parse(j["merchProduct"]["quantityLimit"].ToString());
+                    try
+                    {
+                        imageurl = j["imageUrls"]["productImageUrl"].ToString();
+                    }
+                    catch
+                    {
+
+                    }
+                    priceid = j["merchPrice"]["snapshotId"].ToString();
+                    msrp = j["merchPrice"]["fullPrice"].ToString();
+                    JArray jsku = (JArray)JsonConvert.DeserializeObject(skuids);
+                    string availableSkus = j["availableSkus"].ToString();
+                    JArray jas = (JArray)JsonConvert.DeserializeObject(availableSkus);
+                    bool sizefind = false;
+                    for (int i = 0; i < jsku.Count; i++)
+                    {
+                        allsize.Add(jsku[i]["nikeSize"].ToString(), jsku[i]["id"].ToString());
+                        if (randomsize)
+                        {
+                            skuidlist.Add(jsku[i]["id"].ToString());
+                            sizefind = true;
+                        }
+                        else if (multisize)
+                        {
+                            for (int n = 0; n < Multiesize.Length; n++)
+                            {
+                                if (Multiesize[n] == jsku[i]["nikeSize"].ToString())
+                                {
+                                    skuid = jsku[i]["id"].ToString();
+                                    skuidlist.Add(jsku[i]["id"].ToString());
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (size == jsku[i]["nikeSize"].ToString())
+                            {
+                                skuid = jsku[i]["id"].ToString();
+                                break;
+                            }
+                        }
+                    }
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    if (sizefind)
+                    {
+                        Random ra = new Random();
+                        skuid = skuidlist[ra.Next(0, skuidlist.Count)].ToString();
+                    }
+                    if (skuid == "")
+                    {
+                        tk.Status = "Size Not Available";
+                        Thread.Sleep(int.Parse(Config.delay));
+                        goto Retry;
+                    }
+                    #endregion
                 }
-                if (skuid == "")
-                {
-                    tk.Status = "Size Not Available";
-                    Thread.Sleep(int.Parse(Config.delay));
-                    goto Retry;
-                }
-                #endregion
             }
             try
             {

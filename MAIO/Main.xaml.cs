@@ -41,7 +41,8 @@ namespace MAIO
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
-        public static Dictionary<string,bool> share_dog=new Dictionary<string,bool>(); 
+        public static Dictionary<string, bool> share_dog = new Dictionary<string, bool>();
+        public static Dictionary<string, string> localsize = new Dictionary<string, string>();
         public static int i = 0;
         public Main()
         {
@@ -83,7 +84,7 @@ namespace MAIO
             Process.Start(Environment.CurrentDirectory + "\\" + "Checkouthelper.exe");
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
-            Task task6 = Task.Run(() => checkusemonitor(ct,cts));
+            Task task6 = Task.Run(() => checkusemonitor(ct, cts));
         }
         bool alreadystartbrowser = false;
         public void checkusemonitor(CancellationToken ct, CancellationTokenSource cts)
@@ -103,7 +104,7 @@ namespace MAIO
                         }
                         catch
                         {
-                            
+
                         }
                     }
                 }
@@ -150,7 +151,7 @@ namespace MAIO
             string argument9 = "--disable-web-security";
             Process process = new Process();
             process.StartInfo.FileName = checkchrome();
-            process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8+ " "+argument9;
+            process.StartInfo.Arguments = argument1 + " " + argument2 + " " + argument3 + " " + argument4 + " " + argument5 + " " + argument6 + " " + argument7 + " " + argument8 + " " + argument9;
             process.StartInfo.UseShellExecute = true;
             process.Start();
             FleckLog.Level = LogLevel.Debug;
@@ -472,10 +473,6 @@ namespace MAIO
             {
                 Mainwindow.tasklist.Add(taskid, profile.Replace("[", "").Replace("]", ""));
                 Mainwindow.task.Add(new taskset { Taskid = taskid, Tasksite = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), Size = st[4].Replace("\r\n", ""), Profile = st[2], Proxies = "Default", Status = "IDLE", Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", ""), monitortask = st[7], Account = st[9] });
-            /*   if (st[7] == "True")
-               {
-                    datagrid.Foreground = Brushes.Yellow;
-                }  */    
             }
             taskwrite(profile);
         }
@@ -601,6 +598,7 @@ namespace MAIO
                         try
                         {
                         A: string[] account = null;
+                            bool guest = false;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -640,31 +638,40 @@ namespace MAIO
                                 {
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
-                                NikeUSUK NSK = new NikeUSUK();
-                                NSK.giftcard = giftcard;
-                                NSK.pid = tk.Sku;
-                                NSK.size = tk.Size;
-                                NSK.code = code;
-                                NSK.monitortask = monitortask;
-                                NSK.profile = Mainwindow.allprofile[tk.Profile];
-                                NSK.tk = tk;
-                                NSK.username = account[0];
-                                NSK.password = account[1];
-                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                                {
-                                    tk.Size = "RA";
-                                    NSK.randomsize = true;
-                                }
-                                var cts = new CancellationTokenSource();
-                                var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
-                                dic.Add(tk.Taskid, cts);
-                                task2.Start();
                             }
                             else
                             {
-                                tk.Status = "No Account";
+                                guest = true;
                             }
+                            NikeUSUK NSK = new NikeUSUK();
+                            if (guest)
+                            {
+                                NSK.guest = true;
+                            }
+                            else
+                            {
+                                NSK.username = account[0];
+                                NSK.password = account[1];
+                            }
+                            NSK.giftcard = giftcard;
+                            NSK.pid = tk.Sku;
+                            NSK.size = tk.Size;
+                            NSK.code = code;
+                            NSK.monitortask = monitortask;
+                            NSK.profile = Mainwindow.allprofile[tk.Profile];
+                            NSK.tk = tk;
+
+                            if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                            {
+                                tk.Size = "RA";
+                                NSK.randomsize = true;
+                            }
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            task2.Start();
+
                         }
                         catch (Exception)
                         {
@@ -977,6 +984,7 @@ namespace MAIO
                         try
                         {
                         A: string[] account = null;
+                            bool guest = false;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -1015,32 +1023,38 @@ namespace MAIO
                                 {
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
-                                NikeUSUK NSK = new NikeUSUK();
-
-                                NSK.monitortask = monitortask;
-                                NSK.giftcard = giftcard;
-                                NSK.pid = tk.Sku;
-                                NSK.size = tk.Size;
-                                NSK.code = code;
-                                NSK.profile = Mainwindow.allprofile[tk.Profile];
-                                NSK.tk = tk;
-                                NSK.username = account[0];
-                                NSK.password = account[1];
-                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                                {
-                                    tk.Size = "RA";
-                                    NSK.randomsize = true;
-                                }
-                                var cts = new CancellationTokenSource();
-                                var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
-                                dic.Add(tk.Taskid, cts);
-                                task2.Start();
                             }
                             else
                             {
-                                tk.Status = "No Account";
+                                guest = true;
                             }
+                            NikeUSUK NSK = new NikeUSUK();
+                            if (guest)
+                            {
+                                NSK.guest = true;
+                            }
+                            else
+                            {
+                                NSK.username = account[0];
+                                NSK.password = account[1];
+                            }
+                            NSK.monitortask = monitortask;
+                            NSK.giftcard = giftcard;
+                            NSK.pid = tk.Sku;
+                            NSK.size = tk.Size;
+                            NSK.code = code;
+                            NSK.profile = Mainwindow.allprofile[tk.Profile];
+                            NSK.tk = tk;
+                            if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                            {
+                                tk.Size = "RA";
+                                NSK.randomsize = true;
+                            }
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            task2.Start();
                         }
                         catch
                         {
@@ -1246,6 +1260,7 @@ namespace MAIO
                         try
                         {
                         A: string[] account = null;
+                            bool guest = false;
                             if (tk.Account != null && tk.Account != "")
                             {
                                 string sValue = "";
@@ -1285,33 +1300,38 @@ namespace MAIO
                                 {
                                     account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                 }
-                                NikeUSUK NSK = new NikeUSUK();
-
-                                NSK.giftcard = giftcard;
-                                NSK.pid = tk.Sku;
-                                NSK.size = tk.Size;
-                                NSK.code = code;
-                                NSK.monitortask = monitortask;
-                                NSK.profile = Mainwindow.allprofile[tk.Profile];
-                                NSK.tk = tk;
-                                NSK.username = account[0];
-                                NSK.password = account[1];
-                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                                {
-                                    tk.Size = "RA";
-                                    NSK.randomsize = true;
-                                }
-                                var cts = new CancellationTokenSource();
-                                var ct = cts.Token;
-                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
-                                dic.Add(tk.Taskid, cts);
-                                task2.Start();
                             }
                             else
                             {
-                                tk.Status = "No Account";
+                                guest = true;
                             }
-
+                            NikeUSUK NSK = new NikeUSUK();
+                            if (guest)
+                            {
+                                NSK.guest = true;
+                            }
+                            else
+                            {
+                                NSK.username = account[0];
+                                NSK.password = account[1];
+                            }
+                            NSK.giftcard = giftcard;
+                            NSK.pid = tk.Sku;
+                            NSK.size = tk.Size;
+                            NSK.code = code;
+                            NSK.monitortask = monitortask;
+                            NSK.profile = Mainwindow.allprofile[tk.Profile];
+                            NSK.tk = tk;
+                            if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                            {
+                                tk.Size = "RA";
+                                NSK.randomsize = true;
+                            }
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            task2.Start();
                         }
                         catch (Exception)
                         {
