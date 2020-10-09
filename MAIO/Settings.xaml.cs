@@ -257,6 +257,7 @@ namespace MAIO
                                 JArray ja = JArray.Parse(jo["value1"].ToString());
                                 foreach (var i in ja)
                                 {
+                                    Thread.Sleep(1);
                                     JObject jo2 = JObject.Parse(i.ToString());
                                     if (jo2["name"].ToString() == "bm_sz")
                                     {
@@ -281,7 +282,14 @@ namespace MAIO
                                 if (site == "NIKE")
                                 {
                                     Mainwindow.lines.Add(cookie);
-                                    Mainwindow.cookiewtime.Add(time2, cookie);
+                                    try
+                                    {
+                                        Mainwindow.cookiewtime.Add(time2, cookie);
+                                    }
+                                    catch
+                                    {
+                                        
+                                    }
                                     Mainwindow.iscookielistnull = false;
                                 }
                                 Main.updatelable(cookie, true);

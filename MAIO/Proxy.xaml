@@ -6,13 +6,9 @@
              xmlns:local="clr-namespace:MAIO"
              mc:Ignorable="d" Height="769" Width="1080" VerticalAlignment="Bottom">
     <Grid Background="#FF243B55" Height="769" RenderTransformOrigin="0.534,0.484" Width="1080">
-        <RichTextBox Margin="65,118,469,138" x:Name="testbox" BorderThickness="0" Background="#FF243B55" FontFamily="PingFangSC-Semibold" FontSize="14" Foreground="White">
-            <FlowDocument/>
-        </RichTextBox>
         <StackPanel Background="#FF011F1F" Orientation="Horizontal" Margin="0,47,0,675" Height="47">
-            <Label Content="Proxy" Margin="70,0,0,0" Height="32" Width="225" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalAlignment="Center"/>
-            <Label Content="Speed" Margin="100,0,0,0" Height="32" Width="98" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16"/>
-            <Label Content="Import Proxies" HorizontalContentAlignment="Center" Height="32" Width="309" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalAlignment="Center" Margin="132,0,0,0"/>
+            <Label Content="Monitor Proxy" HorizontalContentAlignment="Center" Height="32" Width="309" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" VerticalAlignment="Center" Margin="131,0,0,0"/>
+            <Label Content="Checkout Proxy" HorizontalContentAlignment="Center" Height="32" Width="309" Background="#FF011F1F" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="228.4,0,0,0"/>
         </StackPanel>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1036,0,0,739" VerticalAlignment="Bottom" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>
         <Button Cursor="Hand" x:Name="save" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Save" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="634,651,219,73" Width="108" Click="save_Click">
@@ -43,34 +39,6 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Cursor="Hand" Click="clearfailed_Click" x:Name="clearfailed" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Clear Failed" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="372,688,480,36" Width="108">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <Button Cursor="Hand" x:Name="test" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Test All" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="133,688,720,36" Width="108" Click="test_Click">
-            <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                <GradientStop Color="#FF021F1F" Offset="0.0" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
         <RichTextBox Margin="616,118,13,138" Name="proxybox" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
@@ -82,5 +50,41 @@
                 </FlowDocument>
             </RichTextBox.Document>
         </RichTextBox>
+        <RichTextBox Margin="65,118,560,138" Name="monitorproxy" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14">
+            <RichTextBox.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0"/>
+                </Style>
+            </RichTextBox.Resources>
+            <FlowDocument PageWidth="2048"/>
+        </RichTextBox>
+        <Button Cursor="Hand" x:Name="save_Copy" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Save" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="-445,651,278,73" Width="108" Click="save_Copy_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Cursor="Hand"  x:Name="del_Copy" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Delete" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="-205,651,70,73" Width="108" Click="del_Copy_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </Page>

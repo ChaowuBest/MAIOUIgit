@@ -42,7 +42,9 @@ namespace MAIO
         public static Dictionary<string, JObject> returnstatus = new Dictionary<string, JObject>();
         public static List<IWebSocketConnection> allSockets = new List<IWebSocketConnection>();
         public static Dictionary<string, bool> share_dog = new Dictionary<string, bool>();
+        public static Dictionary<string, ArrayList> share_dog_skuid = new Dictionary<string, ArrayList>();
         public static Dictionary<string, string> localsize = new Dictionary<string, string>();
+        public static List<double> ary = new List<double>();
         public static int i = 0;
         public Main()
         {
@@ -581,7 +583,7 @@ namespace MAIO
                         }
                         var cts = new CancellationTokenSource();
                         var ct = cts.Token;
-                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
+                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                         dic.Add(tk.Taskid, cts);
                         task1.Start();
                     }
@@ -668,7 +670,7 @@ namespace MAIO
                             }
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
+                             Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                             dic.Add(tk.Taskid, cts);
                             task2.Start();
 
@@ -934,6 +936,12 @@ namespace MAIO
                     break;
                 }
             }
+            if (s > 0)
+            {
+                s -= 1;
+                z += 10;
+                goto A;
+            }
         }
         public void sta(taskset tk)
         {
@@ -968,7 +976,7 @@ namespace MAIO
                         var cts = new CancellationTokenSource();
                         var ct = cts.Token;
                         dic.Add(tk.Taskid, cts);
-                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
+                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                         task1.Start();
                     }
                     else if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
@@ -1052,7 +1060,7 @@ namespace MAIO
                             }
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
+                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                             dic.Add(tk.Taskid, cts);
                             task2.Start();
                         }
@@ -1243,7 +1251,7 @@ namespace MAIO
                         }
                         var cts = new CancellationTokenSource();
                         var ct = cts.Token;
-                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct);
+                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                         dic.Add(tk.Taskid, cts);
                         task1.Start();
                     }
@@ -1329,7 +1337,7 @@ namespace MAIO
                             }
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct);
+                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                             dic.Add(tk.Taskid, cts);
                             task2.Start();
                         }

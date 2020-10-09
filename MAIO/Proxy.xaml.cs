@@ -40,6 +40,14 @@ namespace MAIO
                     proxybox.AppendText("\r\n");
                 }
             }
+            if (Mainwindow.monitorproxypool != null)
+            {
+                for (int i = 0; i < Mainwindow.monitorproxypool.Count; i++)
+                {
+                    monitorproxy.AppendText(Mainwindow.monitorproxypool[i].ToString());
+                    monitorproxy.AppendText("\r\n");
+                }
+            }
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -90,8 +98,7 @@ namespace MAIO
             Mainwindow.proxypool.Clear();
             proxybox.Document.Blocks.Clear();
         }
-
-        private void test_Click(object sender, RoutedEventArgs e)
+       /*private void test_Click(object sender, RoutedEventArgs e)
         {
             testbox.Document.Blocks.Clear();
             try
@@ -181,12 +188,8 @@ namespace MAIO
                         }
                    ));
             }
-        }
-        private void proxttest_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-        }
-
-        private void clearfailed_Click(object sender, RoutedEventArgs e)
+        }*/
+       /* private void clearfailed_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -226,6 +229,49 @@ namespace MAIO
             {
                 MessageBox.Show("Clear fail failed");
             }
+        }*/
+        private void del_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            string path3 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "monitorproxy.txt";
+            FileStream fs0 = new FileStream(path3, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            fs0.SetLength(0);
+            fs0.Close();
+            Mainwindow.monitorproxypool.Clear();
+            monitorproxy.Document.Blocks.Clear();
+        }
+        private void save_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (new TextRange(monitorproxy.Document.ContentStart, monitorproxy.Document.ContentEnd).Text == "")
+                {
+                    MessageBox.Show("No proxy");
+                }
+                else
+                {
+                    string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "monitorproxy.txt";
+                    string[] saveproxy = new TextRange(monitorproxy.Document.ContentStart, monitorproxy.Document.ContentEnd).Text.Split("\r\n");
+                    FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter sw = new StreamWriter(fs0);
+                    fs0.SetLength(0);
+                    Mainwindow.monitorproxypool.Clear();
+                    for (int i = 0; i < saveproxy.Length - 1; i++)
+                    {
+                        if (saveproxy[i] != "")
+                        {
+                            sw.WriteLine(saveproxy[i]);
+                            Mainwindow.monitorproxypool.Add(saveproxy[i]);
+                        }
+                    }
+                    sw.Close();
+                    fs0.Close();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Save proxy failed, please Check your input");
+            }
+
         }
     }
 }

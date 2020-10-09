@@ -9,6 +9,7 @@ using System.Net.Security;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace MAIO
 {
@@ -18,7 +19,7 @@ namespace MAIO
     public partial class Profile : UserControl
     {
         public Profile()
-        {            
+        {
             InitializeComponent();
             for (int i = 0; i < Mainwindow.allprofile.Count; i++)
             {
@@ -35,26 +36,34 @@ namespace MAIO
         private void save(object sender, RoutedEventArgs e)
         {
             bool duplicate = false;
-            string key = "";
+            string key = null;
             string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
               "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
               "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
               Text + "\",\"Country\":\"" + countrylist.SelectedItem.ToString() + "\",\"Cardnum\":\"" + cardnumber.Text + "\",\"MMYY\":\"" + MMYY.Text + "\"," +
               "\"NameonCard\":\"" + nameoncard.Text + "\",\"Cvv\":\"" + CVV.Text + "\",\"ProfileName\":\"" + profilename.Text + "\"}]";
-            for (int i = 0; i < Mainwindow.allprofile.Count; i++)
+            string svalue = null;
+            if (Mainwindow.allprofile.TryGetValue(profilename.Text, out svalue))
             {
-                KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
-                if (kv.Key == profilename.Text)
-                {
-                    duplicate = true;
-                    key=kv.Key;
-                    break;
-                }              
+                duplicate = true;
+                key = profilename.Text;
             }
-            if(duplicate)
+            #region
+            /* for (int i = 0; i < Mainwindow.allprofile.Count; i++)
+             {
+                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
+                 if (kv.Key == profilename.Text)
+                 {
+                     duplicate = true;
+                     key = kv.Key;
+                     break;
+                 }
+             }*/
+            #endregion
+            if (duplicate)
             {
                 Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "");
-                profilewrite(profile);              
+                profilewrite(profile);
             }
             else
             {
@@ -62,7 +71,7 @@ namespace MAIO
                 profilewrite(profile);
                 profilelist.Items.Add(profilename.Text);
             }
-           
+
         }
         public void profilewrite(string profile)
         {
@@ -87,11 +96,11 @@ namespace MAIO
                 {
                     string read = sr.ReadToEnd();
                     JArray ja = JArray.Parse(read);
-                    
+
                     for (int i = 0; i < ja.Count; i++)
                     {
                         Regex rex = new Regex("\"(.*)\"");
-                        var wuds=rex.Matches(ja[i].ToString());
+                        var wuds = rex.Matches(ja[i].ToString());
                         if (ja[i]["ProfileName"].ToString() == ja2[0]["ProfileName"].ToString())
                         {
                             ja.RemoveAt(i);
@@ -185,9 +194,71 @@ namespace MAIO
                 profilename.Text = jo["ProfileName"].ToString();
             }
             catch
-            { 
+            {
 
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            IDataObject iData = Clipboard.GetDataObject();
+            if (iData.GetDataPresent(DataFormats.Text))
+            {
+                bool duplicate = false;
+                string key = null;
+                string profile = (string)iData.GetData(DataFormats.UnicodeText);
+                string[] profile_Arrary = profile.Split("\r\n");
+                Dictionary<string,string> importprofile = new Dictionary<string,string>();
+                try
+                {
+                    for (int i = 1; i < profile_Arrary.Length; i++)
+                    {
+                        var ay = new List<string>();
+                        for (int y = 0; y < 15; y++)
+                        {
+                            ay.Add(profile_Arrary[i].Split("\t")[y]);
+                        }
+                        string profiles = "[{\"FirstName\":\"" + ay[2] + "\",\"LastName\":\"" + ay[3] + "\"," +
+    "\"EmailAddress\":\"" + ay[1] + "\",\"Address1\":\"" + ay[4] + "\",\"Address2\":\"" + ay[5] + "\"," +
+    "\"Tel\":\"" + ay[7] + "\",\"City\":\"" + ay[8] + "\",\"Zipcode\":\"" + ay[6] + "\",\"State\":\"" + ay[9]
+    + "\",\"Country\":\"" + ay[10] + "\",\"Cardnum\":\"" + ay[11] + "\",\"MMYY\":\"" + ay[12] + "\"," +
+    "\"NameonCard\":\"" + ay[14] + "\",\"Cvv\":\"" + ay[13] + "\",\"ProfileName\":\"" + ay[0] + "\"}]";
+                        importprofile.Add(ay[0].ToString(), profiles);
+                    }       
+                    for (int i = 0; i < importprofile.Count; i++)
+                    {
+                        string svalue = null;
+                        KeyValuePair<string, string> kv =importprofile.ElementAt(i);
+                        if (Mainwindow.allprofile.TryGetValue(kv.Key, out svalue))
+                        {
+                            duplicate = true;
+                            key = kv.Key;
+                        }
+                        if (duplicate)
+                        {
+                            Mainwindow.allprofile[key] = kv.Value.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "");
+                            profilewrite(kv.Key);
+                        }
+                        else
+                        {
+                            Mainwindow.allprofile.Add(kv.Key, kv.Value.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
+                            profilewrite(kv.Value);
+                            profilelist.Items.Add(kv.Key);
+                        }
+                    }
+                    
+                }
+                catch
+                {
+                    MessageBox.Show("Import Error");
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Import Format Error");
+            }
+
         }
     }
 }

@@ -41,6 +41,7 @@ namespace MAIO
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
         public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
         public static ArrayList proxypool = new ArrayList();
+        public static ArrayList monitorproxypool = new ArrayList();
         public static List<string> codepool = new List<string>();
         public static List<string> listproxy;
         public static Dictionary<string, string> tasklist = new Dictionary<string, string>();
@@ -53,6 +54,7 @@ namespace MAIO
         string path4 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "account.json";
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
         string path6 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
+        string path7 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "monitorproxy.txt";
         public Mainwindow()
         {
             InitializeComponent();
@@ -84,17 +86,29 @@ namespace MAIO
                     FileStream fs1 = new FileStream(path3, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                     fs1.Close();
                 }
+                if (!File.Exists(path7))
+                {
+                    FileStream fs1 = new FileStream(path7, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    fs1.Close();
+                }
             }
             FileInfo fi = new FileInfo(path3);
-            if (fi.Length == 0)
-            {
-            }
-            else
+            FileInfo fi2 = new FileInfo(path7);
+            if (fi.Length != 0)
             {
                 listproxy = new List<string>(File.ReadAllLines(path3));
                 for (int i = 0; i < listproxy.Count; i++)
                 {
                     proxypool.Add(listproxy[i]);
+                }
+                listproxy.Clear();
+            }
+            if (fi2.Length != 0)
+            {
+                listproxy = new List<string>(File.ReadAllLines(path7));
+                for (int i = 0; i < listproxy.Count; i++)
+                {
+                    monitorproxypool.Add(listproxy[i]);
                 }
             }
         }

@@ -22,6 +22,7 @@ using Newtonsoft.Json;
 using System.ServiceModel;
 using System.Collections.Immutable;
 using System.Collections;
+using System.Windows.Markup.Localizer;
 
 namespace MAIO
 {
@@ -40,32 +41,10 @@ namespace MAIO
             }
             Thread.Sleep(1);
             string SourceCode = "";
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Timeout = 5000;
-            request.Proxy = wp;
+            request.Proxy = getproxy();
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
             try
             {
@@ -108,7 +87,7 @@ namespace MAIO
             {
             C: Thread.Sleep(1);
                 string[] sendcookie = null;
-                if (Mainwindow.iscookielistnull|| Mainwindow.lines.Count==0)
+                if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
                     if (ct.IsCancellationRequested)
                     {
@@ -252,26 +231,6 @@ namespace MAIO
                     tk.Status = "IDLE";
                     ct.ThrowIfCancellationRequested();
                 }
-                Thread.Sleep(1);
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyaddress = null;
-                try
-                {
-                    string proxyg = Mainwindow.proxypool[random].ToString();
-                    string[] proxy = proxyg.Split(":");
-                    if (proxy.Length == 2)
-                    {
-
-                    }
-                    else if (proxy.Length == 4)
-                    {
-                        proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
-                    }
-                }
-                catch
-                {
-                    proxyaddress = "";
-                }
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:1234/buy/partner_cart_preorder/v1/" + GID);
                 request.Method = "PUT";
                 request.ContentType = "application/json; charset=UTF-8";
@@ -281,7 +240,7 @@ namespace MAIO
                 request.Headers.Add("cloud_stack", "buy_domain");
                 request.Headers.Add("appid", "com.nike.commerce.nikedotcom.web");
                 request.Headers.Add("Server-Host", "api.nike.com:443");
-                request.Headers.Add("Proxy-Address", proxyaddress);
+                request.Headers.Add("Proxy-Address", getAdvproxy());
             C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
                     try
@@ -391,34 +350,8 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             Thread.Sleep(1);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                int random = ran.Next(0, Mainwindow.proxypool.Count);
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = wp;
+            request.Proxy = getproxy();
             request.ContentType = "application/json; charset=UTF-8";
             request.Method = "GET";
             request.Accept = "application/json";
@@ -473,14 +406,16 @@ namespace MAIO
                 }
                 if ((sourcecode.Contains("COMPLETED") == true) && (sourcecode.Contains("error")))
                 {
-                    tk.Status = "WaitingRestock";
                     JObject jo = JObject.Parse(sourcecode);
-                    string error = jo["error"].ToString();
-                    JObject jo2 = JObject.Parse(error);
-                    var reason = jo2["errors"][0].ToString();
-                    JObject jo3 = JObject.Parse(reason);
-                    string errormessage = jo3["code"].ToString();
-                    tk.Status = errormessage;
+                    try
+                    {
+                        tk.Status = jo["error"]["errors"][0]["code"].ToString();
+                    }
+                    catch
+                    {
+
+                    }
+                    Thread.Sleep(3000);
                     Main.autorestock(tk);
                     if (ct.IsCancellationRequested)
                     {
@@ -504,7 +439,23 @@ namespace MAIO
         }
         public string[] Monitoring(string url, taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool multisize, ArrayList skulist)
         {
-           DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+            DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+            if (tk.monitortask == "True")
+            {
+                try
+                {
+                    ArrayList ary = null;
+                    if (share_dog_skuid.TryGetValue(tk.Tasksite + tk.Sku, out ary) == false)
+                    {
+                        share_dog_skuid.Add(tk.Tasksite + tk.Sku, new ArrayList());
+                    }
+                    else
+                    {
+                        share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
+                    }
+                }
+                catch { }
+            }
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -521,29 +472,8 @@ namespace MAIO
             string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = "";
             string[] group = new string[2];
-            int random = ran.Next(0, Mainwindow.proxypool.Count);
-            WebProxy wp = new WebProxy();
-            try
-            {
-                string proxyg = Mainwindow.proxypool[random].ToString();
-                string[] proxy = proxyg.Split(":");
-                if (proxy.Length == 2)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-
-                }
-                else if (proxy.Length == 4)
-                {
-                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
-                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
-                }
-            }
-            catch
-            {
-                wp = default;
-            }
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = wp;
+            request.Proxy = monitorproxy();
             request.Method = "POST";
             request.Host = "api.nike.com";
             request.Accept = "*/*";
@@ -588,6 +518,13 @@ namespace MAIO
                 }
                 JObject jo = JObject.Parse(SourceCode);
                 JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
+                try
+                {          
+                    if (share_dog_skuid.ContainsKey(tk.Tasksite + tk.Sku))
+                    {
+                        share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
+                    }
+                }catch { }
                 for (int i = 0; i < ja.Count; i++)
                 {
                     Thread.Sleep(1);
@@ -596,8 +533,15 @@ namespace MAIO
                     {
                         if (ja[i]["availability"]["level"].ToString() != "OOS")
                         {
-                            group[0] = ja[i]["id"].ToString();
-                            break;
+                            if (tk.monitortask == "True")
+                            {
+                                share_dog_skuid[tk.Tasksite + tk.Sku].Add(ja[i]["id"].ToString());
+                            }
+                            else
+                            {
+                                group[0] = ja[i]["id"].ToString();
+                                break;
+                            }
                         }
                     }
                     else if (multisize)
@@ -610,8 +554,15 @@ namespace MAIO
                             {
                                 if (ja[i]["availability"]["level"].ToString() != "OOS")
                                 {
-                                    group[0] = ja[i]["id"].ToString();
-                                    break;
+                                    if (tk.monitortask == "True")
+                                    {
+                                        share_dog_skuid[tk.Tasksite + tk.Sku].Add(ja[i]["id"].ToString());
+                                    }
+                                    else
+                                    {
+                                        group[0] = ja[i]["id"].ToString();
+                                        break;
+                                    }
                                 }
                             }
 
@@ -636,7 +587,15 @@ namespace MAIO
                             }
                             else
                             {
-                                break;
+                                if (tk.monitortask == "True")
+                                {
+                                    share_dog_skuid[tk.Tasksite + tk.Sku].Add(ja[i]["id"].ToString());
+                                    break;
+                                }
+                                else
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -647,10 +606,6 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                /*HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                Stream resppaymentStream = resppayment.GetResponseStream();
-                StreamReader readpaymenthtmlStream = new StreamReader(resppaymentStream, Encoding.UTF8);
-                string paymentsuccesscode = readpaymenthtmlStream.ReadToEnd();*/
                 tk.Status = "Proxy Error";
                 goto A;
             }
@@ -658,15 +613,23 @@ namespace MAIO
             {
                 if (tk.monitortask == "True")
                 {
-                    share_dog[tk.Tasksite + tk.Sku] = false;
-                    if (ct.IsCancellationRequested)
+                    if (share_dog_skuid[tk.Tasksite + tk.Sku].Count == 0)
                     {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
+                        share_dog[tk.Tasksite + tk.Sku] = false;
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            share_dog[tk.Tasksite + tk.Sku] = false;
+                            share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        goto A;
                     }
+                }
+                else
+                {
                     goto A;
                 }
-                goto A;
             }
             if (tk.monitortask == "True")
             {
@@ -675,24 +638,13 @@ namespace MAIO
                 if (ct.IsCancellationRequested)
                 {
                     tk.Status = "IDLE";
+                    share_dog[tk.Tasksite + tk.Sku] = false;
+                    share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
                     ct.ThrowIfCancellationRequested();
                 }
                 goto A;
             }
             return group;
-        }
-        public void failcheckout(taskset tk, string webhookurl, string reason, string imageurl)
-        {
-            Thread.Sleep(1);
-            JObject jobject = null;
-            jobject = JObject.Parse("{\"username\":\"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\"embeds\":[{\"title\":\"\",\"color\":16711680,\"description\":\"\",\"fields\":[{\"name\":\"SKU\",\"value\":\"\",\"inline\":true},{\"name\":\"Size\",\"value\":\"\",\"inline\":true},{\"name\":\"Reason\",\"value\":\"\",\"inline\":false}],\"thumbnail\":{\"url\":\"\"},\"footer\":{\"text\":\"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\"icon_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"}}]}");
-            jobject["embeds"][0]["title"] = "You Just Checkout!!!";
-            jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
-            jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
-            jobject["embeds"][0]["fields"][2]["value"] = reason;
-            jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
-
-            Http(webhookurl, jobject.ToString());
         }
         public void Http(string url, string postDataStr)
         {
@@ -719,6 +671,80 @@ namespace MAIO
                 goto Retry;
             }
 
+        }
+        public WebProxy monitorproxy()
+        {
+            WebProxy wp = new WebProxy();
+            if (Mainwindow.monitorproxypool.Count == 0)
+            {
+                wp = default;
+            }
+            else
+            {
+                int random = ran.Next(0, Mainwindow.monitorproxypool.Count);
+                string proxyg = Mainwindow.monitorproxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
+            }
+            return wp;
+        }
+        public WebProxy getproxy()
+        {
+
+            WebProxy wp = new WebProxy();
+            if (Mainwindow.proxypool.Count == 0)
+            {
+                wp = default;
+            }
+            else
+            {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+
+                }
+                else if (proxy.Length == 4)
+                {
+                    wp.Address = new Uri("http://" + proxy[0] + ":" + proxy[1] + "/");
+                    wp.Credentials = new NetworkCredential(proxy[2], proxy[3]);
+                }
+            }
+            return wp;
+        }
+        public string getAdvproxy()
+        {
+            string proxyaddress = null;
+            if (Mainwindow.proxypool.Count == 0)
+            {
+                proxyaddress = "";
+            }
+            else
+            {
+                int random = ran.Next(0, Mainwindow.proxypool.Count);
+                string proxyg = Mainwindow.proxypool[random].ToString();
+                string[] proxy = proxyg.Split(":");
+                if (proxy.Length == 2)
+                {
+                    proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
+                }
+                else if (proxy.Length == 4)
+                {
+                    proxyaddress = "http://" + proxy[2] + ":" + proxy[3] + "@" + proxy[0] + ":" + proxy[1] + "";
+                }
+            }
+            return proxyaddress;
         }
     }
 }

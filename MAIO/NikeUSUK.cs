@@ -52,80 +52,11 @@ namespace MAIO
         bool multisize = false;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-            bool ismonitor = false;
-            try
-            {
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                if (tk.monitortask != "True")
-                {
-                    for (int n = 0; n < Mainwindow.task.Count; n++)
-                    {
-                        Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
-                        {
-                            if (ct.IsCancellationRequested)
-                            {
-                                tk.Status = "IDLE";
-                                ct.ThrowIfCancellationRequested();
-                            }
-                            ismonitor = true;
-                            break;
-                        }
-                    }
-                G: if (ismonitor)
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        try
-                        {
-                            if (share_dog[this.tk.Tasksite + this.tk.Sku] == false)
-                            {
-                                tk.Status = "Monitoring Task";
-                                Thread.Sleep(1);
-                                goto G;
-                            }
-                        }
-                        catch
-                        {
-                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
-                            goto G;
-                        }
-
-                    }
-                }
-                else
-                {
-                    bool svalue;
-                    if (share_dog.TryGetValue(this.tk.Tasksite + this.tk.Sku, out svalue) == false)
-                    {
-                        try
-                        {
-                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
-                        }
-                        catch
-                        {
-                            Main.share_dog[this.tk.Tasksite + this.tk.Sku] = false;
-                        }
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            catch (Exception)
-            {
-            }
         A:
             try
             {
+                System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+                watch.Start();
                 try
                 {
                     quantity = int.Parse(tk.Quantity);
@@ -135,8 +66,8 @@ namespace MAIO
                 {
                     goto A;
                 }
-            B: JObject joprofile = JObject.Parse(profile);
-                string Authorization = "";
+                JObject joprofile = JObject.Parse(profile);
+            B: string Authorization = "";
                 try
                 {
                     if (tk.monitortask != "True")
@@ -152,7 +83,102 @@ namespace MAIO
                             USUKAPI.guest = true;
                         }
                     }
-                    if (Config.Usemonitor == "True")
+                    #region
+                    bool ismonitor = false;
+                    try
+                    {
+                        DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+                        if (ct.IsCancellationRequested)
+                        {
+                            tk.Status = "IDLE";
+                            ct.ThrowIfCancellationRequested();
+                        }
+                        if (tk.monitortask != "True")
+                        {
+                            for (int n = 0; n < Mainwindow.task.Count; n++)
+                            {
+                                Thread.Sleep(1);
+                                if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                                {
+                                    if (ct.IsCancellationRequested)
+                                    {
+                                        tk.Status = "IDLE";
+                                        ct.ThrowIfCancellationRequested();
+                                    }
+                                    this.tk.Size = Mainwindow.task[n].Size;
+                                    ismonitor = true;
+                                    break;
+                                }
+                            }
+                        G: if (ismonitor)
+                            {
+                                if (ct.IsCancellationRequested)
+                                {
+                                    tk.Status = "IDLE";
+                                    ct.ThrowIfCancellationRequested();
+                                }
+                                DateTime dttwo = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+                                TimeSpan ts = dttwo - dtone;
+                                if (ts.TotalMinutes >= 50)
+                                {
+                                    Main.autorestock(tk);
+                                }
+                                try
+                                {
+                                    if (share_dog[this.tk.Tasksite + this.tk.Sku] == false)
+                                    {
+                                        tk.Status = "Monitoring Task";
+                                        Thread.Sleep(1);
+                                        goto G;
+                                    }
+                                    else
+                                    {
+                                        ArrayList ary = share_dog_skuid[tk.Tasksite + tk.Sku];
+                                        if (ary == null||ary.Count==0)
+                                        {
+                                            goto G;
+                                        }
+                                        else
+                                        {
+                                            Random ran = new Random();
+                                            skuid = (string)ary[ran.Next(0, ary.Count)];
+                                        }
+
+                                    }
+                                }
+                                catch
+                                {
+                                    Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                                    goto G;
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            bool svalue;
+                            if (share_dog.TryGetValue(this.tk.Tasksite + this.tk.Sku, out svalue) == false)
+                            {
+                                try
+                                {
+                                    Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                                }
+                                catch
+                                {
+                                    Main.share_dog[this.tk.Tasksite + this.tk.Sku] = false;
+                                }
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return;
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    #endregion
+                    if (ismonitor == false)
                     {
                         string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
                         string info = null;
@@ -179,61 +205,47 @@ namespace MAIO
             C:
                 try
                 {
-                    if (giftcard == "")
+                    var cts2 = new CancellationTokenSource();
+                    var ct2 = cts2.Token;
+                    if ((giftcard + "").Length == 0)
                     {
-                        Task task = Task.Run(() => Submitcardinfo(Authorization, ct));
+                        Task task = Task.Run(() => Submitcardinfo(Authorization, ct, ct2, cts2));
                     }
                     else
                     {
-                        Task task = Task.Run(() => subimitgiftcard(Authorization, ct));
+                        Task task = Task.Run(() => subimitgiftcard(Authorization, ct, ct2, cts2));
                     }
                 }
                 catch (NullReferenceException)
                 {
                     goto C;
                 }
-            D:
-                try
-                {
-                    Checkoutpreview(Authorization, skuid, joprofile, ct);
-                }
-                catch (NullReferenceException)
-                {
-                    goto D;
-                }
             E:
                 try
                 {
+                    Checkoutpreview(Authorization, skuid, joprofile, ct, cts);
                     CheckoutpreviewStatus(Authorization, ct);
-
-                }
-                catch (NullReferenceException ex)
-                {
-                    goto E;
-                }
-
-                try
-                {
-                F: if (subcard)
-                    {
-                        string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
-                        paymenttoken(Authorization, id, skuid, joprofile, ct);
-                    }
-                    else
-                    {
-                        tk.Status = "Waiting for Submit Card";
-                        Thread.Sleep(1);
-                        goto F;
-                    }
-                    cts.Cancel();
-                    Main.dic.Remove(tk.Taskid);
-                    if (ct.IsCancellationRequested)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                    }
                 }
                 catch (NullReferenceException)
                 {
+                    goto E;
+                }
+            F: if (subcard)
+                {
+                    string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
+                    paymenttoken(Authorization, id, skuid, joprofile, ct, watch);
+                }
+                else
+                {
+                    tk.Status = "Waiting for Submit Card";
+                    Thread.Sleep(1);
+                    goto F;
+                }
+                cts.Cancel();
+                Main.dic.Remove(tk.Taskid);
+                if (ct.IsCancellationRequested)
+                {
+                    ct.ThrowIfCancellationRequested();
                 }
             }
             catch (OperationCanceledException)
@@ -708,7 +720,6 @@ namespace MAIO
         protected string Login(JObject profile, CancellationToken ct)
         {
             string Authorization = "";
-            Thread.Sleep(1);
             string loginurl = null;
             string locale = null;
             if (tk.Tasksite == "NikeUK")
@@ -807,12 +818,11 @@ namespace MAIO
             }
             return Authorization;
         }
-        protected void Submitcardinfo(string Authorization, CancellationToken ct)
+        protected void Submitcardinfo(string Authorization, CancellationToken ct, CancellationToken ct2, CancellationTokenSource cts)
         {
             cardguid = Guid.NewGuid().ToString();
             string cardurl = "";
             string cardinfo = "";
-            Thread.Sleep(1);
             JObject jo = JObject.Parse(profile);
             cardurl = "https://paymentcc.nike.com/creditcardsubmit/" + cardguid + "/store";
             string firstcard = jo["Cardnum"].ToString().Substring(0, 1);
@@ -856,24 +866,33 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             subcard = true;
+            cts.Cancel();
+            if (ct2.IsCancellationRequested)
+            {
+                ct2.ThrowIfCancellationRequested();
+            }
         }
-        protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct)
+        protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct, CancellationTokenSource cts)
         {
-            Thread.Sleep(1);
             GID = Guid.NewGuid().ToString();
             string url = null;
             if (Config.UseAdvancemode == "True")
             {
-                url = "https://api.nike.com/buy/checkout_previews/v2/" + GID;
+                url = "https://api.nike.com/buy/checkout_previews/v3/" + GID;
             }
             else
             {
-                url = "http://127.0.0.1:1234/buy/checkout_previews/v2/" + GID;
+                url = "http://127.0.0.1:1234/buy/checkout_previews/v3/" + GID;
             }
-            string country = "";
-            string currency = "";
-            string locale = "";
-            string shippingMethod = "";
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            string country = null;
+            string currency = null;
+            string locale = null;
+            string shippingMethod = null;
             if (tk.Tasksite == "NikeUK")
             {
                 country = "GB";
@@ -897,103 +916,132 @@ namespace MAIO
                 quantity = limit;
             }
             JObject payLoad = null;
-            payLoad = new JObject(
-            new JProperty("request",
-             new JObject(
-            new JProperty("country", country),
-            new JProperty("currency", currency),
-            new JProperty("email", jo["EmailAddress"].ToString()),
-            new JProperty("locale", locale),
-            new JProperty("channel", "NIKECOM"),
-            //   new JProperty("clientInfo",
-            //  new JObject(new JProperty("deviceId", deviceid))),
-            new JProperty("promotionCodes",
-            new JArray()),
-            new JProperty("items",
-            new JArray(
-                new JObject(
-                new JProperty("id", Guid.NewGuid().ToString()),
-                new JProperty("skuId", skuid),
-                new JProperty("shippingMethod", shippingMethod),
-                new JProperty("quantity", quantity),
-                 new JProperty("fulfillmentDetails",
-                   new JObject(
-                   new JProperty("type", "SHIP"),
-                   new JProperty("getBy",
-                   new JObject(
-                   new JProperty("maxDate",
-                   new JObject(
-                   new JProperty("dateTime", "2020-10-09T08:31:52.693Z"),
-                   new JProperty("timezone", "America/Indiana/Indianapolis"),
-                   new JProperty("precision", "DAY"))
-                       ))),
-                   new JProperty("location",
-                   new JObject(
-                   new JProperty("type", "address/shipping"),
-                   new JProperty("postalAddress",
-                   new JObject(
-                   new JProperty("country", country),
-                   new JProperty("address1", jo["Address1"].ToString()),
-                   new JProperty("postalCode", jo["Zipcode"].ToString()),
-                   new JProperty("city", jo["City"].ToString()),
-                   new JProperty("state", jo["State"].ToString()))))
-                   ))),
-                new JProperty("recipient",
-                   new JObject(
-                   new JProperty("firstName", jo["FirstName"].ToString()),
-                   new JProperty("lastName", jo["LastName"].ToString()))),
-                new JProperty("contactInfo",
-                   new JObject(
-                   new JProperty("phoneNumber", jo["Tel"].ToString()),
-                   new JProperty("email", jo["EmailAddress"].ToString()))),
-                new JProperty("shippingAddress",
-                   new JObject(
-                   new JProperty("address1", jo["Address1"].ToString()),
-                   new JProperty("address2", jo["Address2"].ToString()),
-                   new JProperty("city", jo["City"].ToString()),
-                   new JProperty("postalCode", jo["Zipcode"].ToString()),
-                   new JProperty("state", jo["State"].ToString()),
-                    new JProperty("preferred", "true"),
-                   new JProperty("country", country))))
-                )))));
+
             if (code != "")
             {
                 payLoad = new JObject(
-                new JProperty("request",
-                 new JObject(
-                new JProperty("country", country),
-                new JProperty("currency", currency),
-                new JProperty("email", jo["EmailAddress"].ToString()),
-                new JProperty("locale", locale),
-                new JProperty("channel", "SNKRS"),
-                new JProperty("promotionCodes",
-                new JArray(code)),
-                new JProperty("items",
-                new JArray(
-                    new JObject(
-                    new JProperty("id", productID),
-                    new JProperty("skuId", skuid),
-                    new JProperty("shippingMethod", shippingMethod),
-                    new JProperty("quantity", quantity),
-                    new JProperty("recipient",
-                       new JObject(
-                       new JProperty("firstName", jo["FirstName"].ToString()),
-                       new JProperty("lastName", jo["LastName"].ToString()))),
-                    new JProperty("contactInfo",
-                       new JObject(
-                       new JProperty("phoneNumber", jo["Tel"].ToString()),
-                       new JProperty("email", jo["EmailAddress"].ToString()))),
-                    new JProperty("shippingAddress",
-                       new JObject(
-                       new JProperty("address1", jo["Address1"].ToString()),
-                       new JProperty("address2", jo["Address2"].ToString()),
-                       new JProperty("city", jo["City"].ToString()),
-                       new JProperty("postalCode", jo["Zipcode"].ToString()),
-                       new JProperty("state", jo["State"].ToString()),
-                       new JProperty("country", country))))
-                    )))));
+              new JProperty("request",
+               new JObject(
+              new JProperty("country", country),
+              new JProperty("currency", currency),
+              new JProperty("email", jo["EmailAddress"].ToString()),
+              new JProperty("locale", locale),
+              new JProperty("channel", "NIKECOM"),
+              //   new JProperty("clientInfo",
+              //  new JObject(new JProperty("deviceId", deviceid))),
+              new JProperty("promotionCodes",
+              new JArray(code)),
+              new JProperty("items",
+              new JArray(
+                  new JObject(
+                  new JProperty("id", Guid.NewGuid().ToString()),
+                  new JProperty("skuId", skuid),
+                  new JProperty("shippingMethod", shippingMethod),
+                  new JProperty("quantity", quantity),
+                   new JProperty("fulfillmentDetails",
+                     new JObject(
+                     new JProperty("type", "SHIP"),
+                     new JProperty("getBy",
+                     new JObject(
+                     new JProperty("maxDate",
+                     new JObject(
+                     new JProperty("dateTime", "2020-10-14T04:21:28.52Z"),
+                     new JProperty("timezone", "America/Indiana/Indianapolis"),
+                     new JProperty("precision", "DAY"))
+                         ))),
+                     new JProperty("location",
+                     new JObject(
+                     new JProperty("type", "address/shipping"),
+                     new JProperty("postalAddress",
+                     new JObject(
+                     new JProperty("country", country),
+                     new JProperty("address1", jo["Address1"].ToString()),
+                     new JProperty("postalCode", jo["Zipcode"].ToString()),
+                     new JProperty("city", jo["City"].ToString()),
+                     new JProperty("state", jo["State"].ToString()))))
+                     ))),
+                  new JProperty("recipient",
+                     new JObject(
+                     new JProperty("firstName", jo["FirstName"].ToString()),
+                     new JProperty("lastName", jo["LastName"].ToString()))),
+                  new JProperty("contactInfo",
+                     new JObject(
+                     new JProperty("phoneNumber", jo["Tel"].ToString()),
+                     new JProperty("email", jo["EmailAddress"].ToString()))),
+                  new JProperty("shippingAddress",
+                     new JObject(
+                     new JProperty("address1", jo["Address1"].ToString()),
+                     new JProperty("address2", jo["Address2"].ToString()),
+                     new JProperty("city", jo["City"].ToString()),
+                     new JProperty("postalCode", jo["Zipcode"].ToString()),
+                     new JProperty("state", jo["State"].ToString()),
+                      new JProperty("preferred", "true"),
+                     new JProperty("country", country))))
+                  )))));
             }
-            string checkoutpayload = "";
+            else
+            {
+                payLoad = new JObject(
+new JProperty("request",
+ new JObject(
+new JProperty("country", country),
+new JProperty("currency", currency),
+new JProperty("email", jo["EmailAddress"].ToString()),
+new JProperty("locale", locale),
+new JProperty("channel", "NIKECOM"),
+//   new JProperty("clientInfo",
+//  new JObject(new JProperty("deviceId", deviceid))),
+new JProperty("promotionCodes",
+new JArray()),
+new JProperty("items",
+new JArray(
+    new JObject(
+    new JProperty("id", Guid.NewGuid().ToString()),
+    new JProperty("skuId", skuid),
+    new JProperty("shippingMethod", shippingMethod),
+    new JProperty("quantity", quantity),
+     new JProperty("fulfillmentDetails",
+       new JObject(
+       new JProperty("type", "SHIP"),
+       new JProperty("getBy",
+       new JObject(
+       new JProperty("maxDate",
+       new JObject(
+       new JProperty("dateTime", "2020-10-14T04:21:28.52Z"),
+       new JProperty("timezone", "America/Indiana/Indianapolis"),
+       new JProperty("precision", "DAY"))
+           ))),
+       new JProperty("location",
+       new JObject(
+       new JProperty("type", "address/shipping"),
+       new JProperty("postalAddress",
+       new JObject(
+       new JProperty("country", country),
+       new JProperty("address1", jo["Address1"].ToString()),
+       new JProperty("postalCode", jo["Zipcode"].ToString()),
+       new JProperty("city", jo["City"].ToString()),
+       new JProperty("state", jo["State"].ToString()))))
+       ))),
+    new JProperty("recipient",
+       new JObject(
+       new JProperty("firstName", jo["FirstName"].ToString()),
+       new JProperty("lastName", jo["LastName"].ToString()))),
+    new JProperty("contactInfo",
+       new JObject(
+       new JProperty("phoneNumber", jo["Tel"].ToString()),
+       new JProperty("email", jo["EmailAddress"].ToString()))),
+    new JProperty("shippingAddress",
+       new JObject(
+       new JProperty("address1", jo["Address1"].ToString()),
+       new JProperty("address2", jo["Address2"].ToString()),
+       new JProperty("city", jo["City"].ToString()),
+       new JProperty("postalCode", jo["Zipcode"].ToString()),
+       new JProperty("state", jo["State"].ToString()),
+        new JProperty("preferred", "true"),
+       new JProperty("country", country))))
+    )))));
+            }
+            string checkoutpayload = null;
             try
             {
                 checkoutpayload = payLoad.ToString();
@@ -1001,7 +1049,12 @@ namespace MAIO
             catch (Exception)
             {
                 tk.Status = "Bad Profile";
-                Thread.Sleep(50000000);
+                cts.Cancel();
+                Main.dic.Remove(tk.Taskid);
+                if (ct.IsCancellationRequested)
+                {
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             if (ct.IsCancellationRequested)
             {
@@ -1012,12 +1065,11 @@ namespace MAIO
         }
         protected void CheckoutpreviewStatus(string Authorization, CancellationToken ct)
         {
-            Thread.Sleep(0);
-            string url = "https://api.nike.com/buy/checkout_previews/v2/jobs/" + GID;
-            bool isdiscount = false;
-            if (code != "")
+            string url = "https://api.nike.com/buy/checkout_previews_jobs/v3/" + GID;
+            bool isdiscount = true;
+            if (string.IsNullOrEmpty(code))
             {
-                isdiscount = true;
+                isdiscount = false;
             }
             if (ct.IsCancellationRequested)
             {
@@ -1032,9 +1084,8 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
         }
-        protected void subimitgiftcard(string Authorization, CancellationToken ct)
+        protected void subimitgiftcard(string Authorization, CancellationToken ct, CancellationToken ct2, CancellationTokenSource cts)
         {
-            Thread.Sleep(0);
             int count = 0;
             double balance = 0;
             JObject jo = JObject.Parse(Mainwindow.giftcardlist[giftcard]);
@@ -1043,6 +1094,7 @@ namespace MAIO
             {
                 foreach (var i in jo)
                 {
+                    Thread.Sleep(1);
                     giftcard2.Add(i.Key, i.Value.ToString());
                     count++;
                 }
@@ -1056,20 +1108,21 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            string cardinfo2 = null;
+            string currency = null;
+            if (tk.Tasksite == "NikeUK")
+            {
+                currency = "GBP";
+            }
+            else
+            {
+                currency = "USD";
+            }
             for (int i = 0; i < count; i++)
             {
                 KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
                 string cardurl2 = "https://api.nike.com/payment/giftcard_balance/v1";
-                string currency = null;
-                if (tk.Tasksite.Contains("UK"))
-                {
-                    currency = "GBP";
-                }
-                else
-                {
-                    currency = "USD";
-                }
-                string cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
+                cardinfo2 = "{\"accountNumber\":\"" + kv.Key + "\",\"pin\":\"" + kv.Value + "\",\"currency\":\"" + currency + "\"}";
                 balance += USUKAPI.Postcardinfo(cardurl2, cardinfo2, Authorization, tk, ct, true);
                 msrpdouble = Convert.ToDouble(msrp);
                 if (balance > msrpdouble)
@@ -1091,13 +1144,17 @@ namespace MAIO
             {
                 subcard = true;
             }
+            cts.Cancel();
+            if (ct2.IsCancellationRequested)
+            {
+                ct2.ThrowIfCancellationRequested();
+            }
         }
         ArrayList giftcardadd = new ArrayList();
         protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
-            Thread.Sleep(0);
             string paymenturl = null;
-            paymenturl = "https://api.nike.com/payment/preview/v2/";
+            paymenturl = "https://api.nike.com/payment/preview/v3";
             JObject payinfo = null;
             string country = null;
             string currency = null;
@@ -1221,32 +1278,30 @@ new JObject(
      new JProperty("email", jo["EmailAddress"].ToString())))))
 ))));
             }
-            string paymentinfo = payinfo.ToString();
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string id = USUKAPI.payment(paymenturl, Authorization, paymentinfo, tk, ct);
+            string id = USUKAPI.payment(paymenturl, Authorization, payinfo.ToString(), tk, ct);
             return id;
 
         }
-        protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct)
+        protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct, System.Diagnostics.Stopwatch watch)
         {
-            Thread.Sleep(1);
             string url = null;
             if (Config.UseAdvancemode == "True")
             {
-                url = "https://api.nike.com/buy/checkouts/v2/" + GID;
+                url = "https://api.nike.com/buy/checkouts/v3/" + GID;
             }
             else
             {
-                url = "http://127.0.0.1:1234/buy/checkouts/v2/" + GID;
+                url = "http://127.0.0.1:1234/buy/checkouts/v3/" + GID;
             }
-            string country = "";
-            string currency = "";
-            string locale = "";
-            string shippingMethod = "";
+            string country = null;
+            string currency = null;
+            string locale = null;
+            string shippingMethod = null;
             if (jo["Country"].ToString() == "GB")
             {
                 country = "GB";
@@ -1262,40 +1317,6 @@ new JObject(
                 shippingMethod = "STANDARD";
             }
             JObject payinfo = null;
-            payinfo = new JObject(
-new JProperty("request",
-new JObject(
-new JProperty("country", country),
-new JProperty("currency", currency),
-new JProperty("email", jo["EmailAddress"].ToString()),
-new JProperty("locale", locale),
-new JProperty("paymentToken", id),
-new JProperty("channel", "NIKECOM"),
-new JProperty("items",
-new JArray(
-new JObject(
-new JProperty("id", productID),
-new JProperty("skuId", skuid),
-new JProperty("shippingMethod", shippingMethod),
-new JProperty("quantity", quantity),
-new JProperty("recipient",
-  new JObject(
-  new JProperty("firstName", jo["FirstName"].ToString()),
-  new JProperty("lastName", jo["LastName"].ToString()))),
-new JProperty("contactInfo",
-  new JObject(
-  new JProperty("phoneNumber", jo["Tel"].ToString()),
-  new JProperty("email", jo["EmailAddress"].ToString()))),
-new JProperty("shippingAddress",
-  new JObject(
-  new JProperty("address1", jo["Address1"].ToString()),
-  new JProperty("address2", jo["Address2"].ToString()),
-  new JProperty("city", jo["City"].ToString()),
-  new JProperty("state", jo["State"].ToString()),
-  new JProperty("postalCode", jo["Zipcode"].ToString()),
-  new JProperty("country", country))
-  ))
-)))));
             if (code != "")
             {
                 payinfo = new JObject(
@@ -1334,13 +1355,49 @@ new JProperty("shippingAddress",
  new JProperty("country", country))))
  )))));
             }
-            paytoken = payinfo.ToString();
+            else
+            {
+                payinfo = new JObject(
+new JProperty("request",
+new JObject(
+new JProperty("country", country),
+new JProperty("currency", currency),
+new JProperty("email", jo["EmailAddress"].ToString()),
+new JProperty("locale", locale),
+new JProperty("paymentToken", id),
+new JProperty("channel", "NIKECOM"),
+new JProperty("items",
+new JArray(
+new JObject(
+new JProperty("id", productID),
+new JProperty("skuId", skuid),
+new JProperty("shippingMethod", shippingMethod),
+new JProperty("quantity", quantity),
+new JProperty("recipient",
+new JObject(
+new JProperty("firstName", jo["FirstName"].ToString()),
+new JProperty("lastName", jo["LastName"].ToString()))),
+new JProperty("contactInfo",
+new JObject(
+new JProperty("phoneNumber", jo["Tel"].ToString()),
+new JProperty("email", jo["EmailAddress"].ToString()))),
+new JProperty("shippingAddress",
+new JObject(
+new JProperty("address1", jo["Address1"].ToString()),
+new JProperty("address2", jo["Address2"].ToString()),
+new JProperty("city", jo["City"].ToString()),
+new JProperty("state", jo["State"].ToString()),
+new JProperty("postalCode", jo["Zipcode"].ToString()),
+new JProperty("country", country))
+))
+)))));
+            }
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.final(Authorization, url, paytoken, GID, tk, ct, id);
+            string status = USUKAPI.final(Authorization, url, payinfo.ToString(), GID, tk, ct, id, watch);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1349,14 +1406,8 @@ new JProperty("shippingAddress",
             if (status.Contains("error") == true)
             {
                 JObject jo3 = JObject.Parse(status);
-                string obejects = jo["error"].ToString();
-                JObject jo2 = JObject.Parse(obejects);
-                string reason = jo2["message"].ToString();
-                tk.Status = reason;
-                if (Config.webhook != "")
-                {
-                    failcheckout(tk, Config.webhook, jo3, reason);
-                }
+                tk.Status = jo3["error"]["message"].ToString();
+                Thread.Sleep(3000);
                 Main.autorestock(tk);
                 if (ct.IsCancellationRequested)
                 {
@@ -1387,37 +1438,8 @@ new JProperty("shippingAddress",
                 }
             }
         }
-        public void failcheckout(taskset tk, string webhookurl, JObject joprofile, string reson)
-        {
-            Thread.Sleep(0);
-            JObject jobject = null;
-            jobject = JObject.Parse("{\r\n\"username\": \"MAIO\",\"avatar_url\":\"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\",\r\n\"embeds\": [\r\n{\r\n\"title\": \"\",\"color\":16711680,\r\n\"description\": \"\",\r\n\"fields\": [\r\n{\r\n\"name\": \"Style Code\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Size\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},\r\n{\r\n\"name\": \"Email\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,\r\n{\r\n\"name\": \"Account\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n}\r\n,{\r\n\"name\": \"Reason\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n},\r\n{\r\n\"name\": \"Profile\",\r\n\"value\": \"\",\r\n\"inline\": true\r\n},{\r\n\"name\": \"Code\",\r\n\"value\": \"\",\r\n\"inline\": false\r\n}\r\n],\r\n\"thumbnail\": {\r\n\"url\": \"\"\r\n},\r\n\"footer\": {\r\n\"text\": \"MAIO" + DateTime.Now.ToLocalTime().ToString() + "\",\r\n\"icon_url\": \"https://i.loli.net/2020/05/24/VfWKsEywcXZou1T.jpg\"\r\n}\r\n}\r\n]\r\n}");
-            jobject["embeds"][0]["title"] = "Failed Checkout!!!";
-            if (tk.Size == null || tk.Size == "")
-            {
-                tk.Size = "RA";
-            }
-            jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
-            jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
-            jobject["embeds"][0]["fields"][2]["value"] = joprofile["EmailAddress"].ToString();
-            jobject["embeds"][0]["fields"][3]["value"] = username;
-            jobject["embeds"][0]["fields"][4]["value"] = reson;
-            jobject["embeds"][0]["fields"][5]["value"] = tk.Profile;
-            if (code == "" || code == null)
-            {
-                jobject["embeds"][0]["fields"][6]["value"] = "null";
-            }
-            else
-            {
-                jobject["embeds"][0]["fields"][6]["value"] = code;
-            }
-            jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
-
-            Http(webhookurl, jobject.ToString(), tk);
-        }
         public void ProcessNotification(bool publicsuccess, taskset tk, string webhookurl, JObject joprofile, string orderid)
         {
-            Thread.Sleep(0);
             JObject jobject = null;
             if (publicsuccess)
             {
@@ -1467,7 +1489,6 @@ new JProperty("shippingAddress",
         }
         public void Http(string url, string postDataStr, Main.taskset tk)
         {
-            Thread.Sleep(0);
         Retry: Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);
             Thread.Sleep(sleeptime);

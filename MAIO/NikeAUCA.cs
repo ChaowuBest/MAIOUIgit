@@ -45,82 +45,137 @@ namespace MAIO
         JObject joprofile = null;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-            bool ismonitor = false;
+        A: joprofile = JObject.Parse(profile);
             try
             {
-                if (ct.IsCancellationRequested)
+                Quantity = int.Parse(tk.Quantity);
+                GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct, cts);
+                #region
+                bool ismonitor = false;
+                try
                 {
-                    tk.Status = "IDLE";
-                    ct.ThrowIfCancellationRequested();
-                }
-                if (tk.monitortask != "True")
-                {
-                    for (int n = 0; n < Mainwindow.task.Count; n++)
+                    DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+                    if (ct.IsCancellationRequested)
                     {
-                        Thread.Sleep(1);
-                        if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
+                    if (tk.monitortask != "True")
+                    {
+                        for (int n = 0; n < Mainwindow.task.Count; n++)
+                        {
+                            Thread.Sleep(1);
+                            if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                            {
+                                if (ct.IsCancellationRequested)
+                                {
+                                    tk.Status = "IDLE";
+                                    ct.ThrowIfCancellationRequested();
+                                }
+                                this.tk.Size = Mainwindow.task[n].Size;
+                                ismonitor = true;
+                                break;
+                            }
+                        }
+                    G: if (ismonitor)
                         {
                             if (ct.IsCancellationRequested)
                             {
                                 tk.Status = "IDLE";
                                 ct.ThrowIfCancellationRequested();
                             }
-                            ismonitor = true;
-                            break;
-                        }
-                    }
-                G: if (ismonitor)
-                    {
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        try
-                        {
-                            if (share_dog[this.tk.Tasksite + this.tk.Sku] == false)
+                            DateTime dttwo = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
+                            TimeSpan ts = dttwo - dtone;
+                            if (ts.TotalMinutes >= 50)
                             {
-                                tk.Status = "Monitoring Task";
-                                Thread.Sleep(1);
+                                Main.autorestock(tk);
+                            }
+                            try
+                            {
+                                if (share_dog[this.tk.Tasksite + this.tk.Sku] == false)
+                                {
+                                    tk.Status = "Monitoring Task";
+                                    Thread.Sleep(1);
+                                    goto G;
+                                }
+                                else
+                                {
+                                    ArrayList ary = share_dog_skuid[tk.Tasksite + tk.Sku];
+                                    if (ary == null || ary.Count == 0)
+                                    {
+                                        goto G;
+                                    }
+                                    else
+                                    {
+                                        Random ran = new Random();
+                                        skuid = (string)ary[ran.Next(0, ary.Count)];
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
                                 goto G;
                             }
                         }
-                        catch
-                        {
-                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
-                            goto G;
-                        }
-
                     }
-                }
-                else
-                {
-                    bool svalue;
-                    if (share_dog.TryGetValue(this.tk.Tasksite + this.tk.Sku, out svalue) == false)
+                    else
                     {
-                        try
+                        bool svalue;
+                        if (share_dog.TryGetValue(this.tk.Tasksite + this.tk.Sku, out svalue) == false)
                         {
-                            Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
-                        }
-                        catch
-                        {
-                            Main.share_dog[this.tk.Tasksite + this.tk.Sku] = false;
+                            try
+                            {
+                                Main.share_dog.Add(this.tk.Tasksite + this.tk.Sku, false);
+                            }
+                            catch
+                            {
+                                Main.share_dog[this.tk.Tasksite + this.tk.Sku] = false;
+                            }
                         }
                     }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            catch (Exception)
-            {
-            }
-        A: joprofile = JObject.Parse(profile);
-            try
-            {
-                Quantity = int.Parse(tk.Quantity);
-                GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct,cts);
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (Exception)
+                {
+                }
+                if (ismonitor == false)
+                {
+                    if (Config.Usemonitor == "True")
+                    {
+                        string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
+                        string info = null;
+                        if (tk.Tasksite == "NikeAU")
+                        {
+                            info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                        }
+                        else if (tk.Tasksite == "NikeCA")
+                        {
+                            info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"ca\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                        }
+                        else if (tk.Tasksite == "NikeSG")
+                        {
+                            info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"sg\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                        }
+                        else if (tk.Tasksite == "NikeMY")
+                        {
+                            info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"my\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                        }
+                        else if (tk.Tasksite == "NikeNZ")
+                        {
+                            info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"nz\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
+                        }
+                        string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
+                        if (group[0] != null)
+                        {
+                            skuid = group[0];
+                        }
+                    }
+                }
+                #endregion
             }
             catch (NullReferenceException ex)
             {
@@ -583,36 +638,7 @@ namespace MAIO
             {
 
             }
-            if (Config.Usemonitor == "True")
-            {
-                string monitorurl = "https://api.nike.com/cic/grand/v1/graphql";
-                string info = null;
-                if (tk.Tasksite == "NikeAU")
-                {
-                    info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"au\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                }
-                else if (tk.Tasksite == "NikeCA")
-                {
-                    info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"ca\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                }
-                else if (tk.Tasksite == "NikeSG")
-                {
-                    info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"sg\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                }
-                else if (tk.Tasksite == "NikeMY")
-                {
-                    info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"my\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                }
-                else if (tk.Tasksite == "NikeNZ")
-                {
-                    info = "{\"hash\":\"ef571ff0ac422b0de43ab798cc8ff25f\",\"variables\":{\"ids\":[\"" + skuid + "\"],\"country\":\"nz\",\"language\":\"en-AU\",\"isSwoosh\":false}}";
-                }
-                string[] group = AUCAAPI.Monitoring(monitorurl, tk, ct, info, randomsize, skuid, multisize, skuidlist);
-                if (group[0] != null)
-                {
-                    skuid = group[0];
-                }
-            }
+
         }
         public void Checkout(string profile, string skuid, string priceid, string msrp, CancellationToken ct)
         {
