@@ -34,7 +34,8 @@ namespace MAIO
         }
         public void checkkey()
         {
-           var ip = HttpGet("https://api.ipify.org", "utf-8");
+          //  var ip = HttpGet("https://api.ipify.org", "utf-8");
+            var ip = "123";
             Config.ip = ip;
             string finger = null;
             try
@@ -52,21 +53,13 @@ namespace MAIO
                             Mainwindow MD = new Mainwindow();
                             string config = File.ReadAllText(path);
                             JObject jo = JObject.Parse(config);
-                            Config.Key = MD.Key = jo["key"].ToString();
-                            Config.webhook = MD.webhook = jo["webhook"].ToString();
-                            Config.cid = MD.cid = jo["cid"].ToString();
-                            Config.cjevent = MD.cjevent = jo["cjevent"].ToString();
+                            Config.Key= jo["key"].ToString();
+                            Config.webhook = jo["webhook"].ToString();
+                            Config.cid = jo["cid"].ToString();
+                            Config.cjevent = jo["cjevent"].ToString();
                             Config.delay = jo["delay"].ToString();
                             Config.Usemonitor = jo["Usemonitor"].ToString();
                             Config.UseAdvancemode = jo["Advancemode"].ToString();
-                            if (jo["AutoClearCookie"].ToString() == "True")
-                            {
-                                Config.autoclearcookie = true;
-                            }
-                            else
-                            {
-                                Config.autoclearcookie = false;
-                            }
                             this.Close();
                             MD.Show();
                         }
@@ -77,7 +70,7 @@ namespace MAIO
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
               
             }
@@ -101,9 +94,9 @@ namespace MAIO
             try
             {
                 string path = Environment.CurrentDirectory + "\\" + "config.json";
-                Mainwindow MD = new Mainwindow();
                 string key = Keyinput.Text;
-                var ip = HttpGet("https://api.ipify.org", "utf-8");
+              //  var ip = HttpGet("https://api.ipify.org", "utf-8");
+                var ip = "123";
                 Config.ip = ip;
                 string finger = FingerPrint.Value() + ip;
                 var hwid = MD5Helper.EncryptString(finger);
@@ -119,19 +112,19 @@ namespace MAIO
                     bool keyvaild = keyauth(md5checkkey, hwid, version);
                     if (keyvaild)
                     {
+                        Mainwindow MD = new Mainwindow();
                         if (!File.Exists(path))
                         {
                             FileStream fs1 = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                             fs1.Close();
-                            File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\",\"AutoClearCookie\":\"\"}");
-                            Config.Key = MD.Key = key;
-                            Config.webhook = MD.webhook = "";
-                            Config.cid = MD.cid = "";
-                            Config.cjevent = MD.cjevent = "";
+                            File.WriteAllText(path, "{\"webhook\":\"\",\"key\":\"\",\"cid\":\"\",\"cjevent\":\"\",\"delay\":\"\",\"Usemonitor\":\"\",\"Advancemode\":\"\"}");
+                            Config.Key = key;
+                            Config.webhook= "";
+                            Config.cid ="";
+                            Config.cjevent= "";
                             Config.delay = "";
                             Config.Usemonitor = "";
                             Config.UseAdvancemode = "";
-                            Config.autoclearcookie = false;
                             Close();
                             MD.Show();
                         }
@@ -148,15 +141,6 @@ namespace MAIO
                             Config.delay = jo["delay"].ToString();
                             Config.Usemonitor = jo["Usemonitor"].ToString();
                             Config.UseAdvancemode = jo["Advancemode"].ToString();
-                       //     Config.UseAdvancemode = jo["Advancemode"].ToString();
-                            if (jo["AutoClearCookie"].ToString() == "True")
-                            {
-                                Config.autoclearcookie = true;
-                            }
-                            else
-                            {
-                                Config.autoclearcookie = false;
-                            }
                             Close();
                             MD.Show();
                         }
@@ -167,9 +151,8 @@ namespace MAIO
                     }
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-              //  MessageBox.Show(ex.ToString());
             }
         }
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

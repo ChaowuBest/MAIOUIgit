@@ -12,6 +12,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,15 +32,11 @@ namespace MAIO
     /// </summary>
     public partial class Mainwindow : Window
     {
-        public string Key { get; set; }
-        public string webhook { get; set; }
-        public string cid { get; set; }
-        public string cjevent { get; set; }
         public static Dictionary<string, string> allprofile = new Dictionary<string, string>();
         public static Dictionary<string, string> giftcardlist = new Dictionary<string, string>();
         public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
-        public static ObservableCollection<Monitor> Advancemonitortask = new ObservableCollection<Monitor>();     
+        public static ObservableCollection<Main.Monitor> Advancemonitortask = new ObservableCollection<Main.Monitor>();
         public static ArrayList proxypool = new ArrayList();
         public static ArrayList monitorproxypool = new ArrayList();
         public static List<string> codepool = new List<string>();
@@ -58,14 +55,14 @@ namespace MAIO
         public Mainwindow()
         {
             InitializeComponent();
-            Task task1 = Task.Run(()=> Initialprofile());
+            Task task1 = Task.Run(() => Initialprofile());
             Task task2 = Task.Run(() => Initialproxy());
             Task task3 = Task.Run(() => Initialaccount());
             Task task4 = Task.Run(() => Initialgiftcard());
             Task task5 = Task.Run(() => Initialtask());
             Task task6 = Task.Run(() => InitialCookie());
             Task task8 = Task.Run(() => Initialcode());
-            Task.WaitAll(task1,task2,task3,task4,task5,task6,task8);
+            Task.WaitAll(task1, task2, task3, task4, task5, task6, task8);
             Main mn = new Main();
             Config.mn = mn;
             maingrid.Children.Add(mn);
@@ -99,6 +96,7 @@ namespace MAIO
                 listproxy = new List<string>(File.ReadAllLines(path3));
                 for (int i = 0; i < listproxy.Count; i++)
                 {
+                    Thread.Sleep(1);
                     proxypool.Add(listproxy[i]);
                 }
                 listproxy.Clear();
@@ -108,37 +106,32 @@ namespace MAIO
                 listproxy = new List<string>(File.ReadAllLines(path7));
                 for (int i = 0; i < listproxy.Count; i++)
                 {
+                    Thread.Sleep(1);
                     monitorproxypool.Add(listproxy[i]);
                 }
             }
         }
         public void Initialprofile()
         {
-
-            if (!Directory.Exists(path))
+            if (!File.Exists(path2))
             {
-                Directory.CreateDirectory(path);
                 FileStream fs1 = new FileStream(path2, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                 fs1.Close();
             }
             else
             {
-                if (!File.Exists(path2))
+                FileInfo fi = new FileInfo(path2);
+                if (fi.Length != 0)
                 {
-                    FileStream fs1 = new FileStream(path2, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    fs1.Close();
-                }
-            }
-            FileInfo fi = new FileInfo(path2);
-            if (fi.Length != 0)
-            {
-                FileStream fs3 = new FileStream(path2, FileMode.Open, FileAccess.Read, FileShare.Read);
-                StreamReader sw = new StreamReader(fs3);
-                string read = sw.ReadToEnd();
-                JArray ja = JArray.Parse(read);
-                for (int i = 0; i < ja.Count; i++)
-                {
-                    allprofile.Add(ja[i]["ProfileName"].ToString(), ja[i].ToString().Replace("\n", "").Replace("\t", ""));
+                    FileStream fs3 = new FileStream(path2, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    StreamReader sw = new StreamReader(fs3);
+                    string read = sw.ReadToEnd();
+                    JArray ja = JArray.Parse(read);
+                    for (int i = 0; i < ja.Count; i++)
+                    {
+                        Thread.Sleep(1);
+                        allprofile.Add(ja[i]["ProfileName"].ToString(), ja[i].ToString().Replace("\n", "").Replace("\t", ""));
+                    }
                 }
             }
         }
@@ -152,10 +145,7 @@ namespace MAIO
             try
             {
                 FileInfo fi = new FileInfo(path4);
-                if (fi.Length == 0)
-                {
-                }
-                else
+                if (fi.Length != 0)
                 {
                     FileStream fs2 = new FileStream(path4, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamReader sr = new StreamReader(fs2);
@@ -163,14 +153,16 @@ namespace MAIO
                     if (srread.Contains("["))
                     {
                         JArray ja = JArray.Parse(srread);
+                       var wu=ja.ToString();
                         foreach (var i in ja)
                         {
+                            Thread.Sleep(1);
                             var jo = JObject.Parse(i.ToString());
                             foreach (var n in jo)
                             {
+                                Thread.Sleep(1);
                                 account.Add(n.Key, n.Value.ToString());
                             }
-
                         }
                     }
                     else
@@ -178,10 +170,10 @@ namespace MAIO
                         JObject jo = JObject.Parse(srread);
                         foreach (var i in jo)
                         {
+                            Thread.Sleep(1);
                             account.Add(i.Key, i.Value.ToString());
                             var chao = i.Value.ToString();
                         }
-
                     }
                     sr.Close();
                     fs2.Close();
@@ -198,16 +190,12 @@ namespace MAIO
             if (!File.Exists(path5))
             {
                 FileStream fs1 = new FileStream(path5, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-
                 fs1.Close();
             }
             try
             {
                 FileInfo fi = new FileInfo(path5);
-                if (fi.Length == 0)
-                {
-                }
-                else
+                if (fi.Length != 0)
                 {
                     FileStream fs2 = new FileStream(path5, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                     StreamReader sr = new StreamReader(fs2);
@@ -217,12 +205,13 @@ namespace MAIO
                         JArray ja = JArray.Parse(srread);
                         foreach (var i in ja)
                         {
+                            Thread.Sleep(1);
                             var jo = JObject.Parse(i.ToString());
                             foreach (var n in jo)
                             {
+                                Thread.Sleep(1);
                                 giftcardlist.Add(n.Key, n.Value.ToString());
                             }
-
                         }
 
                     }
@@ -231,6 +220,7 @@ namespace MAIO
                         JObject jo = JObject.Parse(srread);
                         foreach (var i in jo)
                         {
+                            Thread.Sleep(1);
                             giftcardlist.Add(i.Key, i.Value.ToString());
                             var chao = i.Value.ToString();
                         }
@@ -268,6 +258,7 @@ namespace MAIO
                     JArray ja = JArray.Parse(read);
                     for (int i = 0; i < ja.Count; i++)
                     {
+                        Thread.Sleep(1);
                         tasklist.Add(ja[i]["Taskid"].ToString(), ja[i].ToString().Replace("\n", ""));
                     }
                     sr.Close();
@@ -302,13 +293,14 @@ namespace MAIO
                     JArray ja = JArray.Parse(read);
                     for (int i = 0; i < ja.Count; i++)
                     {
+                        Thread.Sleep(1);
                         JObject jo = JObject.Parse(ja[i].ToString());
-                        var chao=jo.ToString();
+                        var chao = jo.ToString();
                         if (jo["site"].ToString() == "NIKE")
                         {
                             lines.Add(jo["cookie"].ToString());
                             cookiewtime.Add(long.Parse(jo["time"].ToString()), jo["cookie"].ToString());
-                        }                     
+                        }
                     }
                     sw.Close();
                     fs3.Close();
@@ -336,10 +328,7 @@ namespace MAIO
                 }
             }
             FileInfo fi = new FileInfo(path6);
-            if (fi.Length == 0)
-            {
-            }
-            else
+            if (fi.Length != 0)
             {
                 codepool = new List<string>(File.ReadAllLines(path6));
             }

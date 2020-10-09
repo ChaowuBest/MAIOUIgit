@@ -919,7 +919,7 @@ namespace MAIO
             reqprocess.Headers.Add("Accept-Encoding", "gzip, deflate br");
             reqprocess.Headers.Add("Accept-Language", "en-US, en; q=0.9");
             reqprocess.Headers.Add("Origin", "https://www.nike.com");
-            reqprocess.Referer = "https://www.nike.com/us/en/checkout";
+            reqprocess.Referer = "https://www.nike.com/checkout";
             reqprocess.Headers.Add("Sec-Fetch-Dest", "empty");
             reqprocess.Headers.Add("Sec-Fetch-Mode", "cors");
             reqprocess.Headers.Add("Sec-Fetch-Site", "same-site");
@@ -952,7 +952,10 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                HttpWebResponse processpayment = (HttpWebResponse)ex.Response;
+                HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                /*Stream processtream = resppayment.GetResponseStream();
+                StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                 processcode = readprocessstream.ReadToEnd();*/
                 tk.Status = "Submit Billing error";
                 goto retry;
             }
@@ -1124,7 +1127,10 @@ namespace MAIO
                 }
                 catch (WebException ex)
                 {
-                    HttpWebResponse respjob = (HttpWebResponse)ex.Response;
+                    HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                    Stream processtream = resppayment.GetResponseStream();
+                    StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                   string procescode = readprocessstream.ReadToEnd();
                     failedretry++;
                     if (failedretry > 20)
                     {
@@ -1281,7 +1287,6 @@ namespace MAIO
                     ct.ThrowIfCancellationRequested();
                 }
                 tk.Status = "Processing";
-                Thread.Sleep(1);
                 HttpWebRequest reqfinal = (HttpWebRequest)HttpWebRequest.Create("https://api.nike.com/buy/checkouts_jobs/v3/" + GID);
                 reqfinal.Proxy = getproxy();
                 reqfinal.Method = "GET";
@@ -1388,6 +1393,11 @@ namespace MAIO
             if (ts.TotalMinutes >= 50)
             {
                 Main.autorestock(tk);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             Thread.Sleep(1);
             string nikevistid = Guid.NewGuid().ToString();

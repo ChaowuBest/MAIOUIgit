@@ -45,16 +45,19 @@ namespace MAIO
         public string password = "";
         public string giftcard = "";
         public static bool subcard = false;
+        DateTime dt = DateTime.UtcNow;
         Dictionary<string, string> giftcard2 = new Dictionary<string, string>();
         Dictionary<string, string> allsize = new Dictionary<string, string>();
         NikeUSUKAPI USUKAPI = new NikeUSUKAPI();
         ArrayList skuidlist = new ArrayList();
         bool multisize = false;
+        JObject jopaymenttoken = null;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
         A:
             try
             {
+                dt = dt.AddDays(6);
                 System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
                 watch.Start();
                 try
@@ -122,6 +125,11 @@ namespace MAIO
                                 if (ts.TotalMinutes >= 50)
                                 {
                                     Main.autorestock(tk);
+                                    if (ct.IsCancellationRequested)
+                                    {
+                                        tk.Status = "IDLE";
+                                        ct.ThrowIfCancellationRequested();
+                                    }
                                 }
                                 try
                                 {
@@ -134,7 +142,7 @@ namespace MAIO
                                     else
                                     {
                                         ArrayList ary = share_dog_skuid[tk.Tasksite + tk.Sku];
-                                        if (ary == null||ary.Count==0)
+                                        if (ary == null || ary.Count == 0)
                                         {
                                             goto G;
                                         }
@@ -228,10 +236,20 @@ namespace MAIO
                 }
                 catch (NullReferenceException)
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     goto E;
                 }
             F: if (subcard)
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
                     paymenttoken(Authorization, id, skuid, joprofile, ct, watch);
                 }
@@ -867,10 +885,14 @@ namespace MAIO
             }
             subcard = true;
             cts.Cancel();
-            if (ct2.IsCancellationRequested)
+            try
             {
-                ct2.ThrowIfCancellationRequested();
+                if (ct2.IsCancellationRequested)
+                {
+                    ct2.ThrowIfCancellationRequested();
+                }
             }
+            catch { }
         }
         protected void Checkoutpreview(string Authorization, string skuid, JObject jo, CancellationToken ct, CancellationTokenSource cts)
         {
@@ -916,131 +938,43 @@ namespace MAIO
                 quantity = limit;
             }
             JObject payLoad = null;
-
+            payLoad = JObject.Parse(Nike_Requestpaylod.previewpaylod);
             if (code != "")
             {
-                payLoad = new JObject(
-              new JProperty("request",
-               new JObject(
-              new JProperty("country", country),
-              new JProperty("currency", currency),
-              new JProperty("email", jo["EmailAddress"].ToString()),
-              new JProperty("locale", locale),
-              new JProperty("channel", "NIKECOM"),
-              //   new JProperty("clientInfo",
-              //  new JObject(new JProperty("deviceId", deviceid))),
-              new JProperty("promotionCodes",
-              new JArray(code)),
-              new JProperty("items",
-              new JArray(
-                  new JObject(
-                  new JProperty("id", Guid.NewGuid().ToString()),
-                  new JProperty("skuId", skuid),
-                  new JProperty("shippingMethod", shippingMethod),
-                  new JProperty("quantity", quantity),
-                   new JProperty("fulfillmentDetails",
-                     new JObject(
-                     new JProperty("type", "SHIP"),
-                     new JProperty("getBy",
-                     new JObject(
-                     new JProperty("maxDate",
-                     new JObject(
-                     new JProperty("dateTime", "2020-10-14T04:21:28.52Z"),
-                     new JProperty("timezone", "America/Indiana/Indianapolis"),
-                     new JProperty("precision", "DAY"))
-                         ))),
-                     new JProperty("location",
-                     new JObject(
-                     new JProperty("type", "address/shipping"),
-                     new JProperty("postalAddress",
-                     new JObject(
-                     new JProperty("country", country),
-                     new JProperty("address1", jo["Address1"].ToString()),
-                     new JProperty("postalCode", jo["Zipcode"].ToString()),
-                     new JProperty("city", jo["City"].ToString()),
-                     new JProperty("state", jo["State"].ToString()))))
-                     ))),
-                  new JProperty("recipient",
-                     new JObject(
-                     new JProperty("firstName", jo["FirstName"].ToString()),
-                     new JProperty("lastName", jo["LastName"].ToString()))),
-                  new JProperty("contactInfo",
-                     new JObject(
-                     new JProperty("phoneNumber", jo["Tel"].ToString()),
-                     new JProperty("email", jo["EmailAddress"].ToString()))),
-                  new JProperty("shippingAddress",
-                     new JObject(
-                     new JProperty("address1", jo["Address1"].ToString()),
-                     new JProperty("address2", jo["Address2"].ToString()),
-                     new JProperty("city", jo["City"].ToString()),
-                     new JProperty("postalCode", jo["Zipcode"].ToString()),
-                     new JProperty("state", jo["State"].ToString()),
-                      new JProperty("preferred", "true"),
-                     new JProperty("country", country))))
-                  )))));
+                payLoad["request"]["promotionCodes"][0] = code;
             }
             else
             {
-                payLoad = new JObject(
-new JProperty("request",
- new JObject(
-new JProperty("country", country),
-new JProperty("currency", currency),
-new JProperty("email", jo["EmailAddress"].ToString()),
-new JProperty("locale", locale),
-new JProperty("channel", "NIKECOM"),
-//   new JProperty("clientInfo",
-//  new JObject(new JProperty("deviceId", deviceid))),
-new JProperty("promotionCodes",
-new JArray()),
-new JProperty("items",
-new JArray(
-    new JObject(
-    new JProperty("id", Guid.NewGuid().ToString()),
-    new JProperty("skuId", skuid),
-    new JProperty("shippingMethod", shippingMethod),
-    new JProperty("quantity", quantity),
-     new JProperty("fulfillmentDetails",
-       new JObject(
-       new JProperty("type", "SHIP"),
-       new JProperty("getBy",
-       new JObject(
-       new JProperty("maxDate",
-       new JObject(
-       new JProperty("dateTime", "2020-10-14T04:21:28.52Z"),
-       new JProperty("timezone", "America/Indiana/Indianapolis"),
-       new JProperty("precision", "DAY"))
-           ))),
-       new JProperty("location",
-       new JObject(
-       new JProperty("type", "address/shipping"),
-       new JProperty("postalAddress",
-       new JObject(
-       new JProperty("country", country),
-       new JProperty("address1", jo["Address1"].ToString()),
-       new JProperty("postalCode", jo["Zipcode"].ToString()),
-       new JProperty("city", jo["City"].ToString()),
-       new JProperty("state", jo["State"].ToString()))))
-       ))),
-    new JProperty("recipient",
-       new JObject(
-       new JProperty("firstName", jo["FirstName"].ToString()),
-       new JProperty("lastName", jo["LastName"].ToString()))),
-    new JProperty("contactInfo",
-       new JObject(
-       new JProperty("phoneNumber", jo["Tel"].ToString()),
-       new JProperty("email", jo["EmailAddress"].ToString()))),
-    new JProperty("shippingAddress",
-       new JObject(
-       new JProperty("address1", jo["Address1"].ToString()),
-       new JProperty("address2", jo["Address2"].ToString()),
-       new JProperty("city", jo["City"].ToString()),
-       new JProperty("postalCode", jo["Zipcode"].ToString()),
-       new JProperty("state", jo["State"].ToString()),
-        new JProperty("preferred", "true"),
-       new JProperty("country", country))))
-    )))));
+                payLoad["request"]["promotionCodes"][0].Remove();
             }
+            #region
+            payLoad["request"]["country"] = country;
+            payLoad["request"]["currency"] = currency;
+            payLoad["request"]["email"] = jo["EmailAddress"].ToString();
+            payLoad["request"]["locale"] = locale;
+            payLoad["request"]["items"][0]["id"] = Guid.NewGuid().ToString();
+            payLoad["request"]["items"][0]["skuId"] = skuid;
+            payLoad["request"]["items"][0]["shippingMethod"] = shippingMethod;
+            payLoad["request"]["items"][0]["quantity"] = quantity;
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["getBy"]["maxDate"]["dateTime"] = dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ");
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["country"] = country;
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address1"] = jo["Address1"].ToString();
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address2"] = jo["Address2"].ToString();
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["postalCode"] = jo["Zipcode"].ToString();
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["city"] = jo["City"].ToString();
+            payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["state"] = jo["State"].ToString();
+            payLoad["request"]["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
+            payLoad["request"]["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
+            payLoad["request"]["items"][0]["contactInfo"]["phoneNumber"] = jo["Tel"].ToString();
+            payLoad["request"]["items"][0]["contactInfo"]["email"] = jo["EmailAddress"].ToString();
+            payLoad["request"]["items"][0]["shippingAddress"]["address1"] = jo["Address1"].ToString();
+            payLoad["request"]["items"][0]["shippingAddress"]["address2"] = jo["Address2"].ToString();
+            payLoad["request"]["items"][0]["shippingAddress"]["city"] = jo["City"].ToString();
+            payLoad["request"]["items"][0]["shippingAddress"]["postalCode"] = jo["Zipcode"].ToString();
+            payLoad["request"]["items"][0]["shippingAddress"]["state"] = jo["State"].ToString();
+            payLoad["request"]["items"][0]["shippingAddress"]["country"] = country;
+            jopaymenttoken = payLoad;
+            #endregion
             string checkoutpayload = null;
             try
             {
@@ -1145,16 +1079,19 @@ new JArray(
                 subcard = true;
             }
             cts.Cancel();
-            if (ct2.IsCancellationRequested)
+            try
             {
-                ct2.ThrowIfCancellationRequested();
+                if (ct2.IsCancellationRequested)
+                {
+                    ct2.ThrowIfCancellationRequested();
+                }
             }
+            catch { }
         }
         ArrayList giftcardadd = new ArrayList();
         protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
-            string paymenturl = null;
-            paymenturl = "https://api.nike.com/payment/preview/v3";
+            string paymenturl = "https://api.nike.com/payment/preview/v3";
             JObject payinfo = null;
             string country = null;
             string currency = null;
@@ -1182,8 +1119,10 @@ new JArray(
             if (giftcard != "")
             {
                 JObject payLoad = null;
+                Thread.Sleep(1);
                 for (int i = 0; i < index + 1; i++)
                 {
+                    Thread.Sleep(1);
                     KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
                     payLoad = new JObject(
                   new JObject(
@@ -1212,7 +1151,9 @@ new JArray(
                     ));
                     giftcardadd.Add(payLoad);
                 }
-                payinfo = new JObject(
+                payinfo["paymentInfo"][0] = JArray.Parse(string.Join(",", (string[])giftcardadd.ToArray(typeof(string))));
+                #region
+                /*payinfo = new JObject(
             new JProperty("checkoutId", GID),
             new JProperty("total", msrp),
             new JProperty("currency", currency),
@@ -1221,6 +1162,36 @@ new JArray(
              new JArray(
               new JObject(
               new JProperty("productId", productID),
+              new JProperty("contactInfo",
+new JObject(
+new JProperty("phoneNumbers", jo["Tel"].ToString()),
+new JProperty("email", jo["EmailAddress"].ToString())
+    )),
+new JProperty("recipient",
+new JObject(
+new JProperty("firstName", jo["FirstName"].ToString()),
+new JProperty("lastName", jo["LastName"].ToString())
+    )),
+new JProperty("fulfillmentDetails",
+new JObject(
+ new JProperty("type", "SHIP"),
+ new JProperty("getBy",
+new JObject(
+new JProperty("maxDate",
+new JObject(
+new JProperty("dateTime", dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ")),
+new JProperty("timezone", "America/Indiana/Indianapolis"),
+new JProperty("precision", "DAY"))))),
+new JProperty("location",
+new JObject(
+new JProperty("type", "address/shipping"),
+new JProperty("postalAddress",
+new JObject(
+new JProperty("country", country),
+new JProperty("address1", jo["Address1"].ToString()),
+new JProperty("postalCode", jo["Zipcode"].ToString()),
+new JProperty("city", jo["City"].ToString()),
+new JProperty("state", jo["State"].ToString()))))))),
               new JProperty("shippingAddress",
                  new JObject(
                  new JProperty("address1", jo["Address1"].ToString()),
@@ -1232,51 +1203,48 @@ new JArray(
                  new JProperty("email", jo["EmailAddress"].ToString()),
                  new JProperty("phoneNumber", jo["Tel"].ToString())))))),
               new JProperty("paymentInfo",
-               new JArray(giftcardadd)));
+               new JArray(giftcardadd)));*/
+                #endregion
             }
             else
             {
-                payinfo = new JObject(
-new JProperty("checkoutId", GID),
-new JProperty("total", msrp),
-new JProperty("currency", currency),
-new JProperty("country", country),
-new JProperty("items",
-new JArray(
-new JObject(
-new JProperty("productId", productID),
-new JProperty("shippingAddress",
-new JObject(
-new JProperty("address1", jo["Address1"].ToString()),
-new JProperty("address2", jo["Address2"].ToString()),
-new JProperty("city", jo["City"].ToString()),
-new JProperty("postalCode", jo["Zipcode"].ToString()),
-new JProperty("country", country)))))),
-new JProperty("paymentInfo",
-new JArray(
-new JObject(
-new JProperty("id", Guid.NewGuid().ToString()),
-new JProperty("type", "CreditCard"),
-new JProperty("creditCardInfoId", cardguid),
-new JProperty("billingInfo",
-new JObject(
-new JProperty("name",
-new JObject(
-   new JProperty("firstName", jo["FirstName"].ToString()),
-   new JProperty("lastName", jo["LastName"].ToString()))),
-new JProperty("address",
-new JObject(
-   new JProperty("address1", jo["Address1"].ToString()),
-   new JProperty("address2", jo["Address2"].ToString()),
-   new JProperty("city", jo["City"].ToString()),
-   new JProperty("postalCode", jo["Zipcode"].ToString()),
-   new JProperty("state", jo["State"].ToString()),
-   new JProperty("country", country))),
-new JProperty("contactInfo",
-new JObject(
-     new JProperty("phoneNumber", jo["Tel"].ToString()),
-     new JProperty("email", jo["EmailAddress"].ToString())))))
-))));
+                payinfo = JObject.Parse(Nike_Requestpaylod.previewpayinfo);
+                payinfo["checkoutId"] = GID;
+                payinfo["total"] = msrp;
+                payinfo["currency"] = currency;
+                payinfo["country"] = country;
+                payinfo["items"][0]["productId"] = productID;
+                payinfo["items"][0]["contactInfo"]["phoneNumbers"] = jo["Tel"].ToString();
+                payinfo["items"][0]["contactInfo"]["email"] = jo["EmailAddress"].ToString();
+                payinfo["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
+                payinfo["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
+                payinfo["items"][0]["fulfillmentDetails"]["getBy"]["maxDate"]["dateTime"] = dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ");
+                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["country"] = country;
+                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address1"] = jo["Address1"].ToString();
+                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address2"] = jo["Address2"].ToString();
+                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["postalCode"] = jo["Zipcode"].ToString();
+                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["city"] = jo["City"].ToString();
+                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["state"] = jo["State"].ToString();
+                payinfo["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
+                payinfo["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
+                payinfo["items"][0]["shippingAddress"]["address1"] = jo["Address1"].ToString();
+                payinfo["items"][0]["shippingAddress"]["address2"] = jo["Address2"].ToString();
+                payinfo["items"][0]["shippingAddress"]["city"] = jo["City"].ToString();
+                payinfo["items"][0]["shippingAddress"]["postalCode"] = jo["Zipcode"].ToString();
+                payinfo["items"][0]["shippingAddress"]["state"] = jo["State"].ToString();
+                payinfo["items"][0]["shippingAddress"]["country"] = country;
+                payinfo["paymentInfo"][0]["id"] = Guid.NewGuid().ToString();
+                payinfo["paymentInfo"][0]["creditCardInfoId"] = cardguid;
+                payinfo["paymentInfo"][0]["billingInfo"]["name"]["firstName"] = jo["FirstName"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["name"]["lastName"] = jo["LastName"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["address"]["address1"] = jo["Address1"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["address"]["address2"] = jo["Address2"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["address"]["city"] = jo["City"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["address"]["postalCode"] = jo["Zipcode"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["address"]["state"] = jo["State"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["address"]["country"] = country;
+                payinfo["paymentInfo"][0]["billingInfo"]["contactInfo"]["phoneNumber"] = jo["Tel"].ToString();
+                payinfo["paymentInfo"][0]["billingInfo"]["contactInfo"]["email"] = jo["EmailAddress"].ToString();
             }
             if (ct.IsCancellationRequested)
             {
@@ -1285,7 +1253,6 @@ new JObject(
             }
             string id = USUKAPI.payment(paymenturl, Authorization, payinfo.ToString(), tk, ct);
             return id;
-
         }
         protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct, System.Diagnostics.Stopwatch watch)
         {
@@ -1298,106 +1265,13 @@ new JObject(
             {
                 url = "http://127.0.0.1:1234/buy/checkouts/v3/" + GID;
             }
-            string country = null;
-            string currency = null;
-            string locale = null;
-            string shippingMethod = null;
-            if (jo["Country"].ToString() == "GB")
-            {
-                country = "GB";
-                currency = "GBP";
-                locale = "en_GB";
-                shippingMethod = "GROUND_SERVICE";
-            }
-            else if (jo["Country"].ToString() == "US")
-            {
-                country = "US";
-                currency = "USD";
-                locale = "en_US";
-                shippingMethod = "STANDARD";
-            }
-            JObject payinfo = null;
-            if (code != "")
-            {
-                payinfo = new JObject(
- new JProperty("request",
- new JObject(
- new JProperty("country", country),
- new JProperty("currency", currency),
- new JProperty("email", jo["EmailAddress"].ToString()),
- new JProperty("locale", locale),
- new JProperty("paymentToken", id),
- new JProperty("channel", "NIKECOM"),
- new JProperty("promotionCodes",
- new JArray(code)),
- new JProperty("items",
- new JArray(
- new JObject(
- new JProperty("id", productID),
- new JProperty("skuId", skuid),
- new JProperty("shippingMethod", shippingMethod),
- new JProperty("quantity", quantity),
- new JProperty("recipient",
- new JObject(
- new JProperty("firstName", jo["FirstName"].ToString()),
- new JProperty("lastName", jo["LastName"].ToString()))),
- new JProperty("contactInfo",
- new JObject(
- new JProperty("phoneNumber", jo["Tel"].ToString()),
- new JProperty("email", jo["EmailAddress"].ToString()))),
- new JProperty("shippingAddress",
- new JObject(
- new JProperty("address1", jo["Address1"].ToString()),
- new JProperty("address2", jo["Address2"].ToString()),
- new JProperty("city", jo["City"].ToString()),
- new JProperty("state", jo["State"].ToString()),
- new JProperty("postalCode", jo["Zipcode"].ToString()),
- new JProperty("country", country))))
- )))));
-            }
-            else
-            {
-                payinfo = new JObject(
-new JProperty("request",
-new JObject(
-new JProperty("country", country),
-new JProperty("currency", currency),
-new JProperty("email", jo["EmailAddress"].ToString()),
-new JProperty("locale", locale),
-new JProperty("paymentToken", id),
-new JProperty("channel", "NIKECOM"),
-new JProperty("items",
-new JArray(
-new JObject(
-new JProperty("id", productID),
-new JProperty("skuId", skuid),
-new JProperty("shippingMethod", shippingMethod),
-new JProperty("quantity", quantity),
-new JProperty("recipient",
-new JObject(
-new JProperty("firstName", jo["FirstName"].ToString()),
-new JProperty("lastName", jo["LastName"].ToString()))),
-new JProperty("contactInfo",
-new JObject(
-new JProperty("phoneNumber", jo["Tel"].ToString()),
-new JProperty("email", jo["EmailAddress"].ToString()))),
-new JProperty("shippingAddress",
-new JObject(
-new JProperty("address1", jo["Address1"].ToString()),
-new JProperty("address2", jo["Address2"].ToString()),
-new JProperty("city", jo["City"].ToString()),
-new JProperty("state", jo["State"].ToString()),
-new JProperty("postalCode", jo["Zipcode"].ToString()),
-new JProperty("country", country))
-))
-)))));
-            }
+            jopaymenttoken["request"]["paymentToken"] = id;
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.final(Authorization, url, payinfo.ToString(), GID, tk, ct, id, watch);
+            string status = USUKAPI.final(Authorization, url, jopaymenttoken.ToString(), GID, tk, ct, id, watch);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";

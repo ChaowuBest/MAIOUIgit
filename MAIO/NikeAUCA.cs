@@ -89,6 +89,11 @@ namespace MAIO
                             if (ts.TotalMinutes >= 50)
                             {
                                 Main.autorestock(tk);
+                                if (ct.IsCancellationRequested)
+                                {
+                                    tk.Status = "IDLE";
+                                    ct.ThrowIfCancellationRequested();
+                                }
                             }
                             try
                             {

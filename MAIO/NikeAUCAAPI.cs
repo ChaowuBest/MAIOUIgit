@@ -214,6 +214,11 @@ namespace MAIO
                         if (failedretry > 20)
                         {
                             Main.autorestock(tk);
+                            if (ct.IsCancellationRequested)
+                            {
+                                tk.Status = "IDLE";
+                                ct.ThrowIfCancellationRequested();
+                            }
                         }
                         Thread.Sleep(1500);
                         goto C;
@@ -466,6 +471,11 @@ namespace MAIO
             if (ts.TotalMinutes >= 50)
             {
                 Main.autorestock(tk);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             Thread.Sleep(1);
             string traceid = Guid.NewGuid().ToString();
