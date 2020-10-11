@@ -88,12 +88,13 @@ namespace MAIO
                             TimeSpan ts = dttwo - dtone;
                             if (ts.TotalMinutes >= 50)
                             {
-                                Main.autorestock(tk);
+                                goto A;
+                                /*Main.autorestock(tk);
                                 if (ct.IsCancellationRequested)
                                 {
                                     tk.Status = "IDLE";
                                     ct.ThrowIfCancellationRequested();
-                                }
+                                }*/
                             }
                             try
                             {
@@ -683,7 +684,6 @@ namespace MAIO
             {
                 url = "http://127.0.0.1:1234/buy/partner_cart_preorder/v1/" + GID;
             }
-
             JObject payLoad = new JObject(
                 new JProperty("country", tk.Tasksite.Replace("Nike", "")),
                 new JProperty("language", "en-GB"),
@@ -715,7 +715,6 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-
             string payinfo = payLoad.ToString();
             AUCAAPI.PutMethod(url, payinfo, tk, ct, GID);
         }

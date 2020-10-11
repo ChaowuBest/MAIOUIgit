@@ -470,6 +470,9 @@ namespace MAIO
             TimeSpan ts = dttwo - dtone;
             if (ts.TotalMinutes >= 50)
             {
+                Random ran = new Random();
+                int sleeptime = ran.Next(0, 600);
+                Thread.Sleep(sleeptime);
                 Main.autorestock(tk);
                 if (ct.IsCancellationRequested)
                 {

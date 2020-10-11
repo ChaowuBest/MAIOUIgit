@@ -467,8 +467,8 @@ namespace MAIO
             else
             {
                 reqcard.Headers.Add("Authorization", Authorization);
-              //  reqcard.Headers.Add("x-b3-spanname", "CiCCheckout");
-              //  reqcard.Headers.Add("x-b3-traceid", xb3traceid);
+                //  reqcard.Headers.Add("x-b3-spanname", "CiCCheckout");
+                //  reqcard.Headers.Add("x-b3-traceid", xb3traceid);
             }
             reqcard.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
             Stream cardstream = reqcard.GetRequestStream();
@@ -952,10 +952,10 @@ namespace MAIO
             }
             catch (WebException ex)
             {
-                HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                /*Stream processtream = resppayment.GetResponseStream();
-                StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
-                 processcode = readprocessstream.ReadToEnd();*/
+                /*  HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                 Stream processtream = resppayment.GetResponseStream();
+                  StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                   processcode = readprocessstream.ReadToEnd();*/
                 tk.Status = "Submit Billing error";
                 goto retry;
             }
@@ -1127,10 +1127,10 @@ namespace MAIO
                 }
                 catch (WebException ex)
                 {
-                    HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
-                    Stream processtream = resppayment.GetResponseStream();
-                    StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
-                   string procescode = readprocessstream.ReadToEnd();
+                    /* HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                     Stream processtream = resppayment.GetResponseStream();
+                     StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                    string procescode = readprocessstream.ReadToEnd();*/
                     failedretry++;
                     if (failedretry > 20)
                     {
@@ -1352,7 +1352,7 @@ namespace MAIO
                     break;
                 }
             }
-            if ((status + "").Length == 0) 
+            if ((status + "").Length == 0)
             {
                 autorestock(tk);
             }
@@ -1375,8 +1375,9 @@ namespace MAIO
                     else
                     {
                         share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
-                    }  
-                }catch { }
+                    }
+                }
+                catch { }
             }
         A: if (ct.IsCancellationRequested)
             {
@@ -1387,11 +1388,14 @@ namespace MAIO
                     share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
                 }
                 ct.ThrowIfCancellationRequested();
-            } 
+            }
             DateTime dttwo = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
             TimeSpan ts = dttwo - dtone;
             if (ts.TotalMinutes >= 50)
             {
+                Random ran = new Random();
+                int sleeptime=ran.Next(0,600);
+                Thread.Sleep(sleeptime);
                 Main.autorestock(tk);
                 if (ct.IsCancellationRequested)
                 {
@@ -1455,7 +1459,8 @@ namespace MAIO
                     {
                         share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
                     }
-                }catch { }      
+                }
+                catch { }
                 for (int i = 0; i < ja.Count; i++)
                 {
                     Thread.Sleep(1);
@@ -1637,7 +1642,7 @@ namespace MAIO
 
         }
         public string getAdvproxy()
-        {     
+        {
             string proxyaddress = null;
             if (Mainwindow.proxypool.Count == 0)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -52,6 +53,20 @@ namespace MAIO
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Writecoookie.write();
+            try
+            {
+                Process[] ps = Process.GetProcesses();
+                foreach (Process process in ps)
+                {
+                    if (process.ProcessName.Contains("CheckoutHelper") || process.ProcessName.Contains("chromedriver"))
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
             Application.Current.Shutdown();
         }
         private void save_Click(object sender, RoutedEventArgs e)

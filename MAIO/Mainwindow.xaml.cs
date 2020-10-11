@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace MAIO
     public partial class Mainwindow : Window
     {
         public static Dictionary<string, string> allprofile = new Dictionary<string, string>();
+        public static Dictionary<string, string> refreshtoken = new Dictionary<string, string>();
         public static Dictionary<string, string> giftcardlist = new Dictionary<string, string>();
         public static Dictionary<string, string> account = new Dictionary<string, string>();
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
@@ -305,10 +307,35 @@ namespace MAIO
                     sw.Close();
                     fs3.Close();
                 }
+
             }
             catch
             {
                 MessageBox.Show("Error read cookie");
+            }
+            try
+            {
+                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
+                {
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json";
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Length != 0)
+                    {
+                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamReader sr = new StreamReader(fs1);
+                        string read = sr.ReadToEnd();
+                        JArray ja = JArray.Parse(read);
+                        foreach (var i in ja)
+                        {
+                            Thread.Sleep(1);
+                            refreshtoken.Add(i["Account"].ToString(),i["Token"].ToString());
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Check Refreshtoken File");
             }
         }
         public void Initialcode()
@@ -337,6 +364,7 @@ namespace MAIO
         {
             try
             {
+                Thread.Sleep(1);
                 this.DragMove();
             }
             catch
@@ -357,6 +385,20 @@ namespace MAIO
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Writecoookie.write();
+            try
+            {
+                Process[] ps = Process.GetProcesses();
+                foreach (Process process in ps)
+                {
+                    if (process.ProcessName.Contains("CheckoutHelper") || process.ProcessName.Contains("chromedriver"))
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
             Application.Current.Shutdown();
         }
         private void New_Task(object sender, RoutedEventArgs e)

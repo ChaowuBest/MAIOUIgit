@@ -52,6 +52,7 @@ namespace MAIO
             updatelable("123", true);
             for (int i = 0; i < Mainwindow.tasklist.Count; i++)
             {
+                Thread.Sleep(1);
                 KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
                 JObject jo = JObject.Parse(kv.Value);
                 if (kv.Value.Contains("\"AdvanceMonitor\": \"False\"") || kv.Value.Contains("AdvanceMonitor") == false)
@@ -358,6 +359,20 @@ namespace MAIO
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Writecoookie.write();
+            try
+            {
+                Process[] ps = Process.GetProcesses();
+                foreach (Process process in ps)
+                {
+                    if (process.ProcessName.Contains("CheckoutHelper") || process.ProcessName.Contains("chromedriver"))
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
             Application.Current.Shutdown();
         }
         private void createtask_Click(object sender, RoutedEventArgs e)
@@ -1226,7 +1241,11 @@ namespace MAIO
             }
             if (dic.Keys.Contains(tk.Taskid))
             {
-                MessageBox.Show("Please stop task first");
+                try
+                {
+                    dic[tk.Taskid].Cancel();
+                    dic.Remove(tk.Taskid);
+                }catch { }
             }
             else
             {

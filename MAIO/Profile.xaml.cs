@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Security;
@@ -32,6 +33,20 @@ namespace MAIO
         {
             Writecoookie.write();
             Application.Current.Shutdown();
+            try
+            {
+                Process[] ps = Process.GetProcesses();
+                foreach (Process process in ps)
+                {
+                    if (process.ProcessName.Contains("CheckoutHelper") || process.ProcessName.Contains("chromedriver"))
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
         private void save(object sender, RoutedEventArgs e)
         {

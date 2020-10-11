@@ -22,11 +22,12 @@ namespace MAIO.JDUS
         public Main.taskset tk = null;
         string _dynSessConf = null;
         public Dictionary<string, string> allsize = new Dictionary<string, string>();
+        public Dictionary<string, string> allstock = new Dictionary<string, string>();
         public JDUSAPI jdusapi = new JDUSAPI();
         private static DateTime timeStampStartTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        public async void StartTask(CancellationToken ct, CancellationTokenSource cts)
+        public  void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
-            if (ct.IsCancellationRequested)
+       A:    if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
@@ -67,18 +68,36 @@ namespace MAIO.JDUS
                         size = size.Substring(1);
                     }
                     allsize.Add(size, i["attributes"][0]["id"].ToString());
+                    allstock.Add(size, i["stockLevelStatus"].ToString());
                 }
             }
+            bool instock = false;
+            if (allsize.TryGetValue(tk.Size, out sizeid))
+            {
+                jdusapi.productid = sizeid;
+                if (allstock[tk.Size] == "inStock")
+                {
+                    instock = true;
+                }
+                else
+                {
+                    goto A;
+                }
+            }
+            else
+            {
+                tk.Status = "Size Input Error";//未写完
+            }
             JObject jo = JObject.Parse(profile);
-            string subemailapi = "https://www.footlocker.com/api/users/carts/current/email/"+jo["EmailAddress"]+"?timestamp="+ (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
+         /*   string subemailapi = "https://www.footlocker.com/api/users/carts/current/email/"+jo["EmailAddress"]+"?timestamp="+ (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
             jdusapi.PUT(subemailapi,tk,ct);
             string subshippapi = "https://www.footlocker.com/api/users/carts/current/addresses/shipping?timestamp="+ (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
             string subshippinfo = "{\"shippingAddress\":{\"setAsDefaultBilling\":false,\"setAsDefaultShipping\":false,\"firstName\":\""+ jo["FirstName"].ToString() + "\",\"lastName\":\""+ jo["LastName"].ToString() + "\",\"email\":\""+ jo["EmailAddress"].ToString() + "\",\"phone\":\""+ jo["Tel"].ToString() + "\",\"billingAddress\":false,\"country\":{\"isocode\":\"US\",\"name\":\"United States\"},\"defaultAddress\":false,\"id\":null,\"line1\":\""+ jo["Address1"].ToString() + "\",\"postalCode\":\""+ jo["Zipcode"].ToString() + "\",\"region\":{\"countryIso\":\"US\",\"isocode\":\"US-"+ jo["State"].ToString() + "\",\"isocodeShort\":\""+ jo["State"].ToString() + "\"},\"setAsBilling\":true,\"shippingAddress\":true,\"town\":\""+ jo["City"].ToString() + "\",\"visibleInAddressBook\":false,\"type\":\"default\",\"LoqateSearch\":\"\",\"line2\":\""+ jo["Address2"].ToString() + "\",\"recordType\":\"S\"}}";
-            jdusapi.subship(subemailapi,tk,ct,subshippinfo);
+            jdusapi.subship(subemailapi,tk,ct,subshippinfo);*/
 
           //  string shippinginfo = "{\"setAsDefaultBilling\":false,\"setAsDefaultShipping\":false,\"firstName\":\"wu\",\"lastName\":\"chao\",\"email\":false,\"phone\":\"4439869823\",\"id\":null,\"setAsBilling\":false,\"region\":{\"countryIso\":\"US\",\"isocode\":\"US-NJ\",\"isocodeShort\":\"NJ\",\"name\":\"New Jersey\"},\"country\":{\"isocode\":\"US\",\"name\":\"United States\"},\"type\":\"default\",\"LoqateSearch\":\"\",\"line1\":\""+ jo["Address1"].ToString() + "\",\"postalCode\":\"08904-2447\",\"town\":\"HIGHLAND PARK\",\"regionFPO\":null,\"shippingAddress\":true,\"recordType\":\"S\"}";
             string ATCUrl = "https://www.footlocker.com/api/users/carts/current/entries?timestamp=" + (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-            string ATCinfo = "{\"productQuantity\":1,\"productId\":\"22510914\"}";
+            string ATCinfo = "{\"productQuantity\":1,\"productId\":\""+sizeid+"\"}";
             jdusapi.ATC(ATCUrl, tk,ct,ATCinfo);
         }
     }

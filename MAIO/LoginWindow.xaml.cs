@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -65,6 +66,20 @@ namespace MAIO
                         }
                         catch (Exception ex)
                         {
+                            try
+                            {
+                                Process[] ps = Process.GetProcesses();
+                                foreach (Process process in ps)
+                                {
+                                    if (process.ProcessName.Contains("CheckoutHelper") || process.ProcessName.Contains("chromedriver"))
+                                    {
+                                        process.Kill();
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
                             Application.Current.Shutdown();
                         }
                     }

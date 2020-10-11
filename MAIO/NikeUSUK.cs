@@ -39,7 +39,6 @@ namespace MAIO
         int index = 0;
         int limit = 0;
         int quantity = 0;
-        string paytoken = "";
         public string username = "";
         public string imageurl = "";
         public string password = "";
@@ -59,7 +58,7 @@ namespace MAIO
             {
                 dt = dt.AddDays(6);
                 System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-                watch.Start();
+                //  watch.Start();
                 try
                 {
                     quantity = int.Parse(tk.Quantity);
@@ -98,6 +97,7 @@ namespace MAIO
                         }
                         if (tk.monitortask != "True")
                         {
+                            #region
                             for (int n = 0; n < Mainwindow.task.Count; n++)
                             {
                                 Thread.Sleep(1);
@@ -113,6 +113,7 @@ namespace MAIO
                                     break;
                                 }
                             }
+                        #endregion
                         G: if (ismonitor)
                             {
                                 if (ct.IsCancellationRequested)
@@ -124,12 +125,13 @@ namespace MAIO
                                 TimeSpan ts = dttwo - dtone;
                                 if (ts.TotalMinutes >= 50)
                                 {
-                                    Main.autorestock(tk);
-                                    if (ct.IsCancellationRequested)
-                                    {
-                                        tk.Status = "IDLE";
-                                        ct.ThrowIfCancellationRequested();
-                                    }
+                                    goto A;
+                                    /*  Main.autorestock(tk);
+                                      if (ct.IsCancellationRequested)
+                                      {
+                                          tk.Status = "IDLE";
+                                          ct.ThrowIfCancellationRequested();
+                                      }*/
                                 }
                                 try
                                 {
@@ -182,8 +184,9 @@ namespace MAIO
                     {
                         return;
                     }
-                    catch (Exception)
+                    catch
                     {
+                        return;
                     }
                     #endregion
                     if (ismonitor == false)
@@ -213,6 +216,11 @@ namespace MAIO
             C:
                 try
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     var cts2 = new CancellationTokenSource();
                     var ct2 = cts2.Token;
                     if ((giftcard + "").Length == 0)
@@ -231,6 +239,13 @@ namespace MAIO
             E:
                 try
                 {
+                    //    watch.Stop();
+                    //     var wu= watch.ElapsedMilliseconds;
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     Checkoutpreview(Authorization, skuid, joprofile, ct, cts);
                     CheckoutpreviewStatus(Authorization, ct);
                 }
@@ -289,6 +304,7 @@ namespace MAIO
                 {
                     foreach (var i in jo)
                     {
+                        Thread.Sleep(1);
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
@@ -305,6 +321,7 @@ namespace MAIO
                 {
                     foreach (var i in jo)
                     {
+                        Thread.Sleep(1);
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
@@ -737,7 +754,7 @@ namespace MAIO
         }
         protected string Login(JObject profile, CancellationToken ct)
         {
-            string Authorization = "";
+        A: string Authorization = "";
             string loginurl = null;
             string locale = null;
             if (tk.Tasksite == "NikeUK")
@@ -756,83 +773,54 @@ namespace MAIO
             {
                 loginurl = "http://127.0.0.1:1234/login?appVersion=831&experienceVersion=831&uxid=com.nike.commerce.snkrs.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
             }
-        A: if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
+            string logininfo = null;
+            bool isrefresh = false;
+            try
             {
-                try
+                if (Mainwindow.refreshtoken.Count == 0)
                 {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json";
-                    FileInfo fi = new FileInfo(path);
-                    if (fi.Length == 0)
+                    logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
+                    Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
+                }
+                else
+                {
+                    if (ct.IsCancellationRequested)
                     {
-                        bool isrefresh = false;
-                        string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
-                        Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
                     }
-                    else
+                    string token = "";
+                    if (Mainwindow.refreshtoken.TryGetValue(username, out token))
                     {
-                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamReader sr = new StreamReader(fs1);
-                        string read = sr.ReadToEnd();
-                        JArray ja = null;
-                        try
-                        {
-                            ja = JArray.Parse(read);
-                        }
-                        catch
-                        {
-                            tk.Status = "Check Refreshtoken File";
-                            Thread.Sleep(500000000);
-                        }
-                        string token = "";
-                        for (int i = 0; i < ja.Count; i++)
-                        {
-                            if (ja[i]["Account"].ToString().ToUpper() == username.ToUpper())
-                            {
-                                token = ja[i]["Token"].ToString();
-                                break;
-                            }
-                        }
                         if (ct.IsCancellationRequested)
                         {
                             tk.Status = "IDLE";
                             ct.ThrowIfCancellationRequested();
                         }
-                        if (token != "")
+                        bool isrefresh2 = true;
+                        string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
+                        string loginurl2 = null;
+                        if (Config.UseAdvancemode != "True")
                         {
-                            bool isrefresh2 = true;
-                            string refreshinfo = "{\"refresh_token\":\"" + token + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"grant_type\":\"refresh_token\"}";
-                            string loginurl2 = null;
-                            if (Config.UseAdvancemode != "True")
-                            {
-                                loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
-                            }
-                            else
-                            {
-                                loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
-                            }
-
-                            Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
+                            loginurl2 = "http://127.0.0.1:1234/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                         }
                         else
                         {
-                            bool isrefresh = false;
-                            string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
-                            Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
+                            loginurl2 = "https://unite.nike.com/tokenRefresh?appVersion=805&experienceVersion=805&uxid=com.nike.commerce.nikedotcom.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Computer%2C%20Inc.&os=undefined&mobile=true&native=true&visit=1&visitor=" + GID;
                         }
-
+                        Authorization = USUKAPI.Postlogin(loginurl2, refreshinfo, isrefresh2, username, tk, ct);
+                    }
+                    else
+                    {
+                        logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
+                        Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
                     }
                 }
-                catch (IOException)
-                {
-                    tk.Status = "Login Error";
-                    goto A;
-                }
             }
-            else
+            catch (IOException)
             {
-                bool isrefresh = false;
-                string logininfo = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\",\"client_id\":\"PbCREuPr3iaFANEDjtiEzXooFl7mXGQ7\",\"ux_id\":\"com.nike.commerce.snkrs.web\",\"grant_type\":\"password\"}";
-                Authorization = USUKAPI.Postlogin(loginurl, logininfo, isrefresh, username, tk, ct);
+                tk.Status = "Login Error";
+                goto A;
             }
             return Authorization;
         }
@@ -1024,6 +1012,11 @@ namespace MAIO
             double balance = 0;
             JObject jo = JObject.Parse(Mainwindow.giftcardlist[giftcard]);
             double msrpdouble = 0;
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
             try
             {
                 foreach (var i in jo)
@@ -1088,15 +1081,12 @@ namespace MAIO
             }
             catch { }
         }
-        ArrayList giftcardadd = new ArrayList();
         protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
         {
             string paymenturl = "https://api.nike.com/payment/preview/v3";
-            JObject payinfo = null;
+            JObject payinfo = JObject.Parse(Nike_Requestpaylod.previewpayinfo);
             string country = null;
             string currency = null;
-            string locale = null;
-            string shippingMethod = null;
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1106,19 +1096,40 @@ namespace MAIO
             {
                 country = "GB";
                 currency = "GBP";
-                locale = "en_GB";
-                shippingMethod = "GROUND_SERVICE";
             }
             else
             {
                 country = "US";
                 currency = "USD";
-                locale = "en_US";
-                shippingMethod = "STANDARD";
             }
+            payinfo["checkoutId"] = GID;
+            payinfo["total"] = msrp;
+            payinfo["currency"] = currency;
+            payinfo["country"] = country;
+            payinfo["items"][0]["productId"] = productID;
+            payinfo["items"][0]["contactInfo"]["phoneNumbers"] = jo["Tel"].ToString();
+            payinfo["items"][0]["contactInfo"]["email"] = jo["EmailAddress"].ToString();
+            payinfo["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
+            payinfo["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
+            payinfo["items"][0]["fulfillmentDetails"]["getBy"]["maxDate"]["dateTime"] = dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ");
+            payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["country"] = country;
+            payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address1"] = jo["Address1"].ToString();
+            payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address2"] = jo["Address2"].ToString();
+            payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["postalCode"] = jo["Zipcode"].ToString();
+            payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["city"] = jo["City"].ToString();
+            payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["state"] = jo["State"].ToString();
+            payinfo["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
+            payinfo["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
+            payinfo["items"][0]["shippingAddress"]["address1"] = jo["Address1"].ToString();
+            payinfo["items"][0]["shippingAddress"]["address2"] = jo["Address2"].ToString();
+            payinfo["items"][0]["shippingAddress"]["city"] = jo["City"].ToString();
+            payinfo["items"][0]["shippingAddress"]["postalCode"] = jo["Zipcode"].ToString();
+            payinfo["items"][0]["shippingAddress"]["state"] = jo["State"].ToString();
+            payinfo["items"][0]["shippingAddress"]["country"] = country;
             if (giftcard != "")
             {
                 JObject payLoad = null;
+                JArray ja = new JArray();
                 Thread.Sleep(1);
                 for (int i = 0; i < index + 1; i++)
                 {
@@ -1149,90 +1160,12 @@ namespace MAIO
                          new JProperty("phoneNumber", jo["Tel"].ToString()),
                          new JProperty("email", jo["EmailAddress"].ToString())))))
                     ));
-                    giftcardadd.Add(payLoad);
+                    ja.Add(payLoad);
                 }
-                payinfo["paymentInfo"][0] = JArray.Parse(string.Join(",", (string[])giftcardadd.ToArray(typeof(string))));
-                #region
-                /*payinfo = new JObject(
-            new JProperty("checkoutId", GID),
-            new JProperty("total", msrp),
-            new JProperty("currency", currency),
-            new JProperty("country", country),
-            new JProperty("items",
-             new JArray(
-              new JObject(
-              new JProperty("productId", productID),
-              new JProperty("contactInfo",
-new JObject(
-new JProperty("phoneNumbers", jo["Tel"].ToString()),
-new JProperty("email", jo["EmailAddress"].ToString())
-    )),
-new JProperty("recipient",
-new JObject(
-new JProperty("firstName", jo["FirstName"].ToString()),
-new JProperty("lastName", jo["LastName"].ToString())
-    )),
-new JProperty("fulfillmentDetails",
-new JObject(
- new JProperty("type", "SHIP"),
- new JProperty("getBy",
-new JObject(
-new JProperty("maxDate",
-new JObject(
-new JProperty("dateTime", dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ")),
-new JProperty("timezone", "America/Indiana/Indianapolis"),
-new JProperty("precision", "DAY"))))),
-new JProperty("location",
-new JObject(
-new JProperty("type", "address/shipping"),
-new JProperty("postalAddress",
-new JObject(
-new JProperty("country", country),
-new JProperty("address1", jo["Address1"].ToString()),
-new JProperty("postalCode", jo["Zipcode"].ToString()),
-new JProperty("city", jo["City"].ToString()),
-new JProperty("state", jo["State"].ToString()))))))),
-              new JProperty("shippingAddress",
-                 new JObject(
-                 new JProperty("address1", jo["Address1"].ToString()),
-                 new JProperty("address2", jo["Address2"].ToString()),
-                 new JProperty("city", jo["City"].ToString()),
-                 new JProperty("state", jo["State"].ToString()),
-                 new JProperty("postalCode", jo["Zipcode"].ToString()),
-                 new JProperty("country", country),
-                 new JProperty("email", jo["EmailAddress"].ToString()),
-                 new JProperty("phoneNumber", jo["Tel"].ToString())))))),
-              new JProperty("paymentInfo",
-               new JArray(giftcardadd)));*/
-                #endregion
+                payinfo["paymentInfo"] = ja;
             }
             else
             {
-                payinfo = JObject.Parse(Nike_Requestpaylod.previewpayinfo);
-                payinfo["checkoutId"] = GID;
-                payinfo["total"] = msrp;
-                payinfo["currency"] = currency;
-                payinfo["country"] = country;
-                payinfo["items"][0]["productId"] = productID;
-                payinfo["items"][0]["contactInfo"]["phoneNumbers"] = jo["Tel"].ToString();
-                payinfo["items"][0]["contactInfo"]["email"] = jo["EmailAddress"].ToString();
-                payinfo["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
-                payinfo["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
-                payinfo["items"][0]["fulfillmentDetails"]["getBy"]["maxDate"]["dateTime"] = dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ");
-                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["country"] = country;
-                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address1"] = jo["Address1"].ToString();
-                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["address2"] = jo["Address2"].ToString();
-                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["postalCode"] = jo["Zipcode"].ToString();
-                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["city"] = jo["City"].ToString();
-                payinfo["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["state"] = jo["State"].ToString();
-                payinfo["items"][0]["recipient"]["firstName"] = jo["FirstName"].ToString();
-                payinfo["items"][0]["recipient"]["lastName"] = jo["LastName"].ToString();
-                payinfo["items"][0]["shippingAddress"]["address1"] = jo["Address1"].ToString();
-                payinfo["items"][0]["shippingAddress"]["address2"] = jo["Address2"].ToString();
-                payinfo["items"][0]["shippingAddress"]["city"] = jo["City"].ToString();
-                payinfo["items"][0]["shippingAddress"]["postalCode"] = jo["Zipcode"].ToString();
-                payinfo["items"][0]["shippingAddress"]["state"] = jo["State"].ToString();
-                payinfo["items"][0]["shippingAddress"]["country"] = country;
                 payinfo["paymentInfo"][0]["id"] = Guid.NewGuid().ToString();
                 payinfo["paymentInfo"][0]["creditCardInfoId"] = cardguid;
                 payinfo["paymentInfo"][0]["billingInfo"]["name"]["firstName"] = jo["FirstName"].ToString();
@@ -1265,7 +1198,19 @@ new JProperty("state", jo["State"].ToString()))))))),
             {
                 url = "http://127.0.0.1:1234/buy/checkouts/v3/" + GID;
             }
+            JObject jtotal = new JObject(
+new JObject(
+new JProperty("total", msrp),
+new JProperty("fulfillment",
+new JObject(
+new JProperty("total", float.Parse(msrp)),
+new JProperty("details",
+new JObject(
+new JProperty("price", 0),
+new JProperty("discount", 0))
+)))));
             jopaymenttoken["request"]["paymentToken"] = id;
+            jopaymenttoken["request"]["totals"] = jtotal;
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1363,29 +1308,31 @@ new JProperty("state", jo["State"].ToString()))))))),
         }
         public void Http(string url, string postDataStr, Main.taskset tk)
         {
-        Retry: Random ra = new Random();
-            int sleeptime = ra.Next(0, 3000);
-            Thread.Sleep(sleeptime);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.ContentType = "application/json; charset=utf-8";
-            request.Method = "post";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
-            byte[] bytes = Encoding.UTF8.GetBytes(postDataStr);
-            request.ContentLength = bytes.Length;
-            Stream webstream = request.GetRequestStream();
-            webstream.Write(bytes, 0, bytes.Length);
-            webstream.Close();
-            try
+            if ((url + "").Length != 0)
             {
-                HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+            Retry: Random ra = new Random();
+                int sleeptime = ra.Next(0, 3000);
+                Thread.Sleep(sleeptime);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.ContentType = "application/json; charset=utf-8";
+                request.Method = "post";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+                byte[] bytes = Encoding.UTF8.GetBytes(postDataStr);
+                request.ContentLength = bytes.Length;
+                Stream webstream = request.GetRequestStream();
+                webstream.Write(bytes, 0, bytes.Length);
+                webstream.Close();
+                try
+                {
+                    HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    Thread.Sleep(1000);
+                    tk.Status = ex.Message.ToString();
+                    goto Retry;
+                }
             }
-            catch (WebException ex)
-            {
-                Thread.Sleep(1000);
-                tk.Status = ex.Message.ToString();
-                goto Retry;
-            }
-
         }
     }
 }
