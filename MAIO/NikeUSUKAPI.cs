@@ -378,64 +378,9 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            Task task1 = new Task(() => writerefreshtoken("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]", account));
-            task1.Start();
+            tokenlist.Add("[{\"Token\":\"" + jo["refresh_token"].ToString() + "\",\"Account\":\"" + account + "\"}]");
             return Authorization;
-        }
-        public void writerefreshtoken(string token, string account)
-        {
-            Thread.Sleep(1);
-            try
-            {
-                if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
-                {
-                    FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    StreamWriter sw = new StreamWriter(fs1);
-                    JArray ja = JArray.Parse(token);
-                    sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
-                    sw.Close();
-                    fs1.Close();
-                }
-                else
-                {
-                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json";
-                    FileInfo fi = new FileInfo(path);
-                    if (fi.Length == 0)
-                    {
-                        FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamWriter sw = new StreamWriter(fs1);
-                        JArray ja = JArray.Parse(token);
-                        sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
-                        sw.Close();
-                        fs1.Close();
-                    }
-                    else
-                    {
-                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamReader sr = new StreamReader(fs1);
-                        string read = sr.ReadToEnd();
-                        JArray ja = JArray.Parse(read);
-                        foreach (var i in ja)
-                        {
-                            if (i.ToString().Contains(account))
-                            {
-                                ja.Remove(i);
-                            }
-                        }
-                        ja.Add(JObject.Parse(token.Replace("[", "").Replace("]", "")));
-                        fs1.SetLength(0);
-                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        StreamWriter sw = new StreamWriter(fs0);
-                        sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
-                        sw.Close();
-                        fs1.Close();
-                    }
-                }
-            }
-            catch (Exception)
-            {
-            }
-        }
+        }  
         public double Postcardinfo(string url, string cardinfo, string Authorization, Main.taskset tk, CancellationToken ct, bool isgiftcard)
         {
         B: if (ct.IsCancellationRequested)
@@ -659,7 +604,7 @@ namespace MAIO
                 request.Headers.Add("Server-Host", "api.nike.com:443");
                 request.Headers.Add("Proxy-Address", getAdvproxy());
                 request.Headers.Add("accept-encoding", "gzip, deflate, br");
-                request.Headers.Add("accept-language", "zh-CN,zh;q=0.9");
+                request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
                 request.Headers.Add("appid", "com.nike.commerce.checkout.web");
             #region
             C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
@@ -763,6 +708,10 @@ namespace MAIO
                     if (failedsubshipp > 20)
                     {
                         Main.autorestock(tk);
+                        if (ct.IsCancellationRequested)
+                        {
+                            ct.ThrowIfCancellationRequested();
+                        }
                     }
                     goto B;
                 }
@@ -950,7 +899,7 @@ namespace MAIO
                 StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
                 processcode = readprocessstream.ReadToEnd();
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 /*  HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                  Stream processtream = resppayment.GetResponseStream();
@@ -1026,7 +975,7 @@ namespace MAIO
             #endregion
             return id;
         }
-        public string final(string Authorization, string url, string payload, string GID, Main.taskset tk, CancellationToken ct, string id, System.Diagnostics.Stopwatch watch)
+        public string final(string Authorization, string url, string payload, string GID, Main.taskset tk, CancellationToken ct)
         {
         D: if (ct.IsCancellationRequested)
             {
@@ -1279,7 +1228,7 @@ namespace MAIO
 
             }
         A: string status = "";
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 60; i++)
             {
                 if (ct.IsCancellationRequested)
                 {
@@ -1336,10 +1285,11 @@ namespace MAIO
                 catch (WebException ex)
                 {
                     HttpWebResponse respjob = (HttpWebResponse)ex.Response;
-                    Stream jobstream = respjob.GetResponseStream();
+                    tk.Status = "Processing Forbidden";
+                 /*   Stream jobstream = respjob.GetResponseStream();
                     StreamReader readjobstream = new StreamReader(jobstream, Encoding.UTF8);
                     status = readjobstream.ReadToEnd();
-                    tk.Status = status;
+                    tk.Status = status;*/
                     goto A;
                 }
                 if (status.Contains("IN_PROGRESS") == true)
@@ -1352,9 +1302,14 @@ namespace MAIO
                     break;
                 }
             }
-            if ((status + "").Length == 0)
+            if (status.Contains("IN_PROGRESS"))
             {
                 autorestock(tk);
+                if (ct.IsCancellationRequested)
+                {
+                    tk.Status = "IDLE";
+                    ct.ThrowIfCancellationRequested();
+                }
             }
             return status;
         }

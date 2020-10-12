@@ -51,16 +51,32 @@ namespace MAIO
         ArrayList skuidlist = new ArrayList();
         bool multisize = false;
         JObject jopaymenttoken = null;
+        string country = null;
+        string currency = null;
+        string locale = null;
+        string shippingMethod = null;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
         A:
             try
             {
                 dt = dt.AddDays(6);
-                System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-                //  watch.Start();
                 try
                 {
+                    if (tk.Tasksite == "NikeUK")
+                    {
+                        country = "GB";
+                        currency = "GBP";
+                        locale = "en_GB";
+                        shippingMethod = "GROUND_SERVICE";
+                    }
+                    else
+                    {
+                        country = "US";
+                        currency = "USD";
+                        locale = "en_US";
+                        shippingMethod = "STANDARD";
+                    }
                     quantity = int.Parse(tk.Quantity);
                     GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct, cts);
                 }
@@ -126,12 +142,6 @@ namespace MAIO
                                 if (ts.TotalMinutes >= 50)
                                 {
                                     goto A;
-                                    /*  Main.autorestock(tk);
-                                      if (ct.IsCancellationRequested)
-                                      {
-                                          tk.Status = "IDLE";
-                                          ct.ThrowIfCancellationRequested();
-                                      }*/
                                 }
                                 try
                                 {
@@ -239,8 +249,6 @@ namespace MAIO
             E:
                 try
                 {
-                    //    watch.Stop();
-                    //     var wu= watch.ElapsedMilliseconds;
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
@@ -265,8 +273,8 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    string id = PaymentPreviw(Authorization, skuid, joprofile, ct);
-                    paymenttoken(Authorization, id, skuid, joprofile, ct, watch);
+                    string id = PaymentPreviw(Authorization, joprofile, ct);
+                    paymenttoken(Authorization, skuid, joprofile, ct);
                 }
                 else
                 {
@@ -756,15 +764,8 @@ namespace MAIO
         {
         A: string Authorization = "";
             string loginurl = null;
-            string locale = null;
-            if (tk.Tasksite == "NikeUK")
-            {
-                locale = "en_GB";
-            }
-            else
-            {
-                locale = "en_US";
-            }
+            string logininfo = null;
+            bool isrefresh = false;
             if (Config.UseAdvancemode == "True")
             {
                 loginurl = "https://unite.nike.com/login?appVersion=831&experienceVersion=831&uxid=com.nike.commerce.snkrs.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
@@ -773,8 +774,6 @@ namespace MAIO
             {
                 loginurl = "http://127.0.0.1:1234/login?appVersion=831&experienceVersion=831&uxid=com.nike.commerce.snkrs.web&locale=" + locale + "&backendEnvironment=identity&browser=Google%20Inc.&os=undefined&mobile=false&native=false&visit=1&visitor=" + GID;
             }
-            string logininfo = null;
-            bool isrefresh = false;
             try
             {
                 if (Mainwindow.refreshtoken.Count == 0)
@@ -827,10 +826,9 @@ namespace MAIO
         protected void Submitcardinfo(string Authorization, CancellationToken ct, CancellationToken ct2, CancellationTokenSource cts)
         {
             cardguid = Guid.NewGuid().ToString();
-            string cardurl = "";
             string cardinfo = "";
             JObject jo = JObject.Parse(profile);
-            cardurl = "https://paymentcc.nike.com/creditcardsubmit/" + cardguid + "/store";
+            string cardurl = "https://paymentcc.nike.com/creditcardsubmit/" + cardguid + "/store";
             string firstcard = jo["Cardnum"].ToString().Substring(0, 1);
             string cardtype = "";
             if (firstcard == "4")
@@ -898,24 +896,6 @@ namespace MAIO
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
-            }
-            string country = null;
-            string currency = null;
-            string locale = null;
-            string shippingMethod = null;
-            if (tk.Tasksite == "NikeUK")
-            {
-                country = "GB";
-                currency = "GBP";
-                locale = "en_GB";
-                shippingMethod = "GROUND_SERVICE";
-            }
-            else
-            {
-                country = "US";
-                currency = "USD";
-                locale = "en_US";
-                shippingMethod = "STANDARD";
             }
             if (limit == 0)
             {
@@ -1036,15 +1016,6 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
             string cardinfo2 = null;
-            string currency = null;
-            if (tk.Tasksite == "NikeUK")
-            {
-                currency = "GBP";
-            }
-            else
-            {
-                currency = "USD";
-            }
             for (int i = 0; i < count; i++)
             {
                 KeyValuePair<string, string> kv = giftcard2.ElementAt(i);
@@ -1081,26 +1052,14 @@ namespace MAIO
             }
             catch { }
         }
-        protected string PaymentPreviw(string Authorization, string skuid, JObject jo, CancellationToken ct)
+        protected string PaymentPreviw(string Authorization, JObject jo, CancellationToken ct)
         {
             string paymenturl = "https://api.nike.com/payment/preview/v3";
             JObject payinfo = JObject.Parse(Nike_Requestpaylod.previewpayinfo);
-            string country = null;
-            string currency = null;
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
-            }
-            if (tk.Tasksite == "NikeUK")
-            {
-                country = "GB";
-                currency = "GBP";
-            }
-            else
-            {
-                country = "US";
-                currency = "USD";
             }
             payinfo["checkoutId"] = GID;
             payinfo["total"] = msrp;
@@ -1187,7 +1146,7 @@ namespace MAIO
             string id = USUKAPI.payment(paymenturl, Authorization, payinfo.ToString(), tk, ct);
             return id;
         }
-        protected void paymenttoken(string Authorization, string id, string skuid, JObject jo, CancellationToken ct, System.Diagnostics.Stopwatch watch)
+        protected void paymenttoken(string Authorization, string id, JObject jo, CancellationToken ct)
         {
             string url = null;
             if (Config.UseAdvancemode == "True")
@@ -1216,7 +1175,7 @@ new JProperty("discount", 0))
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            string status = USUKAPI.final(Authorization, url, jopaymenttoken.ToString(), GID, tk, ct, id, watch);
+            string status = USUKAPI.final(Authorization, url, jopaymenttoken.ToString(), GID, tk, ct);
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -1269,7 +1228,7 @@ new JProperty("discount", 0))
                     tk.Size = "RA";
                 }
                 jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
-                jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size + "*" + quantity;
                 jobject["embeds"][0]["fields"][2]["value"] = tk.Tasksite;
                 jobject["embeds"][0]["thumbnail"]["url"] = imageurl;
             }
@@ -1282,7 +1241,7 @@ new JProperty("discount", 0))
                     tk.Size = "RA";
                 }
                 jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
-                jobject["embeds"][0]["fields"][1]["value"] = tk.Size;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size+"*"+quantity;
                 jobject["embeds"][0]["fields"][2]["value"] = joprofile["EmailAddress"].ToString();
                 if (guest)
                 {
@@ -1329,7 +1288,7 @@ new JProperty("discount", 0))
                 catch (WebException ex)
                 {
                     Thread.Sleep(1000);
-                    tk.Status = ex.Message.ToString();
+                    tk.Status = "429";
                     goto Retry;
                 }
             }

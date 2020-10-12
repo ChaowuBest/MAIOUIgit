@@ -44,7 +44,7 @@ namespace MAIO
         public static Dictionary<string, bool> share_dog = new Dictionary<string, bool>();
         public static Dictionary<string, ArrayList> share_dog_skuid = new Dictionary<string, ArrayList>();
         public static Dictionary<string, string> localsize = new Dictionary<string, string>();
-        public static List<double> ary = new List<double>();
+        public static ArrayList tokenlist = new ArrayList();
         public static int i = 0;
         public Main()
         {
@@ -88,6 +88,79 @@ namespace MAIO
             var cts = new CancellationTokenSource();
             var ct = cts.Token;
             Task task6 = Task.Run(() => checkusemonitor(ct, cts));
+            Task task7 = Task.Run(() => writetoken());
+
+        }
+        public void writetoken()
+        {
+        A: if (tokenlist.Count != 0)
+            {
+                JArray ja = JArray.Parse(tokenlist[0].ToString());
+                writerefreshtoken(tokenlist[0].ToString(), ja[0]["Account"].ToString());
+                tokenlist.RemoveAt(0);
+                goto A;
+            }
+            else
+            {
+                Thread.Sleep(1);
+                goto A;
+            }
+        }
+        public void writerefreshtoken(string token, string account)
+        {
+            Thread.Sleep(1);
+            try
+            {
+                if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json"))
+                {
+                    FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter sw = new StreamWriter(fs1);
+                    JArray ja = JArray.Parse(token);
+                    sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                    sw.Close();
+                    fs1.Close();
+                }
+                else
+                {
+                    string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json";
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Length == 0)
+                    {
+                        FileStream fs1 = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "refreshtoken.json", FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter sw = new StreamWriter(fs1);
+                        JArray ja = JArray.Parse(token);
+                        sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                        sw.Close();
+                        fs1.Close();
+                    }
+                    else
+                    {
+                        FileStream fs1 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamReader sr = new StreamReader(fs1);
+                        string read = sr.ReadToEnd();
+                        JArray ja = JArray.Parse(read);
+                        foreach (var i in ja)
+                        {
+                            Thread.Sleep(1);
+                            if (i.ToString().Contains(account))
+                            {
+                                ja.Remove(i);
+                                break;
+                            }
+                        }
+                        ja.Add(JObject.Parse(token.Replace("[", "").Replace("]", "")));
+                        fs1.SetLength(0);
+                        FileStream fs0 = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        StreamWriter sw = new StreamWriter(fs0);
+                        sw.Write(ja.ToString().Replace("\n", "").Replace("\t", "").Replace("\r", "").Replace(" ", ""));
+                        sw.Close();
+                        fs1.Close();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
         bool alreadystartbrowser = false;
         public void checkusemonitor(CancellationToken ct, CancellationTokenSource cts)
@@ -199,6 +272,7 @@ namespace MAIO
                   };
               });
         }
+        #region
         public void check()
         {
         A:
@@ -222,24 +296,7 @@ namespace MAIO
             }
             goto A;
         }
-        public void clearcookie()
-        {
-        A: foreach (var i in Mainwindow.cookiewtime.ToArray())
-            {
-                Thread.Sleep(500);
-                long timest = (long)(DateTime.Now.ToUniversalTime() - timeStampStartTime).TotalMilliseconds;
-                var cookitime = ConvertStringToDateTime(i.Key.ToString());
-                var nowtime = ConvertStringToDateTime(timest.ToString());
-                var difference = nowtime - cookitime;
-                if (difference.Hours >= 1)
-                {
-                    Mainwindow.cookiewtime.Remove(long.Parse(i.Key.ToString()));
-                    Mainwindow.lines.Remove(i.Value);
-                    updatelable(i.Value, false);
-                }
-            }
-            goto A;
-        }
+        #endregion
         private DateTime ConvertStringToDateTime(string timeStamp)
         {
             DateTime dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
@@ -685,7 +742,7 @@ namespace MAIO
                             }
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                             Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
+                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                             dic.Add(tk.Taskid, cts);
                             task2.Start();
 
@@ -1245,7 +1302,8 @@ namespace MAIO
                 {
                     dic[tk.Taskid].Cancel();
                     dic.Remove(tk.Taskid);
-                }catch { }
+                }
+                catch { }
             }
             else
             {

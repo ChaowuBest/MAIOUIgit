@@ -22,11 +22,11 @@ namespace MAIO.JDUS
         string cartguid = null;
         public string productid = null;
         string requestid = Guid.NewGuid().ToString();
-        string abck = "840774E6D404A74C033B0D58CB1B8FBA~-1~YAAQH0Z7aBvCuMV0AQAAdbiCEwRUunIIM/sXORAkvR6y7VmGVqWRa53Z+qbJA7oAJHYVcwEIBf1NlwCL1iCjKi7mtwRIW4nkQwOAejQkPW4rtz0DO6G1YlkN8vwbMQt147EvlD8cpAWQFJhQ/ad/tzg3H9r62SHg3sj192Y5pyJ7QaT0gYq0XoOEue4eULTDuTZYsjw3bxE0/PNcBbl1Di2+mRRMdr03H8A0RIqrdxZFilPWa0+nvakmVsBDPui58LGZ/dH2kQVwYkeleaknSGzsMeDAUnudBxpuyl0gssrxm4Jap05m1w0etpu7J0hbNe9xoInSf1TxIdtuRGhaAZi1cCu2KqiX~-1~-1~-1";
-        string bmsz = "234074504A7E8821ED4C982F3D1839CD~YAAQH0Z7aInBuMV0AQAAaNaBEwmNzTfStecu/vumKERpPtvJ3WI/ucA7SsQLlePLwQFJGkUWGhk1rySAhaUHesGOvopJCwOHtgpJanZbGS5Lnk2yjffsHDV1ez5NYlz03MQY5Hd6u0RgKtcPDJqZxDsguHyaOMyDwA5oBvFQY81pe6qJ9JQ5NLOrGTERigGyH6uULg==";
-        string abck3 = "";
+        string abck = "E6152AFA0CCA11C1FAEFAD68D34B0BD5~-1~YAAQp93tzLW4N/l0AQAAYTs0GwTuonnSrTCZZczJzQjMiSSF08JcoG2LbMRvSw/qYZC2xkJie5dXKfaFslqXSbZM9XJfNgOjJsO1YXQNUvUmF5TFCWX3dnJVRIHPLEPvrWT/t3kJVRXQXc/F9TwRK5yeCyt53edee8izQVRxEtJBEAt3nZxvrAZanxza2xy77r5v9Jwv0M7Xgbdw9LJWaJK037yOm21CxE0T+L7RlTztOB/259xq2FeXr7gtPq7YFk9XG8TMu5ctPD5tQnpVP+3c1W31s/y7zI7imjGnMy8biI/h7KzQyJYJyD7dTcKqmTDjkEkQqEaBfAf6NsNSe1ASsYWm6gjo~-1~-1~-1";
+        string bmsz = "0C0936F4759EEE4C6AF84E9C38039F3F~YAAQp93tzCu2N/l0AQAA0iMqGwnZ6P2HLwkyDZ+hMHWoEx1Znk6uSYajRZKZMdMJc/n2Ci/Q8dSjSy2fXvd1L2222KvaCP8blw8leSD8u+JqumSEUvpuqpHc0kZYDVv+wlUB7kAb3TLBbyyRWY7i1erUffq875Cj6rEclSLoptb0E7TPQuRW2ml/JQy5PAUTlDFWJA==";
+        string abck2 = "E6152AFA0CCA11C1FAEFAD68D34B0BD5~-1~YAAQp93tzLW4N/l0AQAAYTs0GwTuonnSrTCZZczJzQjMiSSF08JcoG2LbMRvSw/qYZC2xkJie5dXKfaFslqXSbZM9XJfNgOjJsO1YXQNUvUmF5TFCWX3dnJVRIHPLEPvrWT/t3kJVRXQXc/F9TwRK5yeCyt53edee8izQVRxEtJBEAt3nZxvrAZanxza2xy77r5v9Jwv0M7Xgbdw9LJWaJK037yOm21CxE0T+L7RlTztOB/259xq2FeXr7gtPq7YFk9XG8TMu5ctPD5tQnpVP+3c1W31s/y7zI7imjGnMy8biI/h7KzQyJYJyD7dTcKqmTDjkEkQqEaBfAf6NsNSe1ASsYWm6gjo~-1~-1~-1";
+        string bmsz2 = "0C0936F4759EEE4C6AF84E9C38039F3F~YAAQp93tzCu2N/l0AQAA0iMqGwnZ6P2HLwkyDZ+hMHWoEx1Znk6uSYajRZKZMdMJc/n2Ci/Q8dSjSy2fXvd1L2222KvaCP8blw8leSD8u+JqumSEUvpuqpHc0kZYDVv+wlUB7kAb3TLBbyyRWY7i1erUffq875Cj6rEclSLoptb0E7TPQuRW2ml/JQy5PAUTlDFWJA==";
         string[] cookiename;
-
         public string GetHtmlsource(string url, Main.taskset tk, CancellationToken ct)
         {
         A: if (ct.IsCancellationRequested)
@@ -160,11 +160,13 @@ namespace MAIO.JDUS
             }
             string SourceCode = "";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = getproxy();
+         //   request.Proxy = getproxy();
             request.Method = "PUT";
             request.ContentType = "application/json";
             request.Accept = "application/json";
-            request.Headers.Add("Cookie", JSESSIONID + "; _abck=" + abck + "; bm_sz=" + bmsz + "; check=true; signal_on;");
+            request.Headers.Add("Server-Host", "www.footlocker.com:443");
+            request.Headers.Add("Proxy-Address", getAdvproxy());
+            request.Headers.Add("Cookie", JSESSIONID + "; _abck=" + abck + "; bm_sz=" + bmsz + "; check=true; signal_on");
             request.Headers.Add("pragma", "no-cache");
             request.ContentLength = 0;
             request.Headers.Add("cache-control", "no-cache");
@@ -177,7 +179,7 @@ namespace MAIO.JDUS
             request.Headers.Add("x-csrf-token", csrftoken);
             request.Headers.Add("x-fl-productid", productid);
             request.Headers.Add("x-fl-request-id", Guid.NewGuid().ToString());
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -189,7 +191,6 @@ namespace MAIO.JDUS
                 }
                 else { readStream = new StreamReader(receiveStream, Encoding.UTF8); }
                 SourceCode = readStream.ReadToEnd();
-                JObject jo = JObject.Parse(SourceCode);
                 response.Close();
                 readStream.Close();
             }
@@ -210,25 +211,25 @@ namespace MAIO.JDUS
             }
             string SourceCode = "";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.Proxy = getproxy();
+           request.Proxy = getproxy();
             request.Method = "POST";
             request.ContentType = "application/json";
             request.Accept = "application/json";
-            request.Headers.Add("Cookie", JSESSIONID + "; _abck=" + abck + "; bm_sz=" + bmsz + "; check=true; signal_on");
-            request.Headers.Add("pragma", "no-cache");
+            request.Headers.Add("Cookie", JSESSIONID + "; _abck=" + abck2 + "; bm_sz=" + bmsz2 + "; check=true; signal_on");
+          request.Headers.Add("pragma", "no-cache");
             byte[] contentpaymentinfo = Encoding.UTF8.GetBytes(info);
             request.ContentLength = contentpaymentinfo.Length;
-            request.Headers.Add("cache-control", "no-cache");
+           request.Headers.Add("cache-control", "no-cache");
             request.Headers.Add("accept-encoding", "gzip, deflate, br");
             request.Headers.Add("accept-language", "en-US,en;q=0.9");
             request.Headers.Add("origin", "https://www.footlocker.com");
+            request.Referer = "https://www.footlocker.com/checkout";
             request.Headers.Add("Sec-Fetch-Dest", "empty");
             request.Headers.Add("Sec-Fetch-Mode", "cors");
             request.Headers.Add("Sec-Fetch-Site", "same-origin");
             request.Headers.Add("x-csrf-token", csrftoken);
-            request.Headers.Add("x-fl-productid", productid);
             request.Headers.Add("x-fl-request-id", Guid.NewGuid().ToString());
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
             Stream paymentstream = request.GetRequestStream();
             paymentstream.Write(contentpaymentinfo, 0, contentpaymentinfo.Length);
             paymentstream.Close();
@@ -255,9 +256,9 @@ namespace MAIO.JDUS
             {
                 HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                 tk.Status = "Submit Shipping Failed";
-                //  Stream processtream = resppayment.GetResponseStream();
-                //  StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
-                // string processcode = readprocessstream.ReadToEnd();  
+                 Stream processtream = resppayment.GetResponseStream();
+                 StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
+                string processcode = readprocessstream.ReadToEnd();  
                 goto A;
             }
             return SourceCode;
