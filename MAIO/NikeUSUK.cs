@@ -274,7 +274,7 @@ namespace MAIO
                         ct.ThrowIfCancellationRequested();
                     }
                     string id = PaymentPreviw(Authorization, joprofile, ct);
-                    paymenttoken(Authorization, skuid, joprofile, ct);
+                    paymenttoken(Authorization, id, joprofile, ct);
                 }
                 else
                 {
@@ -1143,6 +1143,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
+            var wu=payinfo.ToString();
             string id = USUKAPI.payment(paymenturl, Authorization, payinfo.ToString(), tk, ct);
             return id;
         }

@@ -39,12 +39,10 @@ namespace MAIO
         {
             this.DragMove();
         }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
         private void mygrid_Loaded(object sender, RoutedEventArgs e)
         {
             if (Midtransfer.edit)
@@ -114,7 +112,6 @@ namespace MAIO
             }
 
         }
-
         public delegate void GetTextHandler(string[] st); //声明委托
         public GetTextHandler getTextHandler;
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -135,69 +132,107 @@ namespace MAIO
             string[] setup = new string[10];
             try
             {
+                int tasklength = 1;
+
+                List<string> profilevalues = null;
+                if (profiles.SelectedItem!= null)
+                {
+                    if (profiles.SelectedItem.ToString().Contains("Profilelist"))
+                    {
+                        JObject jo = JObject.Parse(Mainwindow.allprofile[profiles.SelectedItem.ToString()]);
+                        profilevalues = jo["ProfileValue"].ToString().Split(";").ToList();
+                        foreach (var i in profilevalues)
+                        {
+                            Thread.Sleep(1);
+                            if (i == "")
+                            {
+                                profilevalues.Remove(i);
+                            }
+                        }
+                        tasklength = profilevalues.Count;
+                    }
+                }
                 if (taskNumber != null)
                 {
-                    for (int i = 0; i < int.Parse(taskNumber); i++)
+                    for (int z = 0; z < tasklength; z++)
                     {
-                        if (Midtransfer.edit)
+                        for (int i = 0; i < int.Parse(taskNumber); i++)
                         {
-                            JObject jo = JObject.Parse(Mainwindow.tasklist[Midtransfer.taskid].ToString());
-                            string profile = "[{\"Taskid\":\"" + jo["Taskid"].ToString() + "\",\"Tasksite\":\"" + site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + productid + "\"," + "\"Size\":\"" + sizeid + "\"," +
-                                    "\"Profile\":\"" + profiles.Text + "\",\"Proxies\":\"Default\"," + "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code + "\",\"Quantity\":\"" + Quantity.Text + "\"," +
-                                    "\"monitortask\":\"" + monitor.IsChecked.ToString() + "\",\"AdvanceMonitor\":\"False\",\"Account\":\"" + user + "\"}]";
-
-                            Midtransfer.tk.Tasksite = site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "");
-                            Midtransfer.tk.Sku = productid.Replace("\r\n", "");
-                            Midtransfer.tk.Size = sizeid.Replace("\r\n", "");
-                            Midtransfer.tk.monitortask = monitor.IsChecked.ToString();
-                            Midtransfer.tk.Profile = profiles.Text.Replace("\r\n", "");
-                            Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
-                            Midtransfer.tk.Account = user;
-                            Main.taskwrite(profile);
-                            this.Close();
-                        }
-                        else
-                        {
-                            if (site.SelectedItem.ToString() != null)
+                            if (Midtransfer.edit)
                             {
-                                if (site.SelectedItem.ToString().Contains("NikeUK")==false &&site.SelectedItem.ToString().Contains("NikeUS")==false)
+                                JObject jo = JObject.Parse(Mainwindow.tasklist[Midtransfer.taskid].ToString());
+                                string profile = "[{\"Taskid\":\"" + jo["Taskid"].ToString() + "\",\"Tasksite\":\"" + site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + productid + "\"," + "\"Size\":\"" + sizeid + "\"," +
+                                        "\"Profile\":\"" + profiles.Text + "\",\"Proxies\":\"Default\"," + "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code + "\",\"Quantity\":\"" + Quantity.Text + "\"," +
+                                        "\"monitortask\":\"" + monitor.IsChecked.ToString() + "\",\"AdvanceMonitor\":\"False\",\"Account\":\"" + user + "\"}]";
+
+                                Midtransfer.tk.Tasksite = site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "");
+                                Midtransfer.tk.Sku = productid.Replace("\r\n", "");
+                                Midtransfer.tk.Size = sizeid.Replace("\r\n", "");
+                                Midtransfer.tk.monitortask = monitor.IsChecked.ToString();
+                                Midtransfer.tk.Profile = profiles.Text.Replace("\r\n", "");
+                                Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
+                                Midtransfer.tk.Account = user;
+                                Main.taskwrite(profile);
+                                this.Close();
+                            }
+                            else
+                            {
+                                if (site.SelectedItem.ToString() != null)
                                 {
-                                    if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
+                                    if (site.SelectedItem.ToString().Contains("NikeUK") == false && site.SelectedItem.ToString().Contains("NikeUS") == false)
                                     {
-                                        setup[0] = site.SelectedItem.ToString();
-                                        setup[2] = profiles.SelectedItem.ToString();
-                                    }
-                                    else if ((site.SelectedItem != null) && (profiles.SelectedItem == null))
-                                    {
-                                        setup[0] = site.SelectedItem.ToString();
-                                        for (int y = 0; y < Mainwindow.allprofile.Count; y++)
+                                       
+                                        if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
                                         {
-                                            KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(y);
-                                            setup[2] = kv.Key;
-                                            break;
+                                            setup[0] = site.SelectedItem.ToString();
+                                            if (profilevalues != null)
+                                            {
+                                                setup[2] = profilevalues[z];
+                                            }
+                                            else
+                                            {
+                                                setup[2] = profiles.SelectedItem.ToString();
+                                            }
+                                        }
+                                        else if ((site.SelectedItem != null) && (profiles.SelectedItem == null))
+                                        {
+                                            setup[0] = site.SelectedItem.ToString();
+                                            for (int y = 0; y < Mainwindow.allprofile.Count; y++)
+                                            {
+                                                KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(y);
+                                                setup[2] = kv.Key;
+                                                break;
+                                            }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
+                                    else
                                     {
-                                        setup[0] = site.SelectedItem.ToString();
-                                        setup[2] = profiles.SelectedItem.ToString();
+                                        if ((site.SelectedItem != null) && (profiles.SelectedItem != null))
+                                        {
+                                            setup[0] = site.SelectedItem.ToString();
+                                            if (profilevalues != null)
+                                            {
+                                                setup[2] = profilevalues[z];
+                                            }
+                                            else
+                                            {
+                                                setup[2] = profiles.SelectedItem.ToString();
+                                            }
+                                        }
                                     }
+                                    if (giftcard.SelectedItem != null)
+                                    {
+                                        setup[1] = giftcard.SelectedItem.ToString();
+                                    }
+                                    setup[3] = productid;
+                                    setup[4] = sizeid;
+                                    setup[5] = code;
+                                    setup[6] = Quantity.SelectedItem.ToString();
+                                    setup[7] = monitor.IsChecked.ToString();
+                                    setup[8] = advancemonitor.IsChecked.ToString();
+                                    setup[9] = user;
+                                    getTextHandler(setup);
                                 }
-                                if (giftcard.SelectedItem != null)
-                                {
-                                    setup[1] = giftcard.SelectedItem.ToString();
-                                }
-                                setup[3] = productid;
-                                setup[4] = sizeid;
-                                setup[5] = code;
-                                setup[6] = Quantity.SelectedItem.ToString();
-                                setup[7] = monitor.IsChecked.ToString();
-                                setup[8] = advancemonitor.IsChecked.ToString();
-                                setup[9] = user;
-                                getTextHandler(setup);
                             }
                         }
                     }
@@ -214,13 +249,11 @@ namespace MAIO
                 MessageBox.Show("Check your input");
             }
         }
-
         private void site_Loaded(object sender, RoutedEventArgs e)
         {
             if (Midtransfer.edit)
             {
                 site.Text = Midtransfer.sitesel;
-
             }
         }
         private void Quantity_Loaded(object sender, RoutedEventArgs e)
@@ -241,28 +274,11 @@ namespace MAIO
             }
 
         }
-
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-
         }
-
         private void advance_Click(object sender, RoutedEventArgs e)
         {
-            /* if ((bool)advance.IsChecked)
-             {
-                 grid.Visibility = Visibility.Visible;
-                 save.Visibility = Visibility.Hidden;
-                 accountlable.Visibility = Visibility.Visible;
-                 assignaccount.Visibility = Visibility.Visible;
-             }
-             else
-             {
-                 save.Visibility = Visibility.Visible;
-                 grid.Visibility = Visibility.Hidden;
-                 accountlable.Visibility = Visibility.Hidden;
-                 assignaccount.Visibility = Visibility.Hidden;
-             }*/
         }
 
         private void account_SelectionChanged(object sender, SelectionChangedEventArgs e)

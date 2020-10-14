@@ -393,7 +393,7 @@ namespace MAIO
             HttpWebRequest reqcard = (HttpWebRequest)WebRequest.Create(url);
             reqcard.Method = "POST";
             reqcard.Proxy = getproxy();
-            reqcard.ContentType = "application/json";
+            reqcard.ContentType = "application/json; charset=UTF-8";
             reqcard.Accept = "*/*";
             reqcard.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             reqcard.Headers.Add("Accept-Language", "en-US, en; q=0.9");

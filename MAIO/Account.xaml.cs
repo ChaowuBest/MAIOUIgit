@@ -175,7 +175,6 @@ namespace MAIO
         {
             bool duplicate = false;
             string key = null;
-          //  Dictionary<string, string> dic = new Dictionary<string, string>();
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
             string[] savegiftcard = new TextRange(giftcardbox.Document.ContentStart, giftcardbox.Document.ContentEnd).Text.Split("\r\n");
             JObject ja = new JObject();

@@ -54,6 +54,7 @@ namespace MAIO
         string path5 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "giftcard.json";
         string path6 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
         string path7 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "monitorproxy.txt";
+        string path8 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profilegroup.json";
         public Mainwindow()
         {
             InitializeComponent();
@@ -126,6 +127,27 @@ namespace MAIO
                 if (fi.Length != 0)
                 {
                     FileStream fs3 = new FileStream(path2, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    StreamReader sw = new StreamReader(fs3);
+                    string read = sw.ReadToEnd();
+                    JArray ja = JArray.Parse(read);
+                    for (int i = 0; i < ja.Count; i++)
+                    {
+                        Thread.Sleep(1);
+                        allprofile.Add(ja[i]["ProfileName"].ToString(), ja[i].ToString().Replace("\n", "").Replace("\t", ""));
+                    }
+                }
+            }
+            if (!File.Exists(path8))
+            {
+                FileStream fs1 = new FileStream(path8, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                fs1.Close();
+            }
+            else
+            {
+                FileInfo fi = new FileInfo(path8);
+                if (fi.Length != 0)
+                {
+                    FileStream fs3 = new FileStream(path8, FileMode.Open, FileAccess.Read, FileShare.Read);
                     StreamReader sw = new StreamReader(fs3);
                     string read = sw.ReadToEnd();
                     JArray ja = JArray.Parse(read);

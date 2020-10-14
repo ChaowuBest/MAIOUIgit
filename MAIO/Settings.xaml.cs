@@ -341,11 +341,11 @@ namespace MAIO
                         if (message.Contains("{\"type\":\"proxy\"}"))
                         {
                             Random ra = new Random();
-                            int index = ra.Next(0, Mainwindow.proxypool.Count);
+                            int index = ra.Next(0, Mainwindow.monitorproxypool.Count);
                             string proxy = "";
                             try
                             {
-                                proxy = "Proxy: " + Mainwindow.proxypool[index] + "";
+                                proxy = "Proxy: " + Mainwindow.monitorproxypool[index] + "";
                             }
                             catch
                             {

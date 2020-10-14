@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Security;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -24,10 +25,12 @@ namespace MAIO
             InitializeComponent();
             for (int i = 0; i < Mainwindow.allprofile.Count; i++)
             {
+                Thread.Sleep(1);
                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
                 profilelist.Items.Add(kv.Key);
             }
             countrylist.ItemsSource = Countrycode.countrycode;
+            profilesgroupload.ItemsSource = Mainwindow.allprofile.Keys;
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -52,6 +55,7 @@ namespace MAIO
         {
             bool duplicate = false;
             string key = null;
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
             string profile = "[{\"FirstName\":\"" + firstname.Text + "\",\"LastName\":\"" + lastname.Text + "\"," +
               "\"EmailAddress\":\"" + email.Text + "\",\"Address1\":\"" + address1.Text + "\",\"Address2\":\"" + address2.Text + "\"," +
               "\"Tel\":\"" + tel.Text + "\",\"City\":\"" + city.Text + "\",\"Zipcode\":\"" + zipcode.Text + "\",\"State\":\"" + state.
@@ -63,38 +67,24 @@ namespace MAIO
                 duplicate = true;
                 key = profilename.Text;
             }
-            #region
-            /* for (int i = 0; i < Mainwindow.allprofile.Count; i++)
-             {
-                 KeyValuePair<string, string> kv = Mainwindow.allprofile.ElementAt(i);
-                 if (kv.Key == profilename.Text)
-                 {
-                     duplicate = true;
-                     key = kv.Key;
-                     break;
-                 }
-             }*/
-            #endregion
             if (duplicate)
             {
                 Mainwindow.allprofile[key] = profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "");
-                profilewrite(profile);
+                profilewrite(profile, path);
             }
             else
             {
                 Mainwindow.allprofile.Add(profilename.Text, profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
-                profilewrite(profile);
+                profilewrite(profile, path);
                 profilelist.Items.Add(profilename.Text);
             }
-
         }
-        public void profilewrite(string profile)
+        public void profilewrite(string profile,string path2)
         {
             JArray ja2 = JArray.Parse(profile);
             try
             {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + "MAIO";
-                string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
+             //   string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
                 FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                 StreamReader sr = new StreamReader(fs0);
                 FileInfo fi = new FileInfo(path2);
@@ -150,11 +140,11 @@ namespace MAIO
             string needdel = Mainwindow.allprofile[del];
             Mainwindow.allprofile.Remove(del);
             profilelist.Items.Refresh();
-            updateprofile(needdel);
-        }
-        public void updateprofile(string profile)
-        {
             string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
+            updateprofile(needdel,path2);
+        }
+        public void updateprofile(string profile,string path2)
+        {
             FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
             StreamReader sr = new StreamReader(fs0);
             string pro = sr.ReadToEnd();
@@ -184,7 +174,38 @@ namespace MAIO
             }
             fs2.Close();
         }
-
+        public void updateprofilegroup(string profilegroupname)
+        {
+            string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profilegroup.json";
+            FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            StreamReader sr = new StreamReader(fs0);
+            string pro = sr.ReadToEnd();
+            JArray ja = JArray.Parse(pro);
+            sr.Close();
+            fs0.Close();
+            for (int i = 0; i < ja.Count; i++)
+            {
+                if (ja[i]["ProfileName"].ToString() == profilegroupname.ToString())
+                {
+                    ja.RemoveAt(i);
+                    break;
+                }
+            }
+            FileStream fs1 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            StreamWriter sw = new StreamWriter(fs1);
+            fs1.SetLength(0);
+            sw.Write(ja.ToString().Replace("\n", ""));
+            sw.Close();
+            fs1.Close();
+            FileInfo fi = new FileInfo(path2);
+            FileStream fs2 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            if (fi.Length == 2)
+            {
+                fs2.SetLength(0);
+            }
+            fs2.Close();
+            Mainwindow.allprofile.Remove(profilegroupname);
+        }
         private void profilelist_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             try
@@ -213,17 +234,17 @@ namespace MAIO
 
             }
         }
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             IDataObject iData = Clipboard.GetDataObject();
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
             if (iData.GetDataPresent(DataFormats.Text))
             {
                 bool duplicate = false;
                 string key = null;
                 string profile = (string)iData.GetData(DataFormats.UnicodeText);
                 string[] profile_Arrary = profile.Split("\r\n");
-                Dictionary<string,string> importprofile = new Dictionary<string,string>();
+                Dictionary<string, string> importprofile = new Dictionary<string, string>();
                 try
                 {
                     for (int i = 1; i < profile_Arrary.Length; i++)
@@ -239,11 +260,11 @@ namespace MAIO
     + "\",\"Country\":\"" + ay[10] + "\",\"Cardnum\":\"" + ay[11] + "\",\"MMYY\":\"" + ay[12] + "\"," +
     "\"NameonCard\":\"" + ay[14] + "\",\"Cvv\":\"" + ay[13] + "\",\"ProfileName\":\"" + ay[0] + "\"}]";
                         importprofile.Add(ay[0].ToString(), profiles);
-                    }       
+                    }
                     for (int i = 0; i < importprofile.Count; i++)
                     {
                         string svalue = null;
-                        KeyValuePair<string, string> kv =importprofile.ElementAt(i);
+                        KeyValuePair<string, string> kv = importprofile.ElementAt(i);
                         if (Mainwindow.allprofile.TryGetValue(kv.Key, out svalue))
                         {
                             duplicate = true;
@@ -252,16 +273,16 @@ namespace MAIO
                         if (duplicate)
                         {
                             Mainwindow.allprofile[key] = kv.Value.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "");
-                            profilewrite(kv.Key);
+                            profilewrite(kv.Key, path);
                         }
                         else
                         {
                             Mainwindow.allprofile.Add(kv.Key, kv.Value.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
-                            profilewrite(kv.Value);
+                            profilewrite(kv.Value, path);
                             profilelist.Items.Add(kv.Key);
                         }
                     }
-                    
+
                 }
                 catch
                 {
@@ -274,6 +295,88 @@ namespace MAIO
                 MessageBox.Show("Import Format Error");
             }
 
+        }
+        private void delgroup(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                updateprofilegroup(profilegroup.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Del ProfileGroup Error");
+            }
+        }
+        private void savegroup(object sender, RoutedEventArgs e)
+        {
+            string profiles = profilegroup.Text.ToString().Replace(" ", "");
+            bool error = false;
+            string profilesvalue = null;
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profilegroup.json";
+            if (profiles.Contains("+"))
+            {
+                var profiles_name = profiles.Split("+");
+                for (int i = 0; i < profiles_name.Length; i++)
+                {
+                    Thread.Sleep(1);
+                    if (Mainwindow.allprofile.ContainsKey(profiles_name[i]) == false)
+                    {
+                        error = true;
+                        break;
+                    }
+                    else
+                    {
+                        profilesvalue += profiles_name[i] + ";";
+                    }
+                }
+                if (error)
+                {
+                    MessageBox.Show("Add Profile Groups Error");
+                }
+                else
+                {
+                    int count = Mainwindow.allprofile.Count + 1;
+                    Mainwindow.allprofile.Add("Profilelist " +count + "", profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
+                    string profile = "[{\"ProfileName\":\"Profilelist"+ count+ "\",\"ProfileValue\":\"" + profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "") + "\"}]";
+                    profilewrite(profile,path);
+                }
+
+            }
+            else if (profiles.Contains("|"))
+            {
+                try
+                {
+                    var profils_name = profiles.Split("|");
+                    if (profils_name.Length == 2)
+                    {
+                        bool start = false;
+                        foreach (var i in Mainwindow.allprofile)
+                        {
+                            if (i.Key == profils_name[0])
+                            {
+                                start = true;
+                            }
+                            else if (i.Key == profils_name[1])
+                            {
+                                profilesvalue += profils_name[1];
+                                break;
+                            }
+                            if (start)
+                            {
+                                profilesvalue += i.Key + ";";
+                            }
+                        }
+                    }
+                    int count=Mainwindow.allprofile.Count + 1;
+                    Mainwindow.allprofile.Add("Profilelist " + count + "", profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
+                    string profile = "[{\"ProfileName\":\"Profilelist" + count + "\",\"ProfileValue\":\"" + profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "") + "\"}]";
+                    profilewrite(profile,path);
+                }
+                catch
+                {
+                    MessageBox.Show("Add Profile Groups Error");
+                }
+            }
         }
     }
 }
