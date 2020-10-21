@@ -234,6 +234,11 @@ namespace MAIO
                 request.Headers.Add("Proxy-Address", getAdvproxy());
             C: if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        tk.Status = "IDLE";
+                        ct.ThrowIfCancellationRequested();
+                    }
                     try
                     {
                         var binding = new BasicHttpBinding();
