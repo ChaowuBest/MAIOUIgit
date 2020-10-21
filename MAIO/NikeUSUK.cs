@@ -6,17 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
-using System.Security.Cryptography.Xml;
 using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 using static MAIO.Main;
 
 namespace MAIO
@@ -60,7 +54,7 @@ namespace MAIO
         A:
             try
             {
-                dt = dt.AddDays(6);
+                dt = dt.AddDays(8);
                 try
                 {
                     if (tk.Tasksite == "NikeUK")
@@ -922,7 +916,7 @@ namespace MAIO
             payLoad["request"]["locale"] = locale;
             payLoad["request"]["items"][0]["id"] = Guid.NewGuid().ToString();
             payLoad["request"]["items"][0]["skuId"] = skuid;
-            payLoad["request"]["items"][0]["shippingMethod"] = shippingMethod;
+            //payLoad["request"]["items"][0]["shippingMethod"] = shippingMethod;
             payLoad["request"]["items"][0]["quantity"] = quantity;
             payLoad["request"]["items"][0]["fulfillmentDetails"]["getBy"]["maxDate"]["dateTime"] = dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ");
             payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["country"] = country;

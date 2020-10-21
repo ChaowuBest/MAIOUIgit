@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,6 +22,14 @@ namespace MAIO
         public CookieGen()
         {
             InitializeComponent();
+            if (Mainwindow.proxypool != null)
+            {
+                for (int i = 0; i < Mainwindow.cookieproxypool.Count; i++)
+                {
+                    monitorproxy.AppendText(Mainwindow.cookieproxypool[i].ToString());
+                    monitorproxy.AppendText("\r\n");
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -52,6 +61,50 @@ namespace MAIO
             catch
             {
                 MessageBox.Show("You must have chrome");
+            }
+        }
+
+        private void del_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "cookieproxy.txt";
+            FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+            fs0.SetLength(0);
+            fs0.Close();
+            Mainwindow.cookieproxypool.Clear();
+            monitorproxy.Document.Blocks.Clear();
+        }
+
+        private void save_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (new TextRange(monitorproxy.Document.ContentStart, monitorproxy.Document.ContentEnd).Text == "")
+                {
+                    MessageBox.Show("No proxy");
+                }
+                else
+                {
+                    string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "cookieproxy.txt";
+                    string[] saveproxy = new TextRange(monitorproxy.Document.ContentStart, monitorproxy.Document.ContentEnd).Text.Split("\r\n");
+                    FileStream fs0 = new FileStream(path2, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    StreamWriter sw = new StreamWriter(fs0);
+                    fs0.SetLength(0);
+                    Mainwindow.cookieproxypool.Clear();
+                    for (int i = 0; i < saveproxy.Length - 1; i++)
+                    {
+                        if (saveproxy[i] != "")
+                        {
+                            sw.WriteLine(saveproxy[i]);
+                            Mainwindow.cookieproxypool.Add(saveproxy[i]);
+                        }
+                    }
+                    sw.Close();
+                    fs0.Close();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Save proxy failed, please Check your input");
             }
         }
     }

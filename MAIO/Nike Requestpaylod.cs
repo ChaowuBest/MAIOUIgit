@@ -28,7 +28,7 @@ new JArray(
   new JObject(
   new JProperty("id", Guid.NewGuid().ToString()),
   new JProperty("skuId", ""),
-  new JProperty("shippingMethod", ""),
+ //new JProperty("shippingMethod", ""),
   new JProperty("quantity", ""),
    new JProperty("fulfillmentDetails",
      new JObject(
@@ -68,7 +68,6 @@ new JArray(
      new JProperty("city", ""),
      new JProperty("postalCode", ""),
      new JProperty("state", ""),
-      new JProperty("preferred", "true"),
      new JProperty("country", ""))))
   )))));
 

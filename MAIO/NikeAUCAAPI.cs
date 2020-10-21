@@ -1,28 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using Newtonsoft.Json.Linq;
-using System.Windows.Shapes;
-using System.Windows;
-using System.Text.RegularExpressions;
 using static MAIO.Main;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
-using NakedBot;
-using PuppeteerSharp;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Media;
-using MAIO.browsercheckout;
 using Newtonsoft.Json;
 using System.ServiceModel;
-using System.Collections.Immutable;
 using System.Collections;
-using System.Windows.Markup.Localizer;
 
 namespace MAIO
 {
@@ -255,7 +241,8 @@ namespace MAIO
                         var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                         var callClient = factory.CreateChannel();
                         JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        request.Headers.Add("Cookie", result["cookie"].ToString());
+                    request.Headers.Add("Cookie", result["cookie"].ToString());
+                          //  request.Headers.Add("Cookie","bm_sz=9B2364F51452FC53D08D50289B431B8A~YAAQRf2Yc4f0GDx1AQAAguO/Rgm6DDPa+MSXhAPi/dUMHQuTb1BlS0OKKWEBTAwjHf2J4CTeCEJttTcBk1BtIARcOgfZKuEmlumoRzUxmKFZD5fImpwwM94BKVa3vPNnCTbQL9YnjI9VFcdYciSIWfJxTZpMasNmne1KOGTZcGxtw4GkNZhYvfyXc92LiQr494ge6D/0ir+BEpw6xLNr1wHA70W6qo8BH+zy1plIw5kjhJC3U8jh7Y2jCHqoQRUexJfjGz2mF7Uw+YnqYIkVPh+Pr1X+z8ubbQ==;_abck=690B9E741739EF88CC8E49574EBAADD9~-1~YAAQRf2Yc5v1GDx1AQAAO/G/RgTmXlBetKqMuNIhLd/zY9YSY4/Mimib3KIKQsEjrQJV8LTrKQB050ykD/eLeY0pci4TUICA/ojIr+bwiSr73bmJSKILYaz94pw7h1VYPHQ5zokqqcpf6nAC3tDRwj+wUizZClbD4sr7Q0iws3hjbW4DxeR3bOKkvyI+JM8oqJyvaoAjghNAbttXosGbFtISFJGSxXpH6xLbZZbnUwMglmw139kf6TLqLrRk0pS3Yb3gpJn0eZuHcWirh5YHjOo4Do2nlxuNZRJ4NYlV0QwBuHyFplB68sr2pWcduMGOaySMB4LKivwND2aRVs5zcPDZHSwF0BJZ9LcNaWoe1nZrjKI8psFNH5taGvpgS1znwiXQUyV1byv3JgUtVAonXIfZGcbcLnwScemgxaHSZ209UboB3uyl~-1~-1~-1");
                     }
                     catch
                     {

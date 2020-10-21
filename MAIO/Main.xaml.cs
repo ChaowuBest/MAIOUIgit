@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -619,244 +620,253 @@ namespace MAIO
         }
         private void start_Click(object sender, RoutedEventArgs e)
         {
-            string taskid = Guid.NewGuid().ToString();
-            int row = datagrid.SelectedIndex;
-            taskset tk;
-            tk = Mainwindow.task.ElementAt(row);
-            bool monitortask = false;
-            if (tk.monitortask == "True")
+            int count = datagrid.SelectedItems.Count;
+          /*  DataRowView[] drv = new DataRowView[count];
+            for (int i = 0; i < count; i++)
             {
-                monitortask = true;
-            }
-            if (dic.Keys.Contains(tk.Taskid))
+                drv[i] = datagrid.SelectedItems[i] as DataRowView;
+            }*/
+            for (int y = 0; y < count; y++)
             {
-                MessageBox.Show("Please stop task first");
-            }
-            else
-            {
-                tk.Status = "Starting";
-                try
+                string taskid = Guid.NewGuid().ToString();
+                taskset tk;
+                tk = (taskset)datagrid.SelectedItems[y];
+                bool monitortask = false;
+                if (tk.monitortask == "True")
                 {
-                    string giftcard = "";
-                    string code = "";
-                    if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU" || tk.Tasksite == "NikeMY" || tk.Tasksite == "NikeNZ" || tk.Tasksite == "NikeSG")
+                    monitortask = true;
+                }
+                if (dic.Keys.Contains(tk.Taskid))
+                {
+                    MessageBox.Show("Please stop task first");
+                }
+                else
+                {
+                    tk.Status = "Starting";
+                    try
                     {
-                        NikeAUCA NA = new NikeAUCA();
-                        NA.tk = tk;
-                        NA.profile = Mainwindow.allprofile[tk.Profile];
-                        NA.pid = tk.Sku;
-                        NA.size = tk.Size;
-                        NA.Quantity = int.Parse(tk.Quantity);
-                        NA.monitortask = monitortask;
-                        if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                        string giftcard = "";
+                        string code = "";
+                        if (tk.Tasksite == "NikeCA" || tk.Tasksite == "NikeAU" || tk.Tasksite == "NikeMY" || tk.Tasksite == "NikeNZ" || tk.Tasksite == "NikeSG")
                         {
-                            tk.Size = "RA";
-                            NA.randomsize = true;
-                        }
-                        var cts = new CancellationTokenSource();
-                        var ct = cts.Token;
-                        Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
-                        dic.Add(tk.Taskid, cts);
-                        task1.Start();
-                    }
-                    else if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
-                    {
-                        if (Mainwindow.tasklist[tk.Taskid] != "")
-                        {
-                            JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
-                            giftcard = jo["giftcard"].ToString();
-                            code = jo["Code"].ToString().Replace("\r\n", "");
-                        }
-                        Random ran = new Random();
-                        int random = ran.Next(0, Mainwindow.account.Count);
-                        try
-                        {
-                        A: string[] account = null;
-                            bool guest = false;
-                            if (tk.Account != null && tk.Account != "")
+                            NikeAUCA NA = new NikeAUCA();
+                            NA.tk = tk;
+                            NA.profile = Mainwindow.allprofile[tk.Profile];
+                            NA.pid = tk.Sku;
+                            NA.size = tk.Size;
+                            NA.Quantity = int.Parse(tk.Quantity);
+                            NA.monitortask = monitortask;
+                            if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
-                                string sValue = "";
-                                if (Mainwindow.account.TryGetValue(tk.Account, out sValue))
+                                tk.Size = "RA";
+                                NA.randomsize = true;
+                            }
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task task1 = new Task(() => { NA.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
+                            dic.Add(tk.Taskid, cts);
+                            task1.Start();
+                        }
+                        else if (tk.Tasksite == "NikeUS" || tk.Tasksite == "NikeUK")
+                        {
+                            if (Mainwindow.tasklist[tk.Taskid] != "")
+                            {
+                                JObject jo = JObject.Parse(Mainwindow.tasklist[tk.Taskid]);
+                                giftcard = jo["giftcard"].ToString();
+                                code = jo["Code"].ToString().Replace("\r\n", "");
+                            }
+                            Random ran = new Random();
+                            int random = ran.Next(0, Mainwindow.account.Count);
+                            try
+                            {
+                            A: string[] account = null;
+                                bool guest = false;
+                                if (tk.Account != null && tk.Account != "")
                                 {
-                                    JObject jo = JObject.Parse(sValue);
-                                    ArrayList ar = new ArrayList();
-                                    foreach (var i in jo)
+                                    string sValue = "";
+                                    if (Mainwindow.account.TryGetValue(tk.Account, out sValue))
                                     {
-                                        Thread.Sleep(1);
-                                        ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
+                                        JObject jo = JObject.Parse(sValue);
+                                        ArrayList ar = new ArrayList();
+                                        foreach (var i in jo)
+                                        {
+                                            Thread.Sleep(1);
+                                            ar.Add(i.ToString().Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace(" ", ""));
+                                        }
+                                        try
+                                        {
+                                            randomdic.Add(tk.Account, 0);
+                                            account = ar[0].ToString().Split(",");
+                                        }
+                                        catch (Exception)
+                                        {
+                                            randomdic[tk.Account] = randomdic[tk.Account] + 1;
+                                            if (ar.Count == randomdic[tk.Account])
+                                            {
+                                                randomdic.Remove(tk.Account);
+                                                goto A;
+                                            }
+                                            if (randomdic[tk.Account] >= ar.Count)
+                                            {
+                                                account = ar[ar.Count - 1].ToString().Split(",");
+                                            }
+                                            else
+                                            {
+                                                account = ar[randomdic[tk.Account]].ToString().Split(",");
+                                            }
+                                        }
                                     }
-                                    try
+                                    else
                                     {
-                                        randomdic.Add(tk.Account, 0);
-                                        account = ar[0].ToString().Split(",");
-                                    }
-                                    catch (Exception)
-                                    {
-                                        randomdic[tk.Account] = randomdic[tk.Account] + 1;
-                                        if (ar.Count == randomdic[tk.Account])
-                                        {
-                                            randomdic.Remove(tk.Account);
-                                            goto A;
-                                        }
-                                        if (randomdic[tk.Account] >= ar.Count)
-                                        {
-                                            account = ar[ar.Count - 1].ToString().Split(",");
-                                        }
-                                        else
-                                        {
-                                            account = ar[randomdic[tk.Account]].ToString().Split(",");
-                                        }
+                                        account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
                                     }
                                 }
                                 else
                                 {
-                                    account = tk.Account.Replace(" ", "").Replace("[", "").Replace("]", "").Split(",");
+                                    guest = true;
                                 }
-                            }
-                            else
-                            {
-                                guest = true;
-                            }
-                            NikeUSUK NSK = new NikeUSUK();
-                            if (guest)
-                            {
-                                NSK.guest = true;
-                            }
-                            else
-                            {
-                                NSK.username = account[0];
-                                NSK.password = account[1];
-                            }
-                            NSK.giftcard = giftcard;
-                            NSK.pid = tk.Sku;
-                            NSK.size = tk.Size;
-                            NSK.code = code;
-                            NSK.monitortask = monitortask;
-                            NSK.profile = Mainwindow.allprofile[tk.Profile];
-                            NSK.tk = tk;
+                                NikeUSUK NSK = new NikeUSUK();
+                                if (guest)
+                                {
+                                    NSK.guest = true;
+                                }
+                                else
+                                {
+                                    NSK.username = account[0];
+                                    NSK.password = account[1];
+                                }
+                                NSK.giftcard = giftcard;
+                                NSK.pid = tk.Sku;
+                                NSK.size = tk.Size;
+                                NSK.code = code;
+                                NSK.monitortask = monitortask;
+                                NSK.profile = Mainwindow.allprofile[tk.Profile];
+                                NSK.tk = tk;
 
+                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                                {
+                                    tk.Size = "RA";
+                                    NSK.randomsize = true;
+                                }
+                                var cts = new CancellationTokenSource();
+                                var ct = cts.Token;
+                                Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
+                                dic.Add(tk.Taskid, cts);
+                                task2.Start();
+
+                            }
+                            catch (Exception)
+                            {
+                                tk.Status = "No Account";
+                            }
+                        }
+                        else if (tk.Tasksite == "Footasylum")
+                        {
+                            try
+                            {
+                                Footasylum fasy = new Footasylum();
+                                if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                                {
+                                    tk.Size = "RA";
+                                    fasy.randomsize = true;
+                                }
+                                fasy.link = tk.Sku;
+                                fasy.profile = Mainwindow.allprofile[tk.Profile];
+                                fasy.size = tk.Size;
+                                fasy.tk = tk;
+                                var cts = new CancellationTokenSource();
+                                var ct = cts.Token;
+                                Task fasytask = new Task(() => { fasy.StartTask(ct, cts); }, ct);
+                                dic.Add(tk.Taskid, cts);
+                                fasytask.Start();
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                        else if (tk.Tasksite == "TheNorthFaceUS")
+                        {
+                            TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
+                            tnfus.link = tk.Sku;
+                            tnfus.profile = Mainwindow.allprofile[tk.Profile];
+                            tnfus.size = tk.Size;
                             if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
                                 tk.Size = "RA";
-                                NSK.randomsize = true;
+                                tnfus.randomsize = true;
                             }
+                            tnfus.tasksite = tk.Tasksite;
+                            tnfus.tk = tk;
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                            Task task2 = new Task(() => { NSK.StartTask(ct, cts); }, ct, TaskCreationOptions.LongRunning);
+                            Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
                             dic.Add(tk.Taskid, cts);
-                            task2.Start();
-
+                            tnftask.Start();
                         }
-                        catch (Exception)
+                        else if (tk.Tasksite == "TheNorthFaceUK")
                         {
-                            tk.Status = "No Account";
-                        }
-                    }
-                    else if (tk.Tasksite == "Footasylum")
-                    {
-                        try
-                        {
-                            Footasylum fasy = new Footasylum();
+                            TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
+                            tnfus.link = tk.Sku;
+                            tnfus.profile = Mainwindow.allprofile[tk.Profile];
+                            tnfus.size = tk.Size;
+                            tnfus.tasksite = tk.Tasksite;
                             if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
                             {
                                 tk.Size = "RA";
-                                fasy.randomsize = true;
+                                tnfus.randomsize = true;
                             }
-                            fasy.link = tk.Sku;
-                            fasy.profile = Mainwindow.allprofile[tk.Profile];
-                            fasy.size = tk.Size;
-                            fasy.tk = tk;
+                            tnfus.tk = tk;
                             var cts = new CancellationTokenSource();
                             var ct = cts.Token;
-                            Task fasytask = new Task(() => { fasy.StartTask(ct, cts); }, ct);
+                            Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
                             dic.Add(tk.Taskid, cts);
-                            fasytask.Start();
+                            tnftask.Start();
                         }
-                        catch
+                        else if (tk.Tasksite == "ASOS")
                         {
-
+                            ASOS.ASOS asos = new ASOS.ASOS();
+                            asos.link = tk.Sku;
+                            asos.profile = Mainwindow.allprofile[tk.Profile];
+                            asos.size = tk.Size;
+                            if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                            {
+                                tk.Size = "RA";
+                                asos.randomsize = true;
+                            }
+                            asos.tk = tk;
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task asostask = new Task(() => { asos.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            asostask.Start();
+                        }
+                        else if (tk.Tasksite == "JDUS")
+                        {
+                            JDUS.JDUS jdus = new JDUS.JDUS();
+                            jdus.link = tk.Sku;
+                            jdus.profile = Mainwindow.allprofile[tk.Profile];
+                            jdus.size = tk.Size;
+                            if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
+                            {
+                                tk.Size = "RA";
+                                jdus.randomsize = true;
+                            }
+                            jdus.tk = tk;
+                            var cts = new CancellationTokenSource();
+                            var ct = cts.Token;
+                            Task jdustask = new Task(() => { jdus.StartTask(ct, cts); }, ct);
+                            dic.Add(tk.Taskid, cts);
+                            jdustask.Start();
                         }
                     }
-                    else if (tk.Tasksite == "TheNorthFaceUS")
+                    catch (Exception)
                     {
-                        TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
-                        tnfus.link = tk.Sku;
-                        tnfus.profile = Mainwindow.allprofile[tk.Profile];
-                        tnfus.size = tk.Size;
-                        if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                        {
-                            tk.Size = "RA";
-                            tnfus.randomsize = true;
-                        }
-                        tnfus.tasksite = tk.Tasksite;
-                        tnfus.tk = tk;
-                        var cts = new CancellationTokenSource();
-                        var ct = cts.Token;
-                        Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
-                        dic.Add(tk.Taskid, cts);
-                        tnftask.Start();
+                        tk.Status = "Task Error";
                     }
-                    else if (tk.Tasksite == "TheNorthFaceUK")
-                    {
-                        TheNorthFaceUSUK tnfus = new TheNorthFaceUSUK();
-                        tnfus.link = tk.Sku;
-                        tnfus.profile = Mainwindow.allprofile[tk.Profile];
-                        tnfus.size = tk.Size;
-                        tnfus.tasksite = tk.Tasksite;
-                        if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                        {
-                            tk.Size = "RA";
-                            tnfus.randomsize = true;
-                        }
-                        tnfus.tk = tk;
-                        var cts = new CancellationTokenSource();
-                        var ct = cts.Token;
-                        Task tnftask = new Task(() => { tnfus.StartTask(ct, cts); }, ct);
-                        dic.Add(tk.Taskid, cts);
-                        tnftask.Start();
-                    }
-                    else if (tk.Tasksite == "ASOS")
-                    {
-                        ASOS.ASOS asos = new ASOS.ASOS();
-                        asos.link = tk.Sku;
-                        asos.profile = Mainwindow.allprofile[tk.Profile];
-                        asos.size = tk.Size;
-                        if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                        {
-                            tk.Size = "RA";
-                            asos.randomsize = true;
-                        }
-                        asos.tk = tk;
-                        var cts = new CancellationTokenSource();
-                        var ct = cts.Token;
-                        Task asostask = new Task(() => { asos.StartTask(ct, cts); }, ct);
-                        dic.Add(tk.Taskid, cts);
-                        asostask.Start();
-                    }
-                    else if (tk.Tasksite == "JDUS")
-                    {
-                        JDUS.JDUS jdus = new JDUS.JDUS();
-                        jdus.link = tk.Sku;
-                        jdus.profile = Mainwindow.allprofile[tk.Profile];
-                        jdus.size = tk.Size;
-                        if (tk.Size == "RA" || tk.Size == "ra" || tk.Size == "" || tk.Size == null || tk.Size == " ")
-                        {
-                            tk.Size = "RA";
-                            jdus.randomsize = true;
-                        }
-                        jdus.tk = tk;
-                        var cts = new CancellationTokenSource();
-                        var ct = cts.Token;
-                        Task jdustask = new Task(() => { jdus.StartTask(ct, cts); }, ct);
-                        dic.Add(tk.Taskid, cts);
-                        jdustask.Start();
-                    }
-                }
-                catch (Exception)
-                {
-                    tk.Status = "Task Error";
                 }
             }
+
         }
         public void updatetask(string task)
         {
@@ -892,30 +902,36 @@ namespace MAIO
         }
         private void BtnDelete_Click_1(object sender, RoutedEventArgs e)
         {
-            taskset del = (taskset)((Button)sender).DataContext;
-            if (dic.Keys.Contains(del.Taskid))
+            taskset del;
+            int count = datagrid.SelectedItems.Count;
+            ArrayList ary = new ArrayList();
+            for (int y = 0; y < count; y++)
             {
-                dic[del.Taskid].Cancel();
-                dic.Remove(del.Taskid);
-            }
-            else
-            {
-
-            }
-            int n = datagrid.SelectedIndex;
-            for (int i = 0; i < Mainwindow.tasklist.Count; i++)
-            {
-                KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
-                JObject jo = JObject.Parse(kv.Value);
-                if (del.Taskid == jo["Taskid"].ToString())
+                del = (taskset)datagrid.SelectedItems[y];
+                ary.Add(del);
+                if (dic.Keys.Contains(del.Taskid))
                 {
-                    string needdel = Mainwindow.tasklist[jo["Taskid"].ToString()];
-                    Mainwindow.tasklist.Remove(jo["Taskid"].ToString());
-                    updatetask(needdel);
-                    break;
+                    dic[del.Taskid].Cancel();
+                    dic.Remove(del.Taskid);
+                }
+                for (int i = 0; i < Mainwindow.tasklist.Count; i++)
+                {
+                    Thread.Sleep(1);
+                    KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
+                    JObject jo = JObject.Parse(kv.Value);
+                    if (del.Taskid == jo["Taskid"].ToString())
+                    {
+                        string needdel = Mainwindow.tasklist[jo["Taskid"].ToString()];
+                        Mainwindow.tasklist.Remove(jo["Taskid"].ToString());
+                        updatetask(needdel);
+                        break;
+                    }
                 }
             }
-            Mainwindow.task.Remove(del);
+            for (int i = 0; i < ary.Count; i++)
+            {
+                Mainwindow.task.Remove((taskset)ary[i]);
+            }
         }
         private void button1_Copy3_Click(object sender, RoutedEventArgs e)
         {

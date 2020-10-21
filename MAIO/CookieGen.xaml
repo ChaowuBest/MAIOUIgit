@@ -9,6 +9,42 @@
     <Grid Background="#FF415C5C">
         <Button Content="start gen nike" HorizontalAlignment="Center" Margin="0,57,0,0" VerticalAlignment="Top" Width="264" Click="Button_Click"/>
         <Button Content="start gen TNF" IsEnabled="False" HorizontalAlignment="Center" Margin="0,117,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.94,0.647" Width="264" Click="Button_Click_1"/>
+        <RichTextBox Margin="150,160,150,145" x:Name="monitorproxy" Background="#FF292F34" Foreground="White" FontFamily="PingFangSC-Semibold" FontSize="14">
+            <RichTextBox.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0"/>
+                </Style>
+            </RichTextBox.Resources>
+            <FlowDocument PageWidth="2048"/>
+        </RichTextBox>
+        <Button Cursor="Hand" x:Name="save_Copy" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Save" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="268,279,400,67" Click="save_Copy_Click" Width="108" Height="43.76">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Cursor="Hand"  x:Name="del_Copy" Opacity="1" Foreground="White" Background="#FF6F7D8D" Content="Delete" FontFamily="PingFangSC-Semibold" FontSize="16" Margin="424,280,250,69" Width="108" Click="del_Copy_Click" Height="43.76">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                <GradientStop Color="#FF021F1F" Offset="0.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
     </Grid>
 </Window>

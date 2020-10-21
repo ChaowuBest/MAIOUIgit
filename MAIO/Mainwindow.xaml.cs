@@ -40,6 +40,7 @@ namespace MAIO
         public static ObservableCollection<taskset> task = new ObservableCollection<taskset>();
         public static ObservableCollection<Main.Monitor> Advancemonitortask = new ObservableCollection<Main.Monitor>();
         public static ArrayList proxypool = new ArrayList();
+        public static ArrayList cookieproxypool = new ArrayList();
         public static ArrayList monitorproxypool = new ArrayList();
         public static List<string> codepool = new List<string>();
         public static List<string> listproxy;
@@ -55,6 +56,7 @@ namespace MAIO
         string path6 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "codelist.txt";
         string path7 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "monitorproxy.txt";
         string path8 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profilegroup.json";
+        string path9 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "cookieproxy.txt";
         public Mainwindow()
         {
             InitializeComponent();
@@ -91,9 +93,15 @@ namespace MAIO
                     FileStream fs1 = new FileStream(path7, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                     fs1.Close();
                 }
+                if (!File.Exists(path9))
+                {
+                    FileStream fs1 = new FileStream(path9, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    fs1.Close();
+                }
             }
             FileInfo fi = new FileInfo(path3);
             FileInfo fi2 = new FileInfo(path7);
+            FileInfo fi3 = new FileInfo(path9);
             if (fi.Length != 0)
             {
                 listproxy = new List<string>(File.ReadAllLines(path3));
@@ -111,6 +119,16 @@ namespace MAIO
                 {
                     Thread.Sleep(1);
                     monitorproxypool.Add(listproxy[i]);
+                }
+                listproxy.Clear();
+            }
+            if (fi3.Length != 0)
+            {
+                listproxy = new List<string>(File.ReadAllLines(path9));
+                for (int i = 0; i < listproxy.Count; i++)
+                {
+                    Thread.Sleep(1);
+                    cookieproxypool.Add(listproxy[i]);
                 }
             }
         }

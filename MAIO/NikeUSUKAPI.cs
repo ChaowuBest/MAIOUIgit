@@ -1,27 +1,16 @@
-﻿using MAIO.browsercheckout;
-using NakedBot;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PuppeteerSharp;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Security;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 using static MAIO.Main;
 
 namespace MAIO
@@ -1014,7 +1003,8 @@ namespace MAIO
                         var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                         var callClient = factory.CreateChannel();
                         JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        request.Headers.Add("Cookie", result["cookie"].ToString());
+                       request.Headers.Add("Cookie", result["cookie"].ToString());
+                        //request.Headers.Add("Cookie", "bm_sz=FB9E2D929A086C6DB939797B0A54AC01~YAAQdVgyuMbs4EB1AQAAVo6HRgkqznO8dw/OfjXA8FUC6vrcXl/bkSHs71pmH0zS6RDl/7uvKS4DW9oLq4OpmeEmFVD0LYCUsJ+2/L7GlDolf7+RIOXVuCId7jY/brJGOurXoqMnv1FlLvNw9qBKop2/X0L0YSbWTn2N1BPVMO53r94dON9EpnDIPjT50NxlgaQkJtcjNO4t4aW7Wi1JfQOVw0Ab5W7kwNfT710IK/ohQqjNGDE5OE/oKSibhJ9/PD1JOGYJ9axFeG+iCgGcvcPUVoZ4lYvg6MUH3PZO; _abck=7CA09A2CD4BA94D3C940B5EC888E3156~-1~YAAQdVgyuMfs4EB1AQAAVo6HRgTlc81RqbFiRMUD7iy1cdElfaKcdc03IAuyqTttheC70OflGXzc1MKM4rdhGO8nTY5/A9lfHkIS2dcrsoKzIMsXDXRDh5SIVsOL0moWteoVypw4c3/ybvHoHS7sTjHIxiXzCdGehUr6UQVu/r3GYubm3F+azzNRiBOZxkA7P1VhIZzpYoKtdSD1USA5ND7YaZtLXaX5jjudmaZsTjQy+ehibbv90c8GzMzkKkahzXbuJGIAxyLKaJj/rGe1Vef7Ineg6WYoq63KS1G8twPuvhD/EYXJ873rCZ9OlO/585Js4gjQfd3tKWqqdgnOI7V4cWwwnTl54ogyx8AsyJ5jZAYwD4tuJtf17VIxqk3QF98nAuY=~-1~-1~-1");
                     }
                     catch
                     {
