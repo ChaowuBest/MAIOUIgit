@@ -42,6 +42,7 @@ namespace MAIO
             }
             try
             {
+                jig(joprofile, ct);
                 GetSkuid(ct);
             }
             catch (OperationCanceledException)
@@ -84,6 +85,58 @@ namespace MAIO
             catch
             {
                 goto B;
+            }
+        }
+        public void jig(JObject profile, CancellationToken ct)
+        {
+            autojig aj = new autojig();
+            if (profile["Address1"].ToString().Contains("%char4%"))
+            {
+                Regex regex = new Regex(@"%char4%");
+                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), aj.GenerateRandomString(4));
+            }
+            if (profile["Address1"].ToString().Contains("%char8%"))
+            {
+                Regex regex = new Regex(@"%char4%");
+                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), aj.GenerateRandomString(8));
+            }
+            if (profile["Address1"].ToString().Contains("%num4%"))
+            {
+                Regex regex = new Regex(@"%num4%");
+                profile["Address1"] = regex.Replace(profile["Address1"].ToString(), aj.GenerateRandomnum(4));
+            }
+            if (profile["Address2"].ToString().Contains("%char4%"))
+            {
+                Regex regex = new Regex(@"%char4%");
+                profile["Address2"] = regex.Replace(profile["Address2"].ToString(), aj.GenerateRandomString(4));
+            }
+            if (profile["Tel"].ToString().Contains("%num4%"))
+            {
+                Regex regex = new Regex(@"%num4%");
+                profile["Tel"] = regex.Replace(profile["Tel"].ToString(), aj.GenerateRandomnum(4));
+            }
+            if (profile["Tel"].ToString().Contains("%num7%"))
+            {
+                Regex regex = new Regex(@"%num4%");
+                profile["Tel"] = regex.Replace(profile["Tel"].ToString(), aj.GenerateRandomnum(7));
+            }
+            if (profile["FirstName"].ToString().Contains("%fname%"))
+            {
+                Regex regex = new Regex(@"%fname%");
+                Firstname fs = new Firstname();
+                profile["FirstName"] = regex.Replace(profile["FirstName"].ToString(), fs.name());
+            }
+            if (profile["LastName"].ToString().Contains("%lname%"))
+            {
+                Regex regex = new Regex(@"%lname%");
+                Firstname fs = new Firstname();
+                profile["LastName"] = regex.Replace(profile["LastName"].ToString(), fs.name());
+            }
+            if (profile["EmailAddress"].ToString().Contains("random"))
+            {
+                Regex regex = new Regex(@"random");
+                Firstname fs = new Firstname();
+                profile["EmailAddress"] = regex.Replace(profile["EmailAddress"].ToString(), aj.GenerateRandomString(4));
             }
         }
         public void GetSkuid(CancellationToken ct)
@@ -310,8 +363,8 @@ namespace MAIO
                 JObject jo = JObject.Parse(source);
                 paypallink = jo["wpRedirectUrl"].ToString().Replace("amp;", "").Replace("&amp", "");
 
-                ProcessNotification(true, "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt", "");
-                ProcessNotification(false, Config.webhook, paypallink);
+                ProcessNotification(true, "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt", "",ct);
+                ProcessNotification(false, Config.webhook, paypallink,ct);
                 tk.Status = "Success";
                 autocheckout();
             }
@@ -319,8 +372,8 @@ namespace MAIO
             {
                  url = "https://www.thenorthface.com/shop/SendToPaypal?storeId=7001&orderId=" + orderid + "&callSource=Payment&useraction=commit&cancelURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fVFBillingAndPaymentView%3forderId%3d" + orderid + "%26storeId%3d7001&returnURL=https%3a%2f%2fwww.thenorthface.com%2fshop%2fZCReturnFromPaypal%3fcallSource%3dPayment%26orderId%3d" + orderid + "%26shippingAddressName%3dPayPal%2bShipping%26billingAddressName%3dPayPal%2bBilling%26storeId%3d7001%26URL%3dOrderOKView";
                  paypallink = tnfAPI.Checkout2(url, tk, ct);
-                ProcessNotification(true, "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt", "");
-                ProcessNotification(false,Config.webhook, paypallink);
+                ProcessNotification(true, "https://discordapp.com/api/webhooks/736544382018125895/Ti5zEbTcrKALkWhAePivSfyi7jlhRmRlILEyx9bPKIYh63qu1dVBDB2FFeyMFTSuRnpt", "",ct);
+                ProcessNotification(false,Config.webhook, paypallink,ct);
                 tk.Status = "Success";
             }          
             if (ct.IsCancellationRequested)
@@ -329,7 +382,7 @@ namespace MAIO
                 ct.ThrowIfCancellationRequested();
             }
         }
-        public void ProcessNotification(bool publicsuccess, string webhookurl, string paymenturl)
+        public void ProcessNotification(bool publicsuccess, string webhookurl, string paymenturl, CancellationToken ct)
         {
             JObject jobject = null;
             if (publicsuccess)
@@ -350,11 +403,17 @@ namespace MAIO
                 jobject["embeds"][0]["fields"][2]["value"] = paymenturl;
                 jobject["embeds"][0]["thumbnail"]["url"] = "";
             }
-            Http(webhookurl, jobject.ToString());
+            Http(webhookurl, jobject.ToString(),ct);
         }
-        public void Http(string url, string postDataStr)
+        public void Http(string url, string postDataStr, CancellationToken ct)
         {
-        Retry: Random ra = new Random();
+        Retry:
+            if (ct.IsCancellationRequested)
+            {
+                tk.Status = "IDLE";
+                ct.ThrowIfCancellationRequested();
+            }
+            Random ra = new Random();
             int sleeptime = ra.Next(0, 3000);
             Thread.Sleep(sleeptime);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

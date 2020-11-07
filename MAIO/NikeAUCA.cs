@@ -31,6 +31,7 @@ namespace MAIO
         string msrp = "";
         int limit = 0;
         public string cookie = "";
+        JObject jsize = null;
         bool multisize = false;
         string[] Multiesize = null;
         NikeAUCAAPI AUCAAPI = new NikeAUCAAPI();
@@ -82,12 +83,6 @@ namespace MAIO
                             if (ts.TotalMinutes >= 50)
                             {
                                 goto A;
-                                /*Main.autorestock(tk);
-                                if (ct.IsCancellationRequested)
-                                {
-                                    tk.Status = "IDLE";
-                                    ct.ThrowIfCancellationRequested();
-                                }*/
                             }
                             try
                             {
@@ -108,6 +103,15 @@ namespace MAIO
                                     {
                                         Random ran = new Random();
                                         skuid = (string)ary[ran.Next(0, ary.Count)];
+                                        foreach (var i in jsize)
+                                        {
+                                            Thread.Sleep(1);
+                                            if (i.Value.ToString() == skuid)
+                                            {
+                                                tk.Size = i.Key;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -171,6 +175,15 @@ namespace MAIO
                         if (group[0] != null)
                         {
                             skuid = group[0];
+                        }
+                        foreach (var i in jsize)
+                        {
+                            Thread.Sleep(1);
+                            if (i.Value.ToString() == skuid)
+                            {
+                                tk.Size = i.Key;
+                                break;
+                            }
                         }
                     }
                 }
@@ -236,6 +249,7 @@ namespace MAIO
                 msrp = sva["msrp"].ToString();
                 limit = int.Parse(sva["limit"].ToString());
                 JObject jo2 = JObject.Parse(sva["data"].ToString());
+                jsize = jo2;
                 if (tk.Size.Contains("+") == false && tk.Size.Contains("-") == false && randomsize == false)
                 {
                     foreach (var i in jo2)
@@ -349,6 +363,7 @@ namespace MAIO
                     try
                     {
                         Main.localsize.Add(tk.Tasksite + pid, result.ToString());
+                         jsize = (JObject)result["data"];
                     }
                     catch { }
                     imageurl = result["Image"].ToString();
@@ -626,11 +641,21 @@ namespace MAIO
                         ct.ThrowIfCancellationRequested();
                     }
                     productdetail = "{\"data\":" + JsonConvert.SerializeObject(allsize) + ",\"Image\":\"" + imageurl + "\",\"ProductID\":\"" + productid + "\",\"limit\":\"" + limit + "\",\"msrp\":\"" + msrp + "\"}";
+                    jsize = (JObject)JObject.Parse(productdetail)["data"];
                     var binding = new BasicHttpBinding();
                     var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
                     var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                     var callClient = factory.CreateChannel();
                     callClient.setproductAsync(pid, tk.Tasksite, productdetail);
+                    foreach (var i in jsize)
+                    {
+                        Thread.Sleep(1);
+                        if (i.Value.ToString() == skuid)
+                        {
+                            tk.Size = i.Key;
+                            break;
+                        }
+                    }
                 }
             }
             catch

@@ -9,6 +9,7 @@ using static MAIO.Main;
 using Newtonsoft.Json;
 using System.ServiceModel;
 using System.Collections;
+using System.Windows;
 
 namespace MAIO
 {
@@ -30,8 +31,17 @@ namespace MAIO
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Timeout = 5000;
-            request.Proxy = getproxy();
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
+           request.Proxy = getproxy();
+            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
+            request.Headers.Add("Accept-Encoding", "gzip, deflate br");
+            request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
+            request.Headers.Add("Sec-Fetch-Dest", "document");
+            request.Headers.Add("cache-control", "max-age=0");
+            request.Headers.Add("Sec-Fetch-Mode", "navigate");
+            request.Headers.Add("Sec-Fetch-Site", "none");
+            request.Headers.Add("Sec-Fetch-user", "?1");
+            request.Headers.Add("upgrade-insecure-requests", "1");
+            request.UserAgent = "Sogou inst spider";
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -296,7 +306,7 @@ namespace MAIO
                 paymentstream.Close();
                 try
                 {
-                    HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
+                    HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();                
                     tk.Status = "Submit Order";
                     Stream receiveStream = resppayment.GetResponseStream();
                     if (ct.IsCancellationRequested)
@@ -421,7 +431,7 @@ namespace MAIO
                     }
                 }
             }
-            catch (WebException)
+            catch (WebException ex)
             {
                 //HttpWebResponse response = (HttpWebResponse)ex.Response;
                 tk.Status = "Processing Forbidden";
@@ -742,7 +752,7 @@ namespace MAIO
                 string[] proxy = proxyg.Split(":");
                 if (proxy.Length == 2)
                 {
-                    proxyaddress = "http//" + proxy[0] + ":" + proxy[1] + "";
+                    proxyaddress = "http://" + proxy[0] + ":" + proxy[1] + "";
                 }
                 else if (proxy.Length == 4)
                 {

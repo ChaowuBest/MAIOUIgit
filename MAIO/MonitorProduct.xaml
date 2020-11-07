@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MAIO"
         mc:Ignorable="d"
-        Title="MonitorProduct" Height="750" Width="590" Closing="Window_Closing_1">
-    <Grid Margin="0,0,0,-5" Width="570"  Height="750" Background="#FF415C5C" IsVisibleChanged="Grid_IsVisibleChanged_1" >
+        Title="MonitorProduct" Height="750" Width="590">
+    <Grid Margin="0,0,0,-5" Width="570"  Height="750" Background="#FF415C5C" >
         <DataGrid Margin="0,0,0,10" HeadersVisibility="None"  Name="monitorproduct" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
@@ -18,7 +18,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Image Source="{Binding Photo}"  />
+                                <Image Source="{Binding imageurl}"  />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -42,11 +42,7 @@
                                 </TextBlock>
                                 <TextBlock Margin="-490,-30,0,0" Text="Status:" Width="50" Height="20">
                                 </TextBlock>
-                                <TextBlock Margin="-380,-30,0,0" Text="{Binding Status}" Width="80" Height="20">
-                                </TextBlock>
-                                <TextBlock Margin="-270,-30,0,0" Text="Price:" Width="50" Height="20">
-                                </TextBlock>
-                                <TextBlock Margin="-180,-30,0,0" Text="{Binding Price}" Width="50" Height="20">
+                                <TextBlock Margin="-310,-30,0,0" Text="{Binding Status}" Width="140" Height="20">
                                 </TextBlock>
                                 <TextBlock Margin="-430,55,0,0" TextWrapping="Wrap" Text="{Binding Stock}" Width="440" Height="100">
                                 </TextBlock>

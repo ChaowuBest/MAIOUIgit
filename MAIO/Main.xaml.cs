@@ -445,53 +445,9 @@ namespace MAIO
         {
             public event PropertyChangedEventHandler PropertyChanged;
             public string Sku { get; set; }
-            public string code { get; set; }
             public string Region { get; set; }
-            public string photo { get; set; }
             public string Taskid { get; set; }
-            private string status;
-            private string stock;
-            private string price;
             private string size;
-            public string Account { get; set; }
-            public string Quantity { get; set; }
-            public string giftcard { get; set; }
-            public string Status
-            {
-                get { return status; }
-                set
-                {
-                    status = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                    }
-                }
-            }
-            public string Stock
-            {
-                get { return stock; }
-                set
-                {
-                    stock = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs("Stock"));
-                    }
-                }
-            }
-            public string Price
-            {
-                get { return price; }
-                set
-                {
-                    price = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs("Price"));
-                    }
-                }
-            }
             public string Size
             {
                 get { return size; }
@@ -504,31 +460,20 @@ namespace MAIO
                     }
                 }
             }
-            public string Photo
+            private string status;
+            public string Status
             {
-                get { return photo; }
+                get { return status; }
                 set
                 {
-                    photo = value;
+                    status = value;
                     if (PropertyChanged != null)
                     {
-                        PropertyChanged(this, new PropertyChangedEventArgs("Photo"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("status"));
                     }
                 }
             }
-            private string profile;
-            public string Profile
-            {
-                get { return profile; }
-                set
-                {
-                    profile = value;
-                    if (PropertyChanged != null)
-                    {
-                        PropertyChanged(this, new PropertyChangedEventArgs("Profile"));
-                    }
-                }
-            }
+            public string imageurl { get; set; }
         }
         private void Ctask(string[] st)
         {
@@ -542,7 +487,7 @@ namespace MAIO
         "\"Status\":\"IDLE\",\"giftcard\":\"" + st[1] + "\",\"Code\":\"" + st[5] + "\",\"Quantity\":\"" + st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"monitortask\":\"" + st[7] + "\",\"AdvanceMonitor\":\"" + st[8] + "\",\"Account\":\"" + st[9] + "\"}]";
             if (st[8] == "True")
             {
-                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""), code = st[5], Size = st[4].Replace("\r\n", ""), Taskid = taskid, Account = st[9], Profile = st[2], giftcard = st[1], Quantity = st[6].Replace("System.Windows.Controls.ComboBoxItem: ", "") });
+                Mainwindow.Advancemonitortask.Add(new Monitor { Region = st[0].Replace("System.Windows.Controls.ComboBoxItem: ", ""), Sku = st[3].Replace("\r\n", ""),Size = st[4].Replace("\r\n", ""), Taskid = taskid});
             }
             else
             {
@@ -622,24 +567,26 @@ namespace MAIO
         {
             int count = datagrid.SelectedItems.Count;
             taskset tk;
-            for (int y = 0; y < count; y++)
+            try
             {
-                await Task.Delay(220);
-                tk = (taskset)datagrid.SelectedItems[y];
-                new Task(delegate ()
+                for (int y = 0; y < count; y++)
                 {
-                    this.startsta(tk);
-                }).Start();
+                    await Task.Delay(220);
+                    tk = (taskset)datagrid.SelectedItems[y];
+                    new Task(delegate ()
+                    {
+                        this.startsta(tk);
+                    }).Start();
+                }
+            }
+            catch
+            { 
+
             }
         }
         public void startsta(taskset tk)
         {
-
-            //   for (int y = 0; y < count; y++)
-            //  {
             string taskid = Guid.NewGuid().ToString();
-            //  taskset tk;
-            //     tk = (taskset)datagrid.SelectedItems[y];
             bool monitortask = false;
             if (tk.monitortask == "True")
             {
@@ -911,36 +858,40 @@ namespace MAIO
         }
         private void BtnDelete_Click_1(object sender, RoutedEventArgs e)
         {
-            taskset del;
-            int count = datagrid.SelectedItems.Count;
-            ArrayList ary = new ArrayList();
-            for (int y = 0; y < count; y++)
+            try
             {
-                del = (taskset)datagrid.SelectedItems[y];
-                ary.Add(del);
-                if (dic.Keys.Contains(del.Taskid))
+                taskset del;
+                int count = datagrid.SelectedItems.Count;
+                ArrayList ary = new ArrayList();
+                for (int y = 0; y < count; y++)
                 {
-                    dic[del.Taskid].Cancel();
-                    dic.Remove(del.Taskid);
-                }
-                for (int i = 0; i < Mainwindow.tasklist.Count; i++)
-                {
-                    Thread.Sleep(1);
-                    KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
-                    JObject jo = JObject.Parse(kv.Value);
-                    if (del.Taskid == jo["Taskid"].ToString())
+                    del = (taskset)datagrid.SelectedItems[y];
+                    ary.Add(del);
+                    if (dic.Keys.Contains(del.Taskid))
                     {
-                        string needdel = Mainwindow.tasklist[jo["Taskid"].ToString()];
-                        Mainwindow.tasklist.Remove(jo["Taskid"].ToString());
-                        updatetask(needdel);
-                        break;
+                        dic[del.Taskid].Cancel();
+                        dic.Remove(del.Taskid);
+                    }
+                    for (int i = 0; i < Mainwindow.tasklist.Count; i++)
+                    {
+                        Thread.Sleep(1);
+                        KeyValuePair<string, string> kv = Mainwindow.tasklist.ElementAt(i);
+                        JObject jo = JObject.Parse(kv.Value);
+                        if (del.Taskid == jo["Taskid"].ToString())
+                        {
+                            string needdel = Mainwindow.tasklist[jo["Taskid"].ToString()];
+                            Mainwindow.tasklist.Remove(jo["Taskid"].ToString());
+                            updatetask(needdel);
+                            break;
+                        }
                     }
                 }
+                for (int i = 0; i < ary.Count; i++)
+                {
+                    Mainwindow.task.Remove((taskset)ary[i]);
+                }
             }
-            for (int i = 0; i < ary.Count; i++)
-            {
-                Mainwindow.task.Remove((taskset)ary[i]);
-            }
+            catch { }
         }
         private void button1_Copy3_Click(object sender, RoutedEventArgs e)
         {
@@ -1091,7 +1042,12 @@ namespace MAIO
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            mp.Show();
+            try
+            {
+                mp.Show();
+            }
+            catch
+            { }
         }
         public static void autorestock(taskset tk)
         {

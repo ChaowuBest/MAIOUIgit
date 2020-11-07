@@ -47,7 +47,7 @@ namespace MAIO
                 string path = Environment.CurrentDirectory + "\\" + "config.json";
                 if (File.Exists(path))
                 {
-                    if (this.keycheck(hwid))
+                   if (this.keycheck(hwid))
                     {
                         try
                         {

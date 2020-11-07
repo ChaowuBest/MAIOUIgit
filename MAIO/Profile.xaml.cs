@@ -30,7 +30,6 @@ namespace MAIO
                 profilelist.Items.Add(kv.Key);
             }
             countrylist.ItemsSource = Countrycode.countrycode;
-            profilesgroupload.ItemsSource = Mainwindow.allprofile.Keys;
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -137,11 +136,18 @@ namespace MAIO
         {
             var del = ((Button)sender).DataContext.ToString();
             profilelist.Items.Remove(del);
-            string needdel = Mainwindow.allprofile[del];
-            Mainwindow.allprofile.Remove(del);
-            profilelist.Items.Refresh();
-            string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
-            updateprofile(needdel,path2);
+            if (del.Contains("Profilelist"))
+            {
+                updateprofilegroup(del);
+            }
+            else
+            {
+                string needdel = Mainwindow.allprofile[del];
+                Mainwindow.allprofile.Remove(del);
+                profilelist.Items.Refresh();
+                string path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\MAIO\\" + "profile.json";
+                updateprofile(needdel, path2);
+            }
         }
         public void updateprofile(string profile,string path2)
         {
@@ -296,17 +302,6 @@ namespace MAIO
             }
 
         }
-        private void delgroup(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                updateprofilegroup(profilegroup.Text);
-            }
-            catch
-            {
-                MessageBox.Show("Del ProfileGroup Error");
-            }
-        }
         private void savegroup(object sender, RoutedEventArgs e)
         {
             string profiles = profilegroup.Text.ToString().Replace(" ", "");
@@ -336,9 +331,10 @@ namespace MAIO
                 else
                 {
                     int count = Mainwindow.allprofile.Count + 1;
-                    Mainwindow.allprofile.Add("Profilelist " +count + "", profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
-                    string profile = "[{\"ProfileName\":\"Profilelist"+ count+ "\",\"ProfileValue\":\"" + profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "") + "\"}]";
+                    string profile = "[{\"ProfileName\":\"Profilelist" + count + "\",\"ProfileValue\":\"" + profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "") + "\"}]";
+                    Mainwindow.allprofile.Add("Profilelist" +count + "", profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
                     profilewrite(profile,path);
+                    profilelist.Items.Add("Profilelist" + count);
                 }
 
             }
@@ -368,9 +364,10 @@ namespace MAIO
                         }
                     }
                     int count=Mainwindow.allprofile.Count + 1;
-                    Mainwindow.allprofile.Add("Profilelist " + count + "", profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));
-                    string profile = "[{\"ProfileName\":\"Profilelist" + count + "\",\"ProfileValue\":\"" + profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", "") + "\"}]";
+                    string profile = "[{\"ProfileName\":\"Profilelist" + count + "\",\"ProfileValue\":\"" + profilesvalue.Replace("[", "").Replace("]", "").Replace("\r", "") + "\"}]";
+                    Mainwindow.allprofile.Add("Profilelist" + count + "", profile.Replace("[", "").Replace("]", "").Replace("\r", "").Replace("\n", ""));                
                     profilewrite(profile,path);
+                    profilelist.Items.Add("Profilelist" + count);
                 }
                 catch
                 {

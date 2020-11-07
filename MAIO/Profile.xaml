@@ -415,21 +415,6 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <ComboBox Height="25" Width="200" Name="profilesgroupload" Margin="-765,513,0,0"/>
-            <Button Content="Del ProfileGroup"  Foreground="White" Background="#FF6F7D8D" FontFamily="PingFangSC-Semibold"  Height="25" Width="135" Click="delgroup" Margin="-265,512,0,0">
-                <Button.Template>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" x:Name="PART_Background">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                                    <GradientStop Color="#FF021F1F" Offset="0.0" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
         </StackPanel>
         <Label Content="Profiles" HorizontalContentAlignment="Center" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="291" Margin="92,80,0,0" FontSize="16" FontFamily="Arial" Foreground="White"/>
         <Button Content="X" HorizontalAlignment="Left" Height="30" Margin="1035,1,0,0" VerticalAlignment="Top" Width="44" Background="#FF243B55" BorderBrush="{x:Null}"  BorderThickness="0"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"  Foreground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" FontFamily="Arial" Click="Button_Click" FontSize="20"/>

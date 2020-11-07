@@ -139,6 +139,7 @@ namespace MAIO
                 {
                     if (profiles.SelectedItem.ToString().Contains("Profilelist"))
                     {
+                        var w2u = Mainwindow.allprofile[profiles.SelectedItem.ToString()];
                         JObject jo = JObject.Parse(Mainwindow.allprofile[profiles.SelectedItem.ToString()]);
                         profilevalues = jo["ProfileValue"].ToString().Split(";").ToList();
                         foreach (var i in profilevalues)

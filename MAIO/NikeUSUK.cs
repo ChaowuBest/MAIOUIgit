@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Permissions;
 using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -39,6 +40,7 @@ namespace MAIO
         public string giftcard = "";
         public static bool subcard = false;
         DateTime dt = DateTime.UtcNow;
+        JObject jsize = null;
         Dictionary<string, string> giftcard2 = new Dictionary<string, string>();
         Dictionary<string, string> allsize = new Dictionary<string, string>();
         NikeUSUKAPI USUKAPI = new NikeUSUKAPI();
@@ -48,7 +50,6 @@ namespace MAIO
         string country = null;
         string currency = null;
         string locale = null;
-        string shippingMethod = null;
         public void StartTask(CancellationToken ct, CancellationTokenSource cts)
         {
         A:
@@ -62,14 +63,12 @@ namespace MAIO
                         country = "GB";
                         currency = "GBP";
                         locale = "en_GB";
-                        shippingMethod = "GROUND_SERVICE";
                     }
                     else
                     {
                         country = "US";
                         currency = "USD";
                         locale = "en_US";
-                        shippingMethod = "STANDARD";
                     }
                     quantity = int.Parse(tk.Quantity);
                     GetSKUID(tk.Tasksite.Replace("Nike", ""), pid, ct, cts);
@@ -108,22 +107,33 @@ namespace MAIO
                         if (tk.monitortask != "True")
                         {
                             #region
-                            for (int n = 0; n < Mainwindow.task.Count; n++)
+                          /*  if (Mainwindow.Advancemonitortask.Count != 0)
                             {
-                                Thread.Sleep(1);
-                                if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                                if (ct.IsCancellationRequested)
                                 {
-                                    if (ct.IsCancellationRequested)
-                                    {
-                                        tk.Status = "IDLE";
-                                        ct.ThrowIfCancellationRequested();
-                                    }
-                                    this.tk.Size = Mainwindow.task[n].Size;
-                                    ismonitor = true;
-                                    break;
+                                    tk.Status = "IDLE";
+                                    ct.ThrowIfCancellationRequested();
                                 }
+                               // this.tk.Size = Mainwindow.Advancemonitortask[n].Size;
+                                ismonitor = true;
+                            }*/
+                        
+                        for (int n = 0; n < Mainwindow.task.Count; n++)
+                        {
+                            Thread.Sleep(1);
+                            if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                            {
+                                if (ct.IsCancellationRequested)
+                                {
+                                    tk.Status = "IDLE";
+                                    ct.ThrowIfCancellationRequested();
+                                }
+                                this.tk.Size = Mainwindow.task[n].Size;
+                                ismonitor = true;
+                                break;
                             }
-                        #endregion
+                        }
+                            #endregion
                         G: if (ismonitor)
                             {
                                 if (ct.IsCancellationRequested)
@@ -156,6 +166,15 @@ namespace MAIO
                                         {
                                             Random ran = new Random();
                                             skuid = (string)ary[ran.Next(0, ary.Count)];
+                                            foreach (var i in jsize)
+                                            {
+                                                Thread.Sleep(1);
+                                                if (i.Value.ToString() == skuid)
+                                                {
+                                                    tk.Size = i.Key;
+                                                    break;
+                                                }
+                                            }
                                         }
 
                                     }
@@ -209,6 +228,15 @@ namespace MAIO
                         if (group[0] != null)
                         {
                             skuid = group[0];
+                        }
+                        foreach (var i in jsize)
+                        {
+                            Thread.Sleep(1);
+                            if (i.Value.ToString() == skuid)
+                            {
+                                tk.Size = i.Key;
+                                break;
+                            }
                         }
                     }
                 }
@@ -302,6 +330,7 @@ namespace MAIO
                 limit = int.Parse(sva["limit"].ToString());
                 msrp = sva["msrp"].ToString();
                 JObject jo = JObject.Parse(sva["data"].ToString());
+                jsize=jo;
                 if (tk.Size.Contains("+") == false && tk.Size.Contains("-") == false && randomsize == false)
                 {
                     foreach (var i in jo)
@@ -417,6 +446,7 @@ namespace MAIO
                     try
                     {
                         Main.localsize.Add(tk.Tasksite + pid, result.ToString());
+                         jsize =(JObject)result["data"];
                     }
                     catch { }
                     imageurl = result["Image"].ToString();
@@ -700,11 +730,21 @@ namespace MAIO
                         ct.ThrowIfCancellationRequested();
                     }
                     productdetail = "{\"data\":" + JsonConvert.SerializeObject(allsize) + ",\"Image\":\"" + imageurl + "\",\"ProductID\":\"" + productID + "\",\"limit\":\"" + limit + "\",\"msrp\":\"" + msrp + "\"}";
+                    jsize = (JObject)JObject.Parse(productdetail)["data"];
                     var binding = new BasicHttpBinding();
                     var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
                     var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                     var callClient = factory.CreateChannel();
                     callClient.setproductAsync(pid, tk.Tasksite, productdetail);
+                    foreach (var i in jsize)
+                    {
+                        Thread.Sleep(1);
+                        if (i.Value.ToString() == skuid)
+                        {
+                            tk.Size = i.Key;
+                            break;
+                        }
+                    }
                 }
             }
             catch
@@ -820,7 +860,6 @@ namespace MAIO
         protected void Submitcardinfo(string Authorization, CancellationToken ct, CancellationToken ct2, CancellationTokenSource cts)
         {
             cardguid = Guid.NewGuid().ToString();
-            string cardinfo = "";
             JObject jo = JObject.Parse(profile);
             string cardurl = "https://paymentcc.nike.com/creditcardsubmit/" + cardguid + "/store";
             string firstcard = jo["Cardnum"].ToString().Substring(0, 1);
@@ -851,7 +890,7 @@ namespace MAIO
             {
                 tk.Status = "Card Input Error";
             }
-            cardinfo = "{\"accountNumber\":\"" + jo["Cardnum"].ToString() + "\",\"cardType\":\"" + cardtype + "\",\"expirationMonth\":\"" + expir[0] + "\",\"expirationYear\":\"" + expir[1] + "\",\"creditCardInfoId\":\"" + cardguid + "\",\"cvNumber\":\"" + jo["Cvv"].ToString() + "\"}";
+            string cardinfo = "{\"accountNumber\":\"" + jo["Cardnum"].ToString() + "\",\"cardType\":\"" + cardtype + "\",\"expirationMonth\":\"" + expir[0] + "\",\"expirationYear\":\"" + expir[1] + "\",\"creditCardInfoId\":\"" + cardguid + "\",\"cvNumber\":\"" + jo["Cvv"].ToString() + "\"}";
             if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
@@ -916,7 +955,6 @@ namespace MAIO
             payLoad["request"]["locale"] = locale;
             payLoad["request"]["items"][0]["id"] = Guid.NewGuid().ToString();
             payLoad["request"]["items"][0]["skuId"] = skuid;
-            //payLoad["request"]["items"][0]["shippingMethod"] = shippingMethod;
             payLoad["request"]["items"][0]["quantity"] = quantity;
             payLoad["request"]["items"][0]["fulfillmentDetails"]["getBy"]["maxDate"]["dateTime"] = dt.ToString("yyyy-MM-ddTHH:mm:ss.ffZ");
             payLoad["request"]["items"][0]["fulfillmentDetails"]["location"]["postalAddress"]["country"] = country;
@@ -1137,7 +1175,7 @@ namespace MAIO
                 tk.Status = "IDLE";
                 ct.ThrowIfCancellationRequested();
             }
-            var wu=payinfo.ToString();
+            var wu = payinfo.ToString();
             string id = USUKAPI.payment(paymenturl, Authorization, payinfo.ToString(), tk, ct);
             return id;
         }
@@ -1236,7 +1274,7 @@ new JProperty("discount", 0))
                     tk.Size = "RA";
                 }
                 jobject["embeds"][0]["fields"][0]["value"] = tk.Sku;
-                jobject["embeds"][0]["fields"][1]["value"] = tk.Size+"*"+quantity;
+                jobject["embeds"][0]["fields"][1]["value"] = tk.Size + "*" + quantity;
                 jobject["embeds"][0]["fields"][2]["value"] = joprofile["EmailAddress"].ToString();
                 if (guest)
                 {

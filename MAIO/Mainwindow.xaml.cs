@@ -445,21 +445,6 @@ namespace MAIO
         {
 
         }
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                //     datagrid.Items.Add(new Task { Size = "123", Sku = "123", TaskID = "1234" });
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("123");
-        }
 
         private void ProxyClick(object sender, RoutedEventArgs e)
         {
@@ -483,14 +468,10 @@ namespace MAIO
         {
             maingrid.Visibility = Visibility.Hidden;
             this.frmMain.Navigate(new Uri("Settings.xaml", UriKind.Relative));
-
         }
         private void MenuClick(object sender, RoutedEventArgs e)
         {
-
             maingrid.Visibility = Visibility.Visible;
-            //  this.frmMain.Navigate(new Uri("Main.xaml", UriKind.Relative));           
-
         }
     }
 }
