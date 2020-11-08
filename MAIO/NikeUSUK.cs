@@ -107,33 +107,33 @@ namespace MAIO
                         if (tk.monitortask != "True")
                         {
                             #region
-                          /*  if (Mainwindow.Advancemonitortask.Count != 0)
+                            if (Mainwindow.Advancemonitortask.Count != 0)
                             {
                                 if (ct.IsCancellationRequested)
                                 {
                                     tk.Status = "IDLE";
                                     ct.ThrowIfCancellationRequested();
                                 }
-                               // this.tk.Size = Mainwindow.Advancemonitortask[n].Size;
+                             //  this.tk.Size = Mainwindow.Advancemonitortask[n].Size;
                                 ismonitor = true;
-                            }*/
-                        
-                        for (int n = 0; n < Mainwindow.task.Count; n++)
-                        {
-                            Thread.Sleep(1);
-                            if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
-                            {
-                                if (ct.IsCancellationRequested)
-                                {
-                                    tk.Status = "IDLE";
-                                    ct.ThrowIfCancellationRequested();
-                                }
-                                this.tk.Size = Mainwindow.task[n].Size;
-                                ismonitor = true;
-                                break;
                             }
-                        }
-                            #endregion
+ 
+                        /*  for (int n = 0; n < Mainwindow.task.Count; n++)
+                          {
+                              Thread.Sleep(1);
+                              if (Mainwindow.task[n].monitortask == "True" && Mainwindow.task[n].Tasksite == this.tk.Tasksite && Mainwindow.task[n].Sku == this.pid)
+                              {
+                                  if (ct.IsCancellationRequested)
+                                  {
+                                      tk.Status = "IDLE";
+                                      ct.ThrowIfCancellationRequested();
+                                  }
+                                  this.tk.Size = Mainwindow.task[n].Size;
+                                  ismonitor = true;
+                                  break;
+                              }
+                          }*/
+                        #endregion
                         G: if (ismonitor)
                             {
                                 if (ct.IsCancellationRequested)
@@ -330,7 +330,7 @@ namespace MAIO
                 limit = int.Parse(sva["limit"].ToString());
                 msrp = sva["msrp"].ToString();
                 JObject jo = JObject.Parse(sva["data"].ToString());
-                jsize=jo;
+                jsize = jo;
                 if (tk.Size.Contains("+") == false && tk.Size.Contains("-") == false && randomsize == false)
                 {
                     foreach (var i in jo)
@@ -446,7 +446,7 @@ namespace MAIO
                     try
                     {
                         Main.localsize.Add(tk.Tasksite + pid, result.ToString());
-                         jsize =(JObject)result["data"];
+                        jsize = (JObject)result["data"];
                     }
                     catch { }
                     imageurl = result["Image"].ToString();

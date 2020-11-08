@@ -33,7 +33,6 @@ namespace MAIO
                 }
             }
             catch { }
-
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";

@@ -19,7 +19,6 @@ namespace MAIO
     {
         Random ran = new Random();
         string akbmsz = "ak_bmsc=";
-        //    string xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3traceid = Guid.NewGuid().ToString();
         string xb3parentspanid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
         string xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
@@ -1630,4 +1629,3 @@ namespace MAIO
         }
     }
 }
-
