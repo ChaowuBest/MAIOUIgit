@@ -166,7 +166,7 @@ namespace MAIO
                     }
                 }
             }
-            catch(Exception)
+            catch(Exception ex)
             {
             }
         }

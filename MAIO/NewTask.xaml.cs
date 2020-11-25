@@ -164,12 +164,11 @@ namespace MAIO
                                 JObject jo = JObject.Parse(Mainwindow.tasklist[Midtransfer.taskid].ToString());
                                 string profile = "[{\"Taskid\":\"" + jo["Taskid"].ToString() + "\",\"Tasksite\":\"" + site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "") + "\",\"Sku\":\"" + productid + "\"," + "\"Size\":\"" + sizeid + "\"," +
                                         "\"Profile\":\"" + profiles.Text + "\",\"Proxies\":\"Default\"," + "\"Status\":\"IDLE\",\"giftcard\":\"" + giftcard.Text + "\",\"Code\":\"" + code + "\",\"Quantity\":\"" + Quantity.Text + "\"," +
-                                        "\"monitortask\":\"" + monitor.IsChecked.ToString() + "\",\"AdvanceMonitor\":\"False\",\"Account\":\"" + user + "\"}]";
+                                        "\"AdvanceMonitor\":\"False\",\"Account\":\"" + user + "\"}]";
 
                                 Midtransfer.tk.Tasksite = site.SelectedItem.ToString().Replace("System.Windows.Controls.ComboBoxItem: ", "");
                                 Midtransfer.tk.Sku = productid.Replace("\r\n", "");
                                 Midtransfer.tk.Size = sizeid.Replace("\r\n", "");
-                                Midtransfer.tk.monitortask = monitor.IsChecked.ToString();
                                 Midtransfer.tk.Profile = profiles.Text.Replace("\r\n", "");
                                 Mainwindow.tasklist[Midtransfer.taskid] = profile.Replace("[", "").Replace("]", "");
                                 Midtransfer.tk.Account = user;
@@ -229,7 +228,6 @@ namespace MAIO
                                     setup[4] = sizeid;
                                     setup[5] = code;
                                     setup[6] = Quantity.SelectedItem.ToString();
-                                    setup[7] = monitor.IsChecked.ToString();
                                     setup[8] = advancemonitor.IsChecked.ToString();
                                     setup[9] = user;
                                     getTextHandler(setup);
@@ -263,7 +261,6 @@ namespace MAIO
             {
                 advancemonitor.Visibility = Visibility.Hidden;
                 Quantity.Text = Midtransfer.Quantity;
-                monitor.IsChecked = Midtransfer.monitor;
                 num.Visibility = Visibility.Hidden;
                 tasknumber.Visibility = Visibility.Hidden;
                 account.Text = Midtransfer.tk.Account;

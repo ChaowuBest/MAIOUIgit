@@ -31,7 +31,7 @@ namespace MAIO
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Timeout = 5000;
-           request.Proxy = getproxy();
+            request.Proxy = getproxy();
             request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
             request.Headers.Add("Accept-Encoding", "gzip, deflate br");
             request.Headers.Add("Accept-Language", "en-US, en; q=0.9");
@@ -81,29 +81,13 @@ namespace MAIO
         {
             if (Config.UseAdvancemode == "True")
             {
-            C: Thread.Sleep(1);
+            C:
                 string[] sendcookie = null;
                 if (Mainwindow.iscookielistnull || Mainwindow.lines.Count == 0)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
-                    }
-                    try
-                    {
-                        var binding = new BasicHttpBinding();
-                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                        var callClient = factory.CreateChannel();
-                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        sendcookie = result["cookie"].ToString().Split(";");
-                    }
-                    catch
-                    {
-                        tk.Status = "Get Cookie Error";
-                        goto C;
-                    }
+                    tk.Status = "Get Cookie Error";
+                    Thread.Sleep(1);
+                    goto C;
                 }
                 else
                 {
@@ -122,10 +106,10 @@ namespace MAIO
                         Main.updatelable(Mainwindow.lines[cookie], false);
                         sendcookie = Mainwindow.lines[cookie].Split(";");
                         Mainwindow.lines.RemoveAt(cookie);
-                        if (Mainwindow.lines.Count == 0)
-                        {
-                            Mainwindow.iscookielistnull = true;
-                        }
+                       // if (Mainwindow.lines.Count == 0)
+                      //  {
+                     //       Mainwindow.iscookielistnull = true;
+                     //   }
                     }
                     catch (Exception)
                     {
@@ -148,14 +132,15 @@ namespace MAIO
                     try
                     {
                         var chao = JsonConvert.SerializeObject(payinfo).Replace("\"{", "{").Replace("}\"", "}");
-                        sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
-                    }
+                        Random ran = new Random();
+                        sendjson = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + xnikevisitorid + "\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"X-B3-SpanName\":\"CiCCart\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"" + proxy + "\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"2020/8/26 23:42:48\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                    }                                                                                                                                                                                                                                                                                                                                                                                                                      //Proxy: 94.131.28.12:16666:hv282517:zg612330
                     catch (Exception)
                     {
                     }
                     allSockets[0].Send(sendjson);
-                    bool fordidden = false;
-                B: JObject sValue = null;
+                B: bool fordidden = false;
+                    JObject sValue = null;
                     try
                     {
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
@@ -256,8 +241,8 @@ namespace MAIO
                         var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                         var callClient = factory.CreateChannel();
                         JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                    request.Headers.Add("Cookie", result["cookie"].ToString());
-                          //  request.Headers.Add("Cookie","bm_sz=9B2364F51452FC53D08D50289B431B8A~YAAQRf2Yc4f0GDx1AQAAguO/Rgm6DDPa+MSXhAPi/dUMHQuTb1BlS0OKKWEBTAwjHf2J4CTeCEJttTcBk1BtIARcOgfZKuEmlumoRzUxmKFZD5fImpwwM94BKVa3vPNnCTbQL9YnjI9VFcdYciSIWfJxTZpMasNmne1KOGTZcGxtw4GkNZhYvfyXc92LiQr494ge6D/0ir+BEpw6xLNr1wHA70W6qo8BH+zy1plIw5kjhJC3U8jh7Y2jCHqoQRUexJfjGz2mF7Uw+YnqYIkVPh+Pr1X+z8ubbQ==;_abck=690B9E741739EF88CC8E49574EBAADD9~-1~YAAQRf2Yc5v1GDx1AQAAO/G/RgTmXlBetKqMuNIhLd/zY9YSY4/Mimib3KIKQsEjrQJV8LTrKQB050ykD/eLeY0pci4TUICA/ojIr+bwiSr73bmJSKILYaz94pw7h1VYPHQ5zokqqcpf6nAC3tDRwj+wUizZClbD4sr7Q0iws3hjbW4DxeR3bOKkvyI+JM8oqJyvaoAjghNAbttXosGbFtISFJGSxXpH6xLbZZbnUwMglmw139kf6TLqLrRk0pS3Yb3gpJn0eZuHcWirh5YHjOo4Do2nlxuNZRJ4NYlV0QwBuHyFplB68sr2pWcduMGOaySMB4LKivwND2aRVs5zcPDZHSwF0BJZ9LcNaWoe1nZrjKI8psFNH5taGvpgS1znwiXQUyV1byv3JgUtVAonXIfZGcbcLnwScemgxaHSZ209UboB3uyl~-1~-1~-1");
+                        request.Headers.Add("Cookie", result["cookie"].ToString());
+                        //  request.Headers.Add("Cookie","bm_sz=9B2364F51452FC53D08D50289B431B8A~YAAQRf2Yc4f0GDx1AQAAguO/Rgm6DDPa+MSXhAPi/dUMHQuTb1BlS0OKKWEBTAwjHf2J4CTeCEJttTcBk1BtIARcOgfZKuEmlumoRzUxmKFZD5fImpwwM94BKVa3vPNnCTbQL9YnjI9VFcdYciSIWfJxTZpMasNmne1KOGTZcGxtw4GkNZhYvfyXc92LiQr494ge6D/0ir+BEpw6xLNr1wHA70W6qo8BH+zy1plIw5kjhJC3U8jh7Y2jCHqoQRUexJfjGz2mF7Uw+YnqYIkVPh+Pr1X+z8ubbQ==;_abck=690B9E741739EF88CC8E49574EBAADD9~-1~YAAQRf2Yc5v1GDx1AQAAO/G/RgTmXlBetKqMuNIhLd/zY9YSY4/Mimib3KIKQsEjrQJV8LTrKQB050ykD/eLeY0pci4TUICA/ojIr+bwiSr73bmJSKILYaz94pw7h1VYPHQ5zokqqcpf6nAC3tDRwj+wUizZClbD4sr7Q0iws3hjbW4DxeR3bOKkvyI+JM8oqJyvaoAjghNAbttXosGbFtISFJGSxXpH6xLbZZbnUwMglmw139kf6TLqLrRk0pS3Yb3gpJn0eZuHcWirh5YHjOo4Do2nlxuNZRJ4NYlV0QwBuHyFplB68sr2pWcduMGOaySMB4LKivwND2aRVs5zcPDZHSwF0BJZ9LcNaWoe1nZrjKI8psFNH5taGvpgS1znwiXQUyV1byv3JgUtVAonXIfZGcbcLnwScemgxaHSZ209UboB3uyl~-1~-1~-1");
                     }
                     catch
                     {
@@ -306,7 +291,7 @@ namespace MAIO
                 paymentstream.Close();
                 try
                 {
-                    HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();                
+                    HttpWebResponse resppayment = (HttpWebResponse)request.GetResponse();
                     tk.Status = "Submit Order";
                     Stream receiveStream = resppayment.GetResponseStream();
                     if (ct.IsCancellationRequested)
@@ -327,7 +312,10 @@ namespace MAIO
                 }
                 catch (WebException ex)
                 {
-                    HttpWebResponse response = (HttpWebResponse)ex.Response;
+                    HttpWebResponse respgetstatus = (HttpWebResponse)ex.Response;
+                    Stream respcheckstatusstream = respgetstatus.GetResponseStream();
+                    StreamReader readcheckstatus = new StreamReader(respcheckstatusstream, Encoding.GetEncoding("utf-8"));
+                    string check = readcheckstatus.ReadToEnd();
                     if (ct.IsCancellationRequested)
                     {
                         tk.Status = "IDLE";
@@ -534,12 +522,13 @@ namespace MAIO
                 JObject jo = JObject.Parse(SourceCode);
                 JArray ja = JArray.Parse(jo["data"]["skus"][0]["product"]["skus"].ToString());
                 try
-                {          
+                {
                     if (share_dog_skuid.ContainsKey(tk.Tasksite + tk.Sku))
                     {
                         share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
                     }
-                }catch { }
+                }
+                catch { }
                 for (int i = 0; i < ja.Count; i++)
                 {
                     Thread.Sleep(1);

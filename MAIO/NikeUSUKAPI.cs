@@ -171,6 +171,7 @@ namespace MAIO
                         ct.ThrowIfCancellationRequested();
                     }
                     Main.allSockets[0].Send(json);
+                    tk.Status = "Logining";
                     bool fordidden = false;
                 B: JObject sValue = null;
                     try
@@ -471,22 +472,9 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    try
-                    {
-                        var binding = new BasicHttpBinding();
-                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                        var callClient = factory.CreateChannel();
-                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        sendcookie = result["cookie"].ToString().Split(";");
-
-                    }
-                    catch
-                    {
-                        Thread.Sleep(1);
-                        tk.Status = "Get Cookie Error";
-                        goto C;
-                    }
+                    tk.Status = "Get Cookie Error";
+                    Thread.Sleep(1);
+                    goto C;
                 }
                 else
                 {
@@ -502,11 +490,12 @@ namespace MAIO
                     {
                         goto C;
                     }
+
                 }
                 string proxy = "";
                 try
                 {
-                    int random = ran.Next(0, Mainwindow.proxypool.Count);
+                    int random = ran.Next(0, Mainwindow.proxypool.Count - 1);
                     proxy = Mainwindow.proxypool[random].ToString();
                 }
                 catch
@@ -519,11 +508,11 @@ namespace MAIO
                     string json = null;
                     if (guest)
                     {
-                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json; charset=UTF-8\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-b3-spanname\":\"CiCCheckout\",\"x-b3-traceid\":\"" + guesttraceid + "\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + guestvisitorid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json; charset=UTF-8\",\"appid\":\"com.nike.commerce.nikedotcom.web\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-b3-spanname\":\"CiCCheckout\",\"x-b3-traceid\":\"" + guesttraceid + "\",\"x-nike-visitid\":\"1\",\"x-nike-visitorid\":\"" + guestvisitorid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"" + proxy + "\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
                     }
                     else
                     {
-                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\"" + Authorization + "\",\"X-B3-SpanId\":\"" + xb3spanID + "\",\"X-B3-ParentSpanId\":\"" + xb3parentspanid + "\",\"appid\":\"com.nike.commerce.checkout.web\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\"" + Authorization + "\",\"X-B3-SpanId\":\"" + xb3spanID + "\",\"X-B3-ParentSpanId\":\"" + xb3parentspanid + "\",\"appid\":\"com.nike.commerce.checkout.web\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"" + proxy + "\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
                     }
 
                     if (ct.IsCancellationRequested)
@@ -1014,27 +1003,10 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    if (ct.IsCancellationRequested)
-                    {
-                        tk.Status = "IDLE";
-                        ct.ThrowIfCancellationRequested();
 
-                    }
-                    try
-                    {
-                        var binding = new BasicHttpBinding();
-                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                        var callClient = factory.CreateChannel();
-                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        request.Headers.Add("Cookie", result["cookie"].ToString());
-                    }
-                    catch
-                    {
-                        Thread.Sleep(1);
-                        tk.Status = "Get Cookie Error";
-                        goto C;
-                    }
+                    Thread.Sleep(1);
+                    tk.Status = "Get Cookie Error";
+                    goto C;
                 }
                 else
                 {
@@ -1063,8 +1035,7 @@ namespace MAIO
                 request.Headers.Add("Sec-Fetch-Dest", "empty");
                 request.Headers.Add("Sec-Fetch-Mode", "cors");
                 request.Headers.Add("Sec-Fetch-Site", "same-site");
-                    request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
-              //  request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36 OPR/72.0.3815.186";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36";
                 if (guest)
                 {
                     request.Headers.Add("x-b3-spanname", "CiCCheckout");
@@ -1090,7 +1061,7 @@ namespace MAIO
                 }
                 catch (WebException ex)
                 {
-                   HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
+                    HttpWebResponse resppayment = (HttpWebResponse)ex.Response;
                     Stream processtream = resppayment.GetResponseStream();
                     StreamReader readprocessstream = new StreamReader(processtream, Encoding.UTF8);
                     string procescode = readprocessstream.ReadToEnd();
@@ -1113,21 +1084,9 @@ namespace MAIO
                         tk.Status = "IDLE";
                         ct.ThrowIfCancellationRequested();
                     }
-                    try
-                    {
-                        var binding = new BasicHttpBinding();
-                        var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
-                        var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
-                        var callClient = factory.CreateChannel();
-                        JObject result = JObject.Parse(callClient.getcookieAsync(Config.hwid).Result);
-                        sendcookie = result["cookie"].ToString().Split(";");
-                    }
-                    catch
-                    {
-                        tk.Status = "Get Cookie Error";
-                        Thread.Sleep(1);
-                        goto D;
-                    }
+                    tk.Status = "Get Cookie Error";
+                    Thread.Sleep(1);
+                    goto D;
                 }
                 else
                 {
@@ -1160,11 +1119,11 @@ namespace MAIO
                     string json = null;
                     if (guest)
                     {
-                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-b3-spanname\":\"CiCCheckout\",\"x-b3-traceid\":\"" + guesttraceid + "\",\"x-nike-visitid\":\"1\",\"appid\":\"com.nike.commerce.checkout.web\",\"x-nike-visitorid\":\"" + guestvisitorid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"x-b3-spanname\":\"CiCCheckout\",\"x-b3-traceid\":\"" + guesttraceid + "\",\"x-nike-visitid\":\"1\",\"appid\":\"com.nike.commerce.checkout.web\",\"x-nike-visitorid\":\"" + guestvisitorid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"" + proxy + "\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
                     }
                     else
                     {
-                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\"" + Authorization + "\",\"X-B3-SpanId\":\"" + xb3spanID + "\",\"X-B3-ParentSpanId\":\"" + xb3parentspanid + "\",\"appid\":\"com.nike.commerce.checkout.web\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
+                        json = "{\"data\":{\"headers\":{\"Content-Type\":\"application/json\",\"Origin\":\" https://www.nike.com\",\"Accept\":\"application/json\",\"Authorization\":\"" + Authorization + "\",\"X-B3-SpanId\":\"" + xb3spanID + "\",\"X-B3-ParentSpanId\":\"" + xb3parentspanid + "\",\"appid\":\"com.nike.commerce.checkout.web\",\"X-B3-TraceId\":\"" + xb3traceid + "\"},\"url\":\"" + url + "\",\"method\":\"PUT\",\"data\":\"" + chao + "\",\"proxy\":\"" + proxy + "\",\"cookies\":[{\"Name\":\"_abck\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[1].Replace("_abck=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0},{\"Name\":\"bm_sz\",\"TimeStamp\":\"" + DateTime.Now.ToLocalTime().ToString() + "\",\"Value\":\"" + sendcookie[0].Replace("bm_sz=", "") + "\",\"Comment\":\"\",\"CommentUri\":null,\"HttpOnly\":false,\"Discard\":false,\"Expired\":false,\"Secure\":false,\"Domain\":\".nike.com\",\"Expires\":\"0001-01-01T00:00:00\",\"Path\":\"/\",\"Port\":\"\",\"Version\":0}],\"id\":\"" + tk.Taskid + "\"},\"type\":\"request\"}";
                     }
                     Main.allSockets[0].Send(json);
                     bool fordidden = false;
@@ -1172,7 +1131,6 @@ namespace MAIO
                 B: JObject sValue = null;
                     try
                     {
-
                         if (returnstatus.TryGetValue(tk.Taskid, out sValue))
                         {
                             if (ct.IsCancellationRequested)
@@ -1332,30 +1290,9 @@ namespace MAIO
         public string[] Monitoring(string url, Main.taskset tk, CancellationToken ct, string info, bool randomsize, string skuid, bool multisize, ArrayList skulist)
         {
             DateTime dtone = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
-            if (tk.monitortask == "True")
-            {
-                try
-                {
-                    ArrayList ary = null;
-                    if (share_dog_skuid.TryGetValue(tk.Tasksite + tk.Sku, out ary) == false)
-                    {
-                        share_dog_skuid.Add(tk.Tasksite + tk.Sku, new ArrayList());
-                    }
-                    else
-                    {
-                        share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
-                    }
-                }
-                catch { }
-            }
         A: if (ct.IsCancellationRequested)
             {
                 tk.Status = "IDLE";
-                if (tk.monitortask == "True")
-                {
-                    share_dog[tk.Tasksite + tk.Sku] = false;
-                    share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
-                }
                 ct.ThrowIfCancellationRequested();
             }
             DateTime dttwo = Convert.ToDateTime(DateTime.Now.ToLocalTime().ToString());
@@ -1373,7 +1310,7 @@ namespace MAIO
                 }
             }
             Thread.Sleep(1);
-           string nikevistid = Guid.NewGuid().ToString();
+            string nikevistid = Guid.NewGuid().ToString();
             string SourceCode = null;
             string[] group = new string[2];
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -1401,8 +1338,6 @@ namespace MAIO
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                //     xb3traceid = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
-                //   xb3spanID = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 16);
                 xb3traceid = Guid.NewGuid().ToString();
                 xb3spanID = Guid.NewGuid().ToString();
                 tk.Status = "WaitingRestock";
@@ -1440,15 +1375,9 @@ namespace MAIO
                     {
                         if (ja[i]["availability"]["level"].ToString() != "OOS")
                         {
-                            if (tk.monitortask == "True")
-                            {
-                                share_dog_skuid[tk.Tasksite + tk.Sku].Add(ja[i]["id"].ToString());
-                            }
-                            else
-                            {
-                                group[0] = ja[i]["id"].ToString();
-                                break;
-                            }
+                            group[0] = ja[i]["id"].ToString();
+                            break;
+
                         }
 
                     }
@@ -1461,15 +1390,9 @@ namespace MAIO
                             {
                                 if (ja[i]["availability"]["level"].ToString() != "OOS")
                                 {
-                                    if (tk.monitortask == "True")
-                                    {
-                                        share_dog_skuid[tk.Tasksite + tk.Sku].Add(ja[i]["id"].ToString());
-                                    }
-                                    else
-                                    {
-                                        group[0] = ja[i]["id"].ToString();
-                                        break;
-                                    }
+                                    group[0] = ja[i]["id"].ToString();
+                                    break;
+
                                 }
                             }
                         }
@@ -1493,15 +1416,8 @@ namespace MAIO
                             }
                             else
                             {
-                                if (tk.monitortask == "True")
-                                {
-                                    share_dog_skuid[tk.Tasksite + tk.Sku].Add(ja[i]["id"].ToString());
-                                    break;
-                                }
-                                else
-                                {
-                                    break;
-                                }
+                                break;
+
                             }
                         }
                     }
@@ -1516,38 +1432,8 @@ namespace MAIO
             }
             if (group[0] == null)
             {
-                if (tk.monitortask == "True")
-                {
-                    if (share_dog_skuid[tk.Tasksite + tk.Sku].Count == 0)
-                    {
-                        share_dog[tk.Tasksite + tk.Sku] = false;
-                        if (ct.IsCancellationRequested)
-                        {
-                            tk.Status = "IDLE";
-                            share_dog[tk.Tasksite + tk.Sku] = false;
-                            share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
-                            ct.ThrowIfCancellationRequested();
-                        }
-                        goto A;
-                    }
-                }
-                else
-                {
-                    goto A;
-                }
-            }
-            if (tk.monitortask == "True")
-            {
-                tk.Status = "Get Stock";
-                share_dog[tk.Tasksite + tk.Sku] = true;
-                if (ct.IsCancellationRequested)
-                {
-                    tk.Status = "IDLE";
-                    share_dog[tk.Tasksite + tk.Sku] = false;
-                    share_dog_skuid[tk.Tasksite + tk.Sku].Clear();
-                    ct.ThrowIfCancellationRequested();
-                }
                 goto A;
+
             }
             return group;
         }

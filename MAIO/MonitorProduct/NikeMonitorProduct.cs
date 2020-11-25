@@ -66,7 +66,7 @@ namespace MAIO
             string productdetail = null;
             bool productdetailnull = false;
             string svalue = null;
-            if (localsize.TryGetValue(mn.Region + pid, out svalue))
+      D:    if (localsize.TryGetValue(mn.Region + pid, out svalue))
             {
                 JObject sva = JObject.Parse(svalue);
                 imageurl = sva["Image"].ToString();
@@ -184,6 +184,9 @@ namespace MAIO
                         ct.ThrowIfCancellationRequested();
                     }
                     var binding = new BasicHttpBinding();
+                    binding.ReceiveTimeout = TimeSpan.FromMilliseconds(4000);
+                    binding.OpenTimeout = TimeSpan.FromMilliseconds(4000); ;
+                    binding.CloseTimeout = TimeSpan.FromMilliseconds(4000);
                     var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
                     var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);
                     var callClient = factory.CreateChannel();
@@ -303,6 +306,10 @@ namespace MAIO
                         productdetailnull = true;
                     }
                 }
+                catch
+                {
+                    goto D;
+                }
                 if (productdetailnull)
                 {
                 A: try
@@ -318,9 +325,13 @@ namespace MAIO
                         {
                             url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(GB)&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + mn.Sku + ")";
                         }
-                        else
+                        else if(country.Contains("US"))
                         {
                             url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(US)&filter=language(en)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + mn.Sku + ")";
+                        }
+                        else
+                        {
+                            url = "https://api.nike.com/product_feed/threads/v2/?filter=marketplace(" + country.Replace("Nike","") + ")&filter=language(en-GB)&filter=channelId(d9a5bc42-4b9c-4976-858a-f159cf99c647)&filter=publishedContent.properties.products.styleColor(" + mn.Sku + ")";
                         }
                         bool sizefind = false;
                         string sourcecode = MPAPI.GetHtmlsource(url, mn, ct);
@@ -478,6 +489,7 @@ namespace MAIO
                     }
                     productdetail = "{\"data\":" + JsonConvert.SerializeObject(allsize) + ",\"Image\":\"" + imageurl + "\",\"ProductID\":\"" + productID + "\",\"limit\":\"" + limit + "\",\"msrp\":\"" + msrp + "\"}";
                     jsize = (JObject)JObject.Parse(productdetail)["data"];
+                    localsize.Add(mn.Region + pid,productdetail);
                     var binding = new BasicHttpBinding();
                     var endpoint = new EndpointAddress(@"http://49.51.68.105/WebService1.asmx");
                     var factory = new ChannelFactory<ServiceReference2.WebService1Soap>(binding, endpoint);

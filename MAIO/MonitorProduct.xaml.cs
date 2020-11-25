@@ -64,7 +64,7 @@ namespace MAIO
             }
             else
             {
-                if (Mainwindow.Advancemonitortask[i].Region == "NikeAU" || Mainwindow.Advancemonitortask[i].Region == "NikeCA" || Mainwindow.Advancemonitortask[i].Region == "NikeMY" || Mainwindow.Advancemonitortask[i].Region == "NikeNZ" || Mainwindow.Advancemonitortask[i].Region == "NikeSG")
+                if (tk.Region == "NikeAU" || tk.Region == "NikeCA" || tk.Region == "NikeMY" || tk.Region == "NikeNZ" || tk.Region == "NikeSG")
                 {
                     var cts = new CancellationTokenSource();
                     var ct = cts.Token;
@@ -79,7 +79,7 @@ namespace MAIO
                     Task task1 = new Task(() => { NMP.start(ct, cts); }, ct, TaskCreationOptions.LongRunning);
                     task1.Start();
                 }
-                else if (Mainwindow.Advancemonitortask[i].Region == "NikeUS" || Mainwindow.Advancemonitortask[i].Region == "NikeUK")
+                else if (tk.Region == "NikeUS" || tk.Region == "NikeUK")
                 {
                     var cts = new CancellationTokenSource();
                     var ct = cts.Token;
